@@ -1,11 +1,24 @@
 # Methodology
 
-## Participants – Why were they chosen? Why are they appropriate? How were they
+## Participants – Why were they chosen? Why are they appropriate? How were they recruited? Which is their age, gender, …? Who is the extreme user and why? Who is the domain expert, if any?
 
-recruited? Which is their age, gender, …? Who is the extreme user and why? Who is the
-domain expert, if any?
+### Participants
+
+| Nome             | Età | Genere | Tipologia di intervistato |
+|------------------|-----|--------|---------------------------|
+| Luca Rubboli     | --  | --     | --                        |
+| Matteo Belletti  | --  | --     | --                        |
+| Alice Mastrilli  | --  | --     | --                        |
+| Great ?          | --  | --     | --                        |
+| Ludovica ?       | --  | --     | --                        |
 
 ## Where were the interviews conducted?
+
+### Luoghi
+
+- In presenza (aula, casa, ecc...)
+- Chiamata (cellulare, )
+- Videochiamata (team, )
 
 ## What did you observe (if any) and ask?
 
