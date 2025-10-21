@@ -4,13 +4,36 @@
 
 ### Participants
 
-| Nome             | Età | Genere | Tipologia di intervistato |
-|------------------|-----|--------|---------------------------|
-| Luca Rubboli     | --  | --     | --                        |
-| Matteo Belletti  | --  | --     | --                        |
-| Alice Mastrilli  | --  | --     | --                        |
-| Great ?          | --  | --     | --                        |
-| Ludovica ?       | --  | --     | --                        |
+| Nome            | Età | Genere | Tipologia di intervistato |
+|-----------------|-----|--------|---------------------------|
+| Amico agenzia ? | --  | --     | Esperto                   |
+| Luca Rubboli    | --  | --     | Lead                      |
+| Matteo Belletti | --  | --     | Lead                      |
+| Alex caselli    | --  | --     | Immediato                 |
+| Alice Mastrilli | --  | --     | Immediato                 |
+| Greta -         | --  | --     | Immediato                 |
+| Luca Poggi      | --  | --     | Estremo                   |
+| Ludovica -      | --  | --     | Estremo                   |
+
+Lu:
+
+- Luca rubboli
+- Poggi
+- Amico agenzia ??? ~
+
+Ricci:
+
+- Belle
+- Ludo ~
+
+Manu:
+
+- Ali
+- Greta ~
+
+Teo:
+
+- Alex
 
 ## Where were the interviews conducted?
 
