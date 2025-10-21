@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9c7e90c7-ce45-4cac-a284-02746af3049c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/needFinding/0-Intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/report/needFinding/0-Intro.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/report/needFinding/1-Methodology.md" beforeDir="false" afterPath="$PROJECT_DIR$/report/needFinding/1-Methodology.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/needFinding/3-UserNeeds.md" beforeDir="false" afterPath="$PROJECT_DIR$/report/needFinding/3-UserNeeds.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/needFinding/5-ProjectNameAndValueProposition.md" beforeDir="false" afterPath="$PROJECT_DIR$/report/needFinding/5-ProjectNameAndValueProposition.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,12 +174,23 @@
       <workItem from="1760957075249" duration="142000" />
       <workItem from="1760957224386" duration="2763000" />
       <workItem from="1760964132600" duration="673000" />
-      <workItem from="1760977225162" duration="971000" />
+      <workItem from="1760977225162" duration="3672000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
