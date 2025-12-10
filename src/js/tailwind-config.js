@@ -4,8 +4,11 @@ tailwind.config = {
             colors: {
                 spotBg: '#000000',
                 spotPaper: '#F5F2EB',
-                spotPrimary: '#16A34A',
-                toolbarText: '#1F1F1F'
+                spotPrimary: '#1C7C54',
+                spotSecondary: '#F4B41A',
+                spotAccent: '#E36414',
+                textColor: '#1E1E1E',
+                borderBox: '#C5CAD1'
             }
         }
     }
