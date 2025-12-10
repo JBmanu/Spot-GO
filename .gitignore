@@ -2,6 +2,9 @@
 .idea/
 .vscode/
 
+# Non aggiungere output.css - va generato automaticamente
+src/css/output.css
+
 ### Intellij+iml Patch ###
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 
