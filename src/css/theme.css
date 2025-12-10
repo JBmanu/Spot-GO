@@ -1,9 +1,13 @@
-@theme {
-    --color-backgroundColor: #000000;
-    --color-spotPaper: #F5F2EB;
-    --color-spotPrimary: #1C7C54;
-    --color-spotSecondary: #F4B41A;
-    --color-spotAccent: #E36414;
-    --color-textColor: #1E1E1E;
-    --color-borderBox: #C5CAD1;
+@layer base {
+    :root {
+        --color-background-phone: #000000;
+        --color-spot-paper: #F5F2EB;
+
+        --color-primary: #1C7C54;
+        --color-secondary: #F4B41A;
+        --color-accent: #E36414;
+
+        --color-text: #1E1E1E;
+        --color-border: #C5CAD1;
+    }
 }
