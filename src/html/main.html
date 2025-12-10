@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Spot & Go</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind-config.js"></script>
+</head>
+
+<body
+        class="min-h-screen
+         bg-spotBg
+         flex items-center justify-center">
+
+<!-- Scocca del telefono -->
+<div
+        class="relative
+           w-[430px] h-[932px]
+           rounded-[40px]
+           p-2
+           bg-gradient-to-br from-slate-800 to-slate-950
+           shadow-[0_24px_60px_rgba(0,0,0,0.8)]">
+    <!-- Bordo -->
+    <div
+            class="pointer-events-none
+             absolute inset-0
+             rounded-[40px]
+             border border-slate-300/40">
+    </div>
+
+    <!-- Schermo interno -->
+    <div
+            class="relative
+                 flex h-full flex-col
+                 overflow-hidden
+                 rounded-[32px]
+                 bg-spotPaper
+                 text-slate-50">
+
+        <!-- Dynamic Island -->
+        <div
+                class="absolute
+                    left-1/2 -translate-x-1/2
+                    top-2
+                    h-[35px] w-[120px]
+                    rounded-[18px]
+                    bg-slate-950
+                    shadow-[0_0_0_2px_#020617]
+                    z-10">
+        </div>
+
+        <!-- HEADER -->
+        <div id="header-container"></div>
+
+        <!-- MAIN -->
+        <main
+                class="flex-1
+                    overflow-y-auto
+                    px-5 py-4"
+        >
+        </main>
+
+        <!-- TOOLBAR -->
+        <div id="toolbar-container"></div>
+
+    </div>
+</div>
+
+<!-- Javascript -->
+<script src="../js/header-toolbar.js"></script>
+</body>
+</html>
