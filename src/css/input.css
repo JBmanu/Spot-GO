@@ -1,11 +1,6 @@
 @import "tailwindcss";
 
-@theme {
-    --color-backgroundColor: #000000;
-    --color-spotPaper: #F5F2EB;
-    --color-spotPrimary: #1C7C54;
-    --color-spotSecondary: #F4B41A;
-    --color-spotAccent: #E36414;
-    --color-textColor: #1E1E1E;
-    --color-borderBox: #C5CAD1;
-}
+@import "./theme.css";
+
+@import "./smartphone.css";
+
