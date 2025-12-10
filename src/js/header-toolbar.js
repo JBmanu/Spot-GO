@@ -1,7 +1,7 @@
 const SECTION_CONFIG = {
-    home: {
+    homepage: {
         title: "Spot & Go",
-        content: "home.html",
+        content: "homepage.html",
         icon: {
             active: "../assets/icons/filled/HomePageFill.svg",
             inactive: "../assets/icons/empty/HomePage.svg",
@@ -15,7 +15,7 @@ const SECTION_CONFIG = {
             inactive: "../assets/icons/empty/Map.svg",
         },
     },
-    social: {
+    community: {
         title: "Community",
         content: "community.html",
         icon: {
@@ -23,7 +23,7 @@ const SECTION_CONFIG = {
             inactive: "../assets/icons/empty/UserGroups.svg",
         },
     },
-    missions: {
+    goals: {
         title: "Missioni",
         content: "goals.html",
         icon: {
@@ -44,7 +44,7 @@ const SECTION_CONFIG = {
 document.addEventListener("DOMContentLoaded", () => {
     Promise.all([loadHeader(), loadToolbar()]).then(() => {
         setupToolbarListeners();
-        setActiveSection("home");
+        setActiveSection("homepage");
     });
 });
 
@@ -102,7 +102,7 @@ function updateHeader(section) {
 
     if (!titleEl || !logoTextEl) return;
 
-    if (section === "home") {
+    if (section === "homepage") {
         // Home
         logoTextEl.classList.remove("hidden");
         titleEl.classList.add("hidden");
