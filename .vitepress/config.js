@@ -63,7 +63,7 @@ export default withMermaid(
             ],
 
             socialLinks: [
-                {icon: 'github', link: 'https://github.com/JBmanu/AthenaPlay-PM'}
+                {icon: 'github', link: 'https://github.com/JBmanu/Spot-GO'}
             ]
         }
     })
