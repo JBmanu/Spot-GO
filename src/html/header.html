@@ -1,33 +1,45 @@
 <header
         class="relative
-             flex items-center
-             h-[100px]
-             pt-12 px-5 pb-3
-             backdrop-blur-lg">
+            flex items-center
+            h-[100px]
+            pt-12 px-5 pb-3
+            backdrop-blur-lg">
 
-    <!-- Banner centrale -->
     <div
-            class="absolute
-                 left-1/2 -translate-x-1/2
-                 bottom-0
-                 flex items-center
-                 gap-0">
+            class="flex
+                items-center
+                gap-1">
+
         <div class="flex items-center justify-center">
             <img
                     src="../assets/images/LogoNoText.svg"
                     alt="Logo"
                     class="w-[50px] h-[50px] block"/>
         </div>
-        <div class="flex flex-col">
+
+        <div
+                id="header-logo-text"
+                class="flex flex-col">
             <img
                     src="../assets/images/LogoOnlyText.svg"
                     alt="Spot&Go"
                     class="w-[72px] h-auto block"/>
         </div>
+
+        <span
+                id="header-title"
+                class="hidden
+                     text-xs
+                     font-semibold
+                     tracking-[0.18em]
+                     uppercase
+                     text-toolbarText"> Titolo
+        </span>
     </div>
 
-    <!-- Notifiche -->
-    <div class="ml-auto flex items-center">
+    <div class="flex-1"></div>
+
+    <div class="flex items-center">
         <button
                 type="button"
                 id="notification-button"
@@ -42,8 +54,7 @@
             <img
                     src="../assets/icons/empty/Notification.svg"
                     alt="Notification"
-                    class="w-8 h-8"
-            />
+                    class="w-8 h-8"/>
         </button>
     </div>
 
