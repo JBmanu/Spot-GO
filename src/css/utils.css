@@ -1,0 +1,14 @@
+@layer utilities {
+
+    .icon {
+        @apply block;
+    }
+
+    .icon-toolbar {
+        @apply w-[70px] h-[30px];
+    }
+
+    .icon-notification {
+        @apply w-8 h-8;
+    }
+}

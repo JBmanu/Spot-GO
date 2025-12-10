@@ -1,10 +1,10 @@
 @layer components {
     .phone-container {
         @apply min-h-screen
-        bg-backgroundColor
         flex
         items-center
         justify-center;
+        background-color: var(--color-background-phone);
     }
 
     .phone {
@@ -12,24 +12,24 @@
         w-[430px] h-[932px]
         p-2
         rounded-[40px]
-        bg-linear-to-br from-slate-800 to-slate-950
         shadow-[0_24px_60px_rgba(0,0,0,0.8)];
+        background: linear-gradient(to bottom right, #1f2933, #020617);
     }
 
     .phone-border {
         @apply pointer-events-none
         absolute inset-0
-        rounded-[40px]
-        border border-slate-300/40;
+        rounded-[40px];
+        border: 1px solid var(--color-border);
     }
 
     .phone-screen {
         @apply relative
         flex h-full flex-col
         overflow-hidden
-        rounded-4xl
-        bg-spotPaper
-        text-slate-50;
+        rounded-4xl;
+        background-color: var(--color-spot-paper);
+        color: var(--color-text);
     }
 
     .dynamic-island {
@@ -38,9 +38,9 @@
         top-2
         h-[35px] w-[120px]
         rounded-[18px]
-        bg-slate-950
-        shadow-[0_0_0_2px_#020617]
         z-10;
+        background-color: #020617;
+        box-shadow: 0 0 0 2px #020617;
     }
 
     .spot-main {
