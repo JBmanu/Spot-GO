@@ -1,20 +1,11 @@
-<header
-        class="relative
-            flex items-center
-            h-[100px]
-            pt-12 px-5 pb-3
-            backdrop-blur-lg">
+<header class="app-header">
+    <div class="app-header-left">
 
-    <div
-            class="flex
-                items-center
-                gap-1">
-
-        <div class="flex items-center justify-center">
+        <div class="header-logo">
             <img
                     src="../assets/images/LogoNoText.svg"
                     alt="Logo"
-                    class="w-[50px] h-[50px] block"/>
+                    class="w-[60px] h-auto block"/>
         </div>
 
         <div
@@ -23,18 +14,15 @@
             <img
                     src="../assets/images/LogoOnlyText.svg"
                     alt="Spot&Go"
-                    class="w-[72px] h-auto block"/>
+                    class="w-[60px] h-auto block"/>
         </div>
 
         <span
                 id="header-title"
-                class="hidden
-                     text-xs
-                     font-semibold
-                     tracking-[0.18em]
-                     uppercase
-                     text-toolbarText"> Titolo
+                class="header-title hidden">
+            Titolo
         </span>
+
     </div>
 
     <div class="flex-1"></div>
@@ -43,18 +31,12 @@
         <button
                 type="button"
                 id="notification-button"
-                class="flex
-                    items-center
-                    justify-center
-                    w-10 h-10
-                    rounded-full
-                    active:scale-95
-                    transition"
+                class="toolbar-button"
                 aria-label="Notifiche">
             <img
                     src="../assets/icons/empty/Notification.svg"
                     alt="Notification"
-                    class="w-8 h-8"/>
+                    class="icon-notification"/>
         </button>
     </div>
 
