@@ -165,6 +165,7 @@ $RECYCLE.BIN/
 node_modules/
 #package-lock.json
 
-#tmp
+# NON AGGIUNGERE
 src/js/firebase-init.js
-
+*.env
+.env
