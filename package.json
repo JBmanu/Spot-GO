@@ -11,6 +11,7 @@
         "preview": "vite preview"
     },
     "devDependencies": {
+        "node":">=20.19.6",
         "vite": "^7.2.7",
         "vitepress": "^1.6.4",
         "vitepress-plugin-mermaid": "^2.0.17",
