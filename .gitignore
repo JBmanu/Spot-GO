@@ -163,5 +163,8 @@ $RECYCLE.BIN/
 /.vitepress/dist/
 /docs/node_modules/
 node_modules/
-package-lock.json
+#package-lock.json
+
+#tmp
+src/js/firebase-init.js
 
