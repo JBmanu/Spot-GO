@@ -1,17 +1,20 @@
 {
     "type": "module",
     "scripts": {
-        "docs:dev": "vitepress dev",
-        "docs:build": "vitepress build",
-        "docs:preview": "vitepress preview",
-        "dev": "vite",
+        "dev": "concurrently \"vite\" \"npm run dev:css\"",
         "dev:css": "tailwindcss -i ./src/css/input.css -o ./src/css/output.css --watch",
+
         "build": "npm run build:css && vite build",
         "build:css": "tailwindcss -i ./src/css/input.css -o ./src/css/output.css",
-        "preview": "vite preview"
+
+        "preview": "vite preview",
+
+        "docs:dev": "vitepress dev",
+        "docs:build": "vitepress build",
+        "docs:preview": "vitepress preview"
     },
     "devDependencies": {
-        "node":">=20.19.6",
+        "concurrently": "^8.2.2",
         "vite": "^7.2.7",
         "vitepress": "^1.6.4",
         "vitepress-plugin-mermaid": "^2.0.17",
@@ -25,5 +28,8 @@
         "firebase": "^12.6.0",
         "tailwindcss": "^4.1.17",
         "tailwindcss-animate": "^1.0.7"
+    },
+    "engines": {
+        "node": ">=20.19.6"
     }
 }
