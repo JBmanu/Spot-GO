@@ -1,0 +1,137 @@
+<!-- Spots vicino a te -->
+<section class="home-section">
+    <header class="flex flex-row items-center justify-between">
+        <h2 class="home-section-title">Spots vicino a te</h2>
+
+        <button
+                type="button"
+                id="home-nearby-see-all"
+                class="vedi-tutti-button"
+                aria-label="Vedi tutti gli spots vicini"
+        >
+            Vedi tutti
+        </button>
+    </header>
+
+    <!-- Swipe carousel -->
+    <div class="nearby-swipe" aria-label="Spots vicino a te (scorri)">
+        <div
+                id="home-nearby-container"
+                class="nearby-swipe-track"
+                role="list"
+                aria-label="Lista spots vicino a te"
+        >
+            <!-- Card 1 - Placeholder -->
+            <article class="spot-card spot-card--nearby" role="listitem" data-spot-id="" data-saved="false">
+                <div class="spot-card-media">
+                    <div class="spot-image-container">
+                        <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
+                    </div>
+                    <button
+                            type="button"
+                            class="spot-card-bookmark"
+                            aria-label="Aggiungi ai salvati"
+                            data-bookmark-button
+                    >
+                        <img src="../../assets/icons/empty/Goal.svg" class="bookmark-icon" alt="Bookmark">
+                    </button>
+                </div>
+
+                <div class="spot-card-body">
+                    <div class="flex flex-row justify-between items-center">
+                        <h3 class="spot-card-title" data-field="title">Nome spot</h3>
+                        <p class="spot-card-rating">
+                            <span class="spot-rating-value" data-field="rating">4.5</span> <span aria-hidden="true">★</span>
+                        </p>
+                    </div>
+
+                    <p class="spot-card-meta mt-2">
+                        <span class="meta-item">
+                            <img src="../../assets/icons/homepage/Place%20Marker.svg" class="icon-mini" alt="Posizione">
+                            <span class="spot-distance" data-field="distance">0 m</span></span>
+                        <span class="meta-sep">•</span>
+                        <span class="meta-item">
+                            <span class="spot-category" data-field="category">Cibo</span>
+                        </span>
+                    </p>
+
+                </div>
+            </article>
+
+            <!-- Card 2 - Placeholder -->
+            <article class="spot-card spot-card--nearby" role="listitem" data-spot-id="" data-saved="false">
+                <div class="spot-card-media">
+                    <div class="spot-image-container">
+                        <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
+                    </div>
+                    <button
+                            type="button"
+                            class="spot-card-bookmark"
+                            aria-label="Aggiungi ai salvati"
+                            data-bookmark-button
+                    >
+                        <img src="../../assets/icons/empty/Goal.svg" class="bookmark-icon" alt="Bookmark">
+                    </button>
+                </div>
+
+                <div class="spot-card-body">
+                    <div class="flex flex-row justify-between items-center">
+                        <h3 class="spot-card-title" data-field="title">Nome spot</h3>
+                        <p class="spot-card-rating">
+                            <span class="spot-rating-value" data-field="rating">4.5</span> <span aria-hidden="true">★</span>
+                        </p>
+                    </div>
+
+                    <p class="spot-card-meta mt-2">
+                        <span class="meta-item">
+                            <img src="../../assets/icons/homepage/Place%20Marker.svg" class="icon-mini" alt="Posizione">
+                            <span class="spot-distance" data-field="distance">0 m</span></span>
+                        <span class="meta-sep">•</span>
+                        <span class="meta-item">
+                            <span class="spot-category" data-field="category">Cultura</span>
+                        </span>
+                    </p>
+
+                </div>
+            </article>
+
+            <!-- Card 3 - Placeholder -->
+            <article class="spot-card spot-card--nearby" role="listitem" data-spot-id="" data-saved="false">
+                <div class="spot-card-media">
+                    <div class="spot-image-container">
+                        <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
+                    </div>
+                    <button
+                            type="button"
+                            class="spot-card-bookmark"
+                            aria-label="Aggiungi ai salvati"
+                            data-bookmark-button
+                    >
+                        <img src="../../assets/icons/empty/Goal.svg" class="bookmark-icon" alt="Bookmark">
+                    </button>
+                </div>
+
+                <div class="spot-card-body">
+                    <div class="flex flex-row justify-between items-center">
+                        <h3 class="spot-card-title" data-field="title">Nome spot</h3>
+                        <p class="spot-card-rating">
+                            <span class="spot-rating-value" data-field="rating">4.5</span> <span aria-hidden="true">★</span>
+                        </p>
+                    </div>
+
+                    <p class="spot-card-meta mt-2">
+                        <span class="meta-item">
+                            <img src="../../assets/icons/homepage/Place%20Marker.svg" class="icon-mini" alt="Posizione">
+                            <span class="spot-distance" data-field="distance">0 m</span></span>
+                        <span class="meta-sep">•</span>
+                        <span class="meta-item">
+                            <span class="spot-category" data-field="category">Natura</span>
+                        </span>
+                    </p>
+
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+

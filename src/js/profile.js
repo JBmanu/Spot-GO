@@ -3,13 +3,11 @@ import { getFirstUser, getReviews, getCreatedSpots, getVisitedSpots, getSavedSpo
 async function loadProfileOverview() {
     const overviewContainer = document.getElementById("profile-overview-container");
     if (!overviewContainer) {
-        console.warn("Contenitore profilo non trovato");
         return;
     }
 
     const res = await fetch("./html/profile-pages/overview.html", {cache: "no-store"});
     if (!res.ok) {
-        console.error(`Errore caricamento profilo: ${res.statusText}`);
         overviewContainer.innerHTML = `<div>Errore caricamento profilo</div>`;
         return;
     }
