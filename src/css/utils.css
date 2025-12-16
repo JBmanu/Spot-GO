@@ -1,7 +1,8 @@
 @layer utilities {
 
     .icon {
-        @apply block;
+        @apply block
+        w-9 h-9;
     }
 
     .icon-toolbar {
@@ -9,6 +10,18 @@
     }
 
     .icon-notification {
-        @apply w-8 h-8;
+        @apply w-8 h-8
+    }
+
+    .icon-mini {
+        @apply w-5 h-5
+    }
+
+    .spot-card {
+        @apply w-full
+        h-auto
+        border
+        rounded-lg
+        border-border_color;
     }
 }

@@ -3,39 +3,39 @@
         @apply min-h-screen
         flex
         items-center
-        justify-center;
-        background-color: var(--color-background-phone);
+        justify-center
+        bg-background_phone
     }
 
     .phone {
         @apply relative
-        w-[430px] h-[932px]
+        w-[440px] h-[956px]
         p-2
         rounded-[40px]
-        shadow-[0_24px_60px_rgba(0,0,0,0.8)];
-        background: linear-gradient(to bottom right, #1f2933, #020617);
+        bg-[#1f2933]
     }
 
     .phone-border {
         @apply pointer-events-none
         absolute inset-0
-        rounded-[40px];
-        border: 1px solid var(--color-border);
+        rounded-[40px]
+        border-border_color
     }
 
     .phone-screen {
         @apply relative
         flex h-full flex-col
         overflow-hidden
-        rounded-4xl;
-        background-color: var(--color-spot-paper);
-        color: var(--color-text);
+        rounded-4xl
+        bg-main_paper
+        text-text_color
+
     }
 
     .dynamic-island {
         @apply absolute
         left-1/2 -translate-x-1/2
-        top-2
+        top-3
         h-[35px] w-[120px]
         rounded-[18px]
         z-10;
@@ -46,6 +46,70 @@
     .spot-main {
         @apply flex-1
         overflow-y-auto
-        px-3 py-1;
+        px-3 py-4;
+    }
+
+    /*  HEADER */
+    .app-header {
+        @apply relative
+        flex items-center
+        h-[100px]
+        pt-12 px-5 pb-3
+        backdrop-blur-lg
+        bg-main_paper
+        text-text_color
+    }
+
+    .app-header-left {
+        @apply flex
+        items-center
+        gap-2;
+    }
+
+    .header-left-logo {
+        @apply flex
+        items-center
+        justify-center
+    }
+
+    .header-left-title {
+        @apply text-xs
+        font-semibold
+        tracking-[0.18em]
+        uppercase
+        text-text_color
+    }
+
+    #notification-button {
+        @apply ml-auto
+        shrink-0
+    }
+
+    /* TOOLBAR */
+    .app-toolbar {
+        @apply flex
+        h-[60px]
+        items-center
+        justify-between
+        px-3 pb-3 pt-4
+        border-t
+        bg-main_paper
+        border-border_color
+        text-text_color
+        rounded-t-3xl
+    }
+
+    .toolbar-button {
+        @apply flex
+        flex-1
+        flex-col
+        items-center
+        gap-1
+        text-[10px]
+        leading-none
+        active:scale-95
+        transition
+        text-primary_color
+        font-bold
     }
 }
