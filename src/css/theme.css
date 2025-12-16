@@ -7,5 +7,12 @@
     --color-accent_color: #E36414;
 
     --color-text_color: #1E1E1E;
-    --color-border_color: #C5CAD1;
+    --color-border_color: #c1c1c1;
+
+    /* Colori categorie */
+    --color-category-nature: rgba(28, 124, 84, 0.3);
+    --color-category-culture: rgba(201, 162, 106, 0.3);
+    --color-category-mystery: rgba(91, 43, 130, 0.3);
+    --color-category-food: rgba(227, 100, 20, 0.3);
 }
+

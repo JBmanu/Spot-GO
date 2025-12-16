@@ -17,6 +17,10 @@
         @apply w-5 h-5
     }
 
+    .icon-minimini {
+        @apply w-4 h-4
+    }
+
     .spot-card {
         @apply w-full
         h-auto
