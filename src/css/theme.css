@@ -1,13 +1,11 @@
-@layer base {
-    :root {
-        --color-background-phone: #000000;
-        --color-spot-paper: #F5F2EB;
+@theme {
+    --color-background_phone: #000000;
+    --color-main_paper: #F5F2EB;
 
-        --color-primary: #1C7C54;
-        --color-secondary: #F4B41A;
-        --color-accent: #E36414;
+    --color-primary_color: #1C7C54;
+    --color-secondary_color: #F4B41A;
+    --color-accent_color: #E36414;
 
-        --color-text: #1E1E1E;
-        --color-border: #C5CAD1;
-    }
+    --color-text_color: #1E1E1E;
+    --color-border_color: #C5CAD1;
 }
