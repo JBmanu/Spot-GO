@@ -166,6 +166,5 @@ node_modules/
 #package-lock.json
 
 # NON AGGIUNGERE
-firebase.js
 *.env
 .env
