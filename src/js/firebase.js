@@ -20,14 +20,18 @@ const firebaseConfig = {
 //     appId: import.meta.env.VITE_FIREBASE_APP_ID ? "Si" : "No",
 // });
 
+let app = null;
+let db = null;
+let auth = null;
+
 if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
     console.error("Configurazione incompleta! Controlla .env file.");
     console.error("Decommenta il log delle variabili d'ambiente per il debug.");
 } else {
     try {
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
 
         window.firebaseApp = app;
         window.db = db;
@@ -39,5 +43,5 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
     }
 }
 
-export {};
+export { db };
 
