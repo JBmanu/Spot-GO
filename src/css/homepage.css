@@ -1,0 +1,318 @@
+@layer components {
+
+    /* Sezione home */
+    .home-section {
+        @apply space-y-2;
+    }
+
+    .home-section-title {
+        @apply text-2xl font-semibold;
+    }
+
+    /* Chips - Filtri per categoria */
+    .home-chips-row {
+        @apply flex flex-wrap gap-2 justify-between;
+    }
+
+    .home-chip {
+        @apply flex-1 min-w-0 inline-flex items-center justify-center gap-1
+        rounded-xl border-2 px-2 py-2 text-xs font-medium
+        transition-all duration-200 ease-out
+        active:scale-95;
+        border-color: var(--color-border_color);
+        background-color: var(--color-main_paper);
+        color: var(--color-text_color);
+    }
+
+    /* Stato attivo del chip - Cibo */
+    .home-chip.active[data-category="food"] {
+        background-color: var(--color-category-food);
+        border-color: var(--color-category-food);
+        color: var(--color-text_color);
+    }
+
+    /* Stato attivo del chip - Cultura */
+    .home-chip.active[data-category="culture"] {
+        background-color: var(--color-category-culture);
+        border-color: var(--color-category-culture);
+        color: var(--color-text_color);
+    }
+
+    /* Stato attivo del chip - Natura */
+    .home-chip.active[data-category="nature"] {
+        background-color: var(--color-category-nature);
+        border-color: var(--color-category-nature);
+        color: var(--color-text_color);
+    }
+
+    /* Stato attivo del chip - Mistero */
+    .home-chip.active[data-category="mystery"] {
+        background-color: var(--color-category-mystery);
+        border-color: var(--color-category-mystery);
+        color: var(--color-text_color);
+    }
+
+
+    /* SPOTS SALVATI */
+    .vedi-tutti-button {
+        @apply text-xs
+        font-bold
+        underline
+        underline-offset-2
+        text-text_color;
+    }
+
+    /* =========================
+       CAROSELLO SWIPE (SALVATI)
+       ========================= */
+
+    /* area swipe edge-to-edge come app */
+    .saved-swipe {
+        @apply -mx-5;
+    }
+
+    /* track orizzontale scrollabile con snap */
+    .saved-swipe-track {
+        @apply flex gap-4 overflow-x-auto px-5 pb-1 scroll-smooth;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        margin-left: 1rem;
+    }
+
+    /* card del carosello: piccolo */
+    .spot-card--saved {
+        @apply shrink-0;
+        scroll-snap-align: start;
+        width: 50%;
+        max-width: 140px;
+        max-height: 140px;
+        aspect-ratio: 1 / 1;
+        flex-shrink: 0;
+    }
+
+    .saved-swipe-track.is-dragging {
+        @apply cursor-grabbing;
+    }
+
+    /* Media card - immagine */
+    .spot-card-media {
+        @apply relative w-full bg-black/5 overflow-hidden rounded-t-lg;
+    }
+
+    /* Contenitore immagine con dimensioni fisse */
+    .spot-image-container {
+        @apply relative bg-border_color overflow-hidden;
+    }
+
+    /* Dimensioni immagine per card GRANDE (nearby) */
+    .spot-card--nearby .spot-image-container {
+        @apply w-[220px] h-[150px];
+    }
+
+    /* Dimensioni immagine per card PICCOLO (saved, toprated) */
+    .spot-card--saved .spot-image-container,
+    .spot-card--toprated .spot-image-container {
+        @apply w-[140px] h-[95px];
+    }
+
+    .spot-card-image {
+        @apply w-full h-full object-cover;
+    }
+
+    .spot-card-media-placeholder {
+        @apply absolute inset-0 grid place-items-center text-2xl text-text_color/60;
+    }
+
+    .spot-card-bookmark {
+        @apply absolute top-2 right-2 w-7 h-8 rounded-lg
+
+        grid place-items-center active:scale-95 transition text-text_color;
+    }
+
+    /* Bookmark ridotto per card piccoli */
+    .spot-card--saved .spot-card-bookmark,
+    .spot-card--toprated .spot-card-bookmark {
+        @apply w-6 h-6 top-1 right-1;
+    }
+
+    .spot-card-body {
+        @apply p-3 flex flex-col justify-between;
+    }
+
+    /* Padding ridotto per card piccoli */
+    .spot-card--saved .spot-card-body,
+    .spot-card--toprated .spot-card-body {
+        @apply p-1;
+    }
+
+    .spot-card-title {
+        @apply text-sm font-semibold leading-tight line-clamp-2;
+    }
+
+    /* Font ridotto per card piccoli */
+    .spot-card--saved .spot-card-title,
+    .spot-card--toprated .spot-card-title {
+        @apply text-xs;
+    }
+
+    .spot-card-meta {
+        @apply text-xs text-text_color/70 flex items-center gap-1 flex-wrap;
+    }
+
+    /* Meta ridotto per card piccoli */
+    .spot-card--saved .spot-card-meta,
+    .spot-card--toprated .spot-card-meta {
+        @apply text-[10px];
+    }
+
+    .meta-item {
+        @apply inline-flex items-center gap-0.5;
+    }
+
+    .meta-sep {
+        @apply opacity-60;
+    }
+
+    .spot-card-rating {
+        @apply text-xs font-semibold text-text_color;
+    }
+
+    /* Rating ridotto per card piccoli */
+    .spot-card--saved .spot-card-rating,
+    .spot-card--toprated .spot-card-rating {
+        @apply text-[10px];
+    }
+
+    /* =========================
+       CAROSELLO SWIPE (NEARBY)
+       ========================= */
+
+    /* area swipe edge-to-edge come app */
+    .nearby-swipe {
+        @apply -mx-5;
+    }
+
+    /* track orizzontale scrollabile con snap */
+    .nearby-swipe-track {
+        @apply flex gap-4 overflow-x-auto px-5 pb-1 scroll-smooth;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        margin-left: 1rem;
+    }
+
+    /* card del carosello: grande + peek della successiva */
+    .spot-card--nearby {
+        @apply shrink-0;
+        scroll-snap-align: start;
+        width: 70%;
+        max-width: 220px;
+        aspect-ratio: 1 / 1;
+        flex-shrink: 0;
+    }
+
+    .nearby-swipe-track.is-dragging {
+        @apply cursor-grabbing;
+    }
+
+    /* =========================
+       CAROSELLO SWIPE (TOP RATED)
+       ========================= */
+
+    /* area swipe edge-to-edge come app */
+    .toprated-swipe {
+        @apply -mx-5;
+    }
+
+    /* track orizzontale scrollabile con snap */
+    .toprated-swipe-track {
+        @apply flex gap-4 overflow-x-auto px-5 pb-1 scroll-smooth;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        margin-left: 1rem;
+    }
+
+    /* card del carosello: piccolo */
+    .spot-card--toprated {
+        @apply shrink-0;
+        scroll-snap-align: start;
+        width: 60%;
+        max-width: 160px;
+        aspect-ratio: 1 / 1;
+        flex-shrink: 0;
+    }
+
+    .toprated-swipe-track.is-dragging {
+        @apply cursor-grabbing;
+    }
+
+    /* =========================
+       CAROSELLO VERTICALE
+       ========================= */
+
+    .vertical-carousel {
+        @apply h-[190px] overflow-hidden rounded-lg;
+    }
+
+    .vertical-carousel-track {
+        @apply flex flex-col gap-3 overflow-y-auto h-full scroll-smooth;
+        scroll-snap-type: y mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .vertical-carousel-track::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .vertical-carousel-track::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .vertical-carousel-track::-webkit-scrollbar-thumb {
+        background: var(--color-border_color);
+        border-radius: 2px;
+    }
+
+    /* Item verticale */
+    .vertical-carousel-item {
+        @apply flex gap-2 p-2 bg-white rounded-lg shrink-0;
+        scroll-snap-align: start;
+        min-height: 70px;
+        border: 1px solid var(--color-border_color);
+    }
+
+    .vertical-item-image {
+        @apply relative shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-border_color;
+    }
+
+    .vertical-item-image img {
+        @apply w-full h-full object-cover;
+    }
+
+    .vertical-item-content {
+        @apply flex-1 flex flex-col justify-between relative pr-12;
+    }
+
+    .vertical-item-header {
+        @apply flex items-center gap-3 w-full;
+    }
+
+    .vertical-item-title {
+        @apply text-base font-semibold leading-tight line-clamp-1 flex-1;
+    }
+
+    .vertical-item-rating {
+        @apply text-base font-semibold text-text_color flex-shrink-0;
+    }
+
+    .vertical-item-meta {
+        @apply text-xs text-text_color/70 flex items-center gap-1 flex-wrap;
+    }
+
+    .vertical-item-bookmark {
+        @apply absolute top-2 right-2 w-6 h-6 rounded-lg grid place-items-center active:scale-95 transition;
+    }
+
+}

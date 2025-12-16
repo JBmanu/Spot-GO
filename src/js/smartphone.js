@@ -1,3 +1,5 @@
+// Gestisce la navigazione tra sezioni della app e il caricamento dei contenuti
+
 const SECTION_CONFIG = {
     homepage: {
         title: "Spot & Go",
@@ -41,41 +43,50 @@ const SECTION_CONFIG = {
     },
 };
 
-// Importa le funzioni del profilo
-import {loadProfileOverview} from "./profile.js";
+import { loadProfileOverview } from "./profile.js";
+import { initializeHomepageFilters } from "./homepage.js";
 
+// Carica l'header da file separato
 async function loadHeader() {
-    const response = await fetch("./html/header.html");
-    if (!response.ok) {
-        console.error(`Errore caricamento header: ${response.statusText}`);
-        return;
-    }
+    const response = await fetch("../html/header.html");
+    if (!response.ok) return;
 
     const html = await response.text();
     const header = document.querySelector("header.app-header");
     if (header) {
-        header.replaceWith(new DOMParser().parseFromString(html, "text/html").querySelector("header"));
+        const parsed = new DOMParser().parseFromString(html, "text/html");
+        const newHeader = parsed.querySelector("header");
+        if (newHeader) {
+            header.innerHTML = newHeader.innerHTML;
+            // Copia gli attributi
+            Array.from(newHeader.attributes).forEach(attr => {
+                header.setAttribute(attr.name, attr.value);
+            });
+        }
     }
-    console.log("✓ Header caricato");
 }
 
+// Carica la toolbar da file separato
 async function loadToolbar() {
-    const response = await fetch("./html/toolbar.html");
-    if (!response.ok) {
-        console.error(`Errore caricamento toolbar: ${response.statusText}`);
-        return;
-    }
+    const response = await fetch("../html/toolbar.html");
+    if (!response.ok) return;
 
     const html = await response.text();
     const toolbar = document.querySelector(".app-toolbar");
     if (toolbar) {
-        toolbar.replaceWith(new DOMParser().parseFromString(html, "text/html").querySelector("nav"));
+        const parsed = new DOMParser().parseFromString(html, "text/html");
+        const newToolbar = parsed.querySelector("nav");
+        if (newToolbar) {
+            toolbar.innerHTML = newToolbar.innerHTML;
+            // Copia gli attributi
+            Array.from(newToolbar.attributes).forEach(attr => {
+                toolbar.setAttribute(attr.name, attr.value);
+            });
+        }
     }
-    console.log("✓ Toolbar caricata");
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // Carica header e toolbar da file HTML separati
     await loadHeader();
     await loadToolbar();
 
@@ -84,10 +95,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const titleEl = document.getElementById("header-title");
     const logoTextEl = document.getElementById("header-logo-text");
 
-    if (!main || !toolbar) {
-        console.error("main o toolbar non trovati");
-        return;
-    }
+    if (!main || !toolbar) return;
 
     toolbar.addEventListener("click", (e) => {
         const btn = e.target.closest("button[data-section]");
@@ -95,9 +103,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         navigateTo(btn.dataset.section);
     });
 
-    // Homepage di default
     navigateTo("homepage");
 
+    // Naviga verso una sezione
     async function navigateTo(section) {
         const cfg = SECTION_CONFIG[section];
         if (!cfg) return;
@@ -107,6 +115,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await loadMainContent(cfg);
     }
 
+    // Aggiorna l'header in base alla sezione attiva
     function updateHeader(section, cfg) {
         if (!titleEl || !logoTextEl) return;
 
@@ -117,6 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!isHome) titleEl.textContent = cfg.title;
     }
 
+    // Aggiorna gli stili della toolbar in base alla sezione attiva
     function updateToolbar(activeSection) {
         toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
             const section = btn.dataset.section;
@@ -131,19 +141,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    // Carica il contenuto principale della sezione
     async function loadMainContent(cfg) {
-        const res = await fetch(cfg.content, {cache: "no-store"});
+        const res = await fetch(cfg.content, { cache: "no-store" });
         if (!res.ok) {
-            console.error(`Errore caricamento contenuto: ${res.statusText}`);
             main.innerHTML = `<div class="p-4">Errore caricamento</div>`;
             return;
         }
 
         main.innerHTML = await res.text();
 
-        // Se è la pagina del profilo, carica da profile.js
         if (cfg.content.includes('profile.html')) {
             await loadProfileOverview();
+        }
+
+        if (cfg.content.includes('homepage.html')) {
+            initializeHomepageFilters();
         }
 
         main.scrollTop = 0;

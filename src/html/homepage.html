@@ -1,5 +1,51 @@
-<section class="space-y-3">
-    <h1>
-        HOMEPAGE
-    </h1>
+<section class="flex flex-col space-y-3">
+
+    <!-- Esplora per categoria -->
+    <section class="home-section">
+        <header>
+            <h2 class="home-section-title">Esplora per categoria</h2>
+        </header>
+
+        <!-- Filtri categorie -->
+        <div
+                id="home-categories-container"
+                class="home-chips-row"
+                role="group"
+                aria-label="Filtri categoria"
+        >
+            <button class="home-chip" type="button" data-category="food" aria-pressed="false">
+                <img src="../assets/icons/homepage/Fast%20Food.svg"
+                     alt="Icona Cibo"
+                     class="icon-mini"/>
+
+                Cibo
+            </button>
+            <button class="home-chip" type="button" data-category="culture" aria-pressed="false">
+                <img src="../assets/icons/homepage/Cathedral.svg"
+                     alt="Icona Cultura"
+                     class="icon-mini"/>
+
+                Cultura
+            </button>
+            <button class="home-chip" type="button" data-category="nature" aria-pressed="false">
+                <img src="../assets/icons/homepage/Oak%20Tree.svg"
+                     alt="Icona Natura"
+                     class="icon-mini"/> Natura
+            </button>
+            <button class="home-chip" type="button" data-category="mystery" aria-pressed="false">
+                <img src="../assets/icons/homepage/Desura.svg"
+                     alt="Icona Mistero"
+                     class="icon-mini"/> Mistero
+            </button>
+        </div>
+    </section>
+
+    <!-- Spots salvati - Caricato dinamicamente -->
+    <div id="home-saved-section" class="mt-2"></div>
+    <!-- Spots vicino a te - Caricato dinamicamente -->
+    <div id="home-nearby-section" class="mt-2"></div>
+
+    <!-- Carosello verticale - Caricato dinamicamente -->
+    <div id="home-vertical-section" class="mt-2"></div>
+
 </section>
