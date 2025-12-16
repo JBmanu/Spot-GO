@@ -3,12 +3,9 @@
     "scripts": {
         "dev": "concurrently \"vite\" \"npm run dev:css\"",
         "dev:css": "tailwindcss -i ./src/css/input.css -o ./src/css/output.css --watch",
-
         "build": "npm run build:css && vite build",
         "build:css": "tailwindcss -i ./src/css/input.css -o ./src/css/output.css",
-
         "preview": "vite preview",
-
         "docs:dev": "vitepress dev",
         "docs:build": "vitepress build",
         "docs:preview": "vitepress preview"
@@ -25,6 +22,7 @@
         "@tailwindcss/container-queries": "^0.1.1",
         "@tailwindcss/forms": "^0.5.10",
         "@tailwindcss/typography": "^0.5.19",
+        "dotenv": "^17.2.3",
         "firebase": "^12.6.0",
         "tailwindcss": "^4.1.17",
         "tailwindcss-animate": "^1.0.7"
