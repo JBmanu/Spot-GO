@@ -45,6 +45,7 @@ const SECTION_CONFIG = {
 
 import { loadProfileOverview } from "./profile.js";
 import { initializeHomepageFilters } from "./homepage.js";
+import { initializeMap } from "./map.js";
 
 // Carica l'header da file separato
 async function loadHeader() {
@@ -150,6 +151,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         main.innerHTML = await res.text();
+
+        if (cfg.content.includes('map.html')) {
+            await initializeMap();
+        }
 
         if (cfg.content.includes('profile.html')) {
             await loadProfileOverview();
