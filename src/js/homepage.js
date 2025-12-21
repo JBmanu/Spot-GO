@@ -1,12 +1,17 @@
-// Gestisce i filtri categoria per mostrare/nascondere gli spot in base alla categoria selezionata
-
 import { initializeCarousel } from "./carousel.js";
 import { initializeBookmarks } from "./bookmark.js";
 import { initializeSavedBookmarks } from "./savedBookmarks.js";
 
 let activeCategories = new Set();
 
-// Inizializza i filtri categoria e carica le sezioni
+const SECTION_CONFIG = {
+    homepage: { icon: { inactive: "./assets/icons/empty/HomePage.svg", active: "./assets/icons/filled/HomePageFill.svg" } },
+    map: { icon: { inactive: "./assets/icons/empty/Map.svg", active: "./assets/icons/filled/MapFill.svg" } },
+    community: { icon: { inactive: "./assets/icons/empty/UserGroups.svg", active: "./assets/icons/filled/UserGroupsFill.svg" } },
+    goals: { icon: { inactive: "./assets/icons/empty/Goal.svg", active: "./assets/icons/filled/GoalFill.svg" } },
+    profile: { icon: { inactive: "./assets/icons/empty/Customer.svg", active: "./assets/icons/filled/CustomerFill.svg" } },
+};
+
 export function initializeHomepageFilters() {
     const categoryContainer = document.getElementById("home-categories-container");
 
@@ -14,27 +19,28 @@ export function initializeHomepageFilters() {
         return;
     }
 
-    // Carica le sezioni
     loadSavedSpotsSection();
     loadNearbySpotsSection();
     loadVerticalCarouselSection();
 
-    // Gestisci i click sui filtri categoria
     categoryContainer.addEventListener("click", (e) => {
         const button = e.target.closest(".home-chip");
         if (!button) return;
 
         const category = button.dataset.category;
+        const isActive = activeCategories.has(category);
 
-        // Toggle categoria attiva
-        if (activeCategories.has(category)) {
-            deactivateCategory(categoryContainer, category);
+        if (isActive) {
+            activeCategories.delete(category);
+            button.classList.remove("active");
+            button.setAttribute("aria-pressed", "false");
         } else {
-            activateCategory(categoryContainer, category);
+            activeCategories.add(category);
+            button.classList.add("active");
+            button.setAttribute("aria-pressed", "true");
         }
 
-        // Filtra gli spot in base alle categorie selezionate
-        loadContentByCategories(Array.from(activeCategories));
+        filterSpotsByCategory(Array.from(activeCategories));
     });
 }
 
@@ -101,34 +107,6 @@ async function loadVerticalCarouselSection() {
     }
 }
 
-// Attiva una categoria e aggiorna lo stile del bottone
-function activateCategory(container, category) {
-    activeCategories.add(category);
-
-    const button = container.querySelector(`[data-category="${category}"]`);
-    if (button) {
-        button.classList.add("active");
-        button.setAttribute("aria-pressed", "true");
-    }
-}
-
-// Disattiva una categoria e aggiorna lo stile del bottone
-function deactivateCategory(container, category) {
-    activeCategories.delete(category);
-
-    const button = container.querySelector(`[data-category="${category}"]`);
-    if (button) {
-        button.classList.remove("active");
-        button.setAttribute("aria-pressed", "false");
-    }
-}
-
-// Filtra gli spot in base alle categorie selezionate
-async function loadContentByCategories(categories) {
-    filterSpotsByCategory(categories);
-}
-
-// Mostra/nasconde i card in base alle categorie selezionate
 function filterSpotsByCategory(categories) {
     const allSpotCards = document.querySelectorAll('[role="listitem"][data-spot-id]');
 
@@ -139,13 +117,11 @@ function filterSpotsByCategory(categories) {
         const categoryText = spotCategory.textContent.trim().toLowerCase();
         const normalizedCategory = normalizeCategoryName(categoryText);
 
-        // Se nessuna categoria è selezionata, mostra tutti
         if (categories.length === 0) {
             card.style.display = '';
             return;
         }
 
-        // Mostra solo se la categoria corrisponde
         const isInSelectedCategories = categories.some(cat =>
             normalizeCategoryName(cat) === normalizedCategory
         );
@@ -154,7 +130,6 @@ function filterSpotsByCategory(categories) {
     });
 }
 
-// Normalizza i nomi delle categorie per il confronto
 function normalizeCategoryName(categoryName) {
     const categoryMap = {
         'cibo': 'food',
@@ -170,6 +145,24 @@ function normalizeCategoryName(categoryName) {
     return categoryMap[categoryName.toLowerCase()] || categoryName.toLowerCase();
 }
 
+function updateToolbarIcons(sections, activeSection = null) {
+    const toolbar = document.querySelector(".app-toolbar");
+    if (!toolbar) return;
+
+    toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
+        const section = btn.dataset.section;
+        const isActive = section === activeSection;
+
+        btn.classList.toggle("text-spotPrimary", isActive);
+        btn.classList.toggle("text-toolbarText", !isActive);
+
+        const icon = btn.querySelector("[data-role='icon']");
+        if (icon && SECTION_CONFIG[section]) {
+            icon.src = isActive ? SECTION_CONFIG[section].icon.active : SECTION_CONFIG[section].icon.inactive;
+        }
+    });
+}
+
 async function loadViewAllSaved() {
     try {
         const response = await fetch("../html/homepage-pages/view-all/view-all-saved.html");
@@ -177,42 +170,45 @@ async function loadViewAllSaved() {
 
         const html = await response.text();
         const main = document.getElementById("main");
-        const toolbar = document.querySelector(".app-toolbar");
+        const headerLeftLogo = document.querySelector(".header-left-logo");
+        const headerLogoText = document.getElementById("header-logo-text");
+        const headerTitle = document.getElementById("header-title");
 
-        if (main) {
-            main.innerHTML = html;
+        if (!main) return;
 
-            if (toolbar) {
-                toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
-                    btn.classList.remove("text-spotPrimary");
-                    btn.classList.add("text-toolbarText");
-                    const icon = btn.querySelector("[data-role='icon']");
-                    if (icon) {
-                        const section = btn.dataset.section;
-                        const SECTION_CONFIG = {
-                            homepage: { icon: { inactive: "./assets/icons/empty/HomePage.svg" } },
-                            map: { icon: { inactive: "./assets/icons/empty/Map.svg" } },
-                            community: { icon: { inactive: "./assets/icons/empty/UserGroups.svg" } },
-                            goals: { icon: { inactive: "./assets/icons/empty/Goal.svg" } },
-                            profile: { icon: { inactive: "./assets/icons/empty/Customer.svg" } },
-                        };
-                        const cfg = SECTION_CONFIG[section];
-                        if (cfg) {
-                            icon.src = cfg.icon.inactive;
-                        }
-                    }
-                });
-            }
+        main.innerHTML = html;
 
-            initializeCarousel(".vertical-carousel-track");
-            initializeSavedBookmarks();
+        headerLeftLogo.innerHTML = `<button type="button" id="header-back-button" aria-label="Torna indietro" class="flex items-center justify-center w-10 h-10">
+            <img src="../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
+        </button>`;
+        headerLogoText.style.display = "none";
+        headerTitle.textContent = "";
+        headerTitle.classList.add("hidden");
 
-            const backButton = main.querySelector("#view-all-saved-back");
-            if (backButton) {
-                backButton.addEventListener("click", () => {
+        updateToolbarIcons(Object.keys(SECTION_CONFIG));
+
+        initializeCarousel(".vertical-carousel-track");
+        initializeSavedBookmarks();
+
+        const backButton = document.getElementById("header-back-button");
+        if (backButton) {
+            backButton.addEventListener("click", async () => {
+                headerLeftLogo.innerHTML = `<img src="../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
+                headerLogoText.style.display = "";
+                headerTitle.classList.add("hidden");
+                updateToolbarIcons(Object.keys(SECTION_CONFIG), "homepage");
+
+                try {
+                    const response = await fetch("../html/homepage.html");
+                    if (!response.ok) return;
+
+                    const html = await response.text();
+                    main.innerHTML = html;
                     initializeHomepageFilters();
-                });
-            }
+                } catch (err) {
+                    console.error("Errore nel caricamento homepage:", err);
+                }
+            });
         }
     } catch (err) {
         console.error("Errore nel caricamento view-all-saved:", err);

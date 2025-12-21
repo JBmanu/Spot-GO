@@ -120,11 +120,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     function updateHeader(section, cfg) {
         if (!titleEl || !logoTextEl) return;
 
+        const headerLeftLogo = document.querySelector(".header-left-logo");
         const isHome = section === "homepage";
+
         logoTextEl.classList.toggle("hidden", !isHome);
+        logoTextEl.style.display = isHome ? "" : "none";
         titleEl.classList.toggle("hidden", isHome);
 
         if (!isHome) titleEl.textContent = cfg.title;
+
+        if (headerLeftLogo && headerLeftLogo.querySelector("#header-back-button")) {
+            headerLeftLogo.innerHTML = `<img src="../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
+        }
     }
 
     // Aggiorna gli stili della toolbar in base alla sezione attiva
