@@ -4,42 +4,22 @@ const SECTION_CONFIG = {
     homepage: {
         title: "Spot & Go",
         content: "./html/homepage.html",
-        icon: {
-            active: "./assets/icons/filled/HomePageFill.svg",
-            inactive: "./assets/icons/empty/HomePage.svg",
-        },
     },
     map: {
         title: "Mappa",
         content: "./html/map.html",
-        icon: {
-            active: "./assets/icons/filled/MapFill.svg",
-            inactive: "./assets/icons/empty/Map.svg",
-        },
     },
     community: {
         title: "Community",
         content: "./html/community.html",
-        icon: {
-            active: "./assets/icons/filled/UserGroupsFill.svg",
-            inactive: "./assets/icons/empty/UserGroups.svg",
-        },
     },
     goals: {
         title: "Missioni",
         content: "./html/goals.html",
-        icon: {
-            active: "./assets/icons/filled/GoalFill.svg",
-            inactive: "./assets/icons/empty/Goal.svg",
-        },
     },
     profile: {
         title: "Il mio Profilo",
         content: "./html/profile.html",
-        icon: {
-            active: "./assets/icons/filled/CustomerFill.svg",
-            inactive: "./assets/icons/empty/Customer.svg",
-        },
     },
 };
 
@@ -140,12 +120,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             const section = btn.dataset.section;
             const cfg = SECTION_CONFIG[section];
             const icon = btn.querySelector("[data-role='icon']");
+            const text = btn.querySelector("span");
             if (!cfg || !icon) return;
 
             const active = section === activeSection;
-            btn.classList.toggle("text-spotPrimary", active);
-            btn.classList.toggle("text-toolbarText", !active);
-            icon.src = active ? cfg.icon.active : cfg.icon.inactive;
+            btn.classList.toggle("active", active);
+            text?.classList.toggle("font-bold", active);
+            text?.classList.toggle("font-normal", !active);
+            icon.classList.toggle("scale-140", active);
         });
     }
 

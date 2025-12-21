@@ -5,13 +5,6 @@ import { initializeSavedBookmarks } from "./savedBookmarks.js";
 let activeCategories = new Set();
 let previousPage = "homepage";
 
-const SECTION_CONFIG = {
-    homepage: { icon: { inactive: "./assets/icons/empty/HomePage.svg", active: "./assets/icons/filled/HomePageFill.svg" } },
-    map: { icon: { inactive: "./assets/icons/empty/Map.svg", active: "./assets/icons/filled/MapFill.svg" } },
-    community: { icon: { inactive: "./assets/icons/empty/UserGroups.svg", active: "./assets/icons/filled/UserGroupsFill.svg" } },
-    goals: { icon: { inactive: "./assets/icons/empty/Goal.svg", active: "./assets/icons/filled/GoalFill.svg" } },
-    profile: { icon: { inactive: "./assets/icons/empty/Customer.svg", active: "./assets/icons/filled/CustomerFill.svg" } },
-};
 
 export function initializeHomepageFilters() {
     const categoryContainer = document.getElementById("home-categories-container");
@@ -146,20 +139,20 @@ function normalizeCategoryName(categoryName) {
     return categoryMap[categoryName.toLowerCase()] || categoryName.toLowerCase();
 }
 
-function updateToolbarIcons(sections, activeSection = null) {
+function deactivateAllToolbarButtons() {
     const toolbar = document.querySelector(".app-toolbar");
     if (!toolbar) return;
 
     toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
-        const section = btn.dataset.section;
-        const isActive = section === activeSection;
-
-        btn.classList.toggle("text-spotPrimary", isActive);
-        btn.classList.toggle("text-toolbarText", !isActive);
-
+        btn.classList.remove("active");
+        const text = btn.querySelector("span");
         const icon = btn.querySelector("[data-role='icon']");
-        if (icon && SECTION_CONFIG[section]) {
-            icon.src = isActive ? SECTION_CONFIG[section].icon.active : SECTION_CONFIG[section].icon.inactive;
+        if (text) {
+            text.classList.remove("font-bold");
+            text.classList.add("font-normal");
+        }
+        if (icon) {
+            icon.classList.remove("scale-125");
         }
     });
 }
@@ -192,7 +185,8 @@ async function loadViewAllSaved(fromPage = "homepage") {
         headerTitle.textContent = "I tuoi Spot Salvati";
         headerTitle.classList.remove("hidden");
 
-        updateToolbarIcons(Object.keys(SECTION_CONFIG));
+        // Disattiva tutti i bottoni della toolbar
+        deactivateAllToolbarButtons();
 
         initializeCarousel(".vertical-carousel-track");
         initializeSavedBookmarks();
@@ -228,7 +222,6 @@ async function goToHomepage() {
     headerLeftLogo.innerHTML = `<img src="../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
     headerLogoText.style.display = "";
     headerTitle.classList.add("hidden");
-    updateToolbarIcons(Object.keys(SECTION_CONFIG), "homepage");
 
     try {
         const response = await fetch("../html/homepage.html");
@@ -237,6 +230,25 @@ async function goToHomepage() {
         const html = await response.text();
         main.innerHTML = html;
         initializeHomepageFilters();
+
+        // Attiva il bottone homepage nella toolbar
+        const toolbar = document.querySelector(".app-toolbar");
+        if (toolbar) {
+            toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
+                const section = btn.dataset.section;
+                const isActive = section === "homepage";
+                btn.classList.toggle("active", isActive);
+                const text = btn.querySelector("span");
+                const icon = btn.querySelector("[data-role='icon']");
+                if (text) {
+                    text.classList.toggle("font-bold", isActive);
+                    text.classList.toggle("font-normal", !isActive);
+                }
+                if (icon) {
+                    icon.classList.toggle("scale-125", isActive);
+                }
+            });
+        }
     } catch (err) {
         console.error("Errore nel caricamento homepage:", err);
     }
@@ -252,7 +264,6 @@ async function goToProfile() {
     headerLogoText.style.display = "none";
     headerTitle.classList.remove("hidden");
     headerTitle.textContent = "Il mio profilo";
-    updateToolbarIcons(Object.keys(SECTION_CONFIG), "profile");
 
     try {
         const response = await fetch("./html/profile.html");
@@ -260,6 +271,25 @@ async function goToProfile() {
 
         const html = await response.text();
         main.innerHTML = html;
+
+        // Attiva il bottone profile nella toolbar
+        const toolbar = document.querySelector(".app-toolbar");
+        if (toolbar) {
+            toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
+                const section = btn.dataset.section;
+                const isActive = section === "profile";
+                btn.classList.toggle("active", isActive);
+                const text = btn.querySelector("span");
+                const icon = btn.querySelector("[data-role='icon']");
+                if (text) {
+                    text.classList.toggle("font-bold", isActive);
+                    text.classList.toggle("font-normal", !isActive);
+                }
+                if (icon) {
+                    icon.classList.toggle("scale-125", isActive);
+                }
+            });
+        }
 
         const { loadProfileOverview } = await import("./profile.js");
         await loadProfileOverview();
