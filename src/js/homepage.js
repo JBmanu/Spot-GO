@@ -177,9 +177,33 @@ async function loadViewAllSaved() {
 
         const html = await response.text();
         const main = document.getElementById("main");
+        const toolbar = document.querySelector(".app-toolbar");
 
         if (main) {
             main.innerHTML = html;
+
+            if (toolbar) {
+                toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
+                    btn.classList.remove("text-spotPrimary");
+                    btn.classList.add("text-toolbarText");
+                    const icon = btn.querySelector("[data-role='icon']");
+                    if (icon) {
+                        const section = btn.dataset.section;
+                        const SECTION_CONFIG = {
+                            homepage: { icon: { inactive: "./assets/icons/empty/HomePage.svg" } },
+                            map: { icon: { inactive: "./assets/icons/empty/Map.svg" } },
+                            community: { icon: { inactive: "./assets/icons/empty/UserGroups.svg" } },
+                            goals: { icon: { inactive: "./assets/icons/empty/Goal.svg" } },
+                            profile: { icon: { inactive: "./assets/icons/empty/Customer.svg" } },
+                        };
+                        const cfg = SECTION_CONFIG[section];
+                        if (cfg) {
+                            icon.src = cfg.icon.inactive;
+                        }
+                    }
+                });
+            }
+
             initializeCarousel(".vertical-carousel-track");
             initializeSavedBookmarks();
 
