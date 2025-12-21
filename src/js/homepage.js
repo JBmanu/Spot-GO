@@ -181,12 +181,16 @@ async function loadViewAllSaved(fromPage = "homepage") {
 
         main.innerHTML = html;
 
+        requestAnimationFrame(() => {
+            main.classList.add("view-all-saved-enter");
+        });
+
         headerLeftLogo.innerHTML = `<button type="button" id="header-back-button" aria-label="Torna indietro" class="flex items-center justify-center w-10 h-10">
             <img src="../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
         </button>`;
         headerLogoText.style.display = "none";
-        headerTitle.textContent = "";
-        headerTitle.classList.add("hidden");
+        headerTitle.textContent = "I tuoi Spot Salvati";
+        headerTitle.classList.remove("hidden");
 
         updateToolbarIcons(Object.keys(SECTION_CONFIG));
 
@@ -196,6 +200,13 @@ async function loadViewAllSaved(fromPage = "homepage") {
         const backButton = document.getElementById("header-back-button");
         if (backButton) {
             backButton.addEventListener("click", async () => {
+                main.classList.remove("view-all-saved-enter");
+                main.classList.add("view-all-saved-exit");
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                main.classList.remove("view-all-saved-exit");
+
                 if (previousPage === "profile") {
                     await goToProfile();
                 } else {

@@ -47,6 +47,8 @@
         @apply flex-1
         overflow-y-auto
         px-3 py-4;
+        will-change: transform;
+        contain: layout style paint;
     }
 
     /*  HEADER */

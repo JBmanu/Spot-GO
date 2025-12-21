@@ -329,4 +329,40 @@
         @apply h-[55dvh];
     }
 
+    /* ================================
+       ANIMAZIONI VIEW-ALL-SAVED
+       ================================ */
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(-100%);
+        }
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(100%);
+        }
+    }
+
+    #main.view-all-saved-enter {
+        animation: slideInRight 0.3s ease-out;
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+
+    #main.view-all-saved-exit {
+        animation: slideOutRight 0.2s ease-in forwards;
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+
 }
