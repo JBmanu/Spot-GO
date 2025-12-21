@@ -86,7 +86,7 @@ async function loadNearbySpotsSection() {
 // Carica il carosello verticale "Tendenze"
 async function loadVerticalCarouselSection() {
     try {
-        const response = await fetch("../html/homepage-pages/vertical-carousel-section.html");
+        const response = await fetch("../html/homepage-pages/toprated-carousel-section.html");
         if (!response.ok) return;
 
         const html = await response.text();
