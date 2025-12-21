@@ -32,53 +32,65 @@
     /* Stato attivo del chip - Cibo */
     .home-chip.active[data-category="food"] {
         @apply font-semibold text-sm;
-        background-color: var(--color-category-food);
-        border-color: var(--color-primary_color);
+        background: linear-gradient(135deg, rgba(245, 242, 235, 0.6) 0%, var(--color-category-food) 100%);
+        border-color: rgba(227, 100, 20, 0.8);
         color: var(--color-text_color);
-        box-shadow: 0 0 0 2px rgba(28, 124, 84, 0.2);
+        box-shadow:
+            0 4px 12px rgba(227, 100, 20, 0.35),
+            0 2px 4px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
     .home-chip.active[data-category="food"] img {
-        @apply scale-110;
+        @apply scale-150;
     }
 
     /* Stato attivo del chip - Cultura */
     .home-chip.active[data-category="culture"] {
         @apply font-semibold text-sm;
-        background-color: var(--color-category-culture);
-        border-color: var(--color-primary_color);
+        background: linear-gradient(135deg, rgba(245, 242, 235, 0.6) 0%, var(--color-category-culture) 100%);
+        border-color: rgba(201, 162, 106, 0.8);
         color: var(--color-text_color);
-        box-shadow: 0 0 0 2px rgba(201, 162, 106, 0.3);
+        box-shadow:
+            0 4px 12px rgba(201, 162, 106, 0.35),
+            0 2px 4px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
     .home-chip.active[data-category="culture"] img {
-        @apply scale-110;
+        @apply scale-150;
     }
 
     /* Stato attivo del chip - Natura */
     .home-chip.active[data-category="nature"] {
         @apply font-semibold text-sm;
-        background-color: var(--color-category-nature);
-        border-color: var(--color-primary_color);
+        background: linear-gradient(135deg, rgba(245, 242, 235, 0.6) 0%, var(--color-category-nature) 100%);
+        border-color: rgba(28, 124, 84, 0.8);
         color: var(--color-text_color);
-        box-shadow: 0 0 0 2px rgba(28, 124, 84, 0.2);
+        box-shadow:
+            0 4px 12px rgba(28, 124, 84, 0.35),
+            0 2px 4px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
     .home-chip.active[data-category="nature"] img {
-        @apply scale-110;
+        @apply scale-150;
     }
 
     /* Stato attivo del chip - Mistero */
     .home-chip.active[data-category="mystery"] {
         @apply font-semibold text-sm;
-        background-color: var(--color-category-mystery);
-        border-color: var(--color-primary_color);
+        background: linear-gradient(135deg, rgba(245, 242, 235, 0.6) 0%, var(--color-category-mystery) 100%);
+        border-color: rgba(91, 43, 130, 0.8);
         color: var(--color-text_color);
-        box-shadow: 0 0 0 2px rgba(227, 100, 20, 0.3);
+        box-shadow:
+            0 4px 12px rgba(91, 43, 130, 0.35),
+            0 2px 4px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
     .home-chip.active[data-category="mystery"] img {
-        @apply scale-110;
+        @apply scale-150;
     }
 
 
