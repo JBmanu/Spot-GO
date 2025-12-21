@@ -318,6 +318,96 @@
     }
 
     /* =========================
+       VIEW ALL SAVED - Layout verticale larghezza piena (TOPRATED STYLE)
+       ========================= */
+
+    .saved-carousel {
+        @apply w-full overflow-hidden;
+    }
+
+    .saved-carousel-track {
+        @apply flex flex-col gap-3 overflow-y-auto w-full h-full scroll-smooth p-3;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .toprated-carousel-item-saved {
+        @apply flex gap-3 p-2 bg-white rounded-lg w-full relative items-stretch;
+        scroll-snap-align: start;
+        min-height: 110px;
+        border: 1px solid var(--color-border_color);
+        max-width: none;
+        height: auto;
+        aspect-ratio: auto;
+    }
+
+    /* Gradienti per categoria su tutta la card */
+    .toprated-carousel-item-saved[data-category="food"] {
+        background: linear-gradient(to bottom right, rgba(227, 100, 20, 0.4) 0%, white 70%);
+    }
+
+    .toprated-carousel-item-saved[data-category="culture"] {
+        background: linear-gradient(to bottom right, rgba(201, 162, 106, 0.4) 0%, white 70%);
+    }
+
+    .toprated-carousel-item-saved[data-category="nature"] {
+        background: linear-gradient(to bottom right, rgba(28, 124, 84, 0.4) 0%, white 70%);
+    }
+
+    .toprated-carousel-item-saved[data-category="mystery"] {
+        background: linear-gradient(to bottom right, rgba(91, 43, 130, 0.4) 0%, white 70%);
+    }
+
+    .toprated-carousel-item-saved .toprated-item-image {
+        @apply shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-border_color;
+    }
+
+    .toprated-carousel-item-saved .toprated-item-image img {
+        @apply w-full h-full object-cover;
+    }
+
+    .toprated-carousel-item-saved .toprated-item-info {
+        @apply flex-1 flex flex-col justify-start items-start px-3;
+    }
+
+    .toprated-carousel-item-saved .toprated-item-title {
+        @apply text-xl font-bold leading-tight line-clamp-1 flex-1 mt-4 mb-1;
+    }
+
+    .toprated-carousel-item-saved .toprated-item-meta {
+        @apply text-sm text-text_color/70 flex items-center gap-0.5 flex-wrap absolute left-32 bottom-3 w-auto;
+    }
+
+    .toprated-carousel-item-saved .toprated-item-rating-container {
+        @apply absolute bottom-2 right-2 flex flex-col items-center justify-center;
+    }
+
+    .toprated-carousel-item-saved .spot-card-rating-badge {
+        @apply flex items-center justify-center gap-0.5 px-2 py-1 rounded-full;
+        background-color: var(--color-main_paper);
+        border: 2px solid;
+    }
+
+    .toprated-carousel-item-saved[data-category="food"] .spot-card-rating-badge {
+        border-color: rgba(227, 100, 20, 0.8);
+    }
+
+    .toprated-carousel-item-saved[data-category="culture"] .spot-card-rating-badge {
+        border-color: rgba(201, 162, 106, 0.8);
+    }
+
+    .toprated-carousel-item-saved[data-category="nature"] .spot-card-rating-badge {
+        border-color: rgba(28, 124, 84, 0.8);
+    }
+
+    .toprated-carousel-item-saved[data-category="mystery"] .spot-card-rating-badge {
+        border-color: rgba(91, 43, 130, 0.8);
+    }
+
+    .toprated-carousel-item-saved .toprated-item-bookmark {
+        @apply absolute top-2 right-2 w-9 h-11 rounded-lg grid place-items-center active:scale-95 transition;
+    }
+
+    /* =========================
        RATING TOPRATED CAROUSEL - Effetto WOW ridotto
        ========================= */
 
