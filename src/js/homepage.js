@@ -3,6 +3,7 @@ import { initializeBookmarks } from "./bookmark.js";
 import { initializeSavedBookmarks } from "./savedBookmarks.js";
 
 let activeCategories = new Set();
+let previousPage = "homepage";
 
 const SECTION_CONFIG = {
     homepage: { icon: { inactive: "./assets/icons/empty/HomePage.svg", active: "./assets/icons/filled/HomePageFill.svg" } },
@@ -163,8 +164,10 @@ function updateToolbarIcons(sections, activeSection = null) {
     });
 }
 
-async function loadViewAllSaved() {
+async function loadViewAllSaved(fromPage = "homepage") {
     try {
+        previousPage = fromPage;
+
         const response = await fetch("../html/homepage-pages/view-all/view-all-saved.html");
         if (!response.ok) return;
 
@@ -193,20 +196,10 @@ async function loadViewAllSaved() {
         const backButton = document.getElementById("header-back-button");
         if (backButton) {
             backButton.addEventListener("click", async () => {
-                headerLeftLogo.innerHTML = `<img src="../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
-                headerLogoText.style.display = "";
-                headerTitle.classList.add("hidden");
-                updateToolbarIcons(Object.keys(SECTION_CONFIG), "homepage");
-
-                try {
-                    const response = await fetch("../html/homepage.html");
-                    if (!response.ok) return;
-
-                    const html = await response.text();
-                    main.innerHTML = html;
-                    initializeHomepageFilters();
-                } catch (err) {
-                    console.error("Errore nel caricamento homepage:", err);
+                if (previousPage === "profile") {
+                    await goToProfile();
+                } else {
+                    await goToHomepage();
                 }
             });
         }
@@ -215,5 +208,54 @@ async function loadViewAllSaved() {
     }
 }
 
-export { activeCategories };
+async function goToHomepage() {
+    const main = document.getElementById("main");
+    const headerLeftLogo = document.querySelector(".header-left-logo");
+    const headerLogoText = document.getElementById("header-logo-text");
+    const headerTitle = document.getElementById("header-title");
+
+    headerLeftLogo.innerHTML = `<img src="../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
+    headerLogoText.style.display = "";
+    headerTitle.classList.add("hidden");
+    updateToolbarIcons(Object.keys(SECTION_CONFIG), "homepage");
+
+    try {
+        const response = await fetch("../html/homepage.html");
+        if (!response.ok) return;
+
+        const html = await response.text();
+        main.innerHTML = html;
+        initializeHomepageFilters();
+    } catch (err) {
+        console.error("Errore nel caricamento homepage:", err);
+    }
+}
+
+async function goToProfile() {
+    const main = document.getElementById("main");
+    const headerLeftLogo = document.querySelector(".header-left-logo");
+    const headerLogoText = document.getElementById("header-logo-text");
+    const headerTitle = document.getElementById("header-title");
+
+    headerLeftLogo.innerHTML = `<img src="../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
+    headerLogoText.style.display = "none";
+    headerTitle.classList.remove("hidden");
+    headerTitle.textContent = "Il mio profilo";
+    updateToolbarIcons(Object.keys(SECTION_CONFIG), "profile");
+
+    try {
+        const response = await fetch("./html/profile.html");
+        if (!response.ok) return;
+
+        const html = await response.text();
+        main.innerHTML = html;
+
+        const { loadProfileOverview } = await import("./profile.js");
+        await loadProfileOverview();
+    } catch (err) {
+        console.error("Errore nel caricamento profilo:", err);
+    }
+}
+
+export { activeCategories, loadViewAllSaved };
 

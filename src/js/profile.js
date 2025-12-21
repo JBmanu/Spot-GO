@@ -1,4 +1,5 @@
 import { getFirstUser, getReviews, getCreatedSpots, getVisitedSpots, getSavedSpots} from "./query.js";
+import { loadViewAllSaved } from "./homepage.js";
 
 async function loadProfileOverview() {
     const overviewContainer = document.getElementById("profile-overview-container");
@@ -18,7 +19,6 @@ async function loadProfileOverview() {
 
 // Inizializza i dati del profilo
 async function initializeProfileData() {
-    // Qui puoi aggiungere logica per caricare i dati dall'utente da Firebase
     const user = await getFirstUser();
     const profileData = {
         name: user.username,
@@ -27,16 +27,15 @@ async function initializeProfileData() {
         avatar: user.username[0].toUpperCase()
     };
 
-    // Dati di default
-    // const profileData = {
-    //     name: "Paperino",
-    //     username: "@paperino1",
-    //     email: "paperino@example.com",
-    //     avatar: "P"
-    // };
-
     updateProfileUI(profileData);
     updateUserCounters(user.id);
+
+    const savedSpotsButton = document.getElementById("profile-saved-spots-button");
+    if (savedSpotsButton) {
+        savedSpotsButton.addEventListener("click", async () => {
+            await loadViewAllSaved("profile");
+        });
+    }
 }
 
 async function updateUserCounters(userId) {
