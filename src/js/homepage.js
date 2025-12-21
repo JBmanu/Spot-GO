@@ -51,6 +51,13 @@ async function loadSavedSpotsSection() {
             container.innerHTML = html;
             initializeCarousel(".saved-swipe-track");
             initializeSavedBookmarks();
+
+            const seeAllButton = container.querySelector("#home-saved-see-all");
+            if (seeAllButton) {
+                seeAllButton.addEventListener("click", async () => {
+                    await loadViewAllSaved();
+                });
+            }
         }
     } catch (err) {
         // Errore nel caricamento
@@ -161,6 +168,31 @@ function normalizeCategoryName(categoryName) {
     };
 
     return categoryMap[categoryName.toLowerCase()] || categoryName.toLowerCase();
+}
+
+async function loadViewAllSaved() {
+    try {
+        const response = await fetch("../html/homepage-pages/view-all/view-all-saved.html");
+        if (!response.ok) return;
+
+        const html = await response.text();
+        const main = document.getElementById("main");
+
+        if (main) {
+            main.innerHTML = html;
+            initializeCarousel(".vertical-carousel-track");
+            initializeSavedBookmarks();
+
+            const backButton = main.querySelector("#view-all-saved-back");
+            if (backButton) {
+                backButton.addEventListener("click", () => {
+                    initializeHomepageFilters();
+                });
+            }
+        }
+    } catch (err) {
+        console.error("Errore nel caricamento view-all-saved:", err);
+    }
 }
 
 export { activeCategories };
