@@ -66,6 +66,12 @@ export function createSpotCardItem(spotData) {
     article.setAttribute("role", "listitem");
     article.setAttribute("data-spot-id", spotData.id || "");
 
+    // Debug: log della categoria
+    console.log("spotData:", spotData);
+    console.log("spotData.category:", spotData.category);
+
+    article.setAttribute("data-category", spotData.category?.toLowerCase() || "");
+
     article.innerHTML = `
         <div class="spot-card-media">
             <div class="spot-image-container">
@@ -81,23 +87,7 @@ export function createSpotCardItem(spotData) {
         </div>
 
         <div class="spot-card-body">
-            <div class="flex flex-row justify-between items-center">
-                <h3 class="spot-card-title" data-field="title">${spotData.title || "Nome spot"}</h3>
-                <p class="spot-card-rating">
-                    <span class="spot-rating-value" data-field="rating">${spotData.rating || "4.5"}</span> <span aria-hidden="true">★</span>
-                </p>
-            </div>
-
-            <p class="spot-card-meta mt-2">
-                <span class="meta-item">
-                    <img src="../assets/icons/homepage/Place Marker.svg" class="icon-mini" alt="">
-                    <span class="spot-distance" data-field="distance">${spotData.distance || "0 m"}</span>
-                </span>
-                <span class="meta-sep">•</span>
-                <span class="meta-item">
-                    <span class="spot-category" data-field="category">${spotData.category || "Cibo"}</span>
-                </span>
-            </p>
+            <h3 class="spot-card-title" data-field="title">${spotData.title || "Nome spot"}</h3>
         </div>
     `;
 

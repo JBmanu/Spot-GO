@@ -96,11 +96,13 @@
 
     /* SPOTS SALVATI */
     .vedi-tutti-button {
-        @apply text-xs
-        font-bold
-        underline
-        underline-offset-2
-        text-text_color;
+        @apply text-xs font-bold underline underline-offset-2
+        transition-all duration-150 ease-out
+        active:opacity-70;
+        color: var(--color-primary_color);
+        border: none;
+        background: none;
+        padding: 0;
     }
 
     /* =========================
@@ -123,13 +125,21 @@
 
     /* card del carosello: piccolo */
     .spot-card--saved {
-        @apply shrink-0;
+        @apply shrink-0 rounded-xl overflow-hidden
+        transition-all duration-150 ease-out
+        active:scale-95 active:brightness-95
+        shadow-md;
         scroll-snap-align: start;
         width: 50%;
-        max-width: 140px;
-        max-height: 140px;
-        aspect-ratio: 1 / 1;
+        max-width: 110px;
+        max-height: 130px;
+        aspect-ratio: auto;
+        height: 130px;
         flex-shrink: 0;
+    }
+
+    .spot-card--saved:active {
+        box-shadow: 0 2px 6px var(--color-primary_color) inset;
     }
 
     .saved-swipe-track.is-dragging {
@@ -154,7 +164,7 @@
     /* Dimensioni immagine per card PICCOLO (saved, toprated) */
     .spot-card--saved .spot-image-container,
     .spot-card--toprated .spot-image-container {
-        @apply w-[140px] h-[95px];
+        @apply w-[110px] h-[85px];
     }
 
     .spot-card-image {
@@ -166,35 +176,62 @@
     }
 
     .spot-card-bookmark {
-        @apply absolute top-2 right-2 w-7 h-8 rounded-lg
-
-        grid place-items-center active:scale-95 transition text-text_color;
+        @apply absolute top-1 right-1 w-8 h-8 rounded-lg
+        grid place-items-center active:scale-95 transition text-text_color
+        shadow-md backdrop-blur-sm;
     }
 
     /* Bookmark ridotto per card piccoli */
     .spot-card--saved .spot-card-bookmark,
     .spot-card--toprated .spot-card-bookmark {
-        @apply w-6 h-6 top-1 right-1;
+        @apply w-8 h-10 top-0 right-0 shadow-md;
     }
 
     .spot-card-body {
-        @apply p-3 flex flex-col justify-between;
+        @apply p-3 flex flex-col justify-center items-center bg-main_paper text-center
+        bg-gradient-to-t from-primary_color/40 to-transparent;
     }
 
     /* Padding ridotto per card piccoli */
     .spot-card--saved .spot-card-body,
     .spot-card--toprated .spot-card-body {
-        @apply p-1;
+        @apply p-2 text-center flex flex-col justify-center items-center
+        bg-gradient-to-t from-primary_color/30 to-transparent;
+    }
+
+    /* Gradiente per categoria Cibo */
+    .spot-card--saved[data-category="food"] .spot-card-body {
+        background: linear-gradient(to top, rgba(227, 100, 20, 0.4) 0%, transparent 100%);
+    }
+
+    /* Gradiente per categoria Cultura */
+    .spot-card--saved[data-category="culture"] .spot-card-body {
+        background: linear-gradient(to top, rgba(201, 162, 106, 0.4) 0%, transparent 100%);
+    }
+
+    /* Gradiente per categoria Natura */
+    .spot-card--saved[data-category="nature"] .spot-card-body {
+        background: linear-gradient(to top, rgba(28, 124, 84, 0.4) 0%, transparent 100%);
+    }
+
+    /* Gradiente per categoria Mistero */
+    .spot-card--saved[data-category="mystery"] .spot-card-body {
+        background: linear-gradient(to top, rgba(91, 43, 130, 0.4) 0%, transparent 100%);
     }
 
     .spot-card-title {
-        @apply text-sm font-semibold leading-tight line-clamp-2;
+        @apply text-sm font-semibold leading-tight line-clamp-2 text-text_color text-center;
+        text-shadow: 0 1px 3px rgba(28, 124, 84, 0.3);
     }
 
     /* Font ridotto per card piccoli */
     .spot-card--saved .spot-card-title,
     .spot-card--toprated .spot-card-title {
-        @apply text-xs;
+        @apply text-xs font-semibold text-center line-clamp-2 overflow-hidden text-text_color;
+        word-break: break-word;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 
     .spot-card-meta {
@@ -204,7 +241,12 @@
     /* Meta ridotto per card piccoli */
     .spot-card--saved .spot-card-meta,
     .spot-card--toprated .spot-card-meta {
-        @apply text-[10px];
+        @apply text-[10px] text-text_color/60;
+    }
+
+    /* Nascondi meta per card salvati */
+    .spot-card--saved .spot-card-meta {
+        @apply hidden;
     }
 
     .meta-item {
@@ -222,7 +264,12 @@
     /* Rating ridotto per card piccoli */
     .spot-card--saved .spot-card-rating,
     .spot-card--toprated .spot-card-rating {
-        @apply text-[10px];
+        @apply text-[10px] font-bold;
+    }
+
+    /* Nascondi rating per card salvati */
+    .spot-card--saved .spot-card-rating {
+        @apply hidden;
     }
 
     /* =========================

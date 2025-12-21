@@ -105,10 +105,16 @@ function filterSpotsByCategory(categories) {
     const allSpotCards = document.querySelectorAll('[role="listitem"][data-spot-id]');
 
     allSpotCards.forEach(card => {
-        const spotCategory = card.querySelector('[data-field="category"]');
-        if (!spotCategory) return;
+        let categoryText = card.getAttribute('data-category');
 
-        const categoryText = spotCategory.textContent.trim().toLowerCase();
+        if (!categoryText) {
+            const spotCategory = card.querySelector('[data-field="category"]');
+            if (!spotCategory) return;
+            categoryText = spotCategory.textContent.trim().toLowerCase();
+        } else {
+            categoryText = categoryText.toLowerCase();
+        }
+
         const normalizedCategory = normalizeCategoryName(categoryText);
 
         if (categories.length === 0) {
