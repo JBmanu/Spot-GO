@@ -315,4 +315,18 @@
         @apply absolute top-2 right-2 w-6 h-6 rounded-lg grid place-items-center active:scale-95 transition;
     }
 
+    /* Carousels View All Pages. */
+
+    .vertical-carousel.h-carousel-view-all {
+        @apply h-[85dvh];
+    }
+
+    .vertical-carousel.h-carousel-section {
+        @apply h-[70dvh];
+    }
+
+    .vertical-carousel.h-carousel-home {
+        @apply h-[55dvh];
+    }
+
 }
