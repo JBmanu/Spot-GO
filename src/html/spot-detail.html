@@ -1,0 +1,202 @@
+<!-- Schermata di visualizzazione completa dello Spot -->
+<div class="spot-detail-wrapper">
+    <div class="spot-detail-container px-2">
+        <!-- Titolo (sopra la foto) -->
+        <div class="spot-detail-title-container">
+            <div class="spot-detail-title-section">
+                <h1 id="spot-detail-title" class="spot-detail-title">Nome dello spot</h1>
+            </div>
+            <div class="spot-detail-rating">
+                <span id="spot-detail-rating-value">4.5</span>
+                <img src="../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+            </div>
+        </div>
+
+
+        <button
+                type="button"
+                id="spot-detail-bookmark-button"
+                class="spot-detail-bookmark-button"
+                aria-label="Aggiungi ai salvati"
+                style="display: none;">
+            <img src="../assets/icons/homepage/BookmarkEmpty.svg" class="bookmark-icon" alt="Bookmark">
+        </button>
+
+        <!-- Header con Foto -->
+        <div class="spot-detail-header">
+            <div class="spot-detail-image-container">
+                <img id="spot-detail-main-image" src="" alt="Foto principale dello spot" class="spot-detail-image"/>
+            </div>
+        </div>
+
+        <!-- Descrizione dello Spot (sotto la foto) -->
+        <div class="spot-detail-description-compact">
+            <p id="spot-detail-description" class="spot-detail-description">
+                Descrizione dello spot
+            </p>
+        </div>
+
+        <!-- Azioni (sopra il banner missioni) -->
+        <div class="spot-detail-actions">
+            <button type="button" id="spot-detail-visit-button" class="spot-detail-action-button spot-detail-visit-button">
+                <img src="../assets/icons/profile/Thumbs Up Down.svg" alt="Segna come visitato" class="icon-mini">
+                Visitato
+            </button>
+            <button type="button" id="spot-detail-share-button" class="spot-detail-action-button spot-detail-share-button">
+                <img src="../assets/icons/homepage/Detail/Goal.svg" alt="Attiva missioni" class="icon-mini">
+                Attiva missioni
+            </button>
+        </div>
+
+        <!-- Banner Missioni -->
+        <div class="spot-detail-missions-banner">
+            <div class="missions-banner-content">
+                <img src="../assets/icons/homepage/Medal.svg" alt="Missioni" class="missions-icon"/>
+                <span class="missions-text">Missioni: <span id="spot-missions-completed">0</span> di <span id="spot-missions-total">0</span> completate</span>
+            </div>
+            <button type="button" id="spot-missions-toggle" class="missions-toggle-button"
+                    aria-label="Mostra/nascondi missioni da fare">
+                <img src="../assets/icons/profile/Forward.svg" alt="" class="toggle-arrow"/>
+            </button>
+        </div>
+
+        <!-- Missioni da fare (espandibile) -->
+        <div id="spot-missions-details" class="spot-missions-details" style="display: none;">
+            <div id="spot-missions-list" class="missions-list">
+                <div class="mission-item">
+                    <span class="mission-banner completed"
+                          data-mission-id="mission-1">Scatta una foto al tramonto</span>
+                </div>
+                <div class="mission-item">
+                    <span class="mission-banner" data-mission-id="mission-2">Visita durante il weekend</span>
+                </div>
+                <div class="mission-item">
+                    <span class="mission-banner" data-mission-id="mission-3">Condividi sui social</span>
+                </div>
+                <div id="spot-missions-hidden" class="missions-hidden" style="display: none;">
+                    <div class="mission-item">
+                        <span class="mission-banner" data-mission-id="mission-4">Porta un amico</span>
+                    </div>
+                    <div class="mission-item">
+                        <span class="mission-banner" data-mission-id="mission-5">Lascia una recensione</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informazioni Dettagliate -->
+        <div class="spot-detail-info-detailed">
+            <div class="info-row">
+                <img src="../assets/icons/homepage/Detail/Clock.svg" alt="Orario" class="info-icon"/>
+                <div class="info-content">
+                    <span class="info-label">Orario</span>
+                    <span id="spot-detail-hours" class="info-value">9:00 - 18:00</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <img src="../assets/icons/homepage/Detail/Location.svg" alt="Indirizzo" class="info-icon"/>
+                <div class="info-content">
+                    <div class="info-label-with-distance">
+                        <span class="info-label">Indirizzo</span>
+                        <span class="info-distance-label">
+                        <img src="../assets/icons/homepage/Place%20Marker.svg" class="icon-mini" alt="Distanza"/>
+                        <span id="spot-detail-distance" class="spot-distance">0 m</span>
+                    </span>
+                    </div>
+                    <span id="spot-detail-address" class="info-value">Via Roma, 123 - Milano</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <img src="../assets/icons/profile/Lock.svg" alt="Costo" class="info-icon"/>
+                <div class="info-content">
+                    <span class="info-label">Costo</span>
+                    <span id="spot-detail-cost" class="info-value">Gratuito</span>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Bottoni Recensioni (Scrivi e Vedi tutte) -->
+        <div class="spot-reviews-header">
+            <div class="spot-reviews-header-actions">
+                <button type="button" class="spot-add-review-button" aria-label="Scrivi una recensione">
+                    Scrivi una recensione
+                </button>
+                <button type="button" class="spot-view-all-reviews-button" aria-label="Vedi tutte le recensioni">
+                    Vedi tutte
+                </button>
+            </div>
+        </div>
+
+        <!-- Carosello Recensioni -->
+        <div class="spot-reviews-carousel-container">
+            <!-- Wrapper per lo scroll delle recensioni -->
+            <div class="spot-reviews-carousel-wrapper">
+                <div class="spot-reviews-carousel-track">
+                    <!-- Recensione 1 -->
+                    <div class="spot-review-carousel-item">
+                        <div class="spot-review-item">
+                            <div class="spot-review-header">
+                                <span class="spot-review-author">Marco R.</span>
+                                <div class="spot-review-rating">
+                                    <span>5</span>
+                                    <img src="../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                                </div>
+                            </div>
+                            <p class="spot-review-text">Posto incredibile! L'atmosfera è magica, soprattutto al
+                                tramonto. Consiglio di andarci nel tardo pomeriggio per godersi lo spettacolo del sole
+                                che tramonta.</p>
+                        </div>
+                    </div>
+
+                    <!-- Recensione 2 -->
+                    <div class="spot-review-carousel-item">
+                        <div class="spot-review-item">
+                            <div class="spot-review-header">
+                                <span class="spot-review-author">Giulia M.</span>
+                                <div class="spot-review-rating">
+                                    <span>4</span>
+                                    <img src="../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                                </div>
+                            </div>
+                            <p class="spot-review-text">Bellissimo! Un po' affollato nei weekend, ma vale davvero la
+                                pena visitarlo. Le foto vengono fantastiche, perfetto per Instagram!</p>
+                        </div>
+                    </div>
+
+                    <!-- Recensione 3 -->
+                    <div class="spot-review-carousel-item">
+                        <div class="spot-review-item">
+                            <div class="spot-review-header">
+                                <span class="spot-review-author">Luca B.</span>
+                                <div class="spot-review-rating">
+                                    <span>5</span>
+                                    <img src="../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                                </div>
+                            </div>
+                            <p class="spot-review-text">Scoperta fantastica! Non lo conoscevo e sono rimasto
+                                piacevolmente sorpreso. Ambiente tranquillo e ben curato, tornerò sicuramente!</p>
+                        </div>
+                    </div>
+
+                    <!-- Recensione 4 -->
+                    <div class="spot-review-carousel-item">
+                        <div class="spot-review-item">
+                            <div class="spot-review-header">
+                                <span class="spot-review-author">Sara P.</span>
+                                <div class="spot-review-rating">
+                                    <span>4</span>
+                                    <img src="../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                                </div>
+                            </div>
+                            <p class="spot-review-text">Davvero carino! Ho notato che potrebbe avere una migliore
+                                segnaletica, ma tutto sommato è un ottimo posto per passare qualche ora rilassanti.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
