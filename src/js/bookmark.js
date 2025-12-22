@@ -5,6 +5,14 @@ import("./confirmModal.js").then(module => {
     showConfirmModal = module.showConfirmModal;
 }).catch(err => console.error("Errore nel caricamento di confirmModal.js:", err));
 
+import { addBookmark, removeBookmark, getFirstUser } from "./query.js";
+
+// Importa populateSavedSpots per aggiornare la sezione in tempo reale
+let populateSavedSpots;
+import("./spotDetail.js").then(module => {
+    populateSavedSpots = module.populateSavedSpots;
+}).catch(err => console.error("Errore nel caricamento di spotDetail.js:", err));
+
 const BOOKMARK_ICONS = {
     filled: "../assets/icons/homepage/Bookmark.svg",
     empty: "../assets/icons/homepage/BookmarkEmpty.svg"
@@ -51,11 +59,28 @@ async function toggleBookmark(button, card) {
 
     const isSaved = button.dataset.saved === 'true';
     const spotTitle = card.querySelector('[data-field="title"]')?.textContent || "questo spot";
+    const spotId = card.getAttribute('data-spot-id');
+
+    // Recupera l'utente attuale
+    const currentUser = await getFirstUser();
+    if (!currentUser) {
+        console.error("Utente non trovato");
+        button.dataset.processing = 'false';
+        return;
+    }
 
     if (!isSaved) {
+        // Salva nel database
+        await addBookmark(currentUser.id, spotId);
         addSpotToSaved(card);
         button.dataset.saved = 'true';
         updateBookmarkIcon(button, true);
+
+        // Aggiorna la sezione salvati in tempo reale
+        if (populateSavedSpots) {
+            await populateSavedSpots();
+        }
+
         button.dataset.processing = 'false';
     } else {
         const confirmed = await showConfirmModal(
@@ -68,8 +93,15 @@ async function toggleBookmark(button, card) {
         );
 
         if (confirmed) {
+            // Rimuovi dal database
+            await removeBookmark(currentUser.id, spotId);
             button.dataset.saved = 'false';
             updateBookmarkIcon(button, false);
+
+            // Aggiorna la sezione salvati in tempo reale
+            if (populateSavedSpots) {
+                await populateSavedSpots();
+            }
         }
 
         button.dataset.processing = 'false';

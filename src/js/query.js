@@ -1,6 +1,50 @@
-import { collection, getDocs, query, where, limit } from "firebase/firestore";
+import { collection, getDocs, query, where, limit, deleteDoc, setDoc, doc } from "firebase/firestore";
 import { db } from "./firebase.js";
 import firebase from "firebase/compat/app";
+
+// Cache per le categorie
+let categorieCache = null;
+
+/**
+ * Carica le categorie dal file JSON e le converte in una mappa
+ * @returns {Promise<Object>} Mappa id_categoria -> nome italiano
+ */
+export async function getCategorieMap() {
+    if (categorieCache) {
+        return categorieCache;
+    }
+
+    try {
+        const response = await fetch('/db/json/categorie.json');
+        const categorie = await response.json();
+
+        categorieCache = {};
+        categorie.forEach(cat => {
+            categorieCache[cat.id] = cat.nomeIt;
+        });
+
+        return categorieCache;
+    } catch (error) {
+        console.error("Errore nel caricamento categorie:", error);
+        // Fallback se il file non viene trovato
+        return {
+            "culture": "Cultura",
+            "food": "Cibo",
+            "nature": "Natura",
+            "mystery": "Mistero"
+        };
+    }
+}
+
+/**
+ * Converte un ID categoria nel nome italiano
+ * @param {string} categoriaId - ID della categoria (es. "culture")
+ * @returns {Promise<string>} Nome della categoria in italiano
+ */
+export async function getCategoryNameIt(categoriaId) {
+    const categorieMap = await getCategorieMap();
+    return categorieMap[categoriaId] || categoriaId;
+}
 
 /**
  * Restituisce i dati del primo utente nella collezione "Utente"
@@ -122,3 +166,43 @@ async function getItems(collectionName, filter, itemParser) {
         return [];
     }
 }
+
+/**
+ * Salva uno spot nei preferiti dell'utente
+ * @param {string} idUtente - ID dell'utente
+ * @param {string} idLuogo - ID del luogo
+ */
+export async function addBookmark(idUtente, idLuogo) {
+    try {
+        const docRef = doc(db, "LuogoSalvato", `${idUtente}_${idLuogo}`);
+        await setDoc(docRef, {
+            idUtente: idUtente,
+            idLuogo: idLuogo,
+            dataSalvataggio: new Date()
+        });
+        console.log(`Luogo ${idLuogo} salvato per l'utente ${idUtente}`);
+    } catch (error) {
+        console.error("Errore nel salvataggio del bookmark:", error);
+    }
+}
+
+/**
+ * Rimuove uno spot dai preferiti dell'utente
+ * @param {string} idUtente - ID dell'utente
+ * @param {string} idLuogo - ID del luogo
+ */
+export async function removeBookmark(idUtente, idLuogo) {
+    try {
+        const lukRef = collection(db, "LuogoSalvato");
+        const q = query(lukRef, where("idUtente", "==", idUtente), where("idLuogo", "==", idLuogo));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((docSnap) => {
+            deleteDoc(docSnap.ref);
+        });
+        console.log(`Luogo ${idLuogo} rimosso dai preferiti dell'utente ${idUtente}`);
+    } catch (error) {
+        console.error("Errore nella rimozione del bookmark:", error);
+    }
+}
+

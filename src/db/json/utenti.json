@@ -1,0 +1,9 @@
+[
+  {
+    "email": "paperino@example.com",
+    "username": "paperino",
+    "password": "hashed_password",
+    "livello": 1
+  }
+]
+

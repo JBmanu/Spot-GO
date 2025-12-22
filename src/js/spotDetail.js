@@ -1,5 +1,5 @@
-import { getSpots } from "./query.js";
-import { initializeBookmarks } from "./bookmark.js";
+import {initializeBookmarks} from "./bookmark.js";
+import { getSpots, getCategoryNameIt, getSavedSpots, getFirstUser } from "./query.js";
 
 let spottedData = {};
 let currentSpotId = null;
@@ -7,13 +7,13 @@ let currentSpotId = null;
 async function populateSpotCards() {
     try {
         const spots = await getSpots();
-        // Popola solo le card della sezione "nearby" (A pochi passi)
         const spotCards = document.querySelectorAll('#home-nearby-container [role="listitem"][data-spot-id=""]');
 
-        spotCards.forEach((card, index) => {
+        for (let index = 0; index < spotCards.length; index++) {
+            const card = spotCards[index];
+
             if (index < spots.length) {
                 const spot = spots[index];
-
                 card.setAttribute('data-spot-id', spot.id);
 
                 const titleEl = card.querySelector('[data-field="title"]');
@@ -25,13 +25,96 @@ async function populateSpotCards() {
                 }
 
                 const categoryEl = card.querySelector('[data-field="category"]');
-                if (categoryEl && spot.idCategoria) categoryEl.textContent = spot.idCategoria;
+                if (categoryEl && spot.idCategoria) {
+
+                    const categoryNameIt = await getCategoryNameIt(spot.idCategoria);
+                    categoryEl.textContent = categoryNameIt;
+                }
 
                 card.setAttribute('data-category', (spot.idCategoria || 'unknown').toLowerCase());
+                card.style.display = '';
+            } else {
+                // La card non ha dati, nascondila
+                card.style.display = 'none';
             }
-        });
+        }
     } catch (error) {
         console.error("Errore nel popolare le card degli spot:", error);
+    }
+}
+
+async function populateSavedSpots() {
+    try {
+        // Recupera l'utente attuale
+        const currentUser = await getFirstUser();
+        if (!currentUser) {
+            console.error("Utente non trovato");
+            return;
+        }
+
+        // Recupera gli spot salvati dell'utente
+        const savedSpotRelations = await getSavedSpots(currentUser.id);
+
+        const savedContainer = document.getElementById('home-saved-container');
+        const emptyStateBanner = document.getElementById('saved-empty-state');
+
+        if (!savedContainer) return;
+
+        // Se non ci sono spot salvati, mostra il banner e nascondi il carosello
+        if (!savedSpotRelations || savedSpotRelations.length === 0) {
+            savedContainer.parentElement.style.display = 'none'; // Nascondi il carosello
+            if (emptyStateBanner) {
+                emptyStateBanner.style.display = 'block'; // Mostra il banner
+            }
+            return;
+        }
+
+        // Se ci sono spot salvati, mostra il carosello e nascondi il banner
+        savedContainer.parentElement.style.display = 'block';
+        if (emptyStateBanner) {
+            emptyStateBanner.style.display = 'none';
+        }
+
+        // Recupera tutti gli spot
+        const allSpots = await getSpots();
+
+
+        // Ottieni le card placeholder
+        const placeholderCards = savedContainer.querySelectorAll('[role="listitem"][data-spot-id=""]');
+
+        let cardIndex = 0;
+        for (const savedRelation of savedSpotRelations) {
+            // Trova lo spot corrispondente
+            const spot = allSpots.find(s => s.id === savedRelation.idLuogo);
+            if (!spot) continue;
+
+            // Se abbiamo ancora placeholder, riempili
+            if (cardIndex < placeholderCards.length) {
+                const card = placeholderCards[cardIndex];
+
+                card.setAttribute('data-spot-id', spot.id);
+
+                const titleEl = card.querySelector('[data-field="title"]');
+                if (titleEl) titleEl.textContent = spot.nome || "Spot";
+
+                const imageEl = card.querySelector('[data-field="image"]');
+                if (imageEl && spot.immagine) {
+                    imageEl.src = spot.immagine;
+                }
+
+                card.setAttribute('data-category', (spot.idCategoria || 'unknown').toLowerCase());
+                card.style.display = ''; // Mostra la card
+
+                cardIndex++;
+            }
+        }
+
+        // Nascondi i placeholder non usati
+        for (let i = cardIndex; i < placeholderCards.length; i++) {
+            placeholderCards[i].style.display = 'none';
+        }
+    } catch (error) {
+        console.error("Errore nel popolare gli spot salvati:", error);
     }
 }
 
@@ -132,7 +215,10 @@ function populateSpotDetail(spotData) {
 
     const categoryEl = document.getElementById("spot-detail-category");
     if (categoryEl && spotData.idCategoria) {
-        categoryEl.textContent = spotData.idCategoria;
+        // Mostra il nome italiano della categoria in modo asincrono
+        getCategoryNameIt(spotData.idCategoria).then(categoryNameIt => {
+            categoryEl.textContent = categoryNameIt;
+        });
     }
 
     const distanceEl = document.getElementById("spot-detail-distance");
@@ -350,7 +436,7 @@ async function goToHomepage() {
         const html = await response.text();
         main.innerHTML = html;
 
-        const { initializeHomepageFilters } = await import("./homepage.js");
+        const {initializeHomepageFilters} = await import("./homepage.js");
         await initializeHomepageFilters();
 
 
@@ -466,6 +552,7 @@ function initializeMissionsCount() {
 export {
     initializeSpotClickHandlers,
     populateSpotCards,
+    populateSavedSpots,
     loadSpotDetail,
     getSpotById,
     completeMission,

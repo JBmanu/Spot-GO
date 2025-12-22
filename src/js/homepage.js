@@ -1,7 +1,7 @@
 import { initializeCarousel } from "./carousel.js";
 import { initializeBookmarks } from "./bookmark.js";
 import { initializeSavedBookmarks } from "./savedBookmarks.js";
-import { initializeSpotClickHandlers, populateSpotCards } from "./spotDetail.js";
+import { initializeSpotClickHandlers, populateSpotCards, populateSavedSpots } from "./spotDetail.js";
 
 let activeCategories = new Set();
 let previousPage = "homepage";
@@ -58,6 +58,11 @@ async function loadSavedSpotsSection() {
             container.innerHTML = html;
             initializeCarousel(".saved-swipe-track");
             initializeSavedBookmarks();
+
+            // Popola gli spot salvati dell'utente
+            setTimeout(async () => {
+                await populateSavedSpots();
+            }, 100);
 
             const seeAllButton = container.querySelector("#home-saved-see-all");
             if (seeAllButton) {
