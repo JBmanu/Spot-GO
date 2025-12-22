@@ -824,8 +824,6 @@
         @apply w-5 h-5 object-contain filter drop-shadow-lg;
     }
 
-    // ...existing code...
-
     .toprated-item-meta {
         @apply text-[9px] text-text_color/70 flex items-center justify-center gap-0.5 flex-wrap mb-1;
     }

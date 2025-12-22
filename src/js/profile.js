@@ -1,5 +1,18 @@
-import { getFirstUser, getReviews, getCreatedSpots, getVisitedSpots, getSavedSpots} from "./query.js";
-import { loadViewAllSaved } from "./homepage.js";
+// Import dinamici
+let getFirstUser, getReviews, getCreatedSpots, getVisitedSpots, getSavedSpots, loadViewAllSaved;
+
+Promise.all([
+    import("./query.js").then(module => {
+        getFirstUser = module.getFirstUser;
+        getReviews = module.getReviews;
+        getCreatedSpots = module.getCreatedSpots;
+        getVisitedSpots = module.getVisitedSpots;
+        getSavedSpots = module.getSavedSpots;
+    }),
+    import("./homepage.js").then(module => {
+        loadViewAllSaved = module.loadViewAllSaved;
+    })
+]).catch(err => console.error("Errore nel caricamento dei moduli in profile.js:", err));
 
 async function loadProfileOverview() {
     const overviewContainer = document.getElementById("profile-overview-container");

@@ -1,6 +1,7 @@
 import { initializeCarousel } from "./carousel.js";
 import { initializeBookmarks } from "./bookmark.js";
 import { initializeSavedBookmarks } from "./savedBookmarks.js";
+import { initializeSpotClickHandlers, populateSpotCards } from "./spotDetail.js";
 
 let activeCategories = new Set();
 let previousPage = "homepage";
@@ -16,6 +17,12 @@ export function initializeHomepageFilters() {
     loadSavedSpotsSection();
     loadNearbySpotsSection();
     loadVerticalCarouselSection();
+
+    // Popola le card degli spot con i dati da Firebase e inizializza i click handler
+    setTimeout(async () => {
+        await populateSpotCards();
+        initializeSpotClickHandlers();
+    }, 100);
 
     categoryContainer.addEventListener("click", (e) => {
         const button = e.target.closest(".home-chip");
@@ -196,6 +203,12 @@ async function loadViewAllSaved(fromPage = "homepage") {
 
         initializeCarousel(".vertical-carousel-track");
         initializeSavedBookmarks();
+
+        // Popola le card degli spot e inizializza i click handler
+        setTimeout(async () => {
+            await populateSpotCards();
+            initializeSpotClickHandlers();
+        }, 100);
 
         const backButton = document.getElementById("header-back-button");
         if (backButton) {

@@ -1,6 +1,17 @@
 // map.js
-import { initializeCarousel, createSpotCardItem, addCarouselItem } from "./carousel.js";
-import { getSpots } from "./query.js";
+// Import dinamici
+let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots;
+
+Promise.all([
+    import("./carousel.js").then(module => {
+        initializeCarousel = module.initializeCarousel;
+        createSpotCardItem = module.createSpotCardItem;
+        addCarouselItem = module.addCarouselItem;
+    }),
+    import("./query.js").then(module => {
+        getSpots = module.getSpots;
+    })
+]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
 async function initializeMap() {
     // const categoryContainer = document.getElementById("home-categories-container");

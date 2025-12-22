@@ -23,9 +23,20 @@ const SECTION_CONFIG = {
     },
 };
 
-import { loadProfileOverview } from "./profile.js";
-import { initializeHomepageFilters } from "./homepage.js";
-import { initializeMap } from "./map.js";
+// Import dinamici
+let loadProfileOverview, initializeHomepageFilters, initializeMap;
+
+Promise.all([
+    import("./profile.js").then(module => {
+        loadProfileOverview = module.loadProfileOverview;
+    }),
+    import("./homepage.js").then(module => {
+        initializeHomepageFilters = module.initializeHomepageFilters;
+    }),
+    import("./map.js").then(module => {
+        initializeMap = module.initializeMap;
+    })
+]).catch(err => console.error("Errore nel caricamento dei moduli in smartphone.js:", err));
 
 // Carica l'header da file separato
 async function loadHeader() {

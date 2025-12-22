@@ -1,5 +1,9 @@
 
-import { showConfirmModal } from "./confirmModal.js";
+let showConfirmModal;
+
+import("./confirmModal.js").then(module => {
+    showConfirmModal = module.showConfirmModal;
+}).catch(err => console.error("Errore nel caricamento di confirmModal.js:", err));
 
 const BOOKMARK_ICONS = {
     filled: "../assets/icons/homepage/Bookmark.svg",

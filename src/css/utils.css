@@ -28,4 +28,23 @@
         rounded-lg
         border-border_color;
     }
+
+    /* Header Bookmark Button */
+    .header-bookmark-button {
+        @apply bg-none border-none cursor-pointer p-0
+        w-12 h-12 flex items-center justify-center
+        transition-opacity duration-200;
+    }
+
+    .header-bookmark-button:hover {
+        @apply opacity-75;
+    }
+
+    .header-bookmark-button:active {
+        @apply scale-95;
+    }
+
+    .header-bookmark-button .bookmark-icon {
+        @apply w-8 h-8;
+    }
 }
