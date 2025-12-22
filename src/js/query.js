@@ -90,7 +90,11 @@ export async function getSpots() {
             posizione: {
                 coord1: data.posizione.coord1,
                 coord2: data.posizione.coord2
-            }
+            },
+            indirizzo: data.indirizzo,
+            orari: data.orari,
+            costo: data.costo,
+            idCreatore: data.idCreatore
         })
     );
 }

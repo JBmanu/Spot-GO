@@ -3,11 +3,15 @@
 
 import dotenv  from 'dotenv';
 import path from 'path';
+import { readFileSync } from 'fs';
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore"; 
 import { getAuth } from "firebase/auth";
 
 dotenv.config({ path: path.resolve('src/.env') });
+
+// Carica i luoghi dal file JSON
+const luoghi = JSON.parse(readFileSync(path.resolve('src/db/json/luoghi.json'), 'utf-8'));
 
 const firebaseConfig = {
     apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -18,14 +22,14 @@ const firebaseConfig = {
     appId: process.env.VITE_FIREBASE_APP_ID
 };
 
-console.log("Variabili env caricate correttamente?", {
-    apiKey: process.env.VITE_FIREBASE_API_KEY ? "Si" : "No",
-    authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN ? "Si" : "No",
-    projectId: process.env.VITE_FIREBASE_PROJECT_ID ? "Si" : "No",
-    storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET ? "Si" : "No",
-    messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID ? "Si" : "No",
-    appId: process.env.VITE_FIREBASE_APP_ID ? "Si" : "No",
-});
+// console.log("Variabili env caricate correttamente?", {
+//     apiKey: process.env.VITE_FIREBASE_API_KEY ? "Si" : "No",
+//     authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN ? "Si" : "No",
+//     projectId: process.env.VITE_FIREBASE_PROJECT_ID ? "Si" : "No",
+//     storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET ? "Si" : "No",
+//     messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID ? "Si" : "No",
+//     appId: process.env.VITE_FIREBASE_APP_ID ? "Si" : "No",
+// });
 
 // Inizializza Firebase
 let db;
@@ -97,19 +101,29 @@ async function resetAndPopulateDatabase() {
     livello: 1
   });
 
-  // Categoria
-  const categoriaId = await createDocumentAutoId("Categoria", {
-    nome: "Museo"
+  // Categorie
+  const categorieCulture = await createDocumentAutoId("Categoria", {
+    nome: "culture"
+  });
+  const categoriFood = await createDocumentAutoId("Categoria", {
+    nome: "food"
+  });
+  const categorieNature = await createDocumentAutoId("Categoria", {
+    nome: "nature"
+  });
+  const categorieMystery = await createDocumentAutoId("Categoria", {
+    nome: "mystery"
   });
 
-  // Luogo
-  const luogoId = await createDocumentAutoId("Luogo", {
-    nome: "Colosseo",
-    descrizione: "Famoso anfiteatro romano",
-    posizione: { coord1: 41.8902, coord2: 12.4922 },
-    idCategoria: categoriaId,
-    immagine: "url_immagine"
-  });
+  // Luoghi - caricati da src/db/json/luoghi.json
+  let luogoId;
+  for (const luogoData of luoghi) {
+    const luogo = {
+      ...luogoData,
+      idCreatore: luogoData.idCreatore === "master" ? "master" : utenteId
+    };
+    luogoId = await createDocumentAutoId("Luogo", luogo);
+  }
 
   // Cartolina
   const cartolinaId = await createDocumentAutoId("Cartolina", {

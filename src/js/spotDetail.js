@@ -7,7 +7,8 @@ let currentSpotId = null;
 async function populateSpotCards() {
     try {
         const spots = await getSpots();
-        const spotCards = document.querySelectorAll('[role="listitem"][data-spot-id=""]');
+        // Popola solo le card della sezione "nearby" (A pochi passi)
+        const spotCards = document.querySelectorAll('#home-nearby-container [role="listitem"][data-spot-id=""]');
 
         spotCards.forEach((card, index) => {
             if (index < spots.length) {
@@ -19,7 +20,9 @@ async function populateSpotCards() {
                 if (titleEl) titleEl.textContent = spot.nome || "Spot";
 
                 const imageEl = card.querySelector('[data-field="image"]');
-                if (imageEl && spot.immagine) imageEl.src = spot.immagine;
+                if (imageEl && spot.immagine) {
+                    imageEl.src = spot.immagine;
+                }
 
                 const categoryEl = card.querySelector('[data-field="category"]');
                 if (categoryEl && spot.idCategoria) categoryEl.textContent = spot.idCategoria;
@@ -140,6 +143,30 @@ function populateSpotDetail(spotData) {
     const descriptionEl = document.getElementById("spot-detail-description");
     if (descriptionEl) {
         descriptionEl.textContent = spotData.descrizione || "Nessuna descrizione disponibile";
+    }
+
+    // Indirizzo
+    const addressEl = document.getElementById("spot-detail-address");
+    if (addressEl && spotData.indirizzo) {
+        addressEl.textContent = spotData.indirizzo;
+    }
+
+    // Orari
+    const hoursEl = document.getElementById("spot-detail-hours");
+    if (hoursEl && spotData.orari && spotData.orari.length > 0) {
+        const orariFormatted = spotData.orari
+            .map(o => `${o.inizio} - ${o.fine}`)
+            .join(" | ");
+        hoursEl.textContent = orariFormatted;
+    }
+
+    // Costo
+    const costEl = document.getElementById("spot-detail-cost");
+    if (costEl && spotData.costo && spotData.costo.length > 0) {
+        const costoFormatted = spotData.costo
+            .map(c => c.prezzo === 0 ? "Gratuito" : `${c.tipo}: €${c.prezzo}`)
+            .join(" | ");
+        costEl.textContent = costoFormatted;
     }
 
     spottedData = spotData;
