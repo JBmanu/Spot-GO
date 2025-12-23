@@ -15,6 +15,16 @@
         flex-wrap: nowrap;
     }
 
+    /* Carousel specifici della homepage */
+    .saved-swipe-track,
+    .nearby-swipe-track,
+    .vertical-carousel-track {
+        @apply flex gap-4 overflow-x-auto px-5 pb-1 scroll-smooth;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+    }
+
     .carousel-track.is-dragging {
         @apply cursor-grabbing;
     }
@@ -24,6 +34,15 @@
         @apply shrink-0;
         scroll-snap-align: start;
         flex-shrink: 0;
+    }
+
+    /* Nascondi i card con display: none senza occupare spazio */
+    .carousel-item[style*="display: none"],
+    .carousel-item:not([style*="display"]):empty {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        flex: none !important;
     }
 
     /* Variante: Card Spot (come homepage) */
