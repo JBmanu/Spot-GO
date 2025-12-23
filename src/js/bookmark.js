@@ -77,7 +77,7 @@ export async function syncAllBookmarks() {
         initializeBookmarks();
         await reinitializeCarousels();
     } catch (error) {
-        console.error("Errore nella sincronizzazione dei bookmark:", error);
+        console.error("Errore in syncAllBookmarks:", error);
     }
 }
 
@@ -123,7 +123,7 @@ async function handleBookmarkClick(button, card) {
             await removeBookmarkFlow(currentUser.id, spotId);
         }
     } catch (error) {
-        console.error("Errore gestione bookmark:", error);
+        console.error("Errore in handleBookmarkClick:", error);
     } finally {
         setProcessing(button, false);
     }
@@ -138,7 +138,7 @@ async function addBookmarkFlow(userId, spotId) {
         await updateSavedSection();
         await syncAllBookmarks();
     } catch (error) {
-        console.error("Errore nell'aggiunta del bookmark:", error);
+        console.error("Errore in addBookmarkFlow", error);
     }
 }
 
@@ -156,7 +156,7 @@ async function removeBookmarkFlow(userId, spotId, { removeCard = false, card = n
         await updateSavedSection();
         await syncAllBookmarks();
     } catch (error) {
-        console.error("Errore nella rimozione del bookmark:", error);
+        console.error("Errore in removeBookmarkFlow", error);
     }
 }
 
@@ -189,8 +189,8 @@ async function updateSavedSection() {
                         await new Promise(resolve => requestAnimationFrame(resolve));
                     }
                 }
-            } catch (e) {
-                // ignore
+            } catch (error) {
+                console.error("Errore nel controllo visibilità sezione salvati:", error);
             }
 
             reinitializeSavedBookmarks();
@@ -252,6 +252,15 @@ export function updateBookmarkVisual(button, isSaved) {
         "aria-label",
         isSaved ? "Rimuovi dai salvati" : "Aggiungi ai salvati"
     );
+
+    try {
+        const card = button.closest(SELECTORS.bookmarkCard);
+        const spotId = card ? getSpotIdFromCard(card) : '';
+        const event = new CustomEvent('bookmark:changed', { detail: { spotId, isSaved } });
+        document.dispatchEvent(event);
+    } catch (error) {
+        console.error("Errore in updateBookmarkVisual:", error);
+    }
 }
 
 /**
@@ -293,7 +302,7 @@ async function reinitializeCarousels() {
             }
         });
     } catch (error) {
-        console.error("Errore nella reinizializzazione del carousel:", error);
+        console.error("Errore in reinitializeCarousels:", error);
     }
 }
 
@@ -339,4 +348,37 @@ function removeCardFromView(card) {
             resolve();
         }, TIMING.animationRemove);
     });
+}
+
+/**
+ * Toggle bookmark per uno spot identificato da ID.
+ */
+export async function toggleBookmarkForSpot(spotId) {
+    try {
+        const currentUser = await getFirstUser();
+        if (!currentUser) {
+            console.error(MESSAGES.userNotFound);
+            return;
+        }
+
+        const saved = await getSavedSpots(currentUser.id);
+        const savedIds = (saved || []).map(s => s.idLuogo);
+        const isSaved = savedIds.includes(spotId);
+
+        if (!isSaved) {
+            await addBookmark(currentUser.id, spotId);
+        } else {
+            const confirmed = await showConfirmModal(
+                MESSAGES.removeConfirmTitle,
+                MESSAGES.removeConfirmMessage('questo spot')
+            );
+            if (!confirmed) return;
+            await removeBookmark(currentUser.id, spotId);
+        }
+
+        await updateSavedSection();
+        await syncAllBookmarks();
+    } catch (error) {
+        console.error('Errore toggleBookmarkForSpot:', error);
+    }
 }
