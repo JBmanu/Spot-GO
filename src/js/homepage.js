@@ -1,28 +1,32 @@
 import { initializeCarousel } from "./carousel.js";
-import { initializeBookmarks } from "./bookmark.js";
-import { initializeSavedBookmarks } from "./savedBookmarks.js";
-import { initializeSpotClickHandlers, populateSpotCards, populateSavedSpots } from "./spotDetail.js";
+import { initializeBookmarks, syncAllBookmarks } from "./bookmark.js";
+import {
+    initializeSpotClickHandlers,
+    populateSpotCards,
+    populateSavedSpots,
+} from "./spotDetail.js";
 
 let activeCategories = new Set();
 let previousPage = "homepage";
 
-
+/**
+ * Configura filtri e carica le sezioni principali della homepage.
+ * Inizializza card, bookmark e sincronizzazione iniziale.
+ */
 export function initializeHomepageFilters() {
     const categoryContainer = document.getElementById("home-categories-container");
-
-    if (!categoryContainer) {
-        return;
-    }
+    if (!categoryContainer) return;
 
     loadSavedSpotsSection();
     loadNearbySpotsSection();
     loadVerticalCarouselSection();
 
-    // Popola le card degli spot con i dati da Firebase e inizializza i click handler
-    setTimeout(async () => {
+    (async () => {
         await populateSpotCards();
         initializeSpotClickHandlers();
-    }, 100);
+        initializeBookmarks();
+        await syncAllBookmarks();
+    })().catch((err) => console.error("Errore init homepage:", err));
 
     categoryContainer.addEventListener("click", (e) => {
         const button = e.target.closest(".home-chip");
@@ -45,79 +49,85 @@ export function initializeHomepageFilters() {
     });
 }
 
-// Carica la sezione "Spots salvati"
+/**
+ * Carica la sezione "Saved Spots" e la popola.
+ */
 async function loadSavedSpotsSection() {
     try {
         const response = await fetch("../html/homepage-pages/saved-spots-section.html");
         if (!response.ok) return;
 
-        const html = await response.text();
         const container = document.getElementById("home-saved-section");
+        if (!container) return;
 
-        if (container) {
-            container.innerHTML = html;
-            initializeCarousel(".saved-swipe-track");
-            initializeSavedBookmarks();
+        container.innerHTML = await response.text();
 
-            // Popola gli spot salvati dell'utente
-            setTimeout(async () => {
-                await populateSavedSpots();
-            }, 100);
+        initializeCarousel(".saved-swipe-track");
+        initializeBookmarks();
 
-            const seeAllButton = container.querySelector("#home-saved-see-all");
-            if (seeAllButton) {
-                seeAllButton.addEventListener("click", async () => {
-                    await loadViewAllSaved();
-                });
-            }
+        await populateSavedSpots();
+        initializeBookmarks();
+        await syncAllBookmarks();
+
+        const seeAllButton = container.querySelector("#home-saved-see-all");
+        if (seeAllButton) {
+            seeAllButton.addEventListener("click", async () => {
+                await loadViewAllSaved();
+            });
         }
     } catch (err) {
-        // Errore nel caricamento
+        console.error("Errore loadSavedSpotsSection:", err);
     }
 }
 
-// Carica la sezione "Spots vicino a te"
+/**
+ * Carica la sezione "Nearby".
+ */
 async function loadNearbySpotsSection() {
     try {
         const response = await fetch("../html/homepage-pages/nearby-spots-section.html");
         if (!response.ok) return;
 
-        const html = await response.text();
         const container = document.getElementById("home-nearby-section");
+        if (!container) return;
 
-        if (container) {
-            container.innerHTML = html;
-            initializeCarousel(".nearby-swipe-track");
-            initializeBookmarks();
-        }
+        container.innerHTML = await response.text();
+
+        initializeCarousel(".nearby-swipe-track");
+        initializeBookmarks();
     } catch (err) {
-        // Errore nel caricamento
+        console.error("Errore loadNearbySpotsSection:", err);
     }
 }
 
-// Carica il carosello verticale "Tendenze"
+/**
+ * Carica la sezione "Top Rated".
+ */
 async function loadVerticalCarouselSection() {
     try {
         const response = await fetch("../html/homepage-pages/toprated-carousel-section.html");
         if (!response.ok) return;
 
-        const html = await response.text();
         const container = document.getElementById("home-vertical-section");
+        if (!container) return;
 
-        if (container) {
-            container.innerHTML = html;
-            initializeBookmarks();
-        }
+        container.innerHTML = await response.text();
+
+        initializeCarousel(".vertical-carousel-track");
+        initializeBookmarks();
     } catch (err) {
-        // Errore nel caricamento
+        console.error("Errore loadVerticalCarouselSection:", err);
     }
 }
 
+/**
+ * Filtra le card degli spot in base alle categorie selezionate.
+ */
 function filterSpotsByCategory(categories) {
     const allSpotCards = document.querySelectorAll('[role="listitem"][data-spot-id]');
 
-    allSpotCards.forEach(card => {
-        let categoryText = card.getAttribute('data-category');
+    allSpotCards.forEach((card) => {
+        let categoryText = card.getAttribute("data-category");
 
         if (!categoryText) {
             const spotCategory = card.querySelector('[data-field="category"]');
@@ -130,33 +140,40 @@ function filterSpotsByCategory(categories) {
         const normalizedCategory = normalizeCategoryName(categoryText);
 
         if (categories.length === 0) {
-            card.style.display = '';
+            card.style.display = "";
             return;
         }
 
-        const isInSelectedCategories = categories.some(cat =>
-            normalizeCategoryName(cat) === normalizedCategory
+        const isInSelectedCategories = categories.some(
+            (cat) => normalizeCategoryName(cat) === normalizedCategory
         );
 
-        card.style.display = isInSelectedCategories ? '' : 'none';
+        card.style.display = isInSelectedCategories ? "" : "none";
     });
 }
 
+/**
+ * Normalizza il nome della categoria dall'italiano all'identificatore interno.
+ * Restituisce la chiave standard (es. 'food','culture').
+ */
 function normalizeCategoryName(categoryName) {
     const categoryMap = {
-        'cibo': 'food',
-        'cultura': 'culture',
-        'natura': 'nature',
-        'mistero': 'mystery',
-        'food': 'food',
-        'culture': 'culture',
-        'nature': 'nature',
-        'mystery': 'mystery'
+        cibo: "food",
+        cultura: "culture",
+        natura: "nature",
+        mistero: "mystery",
+        food: "food",
+        culture: "culture",
+        nature: "nature",
+        mystery: "mystery",
     };
 
     return categoryMap[categoryName.toLowerCase()] || categoryName.toLowerCase();
 }
 
+/**
+ * Disattiva lo stato visuale della toolbar (rimuove classi attive).
+ */
 function deactivateAllToolbarButtons() {
     const toolbar = document.querySelector(".app-toolbar");
     if (!toolbar) return;
@@ -175,6 +192,9 @@ function deactivateAllToolbarButtons() {
     });
 }
 
+/**
+ * Mostra la pagina "View All Saved".
+ */
 async function loadViewAllSaved(fromPage = "homepage") {
     try {
         previousPage = fromPage;
@@ -182,7 +202,6 @@ async function loadViewAllSaved(fromPage = "homepage") {
         const response = await fetch("../html/homepage-pages/view-all/view-all-saved.html");
         if (!response.ok) return;
 
-        const html = await response.text();
         const main = document.getElementById("main");
         const headerLeftLogo = document.querySelector(".header-left-logo");
         const headerLogoText = document.getElementById("header-logo-text");
@@ -190,30 +209,32 @@ async function loadViewAllSaved(fromPage = "homepage") {
 
         if (!main) return;
 
-        main.innerHTML = html;
+        main.innerHTML = await response.text();
 
         requestAnimationFrame(() => {
             main.classList.add("view-all-saved-enter");
         });
 
-        headerLeftLogo.innerHTML = `<button type="button" id="header-back-button" aria-label="Torna indietro" class="flex items-center justify-center w-10 h-10">
-            <img src="../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
-        </button>`;
+        headerLeftLogo.innerHTML = `
+      <button type="button" id="header-back-button" aria-label="Torna indietro" class="flex items-center justify-center w-10 h-10">
+        <img src="../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
+      </button>
+    `;
         headerLogoText.style.display = "none";
         headerTitle.textContent = "I tuoi Spot Salvati";
         headerTitle.classList.remove("hidden");
 
-        // Disattiva tutti i bottoni della toolbar
         deactivateAllToolbarButtons();
 
         initializeCarousel(".vertical-carousel-track");
-        initializeSavedBookmarks();
+        initializeBookmarks();
 
-        // Popola le card degli spot e inizializza i click handler
-        setTimeout(async () => {
+        (async () => {
             await populateSpotCards();
             initializeSpotClickHandlers();
-        }, 100);
+            initializeBookmarks();
+            await syncAllBookmarks();
+        })().catch((err) => console.error("Errore init view-all-saved:", err));
 
         const backButton = document.getElementById("header-back-button");
         if (backButton) {
@@ -221,8 +242,7 @@ async function loadViewAllSaved(fromPage = "homepage") {
                 main.classList.remove("view-all-saved-enter");
                 main.classList.add("view-all-saved-exit");
 
-                await new Promise(resolve => setTimeout(resolve, 300));
-
+                await new Promise((resolve) => setTimeout(resolve, 300));
                 main.classList.remove("view-all-saved-exit");
 
                 if (previousPage === "profile") {
@@ -251,17 +271,17 @@ async function goToHomepage() {
         const response = await fetch("../html/homepage.html");
         if (!response.ok) return;
 
-        const html = await response.text();
-        main.innerHTML = html;
+        main.innerHTML = await response.text();
+
         initializeHomepageFilters();
 
-        // Attiva il bottone homepage nella toolbar
         const toolbar = document.querySelector(".app-toolbar");
         if (toolbar) {
             toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
                 const section = btn.dataset.section;
                 const isActive = section === "homepage";
                 btn.classList.toggle("active", isActive);
+
                 const text = btn.querySelector("span");
                 const icon = btn.querySelector("[data-role='icon']");
                 if (text) {
@@ -290,19 +310,18 @@ async function goToProfile() {
     headerTitle.textContent = "Il mio profilo";
 
     try {
-        const response = await fetch("./html/profile.html");
+        const response = await fetch("../html/profile.html");
         if (!response.ok) return;
 
-        const html = await response.text();
-        main.innerHTML = html;
+        main.innerHTML = await response.text();
 
-        // Attiva il bottone profile nella toolbar
         const toolbar = document.querySelector(".app-toolbar");
         if (toolbar) {
             toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
                 const section = btn.dataset.section;
                 const isActive = section === "profile";
                 btn.classList.toggle("active", isActive);
+
                 const text = btn.querySelector("span");
                 const icon = btn.querySelector("[data-role='icon']");
                 if (text) {
@@ -323,4 +342,3 @@ async function goToProfile() {
 }
 
 export { activeCategories, loadViewAllSaved };
-
