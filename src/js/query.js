@@ -1,13 +1,17 @@
+/**
+ * Wrapper per le query al database (Firestore) e parsing dei documenti.
+ * Espone funzioni per leggere utenti, luoghi, salvataggi e categorie.
+ */
+
 import { collection, getDocs, query, where, limit, deleteDoc, setDoc, doc } from "firebase/firestore";
 import { db } from "./firebase.js";
-import firebase from "firebase/compat/app";
 
 // Cache per le categorie
 let categorieCache = null;
 
 /**
- * Carica le categorie dal file JSON e le converte in una mappa
- * @returns {Promise<Object>} Mappa id_categoria -> nome italiano
+ * Carica le categorie dal file JSON e le converte in una mappa.
+ * Restituisce una mappa id_categoria -> nome italiano (cached).
  */
 export async function getCategorieMap() {
     if (categorieCache) {
@@ -37,9 +41,7 @@ export async function getCategorieMap() {
 }
 
 /**
- * Converte un ID categoria nel nome italiano
- * @param {string} categoriaId - ID della categoria (es. "culture")
- * @returns {Promise<string>} Nome della categoria in italiano
+ * Converte un ID categoria nel nome italiano.
  */
 export async function getCategoryNameIt(categoriaId) {
     const categorieMap = await getCategorieMap();
@@ -47,8 +49,7 @@ export async function getCategoryNameIt(categoriaId) {
 }
 
 /**
- * Restituisce i dati del primo utente nella collezione "Utente"
- * @returns {Promise<Object|null>} Oggetto dati utente o null se non trovato
+ * Restituisce i dati del primo utente nella collezione "Utente".
  */
 export async function getFirstUser() {
     try {
@@ -71,7 +72,9 @@ export async function getFirstUser() {
     }
 }
 
-/** Restituisce tutte le recensioni dell'utente con userId*/
+/**
+ * Restituisce tutte le recensioni dell'utente con userId.
+ */
 export async function getReviews(userId) {
     return getItems('Recensione', 
         where('idUtente', '==', userId), 
@@ -85,6 +88,9 @@ export async function getReviews(userId) {
     );
 }
 
+/**
+ * Restituisce gli spot creati dall'utente.
+ */
 export async function getCreatedSpots(userId) {
     return getItems(
         "LuogoCreato", 
@@ -97,18 +103,25 @@ export async function getCreatedSpots(userId) {
     );
 }
 
+/**
+ * Restituisce i LuogoSalvato dell'utente.
+ */
 export async function getSavedSpots(userId) {
     return getItems(
-        "LuogoSalvato", 
+        "LuogoSalvato",
         where('idUtente', '==', userId),
         (id, data) => ({
             id: id,
             idLuogo: data.idLuogo,
             idUtente: data.idUtente
         })
+
     );
 }
 
+/**
+ * Restituisce i LuogoVisitato dell'utente.
+ */
 export async function getVisitedSpots(userId) {
     return getItems(
         "LuogoVisitato", 
@@ -121,6 +134,9 @@ export async function getVisitedSpots(userId) {
     );
 }
 
+/**
+ * Restituisce tutti i Luogo dalla collection.
+ */
 export async function getSpots() {
     return getItems(
         "Luogo", 
@@ -144,11 +160,7 @@ export async function getSpots() {
 }
 
 /**
- * Generic methods to get documents from collection.
- * @param {*} collectionName name of collection
- * @param {*} filter optional filter of query
- * @param {*} itemParser converts from firebase snapshot (id, data) to javascript object
- * @returns ritorna un array di oggetti definiti dal itemParser
+ * Metodo generico per ottenere items da una collection con un filtro opzionale.
  */
 async function getItems(collectionName, filter, itemParser) {
     try {
@@ -168,9 +180,7 @@ async function getItems(collectionName, filter, itemParser) {
 }
 
 /**
- * Salva uno spot nei preferiti dell'utente
- * @param {string} idUtente - ID dell'utente
- * @param {string} idLuogo - ID del luogo
+ * Salva uno spot nei preferiti dell'utente.
  */
 export async function addBookmark(idUtente, idLuogo) {
     try {
@@ -180,16 +190,13 @@ export async function addBookmark(idUtente, idLuogo) {
             idLuogo: idLuogo,
             dataSalvataggio: new Date()
         });
-        console.log(`Luogo ${idLuogo} salvato per l'utente ${idUtente}`);
     } catch (error) {
         console.error("Errore nel salvataggio del bookmark:", error);
     }
 }
 
 /**
- * Rimuove uno spot dai preferiti dell'utente
- * @param {string} idUtente - ID dell'utente
- * @param {string} idLuogo - ID del luogo
+ * Rimuove uno spot dai preferiti dell'utente.
  */
 export async function removeBookmark(idUtente, idLuogo) {
     try {
@@ -197,12 +204,10 @@ export async function removeBookmark(idUtente, idLuogo) {
         const q = query(lukRef, where("idUtente", "==", idUtente), where("idLuogo", "==", idLuogo));
         const querySnapshot = await getDocs(q);
 
-        querySnapshot.forEach((docSnap) => {
-            deleteDoc(docSnap.ref);
-        });
-        console.log(`Luogo ${idLuogo} rimosso dai preferiti dell'utente ${idUtente}`);
+        for (const docSnap of querySnapshot.docs) {
+            await deleteDoc(docSnap.ref);
+        }
     } catch (error) {
         console.error("Errore nella rimozione del bookmark:", error);
     }
 }
-

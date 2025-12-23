@@ -1,4 +1,7 @@
-// Gestisce la navigazione tra sezioni della app e il caricamento dei contenuti
+/**
+ * Gestisce il caricamento dinamico di header, toolbar e contenuti principali.
+ * Implementa la navigazione tra sezioni con aggiornamento dell'header e della toolbar.
+ */
 
 const SECTION_CONFIG = {
     homepage: {
@@ -23,7 +26,7 @@ const SECTION_CONFIG = {
     },
 };
 
-// Import dinamici
+
 let loadProfileOverview, initializeHomepageFilters, initializeMap;
 
 Promise.all([
@@ -38,7 +41,10 @@ Promise.all([
     })
 ]).catch(err => console.error("Errore nel caricamento dei moduli in smartphone.js:", err));
 
-// Carica l'header da file separato
+
+/**
+ * Carica il markup dell'header.
+ */
 async function loadHeader() {
     const response = await fetch("../html/header.html");
     if (!response.ok) return;
@@ -50,7 +56,6 @@ async function loadHeader() {
         const newHeader = parsed.querySelector("header");
         if (newHeader) {
             header.innerHTML = newHeader.innerHTML;
-            // Copia gli attributi
             Array.from(newHeader.attributes).forEach(attr => {
                 header.setAttribute(attr.name, attr.value);
             });
@@ -58,7 +63,9 @@ async function loadHeader() {
     }
 }
 
-// Carica la toolbar da file separato
+/**
+ * Carica il template della toolbar.
+ */
 async function loadToolbar() {
     const response = await fetch("../html/toolbar.html");
     if (!response.ok) return;
@@ -70,7 +77,6 @@ async function loadToolbar() {
         const newToolbar = parsed.querySelector("nav");
         if (newToolbar) {
             toolbar.innerHTML = newToolbar.innerHTML;
-            // Copia gli attributi
             Array.from(newToolbar.attributes).forEach(attr => {
                 toolbar.setAttribute(attr.name, attr.value);
             });
@@ -97,7 +103,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     navigateTo("homepage");
 
-    // Naviga verso una sezione
+    /**
+     * Naviga verso la sezione indicata aggiornando header/toolbar e caricando il contenuto.
+     */
     async function navigateTo(section) {
         const cfg = SECTION_CONFIG[section];
         if (!cfg) return;
@@ -107,7 +115,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         await loadMainContent(cfg);
     }
 
-    // Aggiorna l'header in base alla sezione attiva
+    /**
+     * Aggiorna l'header in base alla sezione attiva.
+     */
     function updateHeader(section, cfg) {
         if (!titleEl || !logoTextEl) return;
 
@@ -125,7 +135,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Aggiorna gli stili della toolbar in base alla sezione attiva
+    /**
+     * Aggiorna lo stato visuale della toolbar (classi attive) in base alla sezione attiva.
+     */
     function updateToolbar(activeSection) {
         toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
             const section = btn.dataset.section;
@@ -142,7 +154,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // Carica il contenuto principale della sezione
+    /**
+     * Carica il contenuto principale della sezione e inizializza eventuali moduli.
+     */
     async function loadMainContent(cfg) {
         const res = await fetch(cfg.content, { cache: "no-store" });
         if (!res.ok) {
@@ -161,7 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         if (cfg.content.includes('homepage.html')) {
-            initializeHomepageFilters();
+            await initializeHomepageFilters();
         }
 
         main.scrollTop = 0;
