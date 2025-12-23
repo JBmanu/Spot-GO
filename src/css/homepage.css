@@ -132,14 +132,26 @@
         scroll-snap-align: start;
         width: 50%;
         max-width: 110px;
-        max-height: 130px;
-        aspect-ratio: auto;
         height: 130px;
         flex-shrink: 0;
     }
 
     .spot-card--saved:active {
         box-shadow: 0 2px 6px var(--color-primary_color) inset;
+    }
+
+    /* Nascondi completamente le card salvate non utilizzate */
+    .spot-card--saved[style*="display: none"] {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 0 !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        gap: 0 !important;
+        visibility: hidden !important;
     }
 
     .saved-swipe-track.is-dragging {
@@ -470,7 +482,6 @@
         scroll-snap-align: start;
         width: 70%;
         max-width: 220px;
-        aspect-ratio: auto;
         height: 180px;
         flex-shrink: 0;
     }
@@ -537,7 +548,6 @@
         scroll-snap-align: start;
         width: 60%;
         max-width: 160px;
-        aspect-ratio: auto;
         height: 160px;
         flex-shrink: 0;
     }

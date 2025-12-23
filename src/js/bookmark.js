@@ -1,219 +1,342 @@
+/**
+ * Gestione bookmark (spot salvati)
+ */
 
-let showConfirmModal;
-
-import("./confirmModal.js").then(module => {
-    showConfirmModal = module.showConfirmModal;
-}).catch(err => console.error("Errore nel caricamento di confirmModal.js:", err));
-
-import { addBookmark, removeBookmark, getFirstUser } from "./query.js";
-
-// Importa populateSavedSpots per aggiornare la sezione in tempo reale
-let populateSavedSpots;
-import("./spotDetail.js").then(module => {
-    populateSavedSpots = module.populateSavedSpots;
-}).catch(err => console.error("Errore nel caricamento di spotDetail.js:", err));
+import { addBookmark, removeBookmark, getFirstUser, getSavedSpots } from "./query.js";
+import { showConfirmModal } from "./confirmModal.js";
+import { populateSavedSpots } from "./spotDetail.js";
 
 const BOOKMARK_ICONS = {
     filled: "../assets/icons/homepage/Bookmark.svg",
-    empty: "../assets/icons/homepage/BookmarkEmpty.svg"
+    empty: "../assets/icons/homepage/BookmarkEmpty.svg",
 };
 
-export function initializeBookmarks() {
-    const bookmarkButtons = document.querySelectorAll('[data-bookmark-button]:not([data-bookmark-type="saved"]):not([data-bookmark-initialized])');
+const SELECTORS = {
+    bookmarkButton: "[data-bookmark-button]",
+    bookmarkCard: '[role="listitem"]',
+    bookmarkIcon: ".bookmark-icon",
+    carouselTrackSaved: ".saved-swipe-track",
+    carouselTrackNearby: ".nearby-swipe-track",
+    carouselTrackToprated: ".vertical-carousel-track",
+    bookmarkTypeAttr: "data-bookmark-type",
+    bookmarkInitializedAttr: "data-bookmark-initialized",
+    spotIdAttr: "data-spot-id",
+    titleField: '[data-field="title"]',
+};
 
-    bookmarkButtons.forEach(button => {
-        const card = button.closest('[role="listitem"]');
+const MESSAGES = {
+    removeConfirmTitle: "Rimuovi dai salvati?",
+    removeConfirmMessage: (spotTitle) =>
+        `Sei sicuro di voler rimuovere "${spotTitle}" dai tuoi spot salvati?`,
+    userNotFound: "Utente non trovato",
+};
+
+const TIMING = {
+    debounce: 50,
+    animationRemove: 300,
+};
+
+/**
+ * Inizializza i bookmark button.
+ */
+export function initializeBookmarks() {
+    const buttons = document.querySelectorAll(
+        `${SELECTORS.bookmarkButton}:not([${SELECTORS.bookmarkInitializedAttr}])`
+    );
+
+    buttons.forEach((button) => {
+        const card = button.closest(SELECTORS.bookmarkCard);
         if (!card) return;
 
-        button.dataset.saved = 'false';
-        button.dataset.bookmarkInitialized = 'true';
+        button.setAttribute(SELECTORS.bookmarkInitializedAttr, "true");
 
-        updateBookmarkIcon(button, false);
+        if (typeof button.dataset.saved !== 'undefined') {
+            const isSaved = button.dataset.saved === "true";
+            updateBookmarkVisual(button, isSaved);
+        }
 
-        button.addEventListener('click', (e) => {
+        button.addEventListener("click", (e) => {
             e.preventDefault();
-            toggleBookmark(button, card);
+            handleBookmarkClick(button, card);
         });
     });
 }
 
-function updateBookmarkIcon(button, isSaved) {
-    const icon = button.querySelector('.bookmark-icon');
-    if (!icon) return;
+/**
+ * Sincronizza lo stato dei bookmark dal DB e aggiorna la UI.
+ */
+export async function syncAllBookmarks() {
+    try {
+        const currentUser = await getFirstUser();
+        if (!currentUser) return;
 
-    if (isSaved) {
-        icon.src = BOOKMARK_ICONS.filled;
-        button.setAttribute('aria-label', 'Rimuovi dai salvati');
-    } else {
-        icon.src = BOOKMARK_ICONS.empty;
-        button.setAttribute('aria-label', 'Aggiungi ai salvati');
+        const savedSpotIds = await getSavedSpotIds(currentUser.id);
+        updateAllBookmarkIcons(savedSpotIds);
+
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        initializeBookmarks();
+        await reinitializeCarousels();
+    } catch (error) {
+        console.error("Errore nella sincronizzazione dei bookmark:", error);
     }
 }
 
-async function toggleBookmark(button, card) {
-    if (button.dataset.processing === 'true') {
-        return;
+/**
+ * Gestisce il click su un bookmark button.
+ */
+async function handleBookmarkClick(button, card) {
+    if (!isProcessingAllowed(button)) return;
+    setProcessing(button, true);
+
+    try {
+        const currentUser = await getFirstUser();
+        if (!currentUser) {
+            console.error(MESSAGES.userNotFound);
+            return;
+        }
+
+        const spotId = getSpotIdFromCard(card);
+        const spotTitle = getSpotTitle(card);
+        const bookmarkType = button.getAttribute(SELECTORS.bookmarkTypeAttr);
+        const isSaved = button.dataset.saved === "true";
+
+        if (bookmarkType === "saved") {
+            const confirmed = await showConfirmModal(
+                MESSAGES.removeConfirmTitle,
+                MESSAGES.removeConfirmMessage(spotTitle)
+            );
+
+            if (!confirmed) return;
+            await removeBookmarkFlow(currentUser.id, spotId, { removeCard: true, card });
+            return;
+        }
+
+        if (!isSaved) {
+            await addBookmarkFlow(currentUser.id, spotId);
+        } else {
+            const confirmed = await showConfirmModal(
+                MESSAGES.removeConfirmTitle,
+                MESSAGES.removeConfirmMessage(spotTitle)
+            );
+
+            if (!confirmed) return;
+            await removeBookmarkFlow(currentUser.id, spotId);
+        }
+    } catch (error) {
+        console.error("Errore gestione bookmark:", error);
+    } finally {
+        setProcessing(button, false);
     }
+}
 
-    button.dataset.processing = 'true';
-
-    const isSaved = button.dataset.saved === 'true';
-    const spotTitle = card.querySelector('[data-field="title"]')?.textContent || "questo spot";
-    const spotId = card.getAttribute('data-spot-id');
-
-    // Recupera l'utente attuale
-    const currentUser = await getFirstUser();
-    if (!currentUser) {
-        console.error("Utente non trovato");
-        button.dataset.processing = 'false';
-        return;
+/**
+ * Aggiunge un bookmark a DB e aggiorna la sezione salvati.
+ */
+async function addBookmarkFlow(userId, spotId) {
+    try {
+        await addBookmark(userId, spotId);
+        await updateSavedSection();
+        await syncAllBookmarks();
+    } catch (error) {
+        console.error("Errore nell'aggiunta del bookmark:", error);
     }
+}
 
-    if (!isSaved) {
-        // Salva nel database
-        await addBookmark(currentUser.id, spotId);
-        addSpotToSaved(card);
-        button.dataset.saved = 'true';
-        updateBookmarkIcon(button, true);
+/**
+ * Rimuove un bookmark da DB e aggiorna la sezione salvati.
+ */
+async function removeBookmarkFlow(userId, spotId, { removeCard = false, card = null } = {}) {
+    try {
+        await removeBookmark(userId, spotId);
 
-        // Aggiorna la sezione salvati in tempo reale
+        if (removeCard && card) {
+            await removeCardFromView(card);
+        }
+
+        await updateSavedSection();
+        await syncAllBookmarks();
+    } catch (error) {
+        console.error("Errore nella rimozione del bookmark:", error);
+    }
+}
+
+/**
+ * Aggiorna la sezione "Spot Salvati" chiamando populateSavedSpots.
+ */
+async function updateSavedSection() {
+    try {
         if (populateSavedSpots) {
             await populateSavedSpots();
-        }
 
-        button.dataset.processing = 'false';
-    } else {
-        const confirmed = await showConfirmModal(
-            "Rimuovi dai salvati?",
-            `Sei sicuro di voler rimuovere "${spotTitle}" dai tuoi spot salvati?`,
-            () => {
-            },
-            () => {
-            }
-        );
-
-        if (confirmed) {
-            // Rimuovi dal database
-            await removeBookmark(currentUser.id, spotId);
-            button.dataset.saved = 'false';
-            updateBookmarkIcon(button, false);
-
-            // Aggiorna la sezione salvati in tempo reale
-            if (populateSavedSpots) {
-                await populateSavedSpots();
-            }
-        }
-
-        button.dataset.processing = 'false';
-    }
-}
-
-function addSpotToSaved(sourceCard) {
-    let spotTitle = sourceCard.querySelector('[data-field="title"]')?.textContent || '';
-    let spotImage = sourceCard.querySelector('[data-field="image"]')?.src || '';
-    let spotDistance = sourceCard.querySelector('[data-field="distance"]')?.textContent || '0 m';
-    let spotCategory = sourceCard.querySelector('[data-field="category"]')?.textContent || '';
-    let spotRating = sourceCard.querySelector('[data-field="rating"]')?.textContent || '4.5';
-
-    const uniqueId = `saved-${spotTitle.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`;
-
-    const newCard = document.createElement('article');
-    newCard.className = 'spot-card spot-card--saved';
-    newCard.setAttribute('role', 'listitem');
-    newCard.setAttribute('data-spot-id', '');
-    newCard.dataset.savedCardId = uniqueId;
-
-    newCard.innerHTML = `
-        <div class="spot-card-media">
-            <div class="spot-image-container">
-                <img src="${spotImage}" alt="Foto spot" class="spot-card-image" data-field="image"/>
-            </div>
-            <button
-                    type="button"
-                    class="spot-card-bookmark"
-                    aria-label="Rimuovi dai salvati"
-                    data-bookmark-button
-                    data-bookmark-type="saved"
-                    data-saved="true"
-            >
-                <img src="../assets/icons/homepage/Bookmark.svg" alt="Bookmark" class="bookmark-icon">
-            </button>
-        </div>
-
-        <div class="spot-card-body">
-            <div class="flex flex-row justify-between items-center">
-                <h3 class="spot-card-title" data-field="title">${spotTitle}</h3>
-                <p class="spot-card-rating">
-                    <span class="spot-rating-value" data-field="rating">${spotRating}</span> <span aria-hidden="true">★</span>
-                </p>
-            </div>
-
-            <p class="spot-card-meta mt-2">
-                <span class="meta-item">
-                    <img src="../assets/icons/homepage/Place Marker.svg" class="icon-mini" alt="Posizione">
-                    <span class="spot-distance" data-field="distance">${spotDistance}</span>
-                </span>
-                <span class="meta-sep">•</span>
-                <span class="meta-item">
-                    <span class="spot-category" data-field="category">${spotCategory}</span>
-                </span>
-            </p>
-        </div>
-    `;
-
-    const savedContainer = document.getElementById('home-saved-container');
-    if (savedContainer) {
-        savedContainer.appendChild(newCard);
-
-        const bookmarkBtn = newCard.querySelector('[data-bookmark-button]');
-        if (bookmarkBtn) {
-            bookmarkBtn.dataset.cardId = uniqueId;
-            bookmarkBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                import('./savedBookmarks.js').then(module => {
-                    const card = bookmarkBtn.closest('[role="listitem"]');
-                    module.handleRemoveFromSaved(bookmarkBtn, card);
+            await new Promise(resolve => {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(resolve);
                 });
             });
+
+            try {
+                const currentUser = await getFirstUser();
+                if (currentUser) {
+                    const savedFromDb = await getSavedSpots(currentUser.id);
+                    const savedCount = (savedFromDb && savedFromDb.length) || 0;
+
+                    const savedContainer = document.getElementById('home-saved-container');
+                    const parentHidden = savedContainer && savedContainer.parentElement && savedContainer.parentElement.style.display === 'none';
+
+                    if (savedCount > 0 && parentHidden) {
+                        await new Promise(r => setTimeout(r, 120));
+                        await populateSavedSpots();
+                        await new Promise(resolve => requestAnimationFrame(resolve));
+                    }
+                }
+            } catch (e) {
+                // ignore
+            }
+
+            reinitializeSavedBookmarks();
         }
+    } catch (error) {
+        console.error("Errore aggiornamento sezione salvati:", error);
     }
 }
 
-function removeFromSavedCarouselById(cardId) {
+/**
+ * Ricollega i bookmark button della sezione salvati.
+ */
+function reinitializeSavedBookmarks() {
     const savedContainer = document.getElementById('home-saved-container');
     if (!savedContainer) return;
 
-    const savedCard = savedContainer.querySelector(`[data-saved-card-id="${cardId}"]`);
-    if (savedCard) {
-        savedCard.style.opacity = '0';
-        savedCard.style.transform = 'scale(0.95)';
-        savedCard.style.transition = 'all 0.3s ease-out';
+    const bookmarkButtons = savedContainer.querySelectorAll('[data-bookmark-button]');
+    bookmarkButtons.forEach((button) => {
+        button.removeAttribute(SELECTORS.bookmarkInitializedAttr);
+    });
+
+    initializeBookmarks();
+}
+
+/**
+ * Recupera gli ID degli spot salvati.
+ */
+async function getSavedSpotIds(userId) {
+    const savedSpots = await getSavedSpots(userId);
+    return new Set(savedSpots.map((s) => s.idLuogo));
+}
+
+/**
+ * Aggiorna le icone di tutti i bookmark.
+ */
+function updateAllBookmarkIcons(savedSpotIds) {
+    document.querySelectorAll(SELECTORS.bookmarkButton).forEach((button) => {
+        const card = button.closest(SELECTORS.bookmarkCard);
+        if (!card) return;
+
+        const spotId = getSpotIdFromCard(card);
+        const isSaved = savedSpotIds.has(spotId);
+
+        button.dataset.saved = isSaved ? "true" : "false";
+        updateBookmarkVisual(button, isSaved);
+    });
+}
+
+/**
+ * Aggiorna la visuale di un singolo bookmark button.
+ */
+export function updateBookmarkVisual(button, isSaved) {
+    let icon = button.querySelector(SELECTORS.bookmarkIcon);
+    if (!icon) icon = button.querySelector('img');
+    if (!icon) return;
+
+    icon.src = isSaved ? BOOKMARK_ICONS.filled : BOOKMARK_ICONS.empty;
+    button.setAttribute(
+        "aria-label",
+        isSaved ? "Rimuovi dai salvati" : "Aggiungi ai salvati"
+    );
+}
+
+/**
+ * Reinizializza tutti i carousel.
+ */
+async function reinitializeCarousels() {
+    try {
+        const { initializeCarousel, resetCarouselState } = await import("./carousel.js");
+
+        const selectors = [
+            SELECTORS.carouselTrackSaved,
+            SELECTORS.carouselTrackNearby,
+            SELECTORS.carouselTrackToprated,
+        ];
+
+        const scrollPositions = {};
+        selectors.forEach((sel) => {
+            const el = document.querySelector(sel);
+            if (el) scrollPositions[sel] = el.scrollLeft || 0;
+        });
+
+        resetCarouselState(SELECTORS.carouselTrackSaved);
+        resetCarouselState(SELECTORS.carouselTrackNearby);
+        resetCarouselState(SELECTORS.carouselTrackToprated);
+
+        await new Promise(resolve => requestAnimationFrame(resolve));
+
+        initializeCarousel(SELECTORS.carouselTrackSaved);
+        initializeCarousel(SELECTORS.carouselTrackNearby);
+        initializeCarousel(SELECTORS.carouselTrackToprated);
+
+        await new Promise(resolve => requestAnimationFrame(resolve));
+
+        selectors.forEach((sel) => {
+            const el = document.querySelector(sel);
+            if (el && typeof scrollPositions[sel] !== 'undefined') {
+                const maxScroll = el.scrollWidth - el.clientWidth;
+                el.scrollLeft = Math.min(scrollPositions[sel], Math.max(0, maxScroll));
+            }
+        });
+    } catch (error) {
+        console.error("Errore nella reinizializzazione del carousel:", error);
+    }
+}
+
+/**
+ * Estrae lo spot ID da una card.
+ */
+function getSpotIdFromCard(card) {
+    return card.getAttribute(SELECTORS.spotIdAttr) || "";
+}
+
+/**
+ * Estrae il titolo dello spot da una card.
+ */
+function getSpotTitle(card) {
+    return card.querySelector(SELECTORS.titleField)?.textContent || "questo spot";
+}
+
+/**
+ * Controlla se il button è già in processing.
+ */
+function isProcessingAllowed(button) {
+    return button.dataset.processing !== "true";
+}
+
+/**
+ * Imposta lo stato di processing di un button.
+ */
+function setProcessing(button, isProcessing) {
+    button.dataset.processing = isProcessing ? "true" : "false";
+}
+
+/**
+ * Rimuove una card dal DOM.
+ */
+function removeCardFromView(card) {
+    return new Promise((resolve) => {
+        card.style.opacity = "0";
+        card.style.transform = "scale(0.95)";
+        card.style.transition = `all ${TIMING.animationRemove}ms ease-out`;
 
         setTimeout(() => {
-            savedCard.remove();
-        }, 300);
-    }
+            card.remove();
+            resolve();
+        }, TIMING.animationRemove);
+    });
 }
-
-function removeFromSavedCarouselByTitle(spotTitle) {
-    const savedContainer = document.getElementById('home-saved-container');
-    if (!savedContainer) return;
-
-    const allCards = savedContainer.querySelectorAll('[role="listitem"]');
-    for (let card of allCards) {
-        const cardTitle = card.querySelector('[data-field="title"]')?.textContent || '';
-        if (cardTitle === spotTitle) {
-            card.style.opacity = '0';
-            card.style.transform = 'scale(0.95)';
-            card.style.transition = 'all 0.3s ease-out';
-
-            setTimeout(() => {
-                card.remove();
-            }, 300);
-
-            break;
-        }
-    }
-}
-

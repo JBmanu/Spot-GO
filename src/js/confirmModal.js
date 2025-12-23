@@ -1,4 +1,8 @@
-export function showConfirmModal(title, message, onConfirm, onCancel = null) {
+/**
+ * Mostra un modal di conferma (Conferma / Annulla).
+ * Restituisce una Promise che risolve true se l'utente conferma, false altrimenti.
+ */
+export function showConfirmModal(title, message) {
     return new Promise((resolve) => {
         const backdrop = document.createElement('div');
         backdrop.id = 'confirm-modal-backdrop';
@@ -49,20 +53,17 @@ export function showConfirmModal(title, message, onConfirm, onCancel = null) {
 
         confirmBtn.addEventListener('click', () => {
             closeModal();
-            if (onConfirm) onConfirm();
             resolve(true);
         });
 
         cancelBtn.addEventListener('click', () => {
             closeModal();
-            if (onCancel) onCancel();
             resolve(false);
         });
 
         backdrop.addEventListener('click', (e) => {
             if (e.target === backdrop) {
                 closeModal();
-                if (onCancel) onCancel();
                 resolve(false);
             }
         });
@@ -94,4 +95,3 @@ export function showConfirmModal(title, message, onConfirm, onCancel = null) {
         }
     });
 }
-
