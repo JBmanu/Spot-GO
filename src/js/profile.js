@@ -1,4 +1,7 @@
-// Import dinamici
+/**
+ * Utility per la gestione della pagina del profilo utente.
+ */
+
 let getFirstUser, getReviews, getCreatedSpots, getVisitedSpots, getSavedSpots, loadViewAllSaved;
 
 Promise.all([
@@ -14,6 +17,9 @@ Promise.all([
     })
 ]).catch(err => console.error("Errore nel caricamento dei moduli in profile.js:", err));
 
+/**
+ * Carica l'overview del profilo nell'area prevista.
+ */
 async function loadProfileOverview() {
     const overviewContainer = document.getElementById("profile-overview-container");
     if (!overviewContainer) {
@@ -30,7 +36,9 @@ async function loadProfileOverview() {
     await initializeProfileData();
 }
 
-// Inizializza i dati del profilo
+/**
+ * Inizializza i dati del profilo.
+ */
 async function initializeProfileData() {
     const user = await getFirstUser();
     const profileData = {
@@ -51,6 +59,9 @@ async function initializeProfileData() {
     }
 }
 
+/**
+ * Aggiorna i contatori dell'utente.
+ */
 async function updateUserCounters(userId) {
     const writtenReviews = document.getElementById("written-reviews");
     const createdSpots = document.getElementById("created-spots");
@@ -62,7 +73,9 @@ async function updateUserCounters(userId) {
     if (savedSpots) savedSpots.textContent = (await getSavedSpots(userId)).length;
 }
 
-// Aggiorna l'interfaccia del profilo con i dati
+/**
+ * Aggiorna l'interfaccia del profilo con i dati forniti.
+ */
 function updateProfileUI(data) {
     const nameEl = document.getElementById("profile-name");
     const usernameEl = document.getElementById("profile-username");
@@ -79,5 +92,7 @@ window.reloadProfile = async function () {
     await loadProfileOverview();
 };
 
-// Export della funzione principale per smartphone.js
+/**
+ * Export della funzione principale per smartphone.js
+ */
 export {loadProfileOverview};
