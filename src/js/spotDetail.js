@@ -2,17 +2,67 @@
  * Gestione delle card e della pagina di dettaglio di uno spot.
  */
 
-import {initializeBookmarks, toggleBookmarkForSpot, syncAllBookmarks} from "./bookmark.js";
-import {getSpots, getCategoryNameIt, getSavedSpots, getFirstUser} from "./query.js";
+import { initializeBookmarks, toggleBookmarkForSpot, updateBookmarkVisual, syncAllBookmarks } from "./bookmark.js";
+import { getSpots, getCategoryNameIt, getSavedSpots, getFirstUser } from "./query.js";
 
 let spottedData = {};
 let currentSpotId = null;
 
-let _cachedMainHTML = null;
-let _cachedHeaderHTML = null;
-let _cachedMainScrollTop = 0;
-let _cachedCarouselScroll = {};
-let _bookmarkChangedHandler = null;
+let _cachedState = {
+    mainHTML: null,
+    headerHTML: null,
+    mainScrollTop: 0,
+    carouselScroll: {}
+};
+
+let _popStateHandler = null;
+let _headerBookmarkClickHandler = null;
+let _headerBookmarkChangeHandler = null;
+
+/**
+ * Salva lo stato attuale della pagina prima di aprire il dettaglio.
+ */
+function savePageState() {
+    const main = document.getElementById('main');
+    const header = document.querySelector('header.app-header');
+
+    if (main) {
+        _cachedState.mainHTML = main.innerHTML;
+        _cachedState.mainScrollTop = main.scrollTop || 0;
+    }
+
+    if (header) {
+        _cachedState.headerHTML = header.innerHTML;
+    }
+
+    ['.saved-swipe-track', '.nearby-swipe-track', '.vertical-carousel-track'].forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) _cachedState.carouselScroll[sel] = el.scrollLeft || 0;
+    });
+}
+
+/**
+ * Registra il listener per popstate del back button.
+ */
+function setupHistoryListener() {
+    if (_popStateHandler) return;
+
+    _popStateHandler = async () => {
+        await restorePreviousPage();
+    };
+
+    window.addEventListener('popstate', _popStateHandler);
+}
+
+/**
+ * Rimuove il listener popstate.
+ */
+function teardownHistoryListener() {
+    if (_popStateHandler) {
+        window.removeEventListener('popstate', _popStateHandler);
+        _popStateHandler = null;
+    }
+}
 
 /**
  * Popola le card nella sezione Nearby.
@@ -21,21 +71,21 @@ async function populateSpotCards() {
     try {
         const spots = await getSpots();
         const spotCards = document.querySelectorAll('#home-nearby-container [role="listitem"][data-spot-id=""]');
+
         for (let index = 0; index < spotCards.length; index++) {
             const card = spotCards[index];
             if (index < spots.length) {
                 const spot = spots[index];
                 card.setAttribute('data-spot-id', spot.id);
+
                 const titleEl = card.querySelector('[data-field="title"]');
                 if (titleEl) titleEl.textContent = spot.nome || "Spot";
+
                 const imageEl = card.querySelector('[data-field="image"]');
-                if (imageEl && spot.immagine) {
-                    imageEl.src = spot.immagine;
-                }
+                if (imageEl && spot.immagine) imageEl.src = spot.immagine;
 
                 const categoryEl = card.querySelector('[data-field="category"]');
                 if (categoryEl && spot.idCategoria) {
-
                     categoryEl.textContent = await getCategoryNameIt(spot.idCategoria);
                 }
 
@@ -56,35 +106,27 @@ async function populateSpotCards() {
 async function populateSavedSpots() {
     try {
         const currentUser = await getFirstUser();
-        if (!currentUser) {
-            console.error("Utente non trovato");
-            return;
-        }
+        if (!currentUser) return;
 
         const savedSpotRelations = await getSavedSpots(currentUser.id);
         const savedContainer = document.getElementById('home-saved-container');
-        const emptyStateBanner = document.getElementById('saved-empty-state');
+
         if (!savedContainer) return;
+
         if (!savedSpotRelations || savedSpotRelations.length === 0) {
-            if (savedContainer.parentElement) savedContainer.parentElement.style.display = 'none';
-            if (emptyStateBanner) {
-                emptyStateBanner.style.display = 'block';
-            }
+            const parent = savedContainer.parentElement;
+            if (parent) parent.style.display = 'none';
             return;
         }
-        if (savedContainer.parentElement) savedContainer.parentElement.style.display = 'block';
-        if (emptyStateBanner) {
-            emptyStateBanner.style.display = 'none';
-        }
+
+        const parent = savedContainer.parentElement;
+        if (parent) parent.style.display = 'block';
 
         const allSpots = await getSpots();
         const neededIds = savedSpotRelations.map(r => r.idLuogo);
         const allCards = Array.from(savedContainer.querySelectorAll('[role="listitem"]'));
 
-        if (allCards.length === 0) {
-            console.warn('Nessuna card trovata in savedContainer, impossibile popolare UI dei salvati.');
-            return;
-        }
+        if (allCards.length === 0) return;
 
         const accounted = new Set();
         allCards.forEach(card => {
@@ -97,50 +139,40 @@ async function populateSavedSpots() {
                 if (titleEl) titleEl.textContent = '';
                 const imageEl = card.querySelector('[data-field="image"]');
                 if (imageEl) imageEl.src = '';
-                const bookmarkBtn = card.querySelector('[data-bookmark-button]');
-                if (bookmarkBtn) bookmarkBtn.setAttribute('data-bookmark-type', 'saved');
             }
         });
-        let placeholderCards = allCards.filter(c => !(c.getAttribute('data-spot-id')) || c.getAttribute('data-spot-id') === '');
+
+        let placeholderCards = allCards.filter(c => !c.getAttribute('data-spot-id'));
+
         for (const idLuogo of neededIds) {
             if (accounted.has(idLuogo)) continue;
+
             const spot = allSpots.find(s => s.id === idLuogo);
             if (!spot) continue;
+
             let cardToFill = placeholderCards.shift();
             if (!cardToFill) {
                 const templateCard = allCards[0];
-                if (templateCard) {
-                    cardToFill = templateCard.cloneNode(true);
-                    cardToFill.setAttribute('data-spot-id', '');
-                    const titleElC = cardToFill.querySelector('[data-field="title"]');
-                    if (titleElC) titleElC.textContent = '';
-                    const imageElC = cardToFill.querySelector('[data-field="image"]');
-                    if (imageElC) imageElC.src = '';
-                    savedContainer.appendChild(cardToFill);
-                    allCards.push(cardToFill);
-                } else continue;
+                if (!templateCard) continue;
+
+                cardToFill = templateCard.cloneNode(true);
+                savedContainer.appendChild(cardToFill);
+                allCards.push(cardToFill);
             }
+
             cardToFill.setAttribute('data-spot-id', spot.id);
             const titleEl = cardToFill.querySelector('[data-field="title"]');
             if (titleEl) titleEl.textContent = spot.nome || "Spot";
-            const imageEl = cardToFill.querySelector('[data-field="image"]');
-            if (imageEl && spot.immagine) {
-                imageEl.src = spot.immagine;
-            }
 
-            const bookmarkBtn = cardToFill.querySelector('[data-bookmark-button]');
-            if (bookmarkBtn) {
-                bookmarkBtn.setAttribute('data-bookmark-type', 'saved');
-            }
+            const imageEl = cardToFill.querySelector('[data-field="image"]');
+            if (imageEl && spot.immagine) imageEl.src = spot.immagine;
 
             cardToFill.setAttribute('data-category', (spot.idCategoria || 'unknown').toLowerCase());
             cardToFill.style.display = '';
             accounted.add(spot.id);
         }
 
-        placeholderCards.forEach(pc => {
-            pc.style.display = 'none';
-        });
+        placeholderCards.forEach(pc => pc.style.display = 'none');
 
     } catch (error) {
         console.error("Errore nel popolare gli spot salvati:", error);
@@ -148,89 +180,215 @@ async function populateSavedSpots() {
 }
 
 /**
- * Inizializza i click sulle card per aprire il dettaglio spot.
+ * Popola la sezione "Top Rated".
+ */
+async function populateTopratedCards() {
+    try {
+        const spots = await getSpots();
+        const topCards = document.querySelectorAll('#home-toprated-carousel-container [role="listitem"][data-spot-id=""]');
+
+        for (let index = 0; index < topCards.length; index++) {
+            const card = topCards[index];
+            if (index < spots.length) {
+                const spot = spots[index];
+                card.setAttribute('data-spot-id', spot.id);
+
+                const titleEl = card.querySelector('[data-field="title"]');
+                if (titleEl) titleEl.textContent = spot.nome || "Spot";
+
+                const imageEl = card.querySelector('[data-field="image"]');
+                if (imageEl && spot.immagine) imageEl.src = spot.immagine;
+
+                const categoryEl = card.querySelector('[data-field="category"]');
+                if (categoryEl && spot.idCategoria) {
+                    categoryEl.textContent = await getCategoryNameIt(spot.idCategoria);
+                }
+
+                card.setAttribute('data-category', (spot.idCategoria || 'unknown').toLowerCase());
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        }
+    } catch (error) {
+        console.error('Errore nel popolare le card toprated:', error);
+    }
+}
+
+/**
+ * Inizializza i click sulle card per aprire il dettaglio.
  */
 function initializeSpotClickHandlers() {
     const spotCards = document.querySelectorAll('[role="listitem"][data-spot-id]');
+
     spotCards.forEach(card => {
-        card.addEventListener('click', async (e) => {
-
-            if (e.target.closest('[data-bookmark-button]')) {
-                return;
-            }
-
-            const spotId = card.getAttribute('data-spot-id');
-            if (spotId && spotId !== '') {
-                await loadSpotDetail(spotId);
-            }
-        });
+        card.removeEventListener('click', openDetailHandler);
+        card.addEventListener('click', openDetailHandler);
     });
 }
 
 /**
- * Carica la pagina di dettaglio di uno spot.
+ * Handler per l'apertura del dettaglio quando si clicca una card.
+ */
+async function openDetailHandler(e) {
+    if (e.target.closest('[data-bookmark-button]')) return;
+
+    const spotId = e.currentTarget.getAttribute('data-spot-id');
+    if (spotId && spotId !== '') {
+        await loadSpotDetail(spotId);
+    }
+}
+
+/**
+ * Carica il dettaglio di uno spot.
  */
 async function loadSpotDetail(spotId) {
     try {
         currentSpotId = spotId;
         const spotData = await getSpotById(spotId);
+
         if (!spotData) {
             console.error('Spot non trovato');
             return;
         }
+
+        savePageState();
+
         const response = await fetch("../html/spot-detail.html");
         if (!response.ok) return;
+
         const main = document.getElementById("main");
         if (!main) return;
-        _cachedMainHTML = main.innerHTML;
-        _cachedMainScrollTop = main.scrollTop || 0;
-        const headerEl = document.querySelector('header.app-header');
-        _cachedHeaderHTML = headerEl ? headerEl.innerHTML : null;
-        const carouselSelectors = ['.saved-swipe-track', '.nearby-swipe-track', '.vertical-carousel-track'];
-        _cachedCarouselScroll = {};
-        carouselSelectors.forEach(sel => {
-            const el = document.querySelector(sel);
-            if (el) _cachedCarouselScroll[sel] = el.scrollLeft || 0;
-        });
-        main.innerHTML = await response.text();
-        const headerLeftLogo = document.querySelector(".header-left-logo");
-        const headerLogoText = document.getElementById("header-logo-text");
-        const headerTitle = document.getElementById("header-title");
-
-        if (headerLeftLogo) {
-            headerLeftLogo.innerHTML = `<button type="button" id="header-back-button" aria-label="Torna indietro" class="flex items-center justify-center w-10 h-10">
-                <img src="../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
-            </button>`;
-        }
-        if (headerLogoText) headerLogoText.style.display = "none";
-        if (headerTitle) {
-            headerTitle.textContent = spotData.nome || "Dettaglio Spot";
-            headerTitle.classList.remove("hidden");
-        }
 
         try {
-            const headerEl2 = document.querySelector('header.app-header');
-            const hb = headerEl2 ? headerEl2.querySelector('#header-bookmark-button') : null;
-            const nb = headerEl2 ? headerEl2.querySelector('#notification-button') : null;
-            if (hb && nb && hb !== nb) headerEl2.insertBefore(hb, nb);
+            const state = { spotId };
+            history.pushState(state, '', location.pathname + '#spot-' + spotId);
+            setupHistoryListener();
         } catch (e) {
+            console.warn('History API non disponibile:', e);
         }
+
+        main.innerHTML = await response.text();
+
+        updateDetailHeader(spotData);
+
         await populateSpotDetail(spotData);
-        initializeSpotDetailHandlers();
-        deactivateAllToolbarButtons();
+
+        initializeDetailHandlers();
+
+        disableToolbarButtons();
+
     } catch (err) {
         console.error("Errore nel caricamento dettaglio spot:", err);
     }
 }
 
 /**
- * Recupera uno spot per ID cercandolo nell'elenco generale.
+ * Aggiorna l'header per la pagina di dettaglio.
+ */
+function updateDetailHeader(spotData) {
+    const headerLeftLogo = document.querySelector(".header-left-logo");
+    const headerLogoText = document.getElementById("header-logo-text");
+    const headerTitle = document.getElementById("header-title");
+
+    if (headerLeftLogo) {
+        headerLeftLogo.innerHTML = `
+            <button type="button" id="header-back-button" aria-label="Torna indietro" 
+                style="cursor: pointer; background: none; border: none; padding: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                <img src="../assets/icons/profile/Back.svg" alt="Indietro" style="width: 24px; height: 24px;">
+            </button>
+        `;
+    }
+
+    if (headerLogoText) headerLogoText.style.display = "none";
+
+    if (headerTitle) {
+        headerTitle.textContent = spotData.nome || "Dettaglio Spot";
+        headerTitle.classList.remove("hidden");
+    }
+
+    const headerBookmarkButton = document.getElementById("header-bookmark-button");
+    if (headerBookmarkButton) {
+        headerBookmarkButton.style.display = "block";
+
+        headerBookmarkButton.setAttribute('data-bookmark-button', 'true');
+        headerBookmarkButton.setAttribute('data-bookmark-type', 'detail');
+
+        try {
+            if (_headerBookmarkClickHandler) {
+                headerBookmarkButton.removeEventListener('click', _headerBookmarkClickHandler);
+            }
+            if (_headerBookmarkChangeHandler) {
+                document.removeEventListener('bookmark:changed', _headerBookmarkChangeHandler);
+            }
+        } catch (e) {
+
+        }
+
+        _headerBookmarkClickHandler = async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!spotData || !spotData.id) return;
+            try {
+                await toggleBookmarkForSpot(spotData.id);
+                await (async function refresh() {
+                    try {
+                        const user = await getFirstUser();
+                        if (!user) return;
+                        const saved = await getSavedSpots(user.id);
+                        const savedIds = (saved || []).map(s => s.idLuogo);
+                        const isSaved = savedIds.includes(spotData.id);
+                        headerBookmarkButton.dataset.saved = isSaved ? 'true' : 'false';
+                        updateBookmarkVisual(headerBookmarkButton, isSaved);
+                    } catch (err) {
+                        console.error('Errore refresh header bookmark visual:', err);
+                    }
+                })();
+            } catch (err) {
+                console.error('Errore toggle bookmark header:', err);
+            }
+        };
+
+        headerBookmarkButton.addEventListener('click', _headerBookmarkClickHandler);
+
+        _headerBookmarkChangeHandler = (ev) => {
+            try {
+                if (!ev || !ev.detail) return;
+                const { spotId, isSaved } = ev.detail;
+                if (spotId === spotData.id) {
+                    headerBookmarkButton.dataset.saved = isSaved ? 'true' : 'false';
+                    updateBookmarkVisual(headerBookmarkButton, isSaved);
+                }
+            } catch (err) {
+                console.error('Errore header bookmark change handler:', err);
+            }
+        };
+
+        document.addEventListener('bookmark:changed', _headerBookmarkChangeHandler);
+
+        (async () => {
+            try {
+                const user = await getFirstUser();
+                if (!user) return;
+                const saved = await getSavedSpots(user.id);
+                const savedIds = (saved || []).map(s => s.idLuogo);
+                const isSaved = savedIds.includes(spotData.id);
+                headerBookmarkButton.dataset.saved = isSaved ? 'true' : 'false';
+                updateBookmarkVisual(headerBookmarkButton, isSaved);
+            } catch (err) {
+                console.error('Errore impostazione iniziale header bookmark:', err);
+            }
+        })();
+    }
+}
+
+/**
+ * Recupera uno spot per ID.
  */
 async function getSpotById(spotId) {
     try {
         const spots = await getSpots();
-        const spot = spots.find(s => s.id === spotId);
-        return spot || null;
+        return spots.find(s => s.id === spotId) || null;
     } catch (error) {
         console.error("Errore nel recupero dello spot:", error);
         return null;
@@ -238,386 +396,182 @@ async function getSpotById(spotId) {
 }
 
 /**
- * Popola il dettaglio spot nella pagina di dettaglio.
+ * Popola i dati del dettaglio dello spot.
  */
 async function populateSpotDetail(spotData) {
-    const mainImage = document.getElementById("spot-detail-main-image");
-    if (mainImage && spotData.immagine) {
-        mainImage.src = spotData.immagine;
-        mainImage.alt = spotData.nome;
+    const elements = {
+        image: document.getElementById("spot-detail-main-image"),
+        title: document.getElementById("spot-detail-title"),
+        rating: document.getElementById("spot-detail-rating-value"),
+        category: document.getElementById("spot-detail-category"),
+        distance: document.getElementById("spot-detail-distance"),
+        description: document.getElementById("spot-detail-description"),
+        address: document.getElementById("spot-detail-address"),
+        hours: document.getElementById("spot-detail-hours"),
+        cost: document.getElementById("spot-detail-cost")
+    };
+
+    if (elements.image && spotData.immagine) {
+        elements.image.src = spotData.immagine;
+        elements.image.alt = spotData.nome;
     }
-    const titleEl = document.getElementById("spot-detail-title");
-    if (titleEl) {
-        titleEl.textContent = spotData.nome || "Spot";
-    }
-    const ratingEl = document.getElementById("spot-detail-rating-value");
-    if (ratingEl) {
-        ratingEl.textContent = "4.5";
-    }
-    const categoryEl = document.getElementById("spot-detail-category");
-    if (categoryEl && spotData.idCategoria) {
-        getCategoryNameIt(spotData.idCategoria).then(categoryNameIt => {
-            categoryEl.textContent = categoryNameIt;
+
+    if (elements.title) elements.title.textContent = spotData.nome || "Spot";
+    if (elements.rating) elements.rating.textContent = "4.5";
+    if (elements.distance) elements.distance.textContent = "0 m";
+
+    if (elements.category && spotData.idCategoria) {
+        getCategoryNameIt(spotData.idCategoria).then(cat => {
+            if (elements.category) elements.category.textContent = cat;
         });
     }
-    const distanceEl = document.getElementById("spot-detail-distance");
-    if (distanceEl) {
-        distanceEl.textContent = "0 m";
+
+    if (elements.description) {
+        elements.description.textContent = spotData.descrizione || "Nessuna descrizione disponibile";
     }
-    const descriptionEl = document.getElementById("spot-detail-description");
-    if (descriptionEl) {
-        descriptionEl.textContent = spotData.descrizione || "Nessuna descrizione disponibile";
+
+    if (elements.address && spotData.indirizzo) {
+        elements.address.textContent = spotData.indirizzo;
     }
-    const addressEl = document.getElementById("spot-detail-address");
-    if (addressEl && spotData.indirizzo) {
-        addressEl.textContent = spotData.indirizzo;
+
+    if (elements.hours && spotData.orari && spotData.orari.length > 0) {
+        elements.hours.textContent = spotData.orari.map(o => `${o.inizio} - ${o.fine}`).join(" | ");
     }
-    const hoursEl = document.getElementById("spot-detail-hours");
-    if (hoursEl && spotData.orari && spotData.orari.length > 0) {
-        hoursEl.textContent = spotData.orari.map(o => `${o.inizio} - ${o.fine}`).join(" | ");
+
+    if (elements.cost && spotData.costo && spotData.costo.length > 0) {
+        elements.cost.textContent = spotData.costo
+            .map(c => c.prezzo === 0 ? "Gratuito" : `${c.tipo}: €${c.prezzo}`)
+            .join(" | ");
     }
-    const costEl = document.getElementById("spot-detail-cost");
-    if (costEl && spotData.costo && spotData.costo.length > 0) {
-        costEl.textContent = spotData.costo.map(c => c.prezzo === 0 ? "Gratuito" : `${c.tipo}: €${c.prezzo}`).join(" | ");
-    }
+
     spottedData = spotData;
-    try {
-        const detailButton = document.getElementById('spot-detail-bookmark-button');
-        if (detailButton) {
-            detailButton.style.display = 'none';
-            detailButton.setAttribute('data-bookmark-button', 'true');
-            detailButton.setAttribute('data-bookmark-type', 'detail');
-            const currentUser = await getFirstUser();
-            if (currentUser) {
-                const saved = await getSavedSpots(currentUser.id);
-                const savedIds = (saved || []).map(s => s.idLuogo);
-                const isSaved = savedIds.includes(spotData.id);
-                detailButton.dataset.saved = isSaved ? 'true' : 'false';
-            }
-        }
-    } catch (e) {
-        console.error('Errore impostazione stato bookmark dettaglio:', e);
-    }
-    updateHeaderBookmark();
 }
 
 /**
- * Inizializza handler presenti nella pagina dettaglio.
+ * Inizializza i handler della pagina dettaglio.
  */
-function initializeSpotDetailHandlers() {
-    initializeMissionsCount();
-    initializeReviewsCarousel();
-    const backButton = document.getElementById("header-back-button") || document.getElementById("spot-detail-back-button");
+function initializeDetailHandlers() {
+    const backButton = document.getElementById("header-back-button");
+
     if (backButton) {
-        backButton.addEventListener("click", async () => {
+        backButton.addEventListener("click", async (e) => {
+            e.stopPropagation();
+
             const main = document.getElementById("main");
             if (main) {
-                main.classList.remove("spot-detail-enter");
                 main.classList.add("spot-detail-exit");
                 await new Promise(resolve => setTimeout(resolve, 300));
-                main.classList.remove("spot-detail-exit");
-                await restorePreviousMain();
             }
-        });
-    }
-    try {
-        if (_bookmarkChangedHandler) document.removeEventListener('bookmark:changed', _bookmarkChangedHandler);
-        _bookmarkChangedHandler = (e) => {
+
             try {
-                if (e && e.detail && typeof e.detail.spotId !== 'undefined') {
-                    if (e.detail.spotId === currentSpotId) updateHeaderBookmark();
-                } else {
-                    updateHeaderBookmark();
-                }
+                history.back();
             } catch (err) {
+                await restorePreviousPage();
             }
-        };
-        document.addEventListener('bookmark:changed', _bookmarkChangedHandler);
-    } catch (e) {
-    }
-    const headerBookmarkButton = document.getElementById("header-bookmark-button");
-    if (headerBookmarkButton) {
-        headerBookmarkButton.style.display = "block";
-        headerBookmarkButton.replaceWith(headerBookmarkButton.cloneNode(true));
-        const newHeaderBookmarkButton = document.getElementById("header-bookmark-button");
-        if (newHeaderBookmarkButton) {
-            newHeaderBookmarkButton.addEventListener("click", async (e) => {
-                e.stopPropagation();
-                if (!currentSpotId) return;
-                await toggleBookmarkForSpot(currentSpotId);
-                try {
-                    const currentUser = await getFirstUser();
-                    if (currentUser) {
-                        const saved = await getSavedSpots(currentUser.id);
-                        const savedIds = (saved || []).map(s => s.idLuogo);
-                        const isSaved = savedIds.includes(currentSpotId);
-                        const detailBtn = document.getElementById('spot-detail-bookmark-button');
-                        if (detailBtn) detailBtn.dataset.saved = isSaved ? 'true' : 'false';
-                        updateHeaderBookmark(isSaved);
-                        const evt = new CustomEvent('bookmark:changed', {detail: {spotId: currentSpotId, isSaved}});
-                        document.dispatchEvent(evt);
-                    }
-                } catch (err) {
-                }
-            });
-        }
-    }
-    const visitButton = document.getElementById("spot-detail-visit-button");
-    if (visitButton) {
-        visitButton.addEventListener("click", () => {
-            markSpotAsVisited();
         });
     }
-    const shareButton = document.getElementById("spot-detail-share-button");
-    if (shareButton) {
-        shareButton.addEventListener("click", () => {
-            shareSpot();
-        });
-    }
-    const missionsToggleButton = document.getElementById("spot-missions-toggle");
-    if (missionsToggleButton) {
-        missionsToggleButton.addEventListener("click", () => {
-            toggleMissions(missionsToggleButton);
-        });
-    }
+
     initializeBookmarks();
 }
 
 /**
- * Ripristina il contenuto precedente di #main e header e re-inizializza componenti interattivi.
+ * Disattiva i pulsanti della toolbar.
  */
-async function restorePreviousMain() {
-    const main = document.getElementById('main');
-    if (!main) return;
-    if (_cachedMainHTML) {
-        try {
-            if (_bookmarkChangedHandler) {
-                document.removeEventListener('bookmark:changed', _bookmarkChangedHandler);
-                _bookmarkChangedHandler = null;
-            }
-        } catch (e) {
-        }
-        main.innerHTML = _cachedMainHTML;
-        try {
-            await populateSavedSpots();
-            try {
-                await syncAllBookmarks();
-            } catch (e) {
+function disableToolbarButtons() {
+    const toolbar = document.querySelector('.app-toolbar');
+    if (!toolbar) return;
 
-            }
-        } catch (e) {
-            // non bloccante
+    toolbar.querySelectorAll('button[data-section]').forEach(btn => {
+        btn.classList.remove('active');
+        const text = btn.querySelector('span');
+        const icon = btn.querySelector('[data-role="icon"]');
+
+        if (text) {
+            text.classList.remove('font-bold');
+            text.classList.add('font-normal');
         }
-        if (_cachedHeaderHTML) {
-            const header = document.querySelector('header.app-header');
-            if (header) header.innerHTML = _cachedHeaderHTML;
-        }
+        if (icon) icon.classList.remove('scale-125');
+    });
+}
+
+/**
+ * Ripristina la pagina precedente.
+ */
+async function restorePreviousPage() {
+    const main = document.getElementById('main');
+    if (!main || !_cachedState.mainHTML) {
         try {
-            const hb = document.getElementById('header-bookmark-button');
-            if (hb) hb.style.display = 'none';
-            const nb = document.getElementById('notification-button');
-            if (nb) nb.style.display = 'block';
-        } catch (e) {
-            // ignore
-        }
-        try {
-            const {initializeCarousel} = await import("./carousel.js");
-            await initializeCarousel('.saved-swipe-track');
-            await initializeCarousel('.nearby-swipe-track');
-            await initializeCarousel('.vertical-carousel-track');
-        } catch (e) {
-            // ignore se il modulo non è disponibile
-        }
-        requestAnimationFrame(() => {
-            main.scrollTop = _cachedMainScrollTop || 0;
-            requestAnimationFrame(() => {
-                Object.keys(_cachedCarouselScroll).forEach(sel => {
-                    const el = document.querySelector(sel);
-                    if (el) el.scrollLeft = _cachedCarouselScroll[sel] || 0;
-                });
-                try {
-                    initializeBookmarks();
-                } catch (e) {
-                }
-                try {
-                    initializeSpotClickHandlers();
-                } catch (e) {
-                }
-                _cachedMainHTML = null;
-                _cachedHeaderHTML = null;
-                _cachedMainScrollTop = 0;
-                _cachedCarouselScroll = {};
-            });
-        });
-    } else {
-        try {
+            const { goToHomepage } = await import('./homepage.js');
             await goToHomepage();
         } catch (e) {
-            console.error('Errore nel ripristino della pagina precedente:', e);
+            console.error('Errore nel ripristino:', e);
+        }
+        return;
+    }
+
+    teardownHistoryListener();
+
+    main.innerHTML = _cachedState.mainHTML;
+
+    const header = document.querySelector('header.app-header');
+    if (header && _cachedState.headerHTML) {
+        header.innerHTML = _cachedState.headerHTML;
+    }
+
+    const headerBookmarkButton = document.getElementById("header-bookmark-button");
+    if (headerBookmarkButton) {
+        headerBookmarkButton.style.display = "none";
+
+        try {
+            if (_headerBookmarkClickHandler) {
+                headerBookmarkButton.removeEventListener('click', _headerBookmarkClickHandler);
+                _headerBookmarkClickHandler = null;
+            }
+            if (_headerBookmarkChangeHandler) {
+                document.removeEventListener('bookmark:changed', _headerBookmarkChangeHandler);
+                _headerBookmarkChangeHandler = null;
+            }
+        } catch (err) {
         }
     }
-}
 
-/**
- * Inizializza il carosello delle recensioni presente nella pagina dettaglio.
- */
-function initializeReviewsCarousel() {
-    const carouselWrapper = document.querySelector(".spot-reviews-carousel-wrapper");
-    if (!carouselWrapper) return;
-    let isDown = false;
-    let startX = 0;
-    let scrollLeft = 0;
-    carouselWrapper.addEventListener("mousedown", (e) => {
-        isDown = true;
-        carouselWrapper.classList.add("is-dragging");
-        startX = e.pageX - carouselWrapper.offsetLeft;
-        scrollLeft = carouselWrapper.scrollLeft;
-    });
-    carouselWrapper.addEventListener("mouseleave", () => {
-        isDown = false;
-        carouselWrapper.classList.remove("is-dragging");
-    });
-    carouselWrapper.addEventListener("mouseup", () => {
-        isDown = false;
-        carouselWrapper.classList.remove("is-dragging");
-    });
-    carouselWrapper.addEventListener("mousemove", (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - carouselWrapper.offsetLeft;
-        const walk = x - startX;
-        carouselWrapper.scrollLeft = scrollLeft - walk;
-    });
-    carouselWrapper.addEventListener("mouseenter", () => {
-        carouselWrapper.style.cursor = "grab";
-    });
-    carouselWrapper.addEventListener("mouseleave", () => {
-        carouselWrapper.style.cursor = "auto";
-    });
-    carouselWrapper.addEventListener("touchstart", (e) => {
-        startX = e.touches[0].clientX - carouselWrapper.offsetLeft;
-        scrollLeft = carouselWrapper.scrollLeft;
-    });
-    carouselWrapper.addEventListener("touchmove", (e) => {
-        const x = e.touches[0].clientX - carouselWrapper.offsetLeft;
-        const walk = x - startX;
-        carouselWrapper.scrollLeft = scrollLeft - walk;
-    });
-}
+    requestAnimationFrame(async () => {
+        main.scrollTop = _cachedState.mainScrollTop || 0;
 
-/**
- * Aggiorna l'icona bookmark presente nell'header in base allo stato dettaglio.
- */
-function updateHeaderBookmark(isSavedParam) {
-    const headerButton = document.getElementById("header-bookmark-button");
-    if (!headerButton) return;
-    let isSaved = typeof isSavedParam !== 'undefined' ? !!isSavedParam : null;
-    if (isSaved === null) {
-        const detailButton = document.getElementById("spot-detail-bookmark-button");
-        if (detailButton) {
-            isSaved = detailButton.dataset.saved === 'true';
-        }
-    }
-    const headerIcon = headerButton.querySelector('.bookmark-icon');
-    if (isSaved) {
-        if (headerIcon) headerIcon.src = "../assets/icons/homepage/Bookmark.svg";
-        headerButton.setAttribute('aria-label', 'Rimuovi dai salvati');
-    } else {
-        if (headerIcon) headerIcon.src = "../assets/icons/homepage/BookmarkEmpty.svg";
-        headerButton.setAttribute('aria-label', 'Aggiungi ai salvati');
-    }
-}
+        requestAnimationFrame(async () => {
+            Object.entries(_cachedState.carouselScroll).forEach(([sel, scroll]) => {
+                const el = document.querySelector(sel);
+                if (el) el.scrollLeft = scroll;
+            });
 
-/**
- * Mostra o nasconde la sezione "missions" nel dettaglio spot.
- */
-function toggleMissions(button) {
-    const missionsDetails = document.getElementById('spot-missions-details');
-    if (missionsDetails) {
-        const isHidden = missionsDetails.style.display === 'none';
-        if (isHidden) {
-            missionsDetails.style.display = 'block';
-            button.classList.add('expanded');
-        } else {
-            missionsDetails.style.display = 'none';
-            button.classList.remove('expanded');
-        }
-    }
-}
+            try {
+                await populateSpotCards();
+                await populateSavedSpots();
+                try {
+                    await syncAllBookmarks();
+                } catch (err) {
+                    console.warn('Impossibile sincronizzare i bookmark durante il restore:', err);
+                }
+                initializeSpotClickHandlers();
+                initializeBookmarks();
+            } catch (e) {
+                console.error('Errore re-inizializzazione:', e);
+            }
 
-/**
- *  Marca uno spot come visitato nell'interfaccia.
- */
-function markSpotAsVisited() {
-    const visitButton = document.getElementById("spot-detail-visit-button");
-    if (visitButton) {
-        visitButton.classList.add("visited");
-        visitButton.textContent = "Visitato";
-        visitButton.setAttribute("aria-disabled", "true");
-    }
-}
-
-/**
- * Condivide uno spot tramite le funzionalità di condivisione del dispositivo.
- */
-function shareSpot() {
-    if (navigator.share && spottedData.nome) {
-        navigator.share({
-            title: spottedData.nome,
-            text: `Dai un'occhiata a questo spot: ${spottedData.nome}`,
-            url: window.location.href
-        }).catch(() => {
+            _cachedState = {
+                mainHTML: null,
+                headerHTML: null,
+                mainScrollTop: 0,
+                carouselScroll: {}
+            };
         });
-    }
-}
-
-/**
- * Disattiva lo stato visuale dei bottoni toolbar.
- */
-function deactivateAllToolbarButtons() {
-    const toolbar = document.getElementById("spot-detail-toolbar");
-    if (!toolbar) return;
-    toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
-        const text = btn.querySelector("span");
-        const icon = btn.querySelector("[data-role='icon']");
-        if (text) {
-            text.classList.remove("font-bold");
-            text.classList.add("font-normal");
-        }
-        if (icon) {
-            icon.classList.remove("scale-125");
-        }
     });
-}
-
-/**
- * Aggiorna i contatori delle missioni nel dettaglio.
- */
-function updateMissionsCount() {
-    const missionsCompletedElement = document.getElementById('spot-missions-completed');
-    const missionsTotalElement = document.getElementById('spot-missions-total');
-
-    if (missionsCompletedElement && missionsTotalElement) {
-        const completedCount = document.querySelectorAll('.mission-banner.completed').length;
-        const totalCount = document.querySelectorAll('.mission-banner').length;
-        missionsCompletedElement.textContent = completedCount;
-        missionsTotalElement.textContent = totalCount;
-    }
-}
-
-/**
- * Inizializza il conteggio missioni nel dettaglio.
- */
-function initializeMissionsCount() {
-    updateMissionsCount();
 }
 
 export {
-    initializeSpotClickHandlers,
     populateSpotCards,
     populateSavedSpots,
-    loadSpotDetail,
-    getSpotById,
-    updateMissionsCount,
+    populateTopratedCards,
+    initializeSpotClickHandlers
 };
 

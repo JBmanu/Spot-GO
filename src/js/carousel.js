@@ -1,5 +1,5 @@
 /**
- * Inizializza il comportamento di drag/scroll per i carousel selezionati.
+ * Inizializza il comportamento di drag/scroll per i carousel.
  */
 export function initializeCarousel(trackSelector = ".carousel-track") {
     const carousels = document.querySelectorAll(trackSelector);
@@ -9,15 +9,26 @@ export function initializeCarousel(trackSelector = ".carousel-track") {
             return;
         }
 
+        const isVertical = carousel.classList.contains('vertical-carousel-track') || carousel.dataset.orientation === 'vertical';
+
         let isDown = false;
         let startX = 0;
         let scrollLeft = 0;
+        let startY = 0;
+        let scrollTop = 0;
 
         const handleMouseDown = (e) => {
+            if (e.target.closest('[role="listitem"]')) return;
+
             isDown = true;
             carousel.classList.add("is-dragging");
-            startX = e.pageX - carousel.offsetLeft;
-            scrollLeft = carousel.scrollLeft;
+            if (isVertical) {
+                startY = e.pageY - carousel.offsetTop;
+                scrollTop = carousel.scrollTop;
+            } else {
+                startX = e.pageX - carousel.offsetLeft;
+                scrollLeft = carousel.scrollLeft;
+            }
         };
 
         const handleMouseLeave = () => {
@@ -34,9 +45,15 @@ export function initializeCarousel(trackSelector = ".carousel-track") {
             if (!isDown) return;
             e.preventDefault();
 
-            const x = e.pageX - carousel.offsetLeft;
-            const walk = x - startX;
-            carousel.scrollLeft = scrollLeft - walk;
+            if (isVertical) {
+                const y = e.pageY - carousel.offsetTop;
+                const walk = y - startY;
+                carousel.scrollTop = scrollTop - walk;
+            } else {
+                const x = e.pageX - carousel.offsetLeft;
+                const walk = x - startX;
+                carousel.scrollLeft = scrollLeft - walk;
+            }
         };
 
         const handleMouseEnter = () => {
@@ -44,14 +61,59 @@ export function initializeCarousel(trackSelector = ".carousel-track") {
         };
 
         const handleTouchStart = (e) => {
-            startX = e.touches[0].clientX - carousel.offsetLeft;
-            scrollLeft = carousel.scrollLeft;
+            if (isVertical) {
+                startY = e.touches[0].clientY - carousel.offsetTop;
+                scrollTop = carousel.scrollTop;
+            } else {
+                startX = e.touches[0].clientX - carousel.offsetLeft;
+                scrollLeft = carousel.scrollLeft;
+            }
         };
 
         const handleTouchMove = (e) => {
-            const x = e.touches[0].clientX - carousel.offsetLeft;
-            const walk = x - startX;
-            carousel.scrollLeft = scrollLeft - walk;
+            if (isVertical) {
+                const y = e.touches[0].clientY - carousel.offsetTop;
+                const walk = y - startY;
+                carousel.scrollTop = scrollTop - walk;
+            } else {
+                const x = e.touches[0].clientX - carousel.offsetLeft;
+                const walk = x - startX;
+                carousel.scrollLeft = scrollLeft - walk;
+            }
+        };
+
+        // Detect touch-capable devices to avoid intercepting native touch scroll
+        const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+        const handlePointerDown = (e) => {
+            if (!isVertical) return;
+            if (e.target.closest('[role="listitem"]')) return;
+
+            isDown = true;
+            carousel.classList.add('is-dragging');
+            startY = e.clientY - carousel.getBoundingClientRect().top;
+            scrollTop = carousel.scrollTop;
+            try {
+                carousel.setPointerCapture(e.pointerId);
+            } catch (err) {
+            }
+        };
+
+        const handlePointerMove = (e) => {
+            if (!isDown || !isVertical) return;
+            const y = e.clientY - carousel.getBoundingClientRect().top;
+            const walk = y - startY;
+            carousel.scrollTop = scrollTop - walk;
+        };
+
+        const handlePointerUp = (e) => {
+            if (!isVertical) return;
+            isDown = false;
+            carousel.classList.remove('is-dragging');
+            try {
+                carousel.releasePointerCapture(e.pointerId);
+            } catch (err) {
+            }
         };
 
         carousel.addEventListener("mousedown", handleMouseDown);
@@ -59,8 +121,16 @@ export function initializeCarousel(trackSelector = ".carousel-track") {
         carousel.addEventListener("mouseup", handleMouseUp);
         carousel.addEventListener("mousemove", handleMouseMove);
         carousel.addEventListener("mouseenter", handleMouseEnter);
-        carousel.addEventListener("touchstart", handleTouchStart);
-        carousel.addEventListener("touchmove", handleTouchMove);
+        if (!isVertical) {
+            carousel.addEventListener("touchstart", handleTouchStart, {passive: true});
+            carousel.addEventListener("touchmove", handleTouchMove, {passive: true});
+        }
+        if (isVertical && !isTouchDevice) {
+            carousel.addEventListener('pointerdown', handlePointerDown);
+            carousel.addEventListener('pointermove', handlePointerMove);
+            carousel.addEventListener('pointerup', handlePointerUp);
+            carousel.addEventListener('pointercancel', handlePointerUp);
+        }
 
         carousel.carouselHandlers = {
             handleMouseDown,
@@ -70,6 +140,9 @@ export function initializeCarousel(trackSelector = ".carousel-track") {
             handleMouseEnter,
             handleTouchStart,
             handleTouchMove,
+            handlePointerDown,
+            handlePointerMove,
+            handlePointerUp,
         };
 
         carousel.dataset.carouselInitialized = "true";
@@ -77,7 +150,7 @@ export function initializeCarousel(trackSelector = ".carousel-track") {
 }
 
 /**
- * Rimuove lo stato di inizializzazione dai carousel selezionati.
+ * Rimuove lo stato di inizializzazione dai carousel.
  */
 export function resetCarouselState(trackSelector = ".carousel-track") {
     const carousels = document.querySelectorAll(trackSelector);
@@ -92,6 +165,10 @@ export function resetCarouselState(trackSelector = ".carousel-track") {
             carousel.removeEventListener("mouseenter", h.handleMouseEnter);
             carousel.removeEventListener("touchstart", h.handleTouchStart);
             carousel.removeEventListener("touchmove", h.handleTouchMove);
+            carousel.removeEventListener('pointerdown', h.handlePointerDown);
+            carousel.removeEventListener('pointermove', h.handlePointerMove);
+            carousel.removeEventListener('pointerup', h.handlePointerUp);
+            carousel.removeEventListener('pointercancel', h.handlePointerUp);
             delete carousel.carouselHandlers;
         }
 

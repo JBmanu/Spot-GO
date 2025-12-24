@@ -1,32 +1,38 @@
-import { initializeCarousel } from "./carousel.js";
-import { initializeBookmarks, syncAllBookmarks } from "./bookmark.js";
+import {initializeCarousel} from "./carousel.js";
+import {initializeBookmarks, syncAllBookmarks} from "./bookmark.js";
 import {
     initializeSpotClickHandlers,
     populateSpotCards,
     populateSavedSpots,
 } from "./spotDetail.js";
+import {initFitSavedTitles} from "./fitTitleSaved.js";
 
 let activeCategories = new Set();
 let previousPage = "homepage";
 
 /**
- * Configura filtri e carica le sezioni principali della homepage.
  * Inizializza card, bookmark e sincronizzazione iniziale.
  */
-export function initializeHomepageFilters() {
+export async function initializeHomepageFilters() {
     const categoryContainer = document.getElementById("home-categories-container");
     if (!categoryContainer) return;
 
-    loadSavedSpotsSection();
-    loadNearbySpotsSection();
-    loadVerticalCarouselSection();
+    // Carica tutte le tre sezioni in parallelo e aspetta che finiscano
+    await Promise.all([
+        loadSavedSpotsSection(),
+        loadNearbySpotsSection(),
+        loadVerticalCarouselSection(),
+    ]);
 
-    (async () => {
+    try {
+        // Popola le card solo dopo che gli HTML delle sezioni sono stati inseriti
         await populateSpotCards();
         initializeSpotClickHandlers();
         initializeBookmarks();
         await syncAllBookmarks();
-    })().catch((err) => console.error("Errore init homepage:", err));
+    } catch (err) {
+        console.error("Errore init homepage:", err);
+    }
 
     categoryContainer.addEventListener("click", (e) => {
         const button = e.target.closest(".home-chip");
@@ -66,6 +72,8 @@ async function loadSavedSpotsSection() {
         initializeBookmarks();
 
         await populateSavedSpots();
+        // assicurati che i titoli rientrino: init del fit title
+        initFitSavedTitles();
         initializeBookmarks();
         await syncAllBookmarks();
 
@@ -115,6 +123,13 @@ async function loadVerticalCarouselSection() {
 
         initializeCarousel(".vertical-carousel-track");
         initializeBookmarks();
+        try {
+            await import("./spotDetail.js").then(m => m.populateTopratedCards && m.populateTopratedCards());
+            initializeSpotClickHandlers();
+            initializeBookmarks();
+        } catch (e) {
+            console.error('Errore popolamento toprated:', e);
+        }
     } catch (err) {
         console.error("Errore loadVerticalCarouselSection:", err);
     }
@@ -234,6 +249,8 @@ async function loadViewAllSaved(fromPage = "homepage") {
             initializeSpotClickHandlers();
             initializeBookmarks();
             await syncAllBookmarks();
+            // se siamo nella view-all saved, assicurati di adattare i titoli
+            initFitSavedTitles();
         })().catch((err) => console.error("Errore init view-all-saved:", err));
 
         const backButton = document.getElementById("header-back-button");
@@ -334,11 +351,11 @@ async function goToProfile() {
             });
         }
 
-        const { loadProfileOverview } = await import("./profile.js");
+        const {loadProfileOverview} = await import("./profile.js");
         await loadProfileOverview();
     } catch (err) {
         console.error("Errore nel caricamento profilo:", err);
     }
 }
 
-export { activeCategories, loadViewAllSaved };
+export {activeCategories, loadViewAllSaved};

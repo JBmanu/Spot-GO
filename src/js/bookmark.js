@@ -1,10 +1,12 @@
 /**
- * Gestione bookmark (spot salvati)
+ * Bookmark manager
+ * - gestisce l'aggiunta/rimozione di bookmark (spot salvati)
+ * - sincronizza la UI con lo stato nel DB
  */
 
-import { addBookmark, removeBookmark, getFirstUser, getSavedSpots } from "./query.js";
-import { showConfirmModal } from "./confirmModal.js";
-import { populateSavedSpots } from "./spotDetail.js";
+import {addBookmark, removeBookmark, getFirstUser, getSavedSpots} from "./query.js";
+import {showConfirmModal} from "./confirmModal.js";
+import {populateSavedSpots} from "./spotDetail.js";
 
 const BOOKMARK_ICONS = {
     filled: "../assets/icons/homepage/Bookmark.svg",
@@ -26,18 +28,31 @@ const SELECTORS = {
 
 const MESSAGES = {
     removeConfirmTitle: "Rimuovi dai salvati?",
-    removeConfirmMessage: (spotTitle) =>
-        `Sei sicuro di voler rimuovere "${spotTitle}" dai tuoi spot salvati?`,
+    removeConfirmMessage: (spotTitle) => `Sei sicuro di voler rimuovere "${spotTitle}" dai tuoi spot salvati?`,
     userNotFound: "Utente non trovato",
 };
 
-const TIMING = {
-    debounce: 50,
-    animationRemove: 300,
-};
+const TIMING = { debounce: 50, animationRemove: 300 };
 
 /**
- * Inizializza i bookmark button.
+ * Fallback delegato per pulsanti bookmark non ancora inizializzati.
+ */
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest(SELECTORS.bookmarkButton);
+    if (!btn) return;
+    if (btn.hasAttribute(SELECTORS.bookmarkInitializedAttr)) return;
+    const card = btn.closest(SELECTORS.bookmarkCard);
+    if (!card) return;
+    e.preventDefault();
+    try {
+        handleBookmarkClick(btn, card);
+    } catch (err) {
+        console.error('Errore delegato handleBookmarkClick:', err);
+    }
+});
+
+/**
+ * Inizializza i bookmark button presenti nel DOM.
  */
 export function initializeBookmarks() {
     const buttons = document.querySelectorAll(
@@ -107,7 +122,7 @@ async function handleBookmarkClick(button, card) {
             );
 
             if (!confirmed) return;
-            await removeBookmarkFlow(currentUser.id, spotId, { removeCard: true, card });
+            await removeBookmarkFlow(currentUser.id, spotId, {removeCard: true, card});
             return;
         }
 
@@ -130,7 +145,7 @@ async function handleBookmarkClick(button, card) {
 }
 
 /**
- * Aggiunge un bookmark a DB e aggiorna la sezione salvati.
+ * Aggiunge un bookmark nel DB e aggiorna la UI.
  */
 async function addBookmarkFlow(userId, spotId) {
     try {
@@ -143,9 +158,9 @@ async function addBookmarkFlow(userId, spotId) {
 }
 
 /**
- * Rimuove un bookmark da DB e aggiorna la sezione salvati.
+ * Rimuove un bookmark dal DB e aggiorna la UI.
  */
-async function removeBookmarkFlow(userId, spotId, { removeCard = false, card = null } = {}) {
+async function removeBookmarkFlow(userId, spotId, {removeCard = false, card = null} = {}) {
     try {
         await removeBookmark(userId, spotId);
 
@@ -161,7 +176,7 @@ async function removeBookmarkFlow(userId, spotId, { removeCard = false, card = n
 }
 
 /**
- * Aggiorna la sezione "Spot Salvati" chiamando populateSavedSpots.
+ * Ricarica la sezione "Spot Salvati" a partire dal DB e riallinea la UI.
  */
 async function updateSavedSection() {
     try {
@@ -201,7 +216,7 @@ async function updateSavedSection() {
 }
 
 /**
- * Ricollega i bookmark button della sezione salvati.
+ * Re-inizializza i bookmark button nella sezione salvati.
  */
 function reinitializeSavedBookmarks() {
     const savedContainer = document.getElementById('home-saved-container');
@@ -216,7 +231,7 @@ function reinitializeSavedBookmarks() {
 }
 
 /**
- * Recupera gli ID degli spot salvati.
+ * Restituisce gli ID degli spot salvati per utente.
  */
 async function getSavedSpotIds(userId) {
     const savedSpots = await getSavedSpots(userId);
@@ -224,7 +239,7 @@ async function getSavedSpotIds(userId) {
 }
 
 /**
- * Aggiorna le icone di tutti i bookmark.
+ * Aggiorna le icone di tutti i bookmark nel DOM in base allo stato salvati.
  */
 function updateAllBookmarkIcons(savedSpotIds) {
     document.querySelectorAll(SELECTORS.bookmarkButton).forEach((button) => {
@@ -240,7 +255,7 @@ function updateAllBookmarkIcons(savedSpotIds) {
 }
 
 /**
- * Aggiorna la visuale di un singolo bookmark button.
+ * Aggiorna l'aspetto (icona + aria-label) di un singolo bookmark button.
  */
 export function updateBookmarkVisual(button, isSaved) {
     let icon = button.querySelector(SELECTORS.bookmarkIcon);
@@ -256,7 +271,7 @@ export function updateBookmarkVisual(button, isSaved) {
     try {
         const card = button.closest(SELECTORS.bookmarkCard);
         const spotId = card ? getSpotIdFromCard(card) : '';
-        const event = new CustomEvent('bookmark:changed', { detail: { spotId, isSaved } });
+        const event = new CustomEvent('bookmark:changed', {detail: {spotId, isSaved}});
         document.dispatchEvent(event);
     } catch (error) {
         console.error("Errore in updateBookmarkVisual:", error);
@@ -264,11 +279,11 @@ export function updateBookmarkVisual(button, isSaved) {
 }
 
 /**
- * Reinizializza tutti i carousel.
+ * Re-inizializza i carousel (mantiene le posizioni di scroll).
  */
 async function reinitializeCarousels() {
     try {
-        const { initializeCarousel, resetCarouselState } = await import("./carousel.js");
+        const {initializeCarousel, resetCarouselState} = await import("./carousel.js");
 
         const selectors = [
             SELECTORS.carouselTrackSaved,
@@ -321,21 +336,21 @@ function getSpotTitle(card) {
 }
 
 /**
- * Controlla se il button è già in processing.
+ * Controlla se il pulsante è in stato di processing.
  */
 function isProcessingAllowed(button) {
     return button.dataset.processing !== "true";
 }
 
 /**
- * Imposta lo stato di processing di un button.
+ * Imposta lo stato di processing di un pulsante.
  */
 function setProcessing(button, isProcessing) {
     button.dataset.processing = isProcessing ? "true" : "false";
 }
 
 /**
- * Rimuove una card dal DOM.
+ * Rimuove una card dal DOM con animazione di fade-out.
  */
 function removeCardFromView(card) {
     return new Promise((resolve) => {
@@ -378,6 +393,14 @@ export async function toggleBookmarkForSpot(spotId) {
 
         await updateSavedSection();
         await syncAllBookmarks();
+
+        try {
+            const newState = !isSaved;
+            const evt = new CustomEvent('bookmark:changed', {detail: {spotId, isSaved: newState}});
+            document.dispatchEvent(evt);
+        } catch (err) {
+            console.warn('Errore dispatch bookmark:changed:', err);
+        }
     } catch (error) {
         console.error('Errore toggleBookmarkForSpot:', error);
     }
