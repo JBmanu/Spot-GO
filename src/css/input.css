@@ -8,6 +8,14 @@
 
 @import "./profile.css";
 
+@import "./carousel.css";
+
 @import "./homepage.css";
+
+@import "./saved-spots.css";
+
+@import "./nearby-spots.css";
+
+@import "./toprated-spots.css";
 
 @import "./spot-detail.css";

@@ -9,10 +9,21 @@
     --color-text_color: #1E1E1E;
     --color-border_color: #c1c1c1;
 
-    /* Colori categorie */
     --color-category-nature: rgba(28, 124, 84, 0.3);
     --color-category-culture: rgba(201, 162, 106, 0.3);
     --color-category-mystery: rgba(91, 43, 130, 0.3);
     --color-category-food: rgba(227, 100, 20, 0.3);
-}
 
+    --gradient-category-food-top: linear-gradient(to top, rgba(227, 100, 20, 0.4) 0%, transparent 100%);
+    --gradient-category-culture-top: linear-gradient(to top, rgba(201, 162, 106, 0.4) 0%, transparent 100%);
+    --gradient-category-nature-top: linear-gradient(to top, rgba(28, 124, 84, 0.4) 0%, transparent 100%);
+    --gradient-category-mystery-top: linear-gradient(to top, rgba(91, 43, 130, 0.4) 0%, transparent 100%);
+
+    --gradient-category-food-br: linear-gradient(to bottom right, rgba(227, 100, 20, 0.4) 0%, white 70%);
+    --gradient-category-culture-br: linear-gradient(to bottom right, rgba(201, 162, 106, 0.4) 0%, white 70%);
+    --gradient-category-nature-br: linear-gradient(to bottom right, rgba(28, 124, 84, 0.4) 0%, white 70%);
+    --gradient-category-mystery-br: linear-gradient(to bottom right, rgba(91, 43, 130, 0.4) 0%, white 70%);
+
+    --gradient-primary-top-40: linear-gradient(to top, rgba(28, 124, 84, 0.4) 0%, transparent 100%);
+    --gradient-primary-top-30: linear-gradient(to top, rgba(28, 124, 84, 0.3) 0%, transparent 100%);
+}
