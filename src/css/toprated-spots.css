@@ -1,0 +1,232 @@
+@layer components {
+
+    .toprated-carousel {
+        height: 280px;
+        overflow: hidden;
+        border-radius: 0.5rem;
+    }
+
+    .toprated-carousel > .vertical-carousel-track {
+        height: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 0;
+        scroll-behavior: smooth;
+    }
+
+    .toprated-carousel-item {
+        @apply flex gap-3 rounded-2xl overflow-hidden;
+        background: var(--color-main_paper);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-bottom: 3px solid var(--color-primary_color);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        scroll-snap-align: start;
+        padding: 0;
+        position: relative;
+        width: 100%;
+        flex-shrink: 0;
+        height: 110px;
+        align-items: center;
+    }
+
+    .toprated-item-image {
+        @apply w-24 h-24 overflow-hidden bg-border_color shrink-0;
+        position: relative;
+        border-radius: 1rem;
+        display: block;
+    }
+
+    .toprated-item-image img {
+        @apply w-full h-full object-cover;
+        display: block;
+        transition: transform 0.4s ease;
+    }
+
+    .toprated-item-info {
+        @apply flex flex-col items-center justify-center gap-2 px-2 py-2;
+        flex: 1;
+        min-width: 0;
+        position: relative;
+    }
+
+    .toprated-item-title {
+        @apply text-sm font-semibold tracking-[0.18em] uppercase leading-tight text-center w-full;
+        color: var(--color-text_color);
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .toprated-item-rating-container {
+        @apply flex items-center justify-center mt-3;
+        width: 100%;
+    }
+
+    .toprated-item-rating {
+        @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-full;
+        background: linear-gradient(135deg, rgba(28,124,84,0.05), rgba(28,124,84,0.02));
+        border: 1.5px solid rgba(28,124,84,0.3);
+        animation: ratingScaleGlow 2s ease-in-out infinite;
+        transition: all 0.3s ease;
+    }
+
+    @keyframes ratingScaleGlow {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 8px rgba(28,124,84,0.15);
+        }
+        50% {
+            transform: scale(1.08);
+            box-shadow: 0 0 16px rgba(28,124,84,0.3);
+        }
+    }
+
+    .spot-rating-value {
+        @apply text-base font-black;
+        color: var(--color-primary_color);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .rating-star {
+        @apply w-4 h-4;
+    }
+
+    .toprated-carousel-item[data-category="food"] .toprated-item-rating {
+        border-color: rgba(227,100,20,0.4);
+        background: linear-gradient(135deg, rgba(227,100,20,0.05), rgba(227,100,20,0.02));
+    }
+
+    .toprated-carousel-item[data-category="food"] .spot-rating-value {
+        color: #e36414;
+    }
+
+    .toprated-carousel-item[data-category="culture"] .toprated-item-rating {
+        border-color: rgba(201,162,106,0.4);
+        background: linear-gradient(135deg, rgba(201,162,106,0.05), rgba(201,162,106,0.02));
+    }
+
+    .toprated-carousel-item[data-category="culture"] .spot-rating-value {
+        color: #c9a26a;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+
+    .toprated-carousel-item[data-category="nature"] .toprated-item-rating {
+        border-color: rgba(28,124,84,0.4);
+        background: linear-gradient(135deg, rgba(28,124,84,0.05), rgba(28,124,84,0.02));
+    }
+
+    .toprated-carousel-item[data-category="nature"] .spot-rating-value {
+        color: #1c7c54;
+    }
+
+    .toprated-carousel-item[data-category="mystery"] .toprated-item-rating {
+        border-color: rgba(91,43,130,0.4);
+        background: linear-gradient(135deg, rgba(91,43,130,0.05), rgba(91,43,130,0.02));
+    }
+
+    .toprated-carousel-item[data-category="mystery"] .spot-rating-value {
+        color: #5b2b82;
+    }
+
+    .toprated-carousel-item[data-category="food"] {
+        border-bottom-color: #e36414;
+        background: linear-gradient(to bottom, rgba(227,100,20,0.20) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .toprated-carousel-item[data-category="culture"] {
+        border-bottom-color: #c9a26a;
+        background: linear-gradient(to bottom, rgba(201,162,106,0.20) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .toprated-carousel-item[data-category="nature"] {
+        border-bottom-color: #1c7c54;
+        background: linear-gradient(to bottom, rgba(28,124,84,0.20) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .toprated-carousel-item[data-category="mystery"] {
+        border-bottom-color: #5b2b82;
+        background: linear-gradient(to bottom, rgba(91,43,130,0.20) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .toprated-item-bookmark {
+        @apply absolute top-8 right-2 w-12 h-12 rounded-lg grid place-items-center;
+        background: rgba(255,255,255,0.09);
+        backdrop-filter: blur(12px);
+        border: 0.5px solid rgba(255,255,255,0.4);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.2s ease;
+        z-index: 20;
+        cursor: pointer;
+    }
+
+    .toprated-item-bookmark .bookmark-icon {
+        @apply w-9 h-9;
+        filter: saturate(1.5) contrast(1.1);
+        transition: transform 0.2s ease;
+    }
+
+    .toprated-carousel-item:active {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        transform: scale(0.98);
+    }
+
+    .toprated-item-bookmark:active .bookmark-icon {
+        transform: scale(0.95);
+    }
+
+    .toprated-carousel-item-saved {
+        @apply flex flex-col gap-0 rounded-2xl overflow-hidden;
+        background: var(--color-main_paper);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-bottom: 5px solid var(--color-primary_color);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 0;
+        position: relative;
+        width: 100%;
+        min-height: 0;
+        gap: 0;
+    }
+
+    .toprated-carousel-item-saved[data-category="food"] {
+        border-bottom-color: #e36414;
+        background: linear-gradient(to bottom, rgba(227,100,20,0.08) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .toprated-carousel-item-saved[data-category="culture"] {
+        border-bottom-color: #c9a26a;
+        background: linear-gradient(to bottom, rgba(201,162,106,0.08) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .toprated-carousel-item-saved[data-category="nature"] {
+        border-bottom-color: #1c7c54;
+        background: linear-gradient(to bottom, rgba(28,124,84,0.08) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .toprated-carousel-item-saved[data-category="mystery"] {
+        border-bottom-color: #5b2b82;
+        background: linear-gradient(to bottom, rgba(91,43,130,0.08) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .toprated-carousel-item-saved .toprated-item-image { @apply w-full h-28 overflow-hidden rounded-2xl; flex-shrink: 0; }
+    .toprated-carousel-item-saved .toprated-item-image img { @apply w-full h-full object-cover; }
+    .toprated-carousel-item-saved .toprated-item-info { @apply flex flex-col gap-2 px-4 py-3; }
+    .toprated-carousel-item-saved .toprated-item-title { @apply text-sm font-semibold text-center; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .toprated-carousel-item-saved .toprated-item-rating-container { @apply flex justify-center mt-1; }
+    .toprated-carousel-item-saved .spot-card-rating-badge { @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold; background: linear-gradient(135deg, rgba(28,124,84,0.12), rgba(28,124,84,0.05)); border: 1px solid rgba(28,124,84,0.2); }
+
+    .toprated-item-meta {
+        display: none !important;
+    }
+
+}

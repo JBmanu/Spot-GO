@@ -1,0 +1,197 @@
+@layer components {
+
+    .nearby-card {
+        @apply shrink-0 rounded-2xl overflow-hidden w-full flex flex-col snap-start;
+        aspect-ratio: 8 / 6;
+        background: var(--color-main_paper);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-bottom: 5px solid var(--color-primary_color);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .nearby-card[data-category="food"] {
+        border-bottom-color: #e36414;
+        background: linear-gradient(to bottom, rgba(227,100,20,0.35) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .nearby-card[data-category="culture"] {
+        border-bottom-color: #c9a26a;
+        background: linear-gradient(to bottom, rgba(201,162,106,0.35) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .nearby-card[data-category="nature"] {
+        border-bottom-color: #1c7c54;
+        background: linear-gradient(to bottom, rgba(28,124,84,0.35) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .nearby-card[data-category="mystery"] {
+        border-bottom-color: #5b2b82;
+        background: linear-gradient(to bottom, rgba(91,43,130,0.35) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .nearby-card .nearby-media {
+        @apply w-full h-40 relative overflow-hidden bg-border_color flex-none;
+        border-radius: 1rem 1rem 0 0;
+    }
+
+    .nearby-card .nearby-image-container {
+        @apply w-full h-full overflow-hidden;
+    }
+
+    .nearby-card .nearby-image {
+        @apply w-full h-full object-cover;
+        transition: transform 0.4s ease;
+    }
+
+    .nearby-card .nearby-bookmark {
+        @apply absolute top-3 right-3 w-12 h-12 rounded-lg grid place-items-center;
+        background: rgba(255,255,255,0.09);
+        backdrop-filter: blur(12px);
+        border: 0.5px solid rgba(255,255,255,0.4);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.2s ease;
+        z-index: 20;
+        cursor: pointer;
+    }
+
+    .nearby-card .nearby-bookmark:active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+
+    .nearby-card .nearby-bookmark img.nearby-bookmark-icon {
+        @apply w-9 h-9 object-contain;
+        filter: saturate(1.5) contrast(1.1);
+        transition: transform 0.2s ease;
+    }
+
+    .nearby-card .nearby-body {
+        @apply flex-1 flex flex-col items-center justify-center px-2 py-2 relative;
+        background: var(--color-main_paper);
+        gap: 0.5rem;
+    }
+
+    .nearby-card .nearby-title {
+        @apply text-sm font-semibold tracking-[0.18em] uppercase leading-tight text-center w-full;
+        color: var(--color-text_color);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.3;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .nearby-card .nearby-meta {
+        @apply text-xs flex items-center gap-1.5;
+        color: var(--color-text_color);
+        opacity: 0.75;
+    }
+
+    .nearby-card .nearby-distance,
+    .nearby-card .nearby-category {
+        @apply text-xs font-medium tracking-[0.08em];
+        color: var(--color-text_color);
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .nearby-card .nearby-meta {
+        @apply flex items-center gap-2;
+        color: var(--color-text_color);
+        opacity: 0.85;
+    }
+
+    .nearby-card .meta-item {
+        @apply flex items-center gap-1.5;
+    }
+
+    .nearby-card .icon-mini {
+        @apply w-5 h-5;
+        filter: saturate(2) contrast(1.2);
+    }
+
+    .nearby-card .meta-sep {
+        opacity: 0.4;
+    }
+
+    .nearby-card .nearby-meta-row {
+        @apply flex items-center justify-between w-full px-1;
+        gap: 0.5rem;
+    }
+
+    .nearby-card .nearby-rating-badge {
+        @apply flex items-center justify-center gap-1 px-4 py-2 rounded-full text-xs font-black bg-main_paper;
+        border: 1.5px solid;
+        transition: all 0.2s ease;
+        background: linear-gradient(135deg, rgba(28,124,84,0.05), rgba(28,124,84,0.02));
+        border-color: rgba(28,124,84,0.3);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .nearby-card[data-category="food"] .nearby-rating-badge {
+        border-color: rgba(227,100,20,0.4);
+        background: linear-gradient(135deg, rgba(227,100,20,0.05), rgba(227,100,20,0.02));
+    }
+
+    .nearby-card[data-category="food"] .nearby-rating-value {
+        color: #e36414;
+    }
+
+    .nearby-card[data-category="culture"] .nearby-rating-badge {
+        border-color: rgba(201,162,106,0.4);
+        background: linear-gradient(135deg, rgba(201,162,106,0.05), rgba(201,162,106,0.02));
+    }
+
+    .nearby-card[data-category="culture"] .nearby-rating-value {
+        color: #c9a26a;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+
+    .nearby-card[data-category="nature"] .nearby-rating-badge {
+        border-color: rgba(28,124,84,0.4);
+        background: linear-gradient(135deg, rgba(28,124,84,0.05), rgba(28,124,84,0.02));
+    }
+
+    .nearby-card[data-category="nature"] .nearby-rating-value {
+        color: #1c7c54;
+    }
+
+    .nearby-card[data-category="mystery"] .nearby-rating-badge {
+        border-color: rgba(91,43,130,0.4);
+        background: linear-gradient(135deg, rgba(91,43,130,0.05), rgba(91,43,130,0.02));
+    }
+
+    .nearby-card[data-category="mystery"] .nearby-rating-value {
+        color: #5b2b82;
+    }
+
+    .nearby-card .rating-star-nearby {
+        @apply w-3.5 h-3.5 object-contain;
+    }
+
+    .nearby-card[data-category="food"] .nearby-body {
+        background: linear-gradient(to bottom, rgba(227,100,20,0.08) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .nearby-card[data-category="culture"] .nearby-body {
+        background: linear-gradient(to bottom, rgba(201,162,106,0.08) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .nearby-card[data-category="nature"] .nearby-body {
+        background: linear-gradient(to bottom, rgba(28,124,84,0.08) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .nearby-card[data-category="mystery"] .nearby-body {
+        background: linear-gradient(to bottom, rgba(91,43,130,0.08) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .nearby-card:active {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        transform: scale(0.98);
+    }
+
+}

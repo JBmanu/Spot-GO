@@ -1,5 +1,5 @@
 <!-- Spots salvati -->
-<section class="home-section px-1 py-1">
+<section class="home-section px-1 py-0">
     <header class="flex flex-row items-center justify-between">
         <h2 class="home-section-title">I tuoi preferiti</h2>
 
@@ -14,12 +14,12 @@
     </header>
 
     <!-- Swipe carousel -->
-    <div class="saved-swipe" aria-label="Spots salvati (scorri)">
+    <div class="saved-swipe" aria-label="Elenco preferiti">
         <div
                 id="home-saved-container"
                 class="saved-swipe-track"
                 role="list"
-                aria-label="Lista spots salvati"
+                aria-label="Elenco preferiti"
         >
             <!-- Card 1 - Placeholder -->
             <article class="spot-card spot-card--saved" role="listitem" data-spot-id="" data-category="food">
@@ -112,9 +112,8 @@
     </div>
 
     <!-- Banner empty state (quando non ci sono preferiti) -->
-    <div id="saved-empty-state" class="empty-state-banner" style="display: none; padding: 2rem 1rem; text-align: center;">
+    <div id="saved-empty-state" class="empty-state-banner hidden py-8 px-4 text-center">
         <h3 class="text-lg font-semibold mb-2">Non hai ancora Preferiti.</h3>
         <p class="text-sm text-text_color/70">Esplora la mappa o ascolta la community e salva gli spot che ti ispirano.</p>
     </div>
 </section>
-

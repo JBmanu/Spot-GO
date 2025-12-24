@@ -1,0 +1,200 @@
+@layer components {
+
+    .saved-swipe {
+        @apply -mx-5;
+    }
+
+    .saved-swipe-track {
+        @apply flex gap-4 overflow-x-auto px-5 pb-1 scroll-smooth snap-x snap-mandatory flex-nowrap ml-4;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .spot-card--saved {
+        @apply shrink-0 w-1/2 max-w-[110px] h-[130px] flex flex-col pb-2;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-bottom: 6px solid var(--color-primary_color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        background: var(--color-main_paper);
+        border-radius: 0.75rem;
+        overflow: hidden;
+    }
+
+    .spot-card--saved[data-category="food"] {
+        border-bottom-color: #e36414 !important;
+        background: linear-gradient(180deg, rgba(227,100,20,0.06), var(--color-main_paper));
+    }
+
+    .spot-card--saved[data-category="culture"] {
+        border-bottom-color: #c9a26a !important;
+        background: linear-gradient(180deg, rgba(201,162,106,0.06), var(--color-main_paper));
+    }
+
+    .spot-card--saved[data-category="nature"] {
+        border-bottom-color: #1c7c54 !important;
+        background: linear-gradient(180deg, rgba(28,124,84,0.06), var(--color-main_paper));
+    }
+
+    .spot-card--saved[data-category="mystery"] {
+        border-bottom-color: #5b2b82 !important;
+        background: linear-gradient(180deg, rgba(91,43,130,0.06), var(--color-main_paper));
+    }
+
+    .spot-card--saved .spot-card-media {
+        @apply h-[85px] relative w-full bg-black/5 rounded-t-lg overflow-hidden;
+    }
+
+    .spot-card--saved .spot-image-container {
+        @apply w-[110px] h-[85px] relative overflow-hidden bg-border_color;
+    }
+
+    .spot-card--saved .spot-card-body {
+        @apply p-2 text-center flex flex-col justify-center items-center h-[45px] overflow-hidden;
+        background: linear-gradient(to bottom, rgba(28, 124, 84, 0.25) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .spot-card--saved[style*="display: none"] {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 0 !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        gap: 0 !important;
+        visibility: hidden !important;
+    }
+
+    .saved-swipe-track.is-dragging {
+        @apply cursor-grabbing;
+    }
+
+    .spot-card-media {
+        @apply relative w-full bg-black/5 overflow-hidden rounded-t-lg;
+    }
+
+    .spot-image-container {
+        @apply relative overflow-hidden bg-border_color;
+    }
+
+    .spot-card--saved .spot-image-container,
+    .spot-card--toprated .spot-image-container {
+        @apply w-[110px] h-[85px];
+    }
+
+    .spot-card-image {
+        @apply w-full h-full object-cover;
+    }
+
+    .spot-card-media-placeholder {
+        @apply absolute inset-0 grid place-items-center text-2xl text-text_color/60;
+    }
+
+    .spot-card-bookmark {
+        @apply absolute top-1 right-1 w-8 h-8 rounded-lg grid place-items-center;
+        background: rgba(255, 255, 255, 0.09);
+        backdrop-filter: blur(12px);
+        border: 0.5px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+        z-index: 20;
+        cursor: pointer;
+    }
+
+    .spot-card-bookmark img.bookmark-icon {
+        @apply w-5 h-5;
+        filter: saturate(1.5) contrast(1.1);
+    }
+
+    .spot-card--saved .spot-card-bookmark,
+    .spot-card--toprated .spot-card-bookmark {
+        @apply top-0 right-0;
+    }
+
+    .spot-card--toprated .spot-card-bookmark {
+        @apply w-8 h-8;
+    }
+
+    .spot-card-body {
+        @apply p-3 flex flex-col justify-center items-center text-center;
+        background: var(--gradient-primary-top-40);
+    }
+
+    .spot-card--saved .spot-card-body,
+    .spot-card--toprated .spot-card-body {
+        @apply p-2 text-center flex flex-col justify-center items-center;
+    }
+
+    .spot-card--saved[data-category="food"] .spot-card-body {
+        background: linear-gradient(to bottom, rgba(227, 100, 20, 0.25) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .spot-card--saved[data-category="culture"] .spot-card-body {
+        background: linear-gradient(to bottom, rgba(201, 162, 106, 0.25) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .spot-card--saved[data-category="nature"] .spot-card-body {
+        background: linear-gradient(to bottom, rgba(28, 124, 84, 0.25) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .spot-card--saved[data-category="mystery"] .spot-card-body {
+        background: linear-gradient(to bottom, rgba(91, 43, 130, 0.25) 0%, transparent 100%), var(--color-main_paper);
+    }
+
+    .spot-card-title {
+        @apply text-sm font-semibold leading-tight text-text_color text-center;
+        text-align: center;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .spot-card--saved .spot-card-title {
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        display: block;
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.05;
+        padding: 0 4px;
+        overflow: visible;
+        font-family: 'Montserrat', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        transition: font-size .12s ease;
+    }
+
+    .spot-card--saved .spot-card-meta {
+        @apply hidden;
+    }
+
+    .spot-card--saved .spot-card-rating,
+    .spot-card--toprated .spot-card-rating {
+        @apply text-[10px] font-bold;
+    }
+
+    .empty-state-banner {
+        @apply rounded-lg border px-4 py-6 mx-4 my-3 bg-main_paper border-border_color text-text_color;
+    }
+
+    .saved-carousel {
+        @apply w-full overflow-hidden;
+    }
+
+    .saved-carousel-track {
+        @apply flex flex-col gap-3 overflow-y-auto w-full h-full scroll-smooth p-3;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .saved-swipe .spot-card--saved,
+    .spot-card--saved {
+        position: relative;
+        border-bottom-width: 5px !important;
+        border-bottom-style: solid !important;
+        background-clip: padding-box;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        z-index: 0;
+        border-radius: 0.75rem !important;
+    }
+
+}
