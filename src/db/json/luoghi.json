@@ -48,7 +48,7 @@
     "idCreatore": "master"
   },
   {
-    "nome": "Escape Room Mystery - La Tomba Perduta",
+    "nome": "Escape Room Mystery",
     "descrizione": "Escape room immersiva tematizzata sull'antico Egitto. Risolvere enigmi e misteri per fuggire dalla tomba prima che il tempo scada!",
     "posizione": { "coord1": 41.9028, "coord2": 12.4964 },
     "idCategoria": "mystery",
