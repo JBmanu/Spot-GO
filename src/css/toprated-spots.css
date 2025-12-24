@@ -17,6 +17,12 @@
         gap: 1rem;
         padding: 1rem 0;
         scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .toprated-carousel > .vertical-carousel-track::-webkit-scrollbar {
+        display: none;
     }
 
     .toprated-carousel-item {

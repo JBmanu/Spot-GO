@@ -9,6 +9,12 @@
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         flex-wrap: nowrap;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+        display: none;
     }
 
     .saved-swipe-track,
@@ -17,6 +23,13 @@
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         flex-wrap: nowrap;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .saved-swipe-track::-webkit-scrollbar,
+    .nearby-swipe-track::-webkit-scrollbar {
+        display: none;
     }
 
     .vertical-carousel-track {
@@ -25,6 +38,12 @@
         -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
         flex-wrap: nowrap;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .vertical-carousel-track::-webkit-scrollbar {
+        display: none;
     }
 
     .carousel-track.is-dragging {
