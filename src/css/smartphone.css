@@ -46,7 +46,7 @@
     .spot-main {
         @apply flex-1
         overflow-y-auto
-        px-3 py-4;
+        px-0 py-0;
         will-change: transform;
         contain: layout style paint;
     }
