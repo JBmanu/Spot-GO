@@ -32,7 +32,7 @@
     }
 
     .nearby-card .nearby-media {
-        @apply w-full h-40 relative overflow-hidden bg-border_color flex-none;
+        @apply w-full h-50 relative overflow-hidden bg-border_color flex-none;
         border-radius: 1rem 1rem 0 0;
     }
 
@@ -74,7 +74,7 @@
     }
 
     .nearby-card .nearby-title {
-        @apply text-sm font-semibold tracking-[0.18em] uppercase leading-tight text-center w-full;
+        @apply text-xl font-semibold tracking-[0.18em] uppercase leading-tight text-center w-full;
         color: var(--color-text_color);
         display: -webkit-box;
         -webkit-line-clamp: 2;
