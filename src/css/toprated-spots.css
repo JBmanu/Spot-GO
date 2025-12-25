@@ -30,7 +30,7 @@
     }
 
     .toprated-item-image {
-        @apply w-24 h-24 overflow-hidden bg-border_color shrink-0 rounded-lg relative block;
+        @apply w-24 h-24 overflow-hidden bg-border_color shrink-0 rounded-lg relative block ml-2;
     }
 
     .toprated-item-image img {
