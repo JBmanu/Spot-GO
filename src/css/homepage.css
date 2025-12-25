@@ -10,7 +10,7 @@
     }
 
     .home-chips-row {
-        @apply sticky top-0 z-30 flex flex-wrap gap-2 justify-between bg-main_paper py-2;
+        @apply sticky top-0 z-30 flex flex-wrap gap-2 bg-main_paper py-2 px-3;
         font-family: 'Montserrat', sans-serif;
         font-weight: 500;
         letter-spacing: 0.05em;

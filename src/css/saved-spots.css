@@ -1,11 +1,11 @@
 @layer components {
 
     .saved-swipe {
-        @apply -mx-5;
+        @apply overflow-hidden;
     }
 
     .saved-swipe-track {
-        @apply flex gap-4 overflow-x-auto px-5 pb-1 scroll-smooth snap-x snap-mandatory flex-nowrap ml-4;
+        @apply flex gap-4 overflow-x-auto px-4 pb-1 scroll-smooth snap-x snap-mandatory flex-nowrap;
         -webkit-overflow-scrolling: touch;
     }
 

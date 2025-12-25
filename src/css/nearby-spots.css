@@ -1,5 +1,14 @@
 @layer components {
 
+    .nearby-swipe {
+        @apply overflow-hidden;
+    }
+
+    .nearby-swipe-track {
+        @apply flex gap-3 overflow-x-auto px-4 pb-2 scroll-smooth snap-x snap-mandatory flex-nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .nearby-card {
         @apply shrink-0 rounded-2xl overflow-hidden flex flex-col snap-start;
         width: 100%;
