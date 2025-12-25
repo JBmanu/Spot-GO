@@ -66,8 +66,8 @@
 
     .toprated-item-rating {
         @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-full;
-        background: linear-gradient(135deg, rgba(28,124,84,0.05), rgba(28,124,84,0.02));
-        border: 1.5px solid rgba(28,124,84,0.3);
+        background: linear-gradient(135deg, rgba(28,124,84,0.12), rgba(28,124,84,0.08));
+        border: 1.5px solid rgba(28,124,84,0.35);
         animation: ratingScaleGlow 2s ease-in-out infinite;
         transition: all 0.3s ease;
     }
@@ -85,7 +85,7 @@
 
     .spot-rating-value {
         @apply text-base font-black;
-        color: var(--color-primary_color);
+        color: #0d5f39;
         text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
 
@@ -94,40 +94,40 @@
     }
 
     .toprated-carousel-item[data-category="food"] .toprated-item-rating {
-        border-color: rgba(227,100,20,0.4);
-        background: linear-gradient(135deg, rgba(227,100,20,0.05), rgba(227,100,20,0.02));
+        border-color: rgba(227,100,20,0.35);
+        background: linear-gradient(135deg, rgba(227,100,20,0.12), rgba(227,100,20,0.08));
     }
 
     .toprated-carousel-item[data-category="food"] .spot-rating-value {
-        color: #e36414;
+        color: #b8470f;
     }
 
     .toprated-carousel-item[data-category="culture"] .toprated-item-rating {
-        border-color: rgba(201,162,106,0.4);
-        background: linear-gradient(135deg, rgba(201,162,106,0.05), rgba(201,162,106,0.02));
+        border-color: rgba(201,162,106,0.35);
+        background: linear-gradient(135deg, rgba(201,162,106,0.12), rgba(201,162,106,0.08));
     }
 
     .toprated-carousel-item[data-category="culture"] .spot-rating-value {
-        color: #c9a26a;
+        color: #8b6a3d;
         text-shadow: 0 1px 2px rgba(0,0,0,0.15);
     }
 
     .toprated-carousel-item[data-category="nature"] .toprated-item-rating {
-        border-color: rgba(28,124,84,0.4);
-        background: linear-gradient(135deg, rgba(28,124,84,0.05), rgba(28,124,84,0.02));
+        border-color: rgba(28,124,84,0.35);
+        background: linear-gradient(135deg, rgba(28,124,84,0.12), rgba(28,124,84,0.08));
     }
 
     .toprated-carousel-item[data-category="nature"] .spot-rating-value {
-        color: #1c7c54;
+        color: #0d5f39;
     }
 
     .toprated-carousel-item[data-category="mystery"] .toprated-item-rating {
-        border-color: rgba(91,43,130,0.4);
-        background: linear-gradient(135deg, rgba(91,43,130,0.05), rgba(91,43,130,0.02));
+        border-color: rgba(91,43,130,0.35);
+        background: linear-gradient(135deg, rgba(91,43,130,0.12), rgba(91,43,130,0.08));
     }
 
     .toprated-carousel-item[data-category="mystery"] .spot-rating-value {
-        color: #5b2b82;
+        color: #3d1b5a;
     }
 
     .toprated-carousel-item[data-category="food"] {
