@@ -2,7 +2,7 @@
 
     .nearby-card {
         @apply shrink-0 rounded-2xl overflow-hidden w-full flex flex-col snap-start;
-        aspect-ratio: 8 / 6;
+        aspect-ratio: 6 / 5;
         background: var(--color-main_paper);
         border: 1px solid rgba(0,0,0,0.06);
         border-bottom: 5px solid var(--color-primary_color);

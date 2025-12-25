@@ -65,8 +65,8 @@
     }
 
     .carousel-item--spot {
-        width: 70%;
-        max-width: 220px;
+        width: 60%;
+        max-width: 180px;
         aspect-ratio: 1 / 1;
     }
 
