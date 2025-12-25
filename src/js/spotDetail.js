@@ -270,6 +270,8 @@ async function loadSpotDetail(spotId) {
 
         main.innerHTML = await response.text();
 
+        main.classList.add("spot-detail-enter");
+
         updateDetailHeader(spotData);
 
         await populateSpotDetail(spotData);
@@ -510,6 +512,9 @@ async function restorePreviousPage() {
     }
 
     teardownHistoryListener();
+
+    main.classList.remove("spot-detail-enter");
+    main.classList.remove("spot-detail-exit");
 
     main.innerHTML = _cachedState.mainHTML;
 

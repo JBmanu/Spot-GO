@@ -6,12 +6,19 @@
     overflow-x: hidden;
 }
 
+#main.spot-detail-enter .spot-detail-wrapper {
+    animation: slide-in 0.3s ease-out;
+}
+
+#main.spot-detail-exit .spot-detail-wrapper {
+    animation: slide-out 0.3s ease-out;
+}
+
 .spot-detail-container {
     display: flex;
     flex-direction: column;
     width: 100%;
     background-color: var(--color-main_paper);
-    animation: slide-in 0.3s ease-out;
     padding-bottom: 0;
 }
 
