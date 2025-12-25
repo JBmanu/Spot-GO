@@ -3,7 +3,7 @@
  */
 
 import { initializeBookmarks, toggleBookmarkForSpot, updateBookmarkVisual, syncAllBookmarks } from "./bookmark.js";
-import { getSpots, getCategoryNameIt, getSavedSpots, getFirstUser } from "./query.js";
+import { getSpots, getCategoryNameIt, getSavedSpots, getFirstUser, getCategorieMap } from "./query.js";
 
 let spottedData = {};
 let currentSpotId = null;
@@ -272,6 +272,9 @@ async function loadSpotDetail(spotId) {
 
         main.classList.add("spot-detail-enter");
 
+        const categoryEnglish = await getCategoryEnglishName(spotData.idCategoria);
+        main.setAttribute('data-category', categoryEnglish);
+
         updateDetailHeader(spotData);
 
         await populateSpotDetail(spotData);
@@ -398,6 +401,32 @@ async function getSpotById(spotId) {
 }
 
 /**
+ * Converte l'ID categoria al nome English usato nel CSS.
+ */
+async function getCategoryEnglishName(categoryId) {
+    try {
+        const categorieMap = await getCategorieMap();
+        const categoryName = categorieMap[categoryId] || 'nature';
+
+        const nameToEnglish = {
+            'Cibo': 'food',
+            'Cultura': 'culture',
+            'Natura': 'nature',
+            'Mistero': 'mystery',
+            'food': 'food',
+            'culture': 'culture',
+            'nature': 'nature',
+            'mystery': 'mystery'
+        };
+
+        return nameToEnglish[categoryName] || 'nature';
+    } catch (error) {
+        console.error('Errore nel recupero categoria:', error);
+        return 'nature';
+    }
+}
+
+/**
  * Popola i dati del dettaglio dello spot.
  */
 async function populateSpotDetail(spotData) {
@@ -473,6 +502,19 @@ function initializeDetailHandlers() {
         });
     }
 
+    const missionsToggle = document.getElementById("spot-missions-toggle");
+    if (missionsToggle) {
+        missionsToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const missionsDetails = document.getElementById("spot-missions-details");
+            if (missionsDetails) {
+                const isHidden = missionsDetails.style.display === "none";
+                missionsDetails.style.display = isHidden ? "block" : "none";
+                missionsToggle.classList.toggle("expanded", isHidden);
+            }
+        });
+    }
+
     initializeBookmarks();
 }
 
@@ -515,6 +557,7 @@ async function restorePreviousPage() {
 
     main.classList.remove("spot-detail-enter");
     main.classList.remove("spot-detail-exit");
+    main.removeAttribute("data-category");
 
     main.innerHTML = _cachedState.mainHTML;
 
