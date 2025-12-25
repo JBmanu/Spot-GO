@@ -26,4 +26,11 @@
 
     --gradient-primary-top-40: linear-gradient(to top, rgba(28, 124, 84, 0.4) 0%, transparent 100%);
     --gradient-primary-top-30: linear-gradient(to top, rgba(28, 124, 84, 0.3) 0%, transparent 100%);
+
+    --category-color-r: 28;
+    --category-color-g: 124;
+    --category-color-b: 84;
+    --category-color-dark-r: 13;
+    --category-color-dark-g: 90;
+    --category-color-dark-b: 63;
 }
