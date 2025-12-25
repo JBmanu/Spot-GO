@@ -17,7 +17,6 @@ export async function initializeHomepageFilters() {
     const categoryContainer = document.getElementById("home-categories-container");
     if (!categoryContainer) return;
 
-    // Carica tutte le tre sezioni in parallelo e aspetta che finiscano
     await Promise.all([
         loadSavedSpotsSection(),
         loadNearbySpotsSection(),
@@ -25,7 +24,6 @@ export async function initializeHomepageFilters() {
     ]);
 
     try {
-        // Popola le card solo dopo che gli HTML delle sezioni sono stati inseriti
         await populateSpotCards();
         initializeSpotClickHandlers();
         initializeBookmarks();
@@ -72,7 +70,6 @@ async function loadSavedSpotsSection() {
         initializeBookmarks();
 
         await populateSavedSpots();
-        // assicurati che i titoli rientrino: init del fit title
         initFitSavedTitles();
         initializeBookmarks();
         await syncAllBookmarks();
@@ -142,6 +139,13 @@ function filterSpotsByCategory(categories) {
     const allSpotCards = document.querySelectorAll('[role="listitem"][data-spot-id]');
 
     allSpotCards.forEach((card) => {
+        const spotId = card.getAttribute("data-spot-id");
+
+        if (!spotId || spotId.trim() === "") {
+            card.style.display = categories.length > 0 ? "none" : "";
+            return;
+        }
+
         let categoryText = card.getAttribute("data-category");
 
         if (!categoryText) {
@@ -249,7 +253,6 @@ async function loadViewAllSaved(fromPage = "homepage") {
             initializeSpotClickHandlers();
             initializeBookmarks();
             await syncAllBookmarks();
-            // se siamo nella view-all saved, assicurati di adattare i titoli
             initFitSavedTitles();
         })().catch((err) => console.error("Errore init view-all-saved:", err));
 
