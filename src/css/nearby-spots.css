@@ -85,7 +85,7 @@
     }
 
     .nearby-card .nearby-title {
-        @apply text-[16px] font-semibold tracking-widest uppercase leading-tight text-center w-full;
+        @apply text-lg font-semibold uppercase leading-tight text-center w-full;
         color: var(--color-text_color);
         overflow: hidden;
         white-space: normal;
