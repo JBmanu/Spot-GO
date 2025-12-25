@@ -17,7 +17,7 @@
     }
 
     .toprated-carousel-item {
-        @apply flex gap-3 rounded-2xl overflow-hidden flex-shrink-0 w-full relative;
+        @apply flex rounded-2xl overflow-hidden flex-shrink-0 w-full relative;
         background: var(--color-main_paper);
         border: 1px solid rgba(0,0,0,0.06);
         border-bottom: 3px solid var(--color-primary_color);
@@ -38,8 +38,17 @@
         transition: transform 0.4s ease;
     }
 
+    .toprated-item-distance {
+        @apply absolute bottom-0 left-0 right-0 flex items-center justify-center gap-1.5 px-3 py-2 bg-black/70 text-white text-xs;
+    }
+
+    .toprated-distance {
+        @apply text-xs font-medium text-white;
+        font-family: 'Montserrat', sans-serif;
+    }
+
     .toprated-item-info {
-        @apply flex flex-col items-center justify-center gap-1 px-2 pr-6 py-2 relative;
+        @apply flex flex-col items-center justify-center gap-1 px-1 pr-6 py-2 relative;
         flex: 1;
         min-width: 0;
         text-align: center;
