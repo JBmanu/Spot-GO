@@ -2,10 +2,122 @@
   .spot-detail-wrapper {
     @apply flex flex-col w-full min-h-screen overflow-visible;
     background: linear-gradient(
-      180deg,
-      var(--color-main_paper) 0%,
-      rgba(28, 124, 84, 0.015) 100%
+            180deg,
+            var(--color-main_paper) 0%,
+            rgba(28, 124, 84, 0.015) 100%
     );
+  }
+
+  .spot-detail-wrapper[data-category="food"] {
+    background: linear-gradient(
+            180deg,
+            var(--color-main_paper) 0%,
+            var(--color-category-food) 100%
+    );
+    --category-color-r: 227;
+    --category-color-g: 100;
+    --category-color-b: 20;
+    --category-color-dark-r: 201;
+    --category-color-dark-g: 80;
+    --category-color-dark-b: 10;
+  }
+
+  .spot-detail-wrapper[data-category="culture"] {
+    background: linear-gradient(
+            180deg,
+            var(--color-main_paper) 0%,
+            var(--color-category-culture) 100%
+    );
+    --category-color-r: 201;
+    --category-color-g: 162;
+    --category-color-b: 106;
+    --category-color-dark-r: 175;
+    --category-color-dark-g: 140;
+    --category-color-dark-b: 80;
+  }
+
+  .spot-detail-wrapper[data-category="nature"] {
+    background: linear-gradient(
+            180deg,
+            var(--color-main_paper) 0%,
+            var(--color-category-nature) 100%
+    );
+    --category-color-r: 28;
+    --category-color-g: 124;
+    --category-color-b: 84;
+    --category-color-dark-r: 13;
+    --category-color-dark-g: 90;
+    --category-color-dark-b: 63;
+  }
+
+  .spot-detail-wrapper[data-category="mystery"] {
+    background: linear-gradient(
+            180deg,
+            var(--color-main_paper) 0%,
+            var(--color-category-mystery) 100%
+    );
+    --category-color-r: 91;
+    --category-color-g: 43;
+    --category-color-b: 130;
+    --category-color-dark-r: 70;
+    --category-color-dark-g: 30;
+    --category-color-dark-b: 110;
+  }
+
+  main[data-category="food"] {
+    background: linear-gradient(
+            180deg,
+            var(--color-main_paper) 0%,
+            var(--color-category-food) 100%
+    ) !important;
+    --category-color-r: 227;
+    --category-color-g: 100;
+    --category-color-b: 20;
+    --category-color-dark-r: 201;
+    --category-color-dark-g: 80;
+    --category-color-dark-b: 10;
+  }
+
+  main[data-category="culture"] {
+    background: linear-gradient(
+            180deg,
+            var(--color-main_paper) 0%,
+            var(--color-category-culture) 100%
+    ) !important;
+    --category-color-r: 201;
+    --category-color-g: 162;
+    --category-color-b: 106;
+    --category-color-dark-r: 175;
+    --category-color-dark-g: 140;
+    --category-color-dark-b: 80;
+  }
+
+  main[data-category="nature"] {
+    background: linear-gradient(
+            180deg,
+            var(--color-main_paper) 0%,
+            var(--color-category-nature) 100%
+    ) !important;
+    --category-color-r: 28;
+    --category-color-g: 124;
+    --category-color-b: 84;
+    --category-color-dark-r: 13;
+    --category-color-dark-g: 90;
+    --category-color-dark-b: 63;
+  }
+
+  main[data-category="mystery"] {
+    background: linear-gradient(
+            180deg,
+            var(--color-main_paper) 0%,
+            var(--color-category-mystery) 100%
+    ) !important;
+    --category-color-r: 91;
+    --category-color-g: 43;
+    --category-color-b: 130;
+    --category-color-dark-r: 70;
+    --category-color-dark-g: 30;
+    --category-color-dark-b: 110;
   }
 
   .spot-detail-wrapper::-webkit-scrollbar {
@@ -34,12 +146,12 @@
 .spot-detail-title-container {
   @apply px-4 py-3 flex justify-between items-center gap-3 z-20;
   background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(255, 255, 255, 0.75) 100%
+          135deg,
+          rgba(255, 255, 255, 0.92) 0%,
+          rgba(255, 255, 255, 0.75) 100%
   );
   backdrop-filter: blur(12px);
-  border-bottom: 1.5px solid rgba(28, 124, 84, 0.12);
+  border-bottom: 1.5px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.12);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
 }
 
@@ -52,7 +164,7 @@
   font-family: "Montserrat", sans-serif;
   letter-spacing: 0.01em;
   @apply capitalize;
-  background: linear-gradient(135deg, #1c7c54 0%, #0d5a3f 100%);
+  background: linear-gradient(135deg, rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b)) 0%, rgb(var(--category-color-dark-r), var(--category-color-dark-g), var(--category-color-dark-b)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -61,24 +173,24 @@
 .spot-detail-rating {
   @apply flex items-center gap-2 text-sm font-black text-white px-[18px] py-[10px] shrink-0;
   background: linear-gradient(
-    135deg,
-    var(--color-primary_color) 0%,
-    #0d5a3f 100%
+          135deg,
+          rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b)) 0%,
+          rgb(var(--category-color-dark-r), var(--category-color-dark-g), var(--category-color-dark-b)) 100%
   );
   @apply border-0 rounded-2xl;
   font-family: "Montserrat", sans-serif;
   letter-spacing: 0.05em;
-  box-shadow: 0 8px 24px rgba(28, 124, 84, 0.25);
+  box-shadow: 0 8px 24px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.25);
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
   0%,
   100% {
-    box-shadow: 0 8px 24px rgba(28, 124, 84, 0.25);
+    box-shadow: 0 8px 24px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.25);
   }
   50% {
-    box-shadow: 0 12px 32px rgba(28, 124, 84, 0.35);
+    box-shadow: 0 12px 32px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.35);
   }
 }
 
@@ -101,24 +213,17 @@
 .spot-detail-bookmark-button {
   @apply w-12 h-12 flex items-center justify-center rounded-2xl shrink-0 mt-1 cursor-pointer transition-all;
   background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.85) 100%
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(255, 255, 255, 0.85) 100%
   );
-  border: 1.8px solid rgba(28, 124, 84, 0.28);
-  box-shadow: 0 6px 18px rgba(28, 124, 84, 0.12);
+  border: 1.8px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.28);
+  box-shadow: 0 6px 18px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.12);
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.spot-detail-bookmark-button:hover {
-  background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.92) 100%);
-  border-color: rgba(28, 124, 84, 0.5);
-  box-shadow: 0 10px 28px rgba(28, 124, 84, 0.18);
-  @apply -translate-y-1 scale-108;
-}
-
 .spot-detail-bookmark-button:active {
-  box-shadow: 0 4px 12px rgba(28, 124, 84, 0.12);
+  box-shadow: 0 4px 12px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.12);
   @apply scale-95;
 }
 
@@ -128,22 +233,18 @@
   @apply transition-all;
 }
 
-.spot-detail-bookmark-button:hover .bookmark-icon {
-  @apply scale-120 rotate-[5deg];
-}
-
 .spot-detail-header {
   @apply relative w-full h-72 shrink-0 overflow-hidden;
-  background: linear-gradient(135deg, #1c7c54 0%, #0d5a3f 100%);
+  background: linear-gradient(135deg, rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b)) 0%, rgb(var(--category-color-dark-r), var(--category-color-dark-g), var(--category-color-dark-b)) 100%);
 }
 
 .spot-detail-header::after {
   content: "";
   @apply absolute inset-0 pointer-events-none;
   background: radial-gradient(
-    circle at 30% 20%,
-    rgba(255, 255, 255, 0.1) 0%,
-    transparent 50%
+          circle at 30% 20%,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 50%
   );
 }
 
@@ -158,31 +259,16 @@
   transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.spot-detail-header:hover .spot-detail-image {
-  @apply scale-108;
-}
-
 .spot-detail-back-button {
   @apply absolute top-4 left-4 w-11 h-11 flex items-center justify-center rounded-2xl z-10 cursor-pointer transition-all;
   background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.98) 0%,
-    rgba(255, 255, 255, 0.9) 100%
+          135deg,
+          rgba(255, 255, 255, 0.98) 0%,
+          rgba(255, 255, 255, 0.9) 100%
   );
-  border: 1.8px solid rgba(28, 124, 84, 0.22);
+  border: 1.8px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.22);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(10px);
-}
-
-.spot-detail-back-button:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 0.96) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.45);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-  @apply -translate-y-1;
 }
 
 .spot-detail-back-button:active {
@@ -190,41 +276,66 @@
   @apply scale-93;
 }
 
-.spot-detail-missions-banner {
-  @apply w-[calc(100%-32px)] p-5 mx-4 mb-0 flex items-center justify-between gap-4 rounded-3xl relative overflow-hidden;
+.spot-missions-banner-wrapper {
+  @apply w-full py-4 px-4;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.12) 0%,
-    rgba(28, 124, 84, 0.04) 100%
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(255, 255, 255, 0.88) 100%
   );
-  border: 2.5px solid rgba(28, 124, 84, 0.24);
+  display: flex;
+  justify-content: center;
+  border-bottom: 1.5px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.15);
+  box-shadow: 0 2px 8px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08);
+}
+
+.spot-detail-missions-banner {
+  @apply flex items-center justify-center gap-0 rounded-full relative overflow-hidden cursor-pointer;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08) 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.02) 100%
+  );
+  border: 1.5px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.25);
   box-shadow:
-    0 12px 40px rgba(28, 124, 84, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
+          0 8px 24px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.15),
+          0 2px 4px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.spot-detail-missions-banner:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.1),
+  inset 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .spot-detail-missions-banner::before {
   content: "";
   @apply absolute inset-0 pointer-events-none;
   background: radial-gradient(
-    circle at 100% 0%,
-    rgba(28, 124, 84, 0.08) 0%,
-    transparent 50%
+          circle at 50% 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08) 0%,
+          transparent 70%
   );
 }
 
 .missions-banner-content {
-  @apply flex items-center gap-3 text-sm text-[var(--color-text_color)] flex-1 relative z-1;
+  @apply flex items-center gap-2 text-xs text-[var(--color-text_color)] relative z-1;
   font-family: "Montserrat", sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 600;
+  letter-spacing: 0.03em;
 }
 
 .missions-icon {
-  @apply w-7 h-7 block shrink-0;
-  filter: saturate(1.8) drop-shadow(0 3px 6px rgba(28, 124, 84, 0.2));
-  animation: float-icon 3s ease-in-out infinite;
+  @apply w-5 h-5 block shrink-0;
+  filter: saturate(1.8) drop-shadow(0 2px 4px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.15));
+  animation: float-icon 2s ease-in-out infinite;
 }
 
 @keyframes float-icon {
@@ -233,27 +344,20 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
   }
 }
 
 .missions-text {
-  @apply font-bold leading-tight;
+  @apply font-semibold leading-none whitespace-nowrap;
   letter-spacing: 0.02em;
-  @apply flex items-center gap-1;
-  background: linear-gradient(
-    135deg,
-    var(--color-text_color) 0%,
-    var(--color-text_color) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-text_color);
+  font-size: 0.75rem;
 }
 
 .missions-text strong {
   @apply font-black;
-  background: linear-gradient(135deg, #1c7c54 0%, #0d5a3f 100%);
+  background: linear-gradient(135deg, rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b)) 0%, rgb(var(--category-color-dark-r), var(--category-color-dark-g), var(--category-color-dark-b)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -274,38 +378,21 @@
 .spot-detail-info-detailed {
   @apply w-[calc(100%-32px)] p-5 mx-4 mb-0 flex flex-col gap-[18px] rounded-3xl relative;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.08) 0%,
-    rgba(28, 124, 84, 0.02) 100%
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08) 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.02) 100%
   );
-  border: 2px solid rgba(28, 124, 84, 0.2);
+  border: 2px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.2);
   box-shadow:
-    0 12px 40px rgba(28, 124, 84, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
+          0 12px 40px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.12),
+          inset 0 1px 2px rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.spot-detail-info-detailed:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.12) 0%,
-    rgba(28, 124, 84, 0.04) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.35);
-  box-shadow:
-    0 16px 48px rgba(28, 124, 84, 0.16),
-    inset 0 1px 2px rgba(255, 255, 255, 0.7);
 }
 
 .info-row {
   @apply flex items-start gap-3 p-0 bg-transparent border-0 rounded-none;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.info-row:hover {
-  @apply bg-transparent border-transparent shadow-none;
-  transform: none;
 }
 
 .info-icon {
@@ -347,34 +434,7 @@
 }
 
 .missions-toggle-button {
-  @apply w-10 h-10 rounded-2xl p-0 flex items-center justify-center cursor-pointer transition-all shrink-0 relative z-2;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.85) 100%
-  );
-  border: 2.2px solid rgba(28, 124, 84, 0.28);
-  box-shadow:
-    0 6px 20px rgba(28, 124, 84, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.missions-toggle-button:hover {
-  background: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    rgba(255, 255, 255, 0.92) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.5);
-  @apply scale-115;
-  box-shadow:
-    0 10px 32px rgba(28, 124, 84, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-}
-
-.missions-toggle-button.expanded {
-  @apply scale-115 rotate-90;
+  @apply hidden;
 }
 
 .toggle-arrow {
@@ -394,17 +454,17 @@
 .mission-banner {
   @apply flex-1 text-sm text-[var(--color-text_color)] cursor-pointer p-[18px] rounded-3xl relative flex items-center justify-center min-h-[68px] font-black text-center;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.08) 0%,
-    rgba(28, 124, 84, 0.01) 100%
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08) 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.01) 100%
   );
-  border: 2.5px solid rgba(28, 124, 84, 0.22);
+  border: 2.5px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.22);
   font-family: "Montserrat", sans-serif;
   letter-spacing: 0.04em;
   @apply uppercase;
   box-shadow:
-    0 8px 24px rgba(28, 124, 84, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+          0 8px 24px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.1),
+          inset 0 1px 2px rgba(255, 255, 255, 0.5);
   overflow: hidden;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -413,9 +473,9 @@
   content: "";
   @apply absolute inset-0 pointer-events-none;
   background: radial-gradient(
-    circle at 50% 0%,
-    rgba(28, 124, 84, 0.05) 0%,
-    transparent 70%
+          circle at 50% 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.05) 0%,
+          transparent 70%
   );
 }
 
@@ -423,54 +483,24 @@
   content: "";
   @apply absolute inset-0 opacity-0 transition-opacity;
   background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    transparent 100%
+          180deg,
+          rgba(255, 255, 255, 0.3) 0%,
+          transparent 100%
   );
   transition: opacity 0.35s ease;
 }
 
-.mission-banner:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.14) 0%,
-    rgba(28, 124, 84, 0.04) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.45);
-  box-shadow:
-    0 12px 40px rgba(28, 124, 84, 0.18),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-  @apply -translate-y-[5px];
-}
-
-.mission-banner:hover::after {
-  @apply opacity-100;
-}
-
 .mission-banner.completed {
   background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.1) 0%,
-    rgba(76, 175, 80, 0.01) 100%
+          135deg,
+          rgba(76, 175, 80, 0.1) 0%,
+          rgba(76, 175, 80, 0.01) 100%
   );
   border-color: rgba(76, 175, 80, 0.35);
   @apply opacity-72 flex-col py-3 px-3 text-xs;
   box-shadow:
-    0 8px 24px rgba(76, 175, 80, 0.08),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-.mission-banner.completed:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.18) 0%,
-    rgba(76, 175, 80, 0.05) 100%
-  );
-  border-color: rgba(76, 175, 80, 0.6);
-  box-shadow:
-    0 12px 40px rgba(76, 175, 80, 0.18),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-  @apply -translate-y-[5px];
+          0 8px 24px rgba(76, 175, 80, 0.08),
+          inset 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
 .mission-banner.completed::before {
@@ -509,18 +539,22 @@
 .spot-detail-content {
   @apply flex-1 p-8 flex flex-col gap-7;
   overflow: visible;
-  background: linear-gradient(180deg, #f5f2eb 0%, rgba(28, 124, 84, 0.03) 100%);
+  background: linear-gradient(
+          180deg,
+          #f5f2eb 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.03) 100%
+  );
 }
 
 .spot-detail-info-section {
   @apply p-5 rounded-2xl;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.08) 0%,
-    rgba(244, 180, 26, 0.04) 100%
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08) 0%,
+          rgba(244, 180, 26, 0.04) 100%
   );
-  border: 1.5px solid rgba(28, 124, 84, 0.16);
-  box-shadow: 0 8px 28px rgba(28, 124, 84, 0.08);
+  border: 1.5px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.16);
+  box-shadow: 0 8px 28px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08);
   backdrop-filter: blur(8px);
 }
 
@@ -549,7 +583,7 @@
   font-family: "Montserrat", sans-serif;
   letter-spacing: 0.06em;
   @apply uppercase;
-  background: linear-gradient(135deg, #1c7c54 0%, #0d5a3f 100%);
+  background: linear-gradient(135deg, rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b)) 0%, rgb(var(--category-color-dark-r), var(--category-color-dark-g), var(--category-color-dark-b)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -559,9 +593,9 @@
   content: "";
   @apply absolute bottom-0 left-0 w-10 h-1 rounded;
   background: linear-gradient(
-    90deg,
-    var(--color-primary_color) 0%,
-    rgba(28, 124, 84, 0.4) 100%
+          90deg,
+          rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b)) 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.4) 100%
   );
 }
 
@@ -572,11 +606,11 @@
 .spot-detail-description {
   @apply text-base leading-relaxed text-[var(--color-text_color)] opacity-82 m-0 p-4 rounded-2xl;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.05) 0%,
-    rgba(28, 124, 84, 0.01) 100%
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.05) 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.01) 100%
   );
-  border-left: 4px solid var(--color-primary_color);
+  border-left: 4px solid rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b));
   font-weight: 500;
 }
 
@@ -590,46 +624,34 @@
 
 .spot-detail-gallery img {
   @apply w-full aspect-square object-cover rounded-2xl cursor-pointer transition-all relative overflow-hidden;
-  border: 2px solid rgba(28, 124, 84, 0.15);
-  box-shadow: 0 8px 24px rgba(28, 124, 84, 0.1);
+  border: 2px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.15);
+  box-shadow: 0 8px 24px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.1);
 }
 
 .spot-detail-gallery img::before {
   content: "";
   @apply absolute inset-0 opacity-0 transition-opacity;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.1) 0%,
-    transparent 100%
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.1) 0%,
+          transparent 100%
   );
-}
-
-.spot-detail-gallery img:hover {
-  @apply scale-110 rotate-[2deg];
-  box-shadow: 0 16px 48px rgba(28, 124, 84, 0.25);
-  border-color: var(--color-primary_color);
-}
-
-.spot-detail-gallery img:hover::before {
-  @apply opacity-100;
 }
 
 .spot-detail-actions {
   @apply flex gap-3 p-2 rounded-none relative overflow-hidden;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.03) 0%,
-    rgba(255, 255, 255, 0.5) 100%
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.03) 0%,
+          rgba(255, 255, 255, 0.5) 100%
   );
   border-radius: 5px 5px 0 0;
   box-shadow:
-    0 12px 40px rgba(28, 124, 84, 0.08),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+          0 12px 40px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08),
+          inset 0 1px 2px rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(8px);
-
   position: sticky;
   bottom: 0;
-
   width: 22vw;
   z-index: 50;
 }
@@ -638,23 +660,23 @@
   content: "";
   @apply absolute inset-0 pointer-events-none;
   background: radial-gradient(
-    circle at 20% 50%,
-    rgba(28, 124, 84, 0.03) 0%,
-    transparent 50%
+          circle at 20% 50%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.03) 0%,
+          transparent 50%
   );
 }
 
 .spot-detail-action-button {
   @apply flex-1 flex items-center justify-center gap-3 px-5 py-[14px] rounded-3xl text-xs font-black text-[var(--color-text_color)] cursor-pointer transition-all relative overflow-hidden z-1;
   background: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    rgba(255, 255, 255, 0.92) 100%
+          135deg,
+          #ffffff 0%,
+          rgba(255, 255, 255, 0.92) 100%
   );
-  border: 2.5px solid rgba(28, 124, 84, 0.22);
+  border: 2.5px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.22);
   box-shadow:
-    0 8px 24px rgba(28, 124, 84, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
+          0 8px 24px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 1);
   font-family: "Montserrat", sans-serif;
   letter-spacing: 0.04em;
   @apply uppercase;
@@ -664,9 +686,9 @@
   content: "";
   @apply absolute inset-0 opacity-0 transition-opacity;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.08) 0%,
-    transparent 100%
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08) 0%,
+          transparent 100%
   );
   z-index: -1;
 }
@@ -675,30 +697,17 @@
   content: "";
   @apply absolute inset-0 opacity-0 transition-opacity;
   background: radial-gradient(
-    circle at 50% 50%,
-    rgba(255, 255, 255, 0.5) 0%,
-    transparent 70%
+          circle at 50% 50%,
+          rgba(255, 255, 255, 0.5) 0%,
+          transparent 70%
   );
-}
-
-.spot-detail-action-button:hover {
-  background: linear-gradient(135deg, #f8fbfa 0%, #ffffff 100%);
-  border-color: rgba(28, 124, 84, 0.45);
-  box-shadow:
-    0 12px 40px rgba(28, 124, 84, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-  @apply -translate-y-1.5;
-}
-
-.spot-detail-action-button:hover::before {
-  @apply opacity-100;
 }
 
 .spot-detail-action-button:active {
   @apply -translate-y-0.5 scale-98;
   box-shadow:
-    0 6px 16px rgba(28, 124, 84, 0.12),
-    inset 0 2px 4px rgba(28, 124, 84, 0.1);
+          0 6px 16px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.12),
+          inset 0 2px 4px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.1);
 }
 
 .spot-detail-action-button .icon-mini {
@@ -706,31 +715,16 @@
   filter: saturate(1.7) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
 }
 
-.spot-detail-action-button:hover .icon-mini {
-  @apply scale-125 rotate-[12deg];
-}
-
 .spot-detail-visit-button.visited {
   background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.12) 0%,
-    rgba(76, 175, 80, 0.06) 100%
+          135deg,
+          rgba(76, 175, 80, 0.12) 0%,
+          rgba(76, 175, 80, 0.06) 100%
   );
   border-color: rgba(76, 175, 80, 0.45);
   box-shadow:
-    0 8px 24px rgba(76, 175, 80, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-.spot-detail-visit-button.visited:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.2) 0%,
-    rgba(76, 175, 80, 0.12) 100%
-  );
-  border-color: rgba(76, 175, 80, 0.65);
-  box-shadow: 0 14px 48px rgba(76, 175, 80, 0.25);
-  @apply -translate-y-1.5;
+          0 8px 24px rgba(76, 175, 80, 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .spot-detail-actions-fixed {
@@ -743,17 +737,16 @@
   justify-content: center;
   gap: 2.5rem;
   padding: 0 0.625rem;
-
   z-index: 60;
   background: linear-gradient(
-    180deg,
-    rgba(245, 242, 235, 0.98) 0%,
-    rgba(245, 242, 235, 1) 100%
+          180deg,
+          rgba(245, 242, 235, 0.98) 0%,
+          rgba(245, 242, 235, 1) 100%
   );
-  border-top: 2px solid rgba(28, 124, 84, 0.15);
+  border-top: 2px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.15);
   box-shadow:
-    0 -8px 32px rgba(28, 124, 84, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+          0 -8px 32px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.12),
+          inset 0 1px 2px rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
 }
 
@@ -774,16 +767,17 @@
   @apply inline-flex px-5 py-4;
 }
 
+
 .spot-reviews-header {
   @apply p-7 pb-0 pt-3 flex flex-row gap-3 items-end min-h-auto;
   background: linear-gradient(
-    180deg,
-    var(--color-main_paper) 0%,
-    rgba(28, 124, 84, 0.015) 100%
+          180deg,
+          var(--color-main_paper) 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.015) 100%
   );
   margin-top: 3px;
   flex-shrink: 0;
-  border-top: 1.5px solid rgba(28, 124, 84, 0.14);
+  border-top: 1.5px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.14);
 }
 
 .spot-reviews-header-top {
@@ -806,30 +800,20 @@
 .spot-add-review-button {
   @apply px-4 py-3 rounded-xl text-xs font-black text-white cursor-pointer transition-all flex items-center gap-2 z-10;
   background: linear-gradient(
-    135deg,
-    var(--color-primary_color) 0%,
-    #0d5a3f 100%
+          135deg,
+          rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b)) 0%,
+          rgb(var(--category-color-dark-r), var(--category-color-dark-g), var(--category-color-dark-b)) 100%
   );
   border: none;
-  box-shadow: 0 8px 24px rgba(28, 124, 84, 0.2);
+  box-shadow: 0 8px 24px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.2);
   font-family: "Montserrat", sans-serif;
   letter-spacing: 0.03em;
   @apply uppercase;
 }
 
-.spot-add-review-button:hover {
-  background: linear-gradient(
-    135deg,
-    #0d5a3f 0%,
-    var(--color-primary_color) 100%
-  );
-  box-shadow: 0 12px 32px rgba(28, 124, 84, 0.3);
-  @apply -translate-y-0.75;
-}
-
 .spot-add-review-button:active {
   @apply scale-97;
-  box-shadow: 0 4px 12px rgba(28, 124, 84, 0.15);
+  box-shadow: 0 4px 12px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.15);
 }
 
 .review-button-icon {
@@ -838,16 +822,12 @@
 }
 
 .spot-view-all-reviews-button {
-  @apply p-0 bg-transparent border-0 rounded-none text-xs font-bold text-[var(--color-primary_color)] cursor-pointer transition-all underline z-20;
+  @apply p-0 bg-transparent border-0 rounded-none text-xs font-bold cursor-pointer transition-all underline z-20;
+  color: rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b));
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
   font-family: "Montserrat", sans-serif;
   letter-spacing: 0.02em;
-}
-
-.spot-view-all-reviews-button:hover {
-  @apply bg-transparent text-[#0d5a3f];
-  text-decoration-thickness: 3px;
 }
 
 .spot-view-all-reviews-button:active {
@@ -863,9 +843,9 @@
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   background: linear-gradient(
-    180deg,
-    rgba(28, 124, 84, 0.02) 0%,
-    var(--color-main_paper) 100%
+          180deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.02) 0%,
+          var(--color-main_paper) 100%
   );
 }
 
@@ -888,37 +868,22 @@
 .spot-review-item {
   @apply p-4 rounded-2xl h-full flex flex-col gap-3 relative overflow-hidden transition-all;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.05) 0%,
-    rgba(28, 124, 84, 0.01) 100%
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.05) 0%,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.01) 100%
   );
-  border: 1.5px solid rgba(28, 124, 84, 0.16);
-  box-shadow: 0 6px 18px rgba(28, 124, 84, 0.08);
+  border: 1.5px solid rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.16);
+  box-shadow: 0 6px 18px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.08);
 }
 
 .spot-review-item::before {
   content: "";
   @apply absolute inset-0 opacity-0 transition-opacity;
   background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.05) 0%,
-    transparent 100%
+          135deg,
+          rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.05) 0%,
+          transparent 100%
   );
-}
-
-.spot-review-item:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.09) 0%,
-    rgba(28, 124, 84, 0.02) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.3);
-  box-shadow: 0 10px 28px rgba(28, 124, 84, 0.14);
-  @apply -translate-y-1;
-}
-
-.spot-review-item:hover::before {
-  @apply opacity-100;
 }
 
 .spot-review-header {
@@ -935,14 +900,14 @@
 .spot-review-rating {
   @apply flex items-center gap-1.5 text-xs font-black text-white px-3 py-1.5 rounded-xl whitespace-nowrap;
   background: linear-gradient(
-    135deg,
-    var(--color-primary_color) 0%,
-    #0d5a3f 100%
+          135deg,
+          rgb(var(--category-color-r), var(--category-color-g), var(--category-color-b)) 0%,
+          rgb(var(--category-color-dark-r), var(--category-color-dark-g), var(--category-color-dark-b)) 100%
   );
   border: none;
   font-family: "Montserrat", sans-serif;
   letter-spacing: 0.03em;
-  box-shadow: 0 4px 12px rgba(28, 124, 84, 0.15);
+  box-shadow: 0 4px 12px rgba(var(--category-color-r), var(--category-color-g), var(--category-color-b), 0.15);
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
@@ -956,983 +921,4 @@
 .spot-reviews-carousel-wrapper.is-dragging {
   scroll-behavior: auto;
   @apply cursor-grabbing;
-}
-
-#main[data-category="food"] .spot-detail-header {
-  background: linear-gradient(135deg, #e36414 0%, #c5530a 100%);
-}
-
-#main[data-category="food"] .spot-section-title {
-  background: linear-gradient(135deg, #e36414 0%, #c5530a 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-#main[data-category="food"] .spot-section-title::after {
-  background: linear-gradient(90deg, #e36414 0%, rgba(227, 100, 20, 0.4) 100%);
-}
-
-#main[data-category="food"] .spot-detail-info-section {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.08) 0%,
-    rgba(227, 100, 20, 0.02) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.15);
-}
-
-#main[data-category="food"] .spot-detail_info-detailed {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.04) 0%,
-    rgba(227, 100, 20, 0.01) 100%
-  );
-  border-top-color: rgba(227, 100, 20, 0.12);
-}
-
-#main[data-category="food"] .info-row {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.04) 0%,
-    rgba(227, 100, 20, 0.01) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.1);
-}
-
-#main[data-category="food"] .info-row:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.08) 0%,
-    rgba(227, 100, 20, 0.02) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.18);
-  box-shadow: 0 4px 12px rgba(227, 100, 20, 0.08);
-}
-
-#main[data-category="food"] .mission-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.08) 0%,
-    rgba(227, 100, 20, 0.01) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.24);
-  box-shadow:
-    0 8px 24px rgba(227, 100, 20, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-#main[data-category="food"] .mission-banner:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.14) 0%,
-    rgba(227, 100, 20, 0.04) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.48);
-  box-shadow:
-    0 12px 40px rgba(227, 100, 20, 0.18),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="food"] .mission-banner.completed {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.1) 0%,
-    rgba(76, 175, 80, 0.01) 100%
-  );
-  border-color: rgba(76, 175, 80, 0.32);
-  box-shadow:
-    0 8px 24px rgba(76, 175, 80, 0.08),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-#main[data-category="food"] .mission-banner.completed:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.18) 0%,
-    rgba(76, 175, 80, 0.05) 100%
-  );
-  border-color: rgba(76, 175, 80, 0.6);
-  box-shadow:
-    0 12px 40px rgba(76, 175, 80, 0.18),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="food"] .spot-reviews-header {
-  border-top-color: rgba(227, 100, 20, 0.12);
-}
-
-#main[data-category="food"] .spot-reviews-carousel-wrapper {
-  background: linear-gradient(
-    180deg,
-    rgba(227, 100, 20, 0.02) 0%,
-    rgba(227, 100, 20, 0.01) 100%
-  );
-}
-
-#main[data-category="food"] .spot-add-review-button {
-  background: linear-gradient(135deg, #e36414 0%, #c5530a 100%);
-  box-shadow: 0 8px 24px rgba(227, 100, 20, 0.2);
-}
-
-#main[data-category="food"] .spot-add-review-button:hover {
-  box-shadow: 0 12px 32px rgba(227, 100, 20, 0.3);
-}
-
-#main[data-category="food"] .spot-view-all-reviews-button {
-  color: #e36414;
-}
-
-#main[data-category="food"] .spot-view-all-reviews-button:hover {
-  color: #c5530a;
-}
-
-#main[data-category="food"] .spot-review-item {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.04) 0%,
-    rgba(227, 100, 20, 0.01) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.15);
-  border-top-color: #e36414;
-  border-top-width: 3px;
-}
-
-#main[data-category="food"] .spot-review-item:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.08) 0%,
-    rgba(227, 100, 20, 0.02) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.25);
-  border-top-color: #e36414;
-  box-shadow: 0 12px 36px rgba(227, 100, 20, 0.15);
-}
-
-#main[data-category="food"] .spot-review-rating {
-  background: linear-gradient(135deg, #e36414 0%, #c5530a 100%);
-  box-shadow: 0 4px 12px rgba(227, 100, 20, 0.15);
-}
-
-#main[data-category="food"] .spot-detail-actions {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.06) 0%,
-    rgba(227, 100, 20, 0.02) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.12);
-}
-
-#main[data-category="food"] .spot-detail-actions {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.04) 0%,
-    rgba(255, 255, 255, 0.5) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.15);
-  box-shadow:
-    0 12px 40px rgba(227, 100, 20, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
-  position: sticky;
-  bottom: 0;
-}
-
-#main[data-category="food"] .spot-detail-action-button {
-  background: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    rgba(255, 255, 255, 0.92) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.25);
-  box-shadow:
-    0 8px 24px rgba(227, 100, 20, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-#main[data-category="food"] .spot-detail-action-button:hover {
-  background: linear-gradient(135deg, #f8fbfa 0%, #ffffff 100%);
-  border-color: #e36414;
-  box-shadow:
-    0 12px 40px rgba(227, 100, 20, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-#main[data-category="food"] .spot-detail-missions-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.12) 0%,
-    rgba(227, 100, 20, 0.04) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.26);
-  box-shadow:
-    0 12px 40px rgba(227, 100, 20, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="food"] .missions-toggle-button {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.85) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.28);
-  box-shadow:
-    0 6px 20px rgba(227, 100, 20, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-}
-
-#main[data-category="food"] .missions-toggle-button:hover {
-  border-color: rgba(227, 100, 20, 0.5);
-  box-shadow:
-    0 10px 32px rgba(227, 100, 20, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-}
-
-#main[data-category="culture"] .spot-detail-header {
-  background: linear-gradient(135deg, #c9a26a 0%, #a97e48 100%);
-}
-
-#main[data-category="culture"] .spot-section-title {
-  background: linear-gradient(135deg, #c9a26a 0%, #a97e48 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-#main[data-category="culture"] .spot-section-title::after {
-  background: linear-gradient(90deg, #c9a26a 0%, rgba(201, 162, 106, 0.4) 100%);
-}
-
-#main[data-category="culture"] .spot-detail-info-section {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.08) 0%,
-    rgba(201, 162, 106, 0.02) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.15);
-}
-
-#main[data-category="culture"] .spot-detail-info-detailed {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.04) 0%,
-    rgba(201, 162, 106, 0.01) 100%
-  );
-  border-top-color: rgba(201, 162, 106, 0.12);
-}
-
-#main[data-category="culture"] .info-row {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.04) 0%,
-    rgba(201, 162, 106, 0.01) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.1);
-}
-
-#main[data-category="culture"] .info-row:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.08) 0%,
-    rgba(201, 162, 106, 0.02) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.18);
-  box-shadow: 0 4px 12px rgba(201, 162, 106, 0.08);
-}
-
-#main[data-category="culture"] .mission-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.08) 0%,
-    rgba(201, 162, 106, 0.01) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.24);
-  box-shadow:
-    0 8px 24px rgba(201, 162, 106, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-#main[data-category="culture"] .mission-banner:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.14) 0%,
-    rgba(201, 162, 106, 0.04) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.48);
-  box-shadow:
-    0 12px 40px rgba(201, 162, 106, 0.18),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="culture"] .mission-banner.completed {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.1) 0%,
-    rgba(76, 175, 80, 0.01) 100%
-  );
-  border-color: rgba(76, 175, 80, 0.32);
-  box-shadow:
-    0 8px 24px rgba(76, 175, 80, 0.08),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-#main[data-category="culture"] .mission-banner.completed:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.18) 0%,
-    rgba(76, 175, 80, 0.05) 100%
-  );
-  border-color: rgba(76, 175, 80, 0.6);
-  box-shadow:
-    0 12px 40px rgba(76, 175, 80, 0.18),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="culture"] .spot-reviews-header {
-  border-top-color: rgba(201, 162, 106, 0.12);
-}
-
-#main[data-category="culture"] .spot-reviews-carousel-wrapper {
-  background: linear-gradient(
-    180deg,
-    rgba(201, 162, 106, 0.02) 0%,
-    rgba(201, 162, 106, 0.01) 100%
-  );
-}
-
-#main[data-category="culture"] .spot-add-review-button {
-  background: linear-gradient(135deg, #c9a26a 0%, #a97e48 100%);
-  box-shadow: 0 8px 24px rgba(201, 162, 106, 0.2);
-}
-
-#main[data-category="culture"] .spot-add-review-button:hover {
-  box-shadow: 0 12px 32px rgba(201, 162, 106, 0.3);
-}
-
-#main[data-category="culture"] .spot-view-all-reviews-button {
-  color: #c9a26a;
-}
-
-#main[data-category="culture"] .spot-view-all-reviews-button:hover {
-  color: #a97e48;
-}
-
-#main[data-category="culture"] .spot-review-item {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.04) 0%,
-    rgba(201, 162, 106, 0.01) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.15);
-  border-top-color: #c9a26a;
-  border-top-width: 3px;
-}
-
-#main[data-category="culture"] .spot-review-item:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.08) 0%,
-    rgba(201, 162, 106, 0.02) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.25);
-  border-top-color: #c9a26a;
-  box-shadow: 0 12px 36px rgba(201, 162, 106, 0.15);
-}
-
-#main[data-category="culture"] .spot-review-rating {
-  background: linear-gradient(135deg, #c9a26a 0%, #a97e48 100%);
-  box-shadow: 0 4px 12px rgba(201, 162, 106, 0.15);
-}
-
-#main[data-category="culture"] .spot-detail-actions {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.06) 0%,
-    rgba(201, 162, 106, 0.02) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.12);
-}
-
-#main[data-category="culture"] .spot-detail-actions {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.04) 0%,
-    rgba(255, 255, 255, 0.5) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.15);
-  box-shadow:
-    0 12px 40px rgba(201, 162, 106, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
-  position: sticky;
-  bottom: 0;
-}
-
-#main[data-category="culture"] .spot-detail-action-button {
-  background: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    rgba(255, 255, 255, 0.92) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.25);
-  box-shadow:
-    0 8px 24px rgba(201, 162, 106, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-#main[data-category="culture"] .spot-detail-action-button:hover {
-  background: linear-gradient(135deg, #f8fbfa 0%, #ffffff 100%);
-  border-color: #c9a26a;
-  box-shadow:
-    0 12px 40px rgba(201, 162, 106, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-#main[data-category="culture"] .spot-detail-missions-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.12) 0%,
-    rgba(201, 162, 106, 0.04) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.26);
-  box-shadow:
-    0 12px 40px rgba(201, 162, 106, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="culture"] .missions-toggle-button {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.85) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.28);
-  box-shadow:
-    0 6px 20px rgba(201, 162, 106, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-}
-
-#main[data-category="culture"] .missions-toggle-button:hover {
-  border-color: rgba(201, 162, 106, 0.5);
-  box-shadow:
-    0 10px 32px rgba(201, 162, 106, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-}
-
-#main[data-category="nature"] .spot-detail-header {
-  background: linear-gradient(135deg, #1c7c54 0%, #0d5a3f 100%);
-}
-
-#main[data-category="nature"] .spot-detail-info-section {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.08) 0%,
-    rgba(28, 124, 84, 0.02) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.15);
-}
-
-#main[data-category="nature"] .spot-detail_info-detailed {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.04) 0%,
-    rgba(28, 124, 84, 0.01) 100%
-  );
-  border-top-color: rgba(28, 124, 84, 0.12);
-}
-
-#main[data-category="nature"] .info-row {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.04) 0%,
-    rgba(28, 124, 84, 0.01) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.1);
-}
-
-#main[data-category="nature"] .info-row:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.08) 0%,
-    rgba(28, 124, 84, 0.02) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.18);
-  box-shadow: 0 4px 12px rgba(28, 124, 84, 0.08);
-}
-
-#main[data-category="nature"] .spot-reviews-header {
-  border-top-color: rgba(28, 124, 84, 0.12);
-}
-
-#main[data-category="nature"] .spot-reviews-carousel-wrapper {
-  background: linear-gradient(
-    180deg,
-    rgba(28, 124, 84, 0.02) 0%,
-    rgba(28, 124, 84, 0.01) 100%
-  );
-}
-
-#main[data-category="nature"] .spot-add-review-button {
-  background: linear-gradient(135deg, #1c7c54 0%, #0d5a3f 100%);
-  box-shadow: 0 8px 24px rgba(28, 124, 84, 0.2);
-}
-
-#main[data-category="nature"] .spot-add-review-button:hover {
-  box-shadow: 0 12px 32px rgba(28, 124, 84, 0.3);
-}
-
-#main[data-category="nature"] .spot-view-all-reviews-button {
-  color: #1c7c54;
-}
-
-#main[data-category="nature"] .spot-view-all-reviews-button:hover {
-  color: #0d5a3f;
-}
-
-#main[data-category="nature"] .spot-review-item {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.04) 0%,
-    rgba(28, 124, 84, 0.01) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.15);
-}
-
-#main[data-category="nature"] .spot-review-item:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.08) 0%,
-    rgba(28, 124, 84, 0.02) 100%
-  );
-  border-color: #1c7c54;
-  box-shadow: 0 12px 36px rgba(28, 124, 84, 0.15);
-}
-
-#main[data-category="nature"] .spot-review-rating {
-  background: linear-gradient(135deg, #1c7c54 0%, #0d5a3f 100%);
-  box-shadow: 0 4px 12px rgba(28, 124, 84, 0.15);
-}
-
-#main[data-category="nature"] .spot-detail-actions {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.06) 0%,
-    rgba(28, 124, 84, 0.02) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.12);
-}
-
-#main[data-category="nature"] .spot-detail-actions {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.04) 0%,
-    rgba(255, 255, 255, 0.5) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.15);
-  box-shadow:
-    0 12px 40px rgba(28, 124, 84, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
-  position: sticky;
-  bottom: 0;
-}
-
-#main[data-category="nature"] .spot-detail-action-button {
-  background: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    rgba(255, 255, 255, 0.92) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.25);
-  box-shadow:
-    0 8px 24px rgba(28, 124, 84, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-#main[data-category="nature"] .spot-detail-action-button:hover {
-  background: linear-gradient(135deg, #f8fbfa 0%, #ffffff 100%);
-  border-color: #1c7c54;
-  box-shadow:
-    0 12px 40px rgba(28, 124, 84, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-#main[data-category="nature"] .spot-detail-missions-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(28, 124, 84, 0.12) 0%,
-    rgba(28, 124, 84, 0.04) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.26);
-  box-shadow:
-    0 12px 40px rgba(28, 124, 84, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="nature"] .missions-toggle-button {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.85) 100%
-  );
-  border-color: rgba(28, 124, 84, 0.28);
-  box-shadow:
-    0 6px 20px rgba(28, 124, 84, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-}
-
-#main[data-category="nature"] .missions-toggle-button:hover {
-  border-color: rgba(28, 124, 84, 0.5);
-  box-shadow:
-    0 10px 32px rgba(28, 124, 84, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-}
-
-#main[data-category="mystery"] .spot-detail-header {
-  background: linear-gradient(135deg, #5b2b82 0%, #3f1a56 100%);
-}
-
-#main[data-category="mystery"] .spot-section-title {
-  background: linear-gradient(135deg, #5b2b82 0%, #3f1a56 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-#main[data-category="mystery"] .spot-section-title::after {
-  background: linear-gradient(90deg, #5b2b82 0%, rgba(91, 43, 130, 0.4) 100%);
-}
-
-#main[data-category="mystery"] .spot-detail-info-section {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.08) 0%,
-    rgba(91, 43, 130, 0.02) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.15);
-}
-
-#main[data-category="mystery"] .spot-detail-info-detailed {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.04) 0%,
-    rgba(91, 43, 130, 0.01) 100%
-  );
-  border-top-color: rgba(91, 43, 130, 0.12);
-}
-
-#main[data-category="mystery"] .info-row {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.04) 0%,
-    rgba(91, 43, 130, 0.01) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.1);
-}
-
-#main[data-category="mystery"] .info-row:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.08) 0%,
-    rgba(91, 43, 130, 0.02) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.18);
-  box-shadow: 0 4px 12px rgba(91, 43, 130, 0.08);
-}
-
-#main[data-category="mystery"] .mission-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.08) 0%,
-    rgba(91, 43, 130, 0.01) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.24);
-  box-shadow:
-    0 8px 24px rgba(91, 43, 130, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-#main[data-category="mystery"] .mission-banner:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.14) 0%,
-    rgba(91, 43, 130, 0.04) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.48);
-  box-shadow:
-    0 12px 40px rgba(91, 43, 130, 0.18),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="mystery"] .mission-banner.completed {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.1) 0%,
-    rgba(76, 175, 80, 0.01) 100%
-  );
-  border-color: rgba(76, 175, 80, 0.32);
-  box-shadow:
-    0 8px 24px rgba(76, 175, 80, 0.08),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-#main[data-category="mystery"] .mission-banner.completed:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.18) 0%,
-    rgba(76, 175, 80, 0.05) 100%
-  );
-  border-color: rgba(76, 175, 80, 0.6);
-  box-shadow:
-    0 12px 40px rgba(76, 175, 80, 0.18),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="mystery"] .spot-reviews-header {
-  border-top-color: rgba(91, 43, 130, 0.12);
-}
-
-#main[data-category="mystery"] .spot-reviews-carousel-wrapper {
-  background: linear-gradient(
-    180deg,
-    rgba(91, 43, 130, 0.02) 0%,
-    rgba(91, 43, 130, 0.01) 100%
-  );
-}
-
-#main[data-category="mystery"] .spot-add-review-button {
-  background: linear-gradient(135deg, #5b2b82 0%, #3f1a56 100%);
-  box-shadow: 0 8px 24px rgba(91, 43, 130, 0.2);
-}
-
-#main[data-category="mystery"] .spot-add-review-button:hover {
-  box-shadow: 0 12px 32px rgba(91, 43, 130, 0.3);
-}
-
-#main[data-category="mystery"] .spot-view-all-reviews-button {
-  color: #5b2b82;
-}
-
-#main[data-category="mystery"] .spot-view-all-reviews-button:hover {
-  color: #3f1a56;
-}
-
-#main[data-category="mystery"] .spot-review-item {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.04) 0%,
-    rgba(91, 43, 130, 0.01) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.15);
-}
-
-#main[data-category="mystery"] .spot-review-item:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.08) 0%,
-    rgba(91, 43, 130, 0.02) 100%
-  );
-  border-color: #5b2b82;
-  box-shadow: 0 12px 36px rgba(91, 43, 130, 0.15);
-}
-
-#main[data-category="mystery"] .spot-review-rating {
-  background: linear-gradient(135deg, #5b2b82 0%, #3f1a56 100%);
-  box-shadow: 0 4px 12px rgba(91, 43, 130, 0.15);
-}
-
-#main[data-category="mystery"] .spot-detail-actions {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.06) 0%,
-    rgba(91, 43, 130, 0.02) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.12);
-}
-
-#main[data-category="mystery"] .spot-detail-actions {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.04) 0%,
-    rgba(255, 255, 255, 0.5) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.15);
-  box-shadow:
-    0 12px 40px rgba(91, 43, 130, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
-  position: sticky;
-  bottom: 0;
-}
-
-#main[data-category="mystery"] .spot-detail-action-button {
-  background: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    rgba(255, 255, 255, 0.92) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.25);
-  box-shadow:
-    0 8px 24px rgba(91, 43, 130, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-#main[data-category="mystery"] .spot-detail-action-button:hover {
-  background: linear-gradient(135deg, #f8fbfa 0%, #ffffff 100%);
-  border-color: #5b2b82;
-  box-shadow:
-    0 12px 40px rgba(91, 43, 130, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-#main[data-category="mystery"] .spot-detail-missions-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.12) 0%,
-    rgba(91, 43, 130, 0.04) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.26);
-  box-shadow:
-    0 12px 40px rgba(91, 43, 130, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-#main[data-category="mystery"] .missions-toggle-button {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.85) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.28);
-  box-shadow:
-    0 6px 20px rgba(91, 43, 130, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-}
-
-#main[data-category="mystery"] .missions-toggle-button:hover {
-  border-color: rgba(91, 43, 130, 0.5);
-  box-shadow:
-    0 10px 32px rgba(91, 43, 130, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 1);
-}
-
-#main[data-category="food"] .spot-detail-title {
-  background: linear-gradient(135deg, #e36414 0%, #c5530a 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-#main[data-category="food"] .spot-detail-rating {
-  background: linear-gradient(135deg, #e36414 0%, #c5530a 100%);
-  box-shadow: 0 8px 24px rgba(227, 100, 20, 0.25);
-}
-
-#main[data-category="food"] .spot-detail_description {
-  border-left-color: #e36414;
-}
-
-#main[data-category="culture"] .spot-detail-title {
-  background: linear-gradient(135deg, #c9a26a 0%, #a97e48 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-#main[data-category="culture"] .spot-detail-rating {
-  background: linear-gradient(135deg, #c9a26a 0%, #a97e48 100%);
-  box-shadow: 0 8px 24px rgba(201, 162, 106, 0.25);
-}
-
-#main[data-category="culture"] .spot-detail_description {
-  border-left-color: #c9a26a;
-}
-
-#main[data-category="nature"] .spot-detail-title {
-  background: linear-gradient(135deg, #1c7c54 0%, #0d5a3f 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-#main[data-category="nature"] .spot-detail-rating {
-  background: linear-gradient(135deg, #1c7c54 0%, #0d5a3f 100%);
-  box-shadow: 0 8px 24px rgba(28, 124, 84, 0.25);
-}
-
-#main[data-category="nature"] .spot-detail_description {
-  border-left-color: #1c7c54;
-}
-
-#main[data-category="mystery"] .spot-detail-title {
-  background: linear-gradient(135deg, #5b2b82 0%, #3f1a56 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-#main[data-category="mystery"] .spot-detail-rating {
-  background: linear-gradient(135deg, #5b2b82 0%, #3f1a56 100%);
-  box-shadow: 0 8px 24px rgba(91, 43, 130, 0.25);
-}
-
-#main[data-category="mystery"] .spot-detail_description {
-  border-left-color: #5b2b82;
-}
-
-#main[data-category="food"] .mission-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.1) 0%,
-    rgba(227, 100, 20, 0.02) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.28);
-  box-shadow: 0 6px 16px rgba(227, 100, 20, 0.08);
-}
-
-#main[data-category="food"] .mission-banner:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(227, 100, 20, 0.16) 0%,
-    rgba(227, 100, 20, 0.05) 100%
-  );
-  border-color: rgba(227, 100, 20, 0.5);
-  box-shadow: 0 10px 28px rgba(227, 100, 20, 0.14);
-}
-
-#main[data-category="culture"] .mission-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.1) 0%,
-    rgba(201, 162, 106, 0.02) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.28);
-  box-shadow: 0 6px 16px rgba(201, 162, 106, 0.08);
-}
-
-#main[data-category="culture"] .mission-banner:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 106, 0.16) 0%,
-    rgba(201, 162, 106, 0.05) 100%
-  );
-  border-color: rgba(201, 162, 106, 0.5);
-  box-shadow: 0 10px 28px rgba(201, 162, 106, 0.14);
-}
-
-#main[data-category="mystery"] .mission-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.1) 0%,
-    rgba(91, 43, 130, 0.02) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.28);
-  box-shadow: 0 6px 16px rgba(91, 43, 130, 0.08);
-}
-
-#main[data-category="mystery"] .mission-banner:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(91, 43, 130, 0.16) 0%,
-    rgba(91, 43, 130, 0.05) 100%
-  );
-  border-color: rgba(91, 43, 130, 0.5);
-  box-shadow: 0 10px 28px rgba(91, 43, 130, 0.14);
 }
