@@ -445,6 +445,41 @@ function initializeViewAllSavedSearch() {
     keyboard.addEventListener("mousedown", (e) => {
         e.preventDefault();
     });
+
+    searchInput.addEventListener("input", () => {
+        const searchQuery = searchInput.value.toLowerCase().trim();
+        const spotCards = document.querySelectorAll(".view-all-saved-card");
+        const overlay = document.getElementById("view-all-saved-keyboard-overlay");
+        let hasVisibleResults = false;
+
+        spotCards.forEach(card => {
+            const spotId = card.getAttribute("data-spot-id");
+
+            if (!spotId || spotId.trim() === "") {
+                card.style.display = "none";
+                return;
+            }
+
+            const title = card.querySelector(".view-all-saved-title");
+            const titleText = title ? title.textContent.toLowerCase() : "";
+
+            if (searchQuery === "") {
+                card.style.display = "";
+            } else {
+                const matches = titleText.includes(searchQuery);
+                card.style.display = matches ? "" : "none";
+                if (matches) {
+                    hasVisibleResults = true;
+                }
+            }
+        });
+
+        if (overlay && searchQuery !== "") {
+            overlay.style.display = "none";
+        } else if (overlay) {
+            overlay.style.display = "";
+        }
+    });
 }
 
 async function goToHomepage() {
