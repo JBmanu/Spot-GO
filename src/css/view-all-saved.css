@@ -216,9 +216,13 @@
         @apply fixed bottom-0 left-0 right-0 transition-transform duration-300 ease-out;
         background: #d1d5db;
         z-index: 1000;
+        display: none;
+        pointer-events: none;
     }
 
     #view-all-saved-keyboard.keyboard-visible {
+        display: block;
+        pointer-events: auto;
         transform: translateY(0) !important;
     }
 
