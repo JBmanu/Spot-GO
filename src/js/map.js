@@ -1,7 +1,7 @@
 // map.js
 // Import dinamici
 let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots,
-    USER_PROTO_POSITION, distanceFromUserToSpot;
+    USER_PROTO_POSITION, distanceFromUserToSpot, createSearchBar;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -19,6 +19,9 @@ Promise.all([
         USER_PROTO_POSITION = module.USER_PROTO_POSITION;
         distanceFromUserToSpot = module.distanceFromUserToSpot;
     }),
+    import("./createComponent.js").then(module => {
+        createSearchBar = module.createSearchBar;
+    }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
 // Cache per i luoghi vicini
@@ -35,6 +38,7 @@ async function initializeMap() {
 
     // Carica le sezioni
     // loadSavedSpotsSection();
+    loadSearchBar();
     await loadSpots();
     loadMap();
     loadMarkers();
@@ -58,6 +62,11 @@ async function initializeMap() {
     //     // Filtra gli spot in base alle categorie selezionate
     //     loadContentByCategories(Array.from(activeCategories));
     // });
+}
+
+async function loadSearchBar() {
+    const searchBar = await createSearchBar("Cerca Spot", (e) => {});
+    document.querySelector('.home-section').appendChild(searchBar);
 }
 
 async function loadSpots() {
