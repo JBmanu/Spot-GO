@@ -10,6 +10,10 @@
 
 @import "./profile/profile.css";
 
+@import "./profile/profile-overview.css";
+
+@import "./profile/profile-album.css";
+
 @import "./common/carousel.css";
 
 @import "./homepage/homepage.css";

@@ -1,21 +1,22 @@
-<section class="space-y-3">
+<section class="profile-wrapper">
 
-    <!--    Sezione il alto-->
-    <div class="spot-card p-4 space-y-4">
+    <!-- Profile Overview Section -->
+    <div class="profile-card">
         <div id="profile-overview-container"></div>
     </div>
 
-    <div class="spot-card p-4 space-y-4">
+    <!-- Travel Diary Section -->
+    <div class="profile-card">
 
         <!-- Header: titolo + plus -->
-        <div class="flex items-start justify-between">
-            <h1 class="text-2xl font-bold tracking-tight">
+        <div class="profile-diary-header">
+            <h1 class="profile-diary-title">
                 Diario di viaggio
             </h1>
 
             <button
                     type="button"
-                    class="w-10 h-10 rounded-xl border border-border bg-spotPaper grid place-items-center active:scale-95 transition"
+                    class="profile-diary-add-btn"
                     aria-label="Aggiungi nuova polaroid"
             >
                 +
@@ -25,7 +26,7 @@
         <!-- Apri Album -->
         <button
                 type="button"
-                class="mx-auto flex items-center gap-2 text-sm underline underline-offset-4 text-toolbarText/80 hover:text-toolbarText transition"
+                class="profile-album-btn"
                 aria-label="Apri album"
         >
             <span class="text-lg">🖼️</span>
@@ -33,39 +34,38 @@
         </button>
 
         <!-- Carousel area: frecce + polaroid -->
-        <div class="flex items-center justify-between gap-3">
+        <div class="profile-carousel">
             <!-- Left arrow -->
             <button
                     type="button"
-                    class="w-10 h-10 grid place-items-center rounded-full active:scale-95 transition"
+                    class="profile-carousel-arrow"
                     aria-label="Polaroid precedente"
             >
                 ‹
             </button>
 
             <!-- Polaroid -->
-            <article
-                    class="relative w-full max-w-[320px] rounded-2xl border border-border bg-spotPaper overflow-hidden">
+            <article class="profile-polaroid">
                 <!-- menu -->
                 <button
                         type="button"
-                        class="absolute top-3 right-3 w-10 h-10 rounded-xl border border-border bg-spotPaper grid place-items-center active:scale-95 transition"
+                        class="profile-polaroid-menu"
                         aria-label="Menu polaroid"
                 >
                     ⋮
                 </button>
 
                 <!-- foto placeholder -->
-                <div class="p-4">
-                    <div class="aspect-square w-full rounded-xl bg-black/10"></div>
+                <div class="profile-polaroid-image-container">
+                    <div class="profile-polaroid-image"></div>
                 </div>
 
                 <!-- testo sotto -->
-                <div class="px-4 pb-5">
-                    <h2 class="text-2xl font-extrabold leading-tight">
+                <div class="profile-polaroid-text">
+                    <h2 class="profile-polaroid-title">
                         Titolo della polaroid
                     </h2>
-                    <p class="mt-1 text-base text-toolbarText/70">
+                    <p class="profile-polaroid-subtitle">
                         Luogo - Data
                     </p>
                 </div>
@@ -74,7 +74,7 @@
             <!-- Right arrow -->
             <button
                     type="button"
-                    class="w-10 h-10 grid place-items-center rounded-full active:scale-95 transition"
+                    class="profile-carousel-arrow"
                     aria-label="Polaroid successiva"
             >
                 ›
@@ -82,13 +82,10 @@
         </div>
 
         <!-- counter -->
-        <p class="text-center text-sm text-toolbarText/70">
+        <p class="profile-carousel-counter">
             1/10
         </p>
 
     </div>
 
-
 </section>
-
-

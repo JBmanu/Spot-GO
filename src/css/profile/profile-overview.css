@@ -1,0 +1,159 @@
+@layer components {
+
+    .profile-overview {
+        @apply space-y-4;
+    }
+
+    .profile-name {
+        @apply text-3xl font-bold text-center mb-4;
+        font-family: 'Montserrat', sans-serif;
+        color: #2D3748; /* Grigio Scuro */
+    }
+
+    .profile-main-card {
+        @apply p-4 rounded-2xl;
+        background: linear-gradient(145deg, #F7F8F9 0%, #E1E5E9 100%);
+        border: 1px solid #D1D5DB;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .profile-body-section {
+        @apply flex gap-5 items-start;
+    }
+
+    .profile-avatar-column {
+        @apply flex flex-col items-center gap-2;
+    }
+
+    .profile-avatar {
+        @apply w-24 h-24 rounded-2xl grid place-items-center shrink-0 text-4xl font-black;
+        background: linear-gradient(135deg, #F7F8F9 0%, #E1E5E9 100%);
+        border: 2px solid #B0B8BF;
+        color: #2D3748;
+        font-family: 'Montserrat', sans-serif;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08), inset 0 2px 2px rgba(255,255,255,0.7);
+    }
+
+    .profile-username {
+        @apply text-xs font-semibold uppercase tracking-wide;
+        color: #6B7280;
+        opacity: 0.8;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+
+    .profile-data-section {
+        @apply flex-1 flex flex-col gap-1;
+    }
+
+    .profile-data-item {
+        @apply flex items-center gap-4 p-3.5 rounded-xl;
+        background: transparent;
+        border: 1px solid transparent;
+    }
+
+    .profile-data-icon {
+        @apply w-6 h-6 opacity-80;
+        color: #6B7280;
+    }
+
+    .profile-data-content {
+        @apply flex-1 flex flex-col;
+    }
+
+    .profile-data-label {
+        @apply text-[11px] font-bold uppercase tracking-wider;
+        color: #6B7280;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .profile-data-value {
+        @apply text-sm font-semibold;
+        color: #2D3748;
+    }
+
+    .profile-stats-row {
+        @apply flex gap-3 flex-nowrap my-5;
+    }
+
+    .profile-reward-card, .profile-reward-card-large {
+        @apply relative rounded-2xl border p-4 flex flex-col items-center
+        justify-center overflow-hidden;
+        background: linear-gradient(145deg, #F7F8F9 0%, #E1E5E9 100%);
+        border: 1px solid #D1D5DB;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04), inset 0 1px 1px rgba(255,255,255,0.8);
+        border-bottom: 4px solid #B0B8BF;
+    }
+
+    .profile-reward-card {
+        flex: 0 0 calc((100% - 1.5rem) / 3);
+        aspect-ratio: 1 / 1;
+        min-width: 0;
+    }
+
+    .profile-reward-card-large {
+        flex: 0 0 calc((100% - 0.75rem) * 2 / 3);
+        aspect-ratio: 2 / 1;
+    }
+
+    .profile-overview-badge-icon {
+        @apply w-9 h-9 mb-2 opacity-90;
+        color: #6B7280;
+    }
+
+    .profile-overview-number-badge {
+        @apply text-3xl font-black leading-none;
+        color: #2D3748;
+    }
+
+    .profile-overview-text-badge {
+        @apply text-[10px] font-bold text-center mt-1 uppercase tracking-wide;
+        color: #6B7280;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .profile-overview-level-badge {
+        @apply text-base font-bold;
+        font-family: 'Montserrat', sans-serif;
+        color: #2D3748;
+    }
+
+    .profile-overview-level-number {
+        @apply font-black text-2xl ml-1;
+        color: #B0B8BF; /* Argento */
+    }
+
+    .profile-overview-progress-bar-container {
+        @apply h-3 rounded-full overflow-hidden mt-3;
+        background: #E1E5E9;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .profile-overview-progress-bar {
+        @apply h-full rounded-full;
+        background: linear-gradient(90deg, #B0B8BF 0%, #949DA6 100%);
+    }
+
+    .profile-overview-text-large-badge {
+        @apply text-xs font-semibold mt-2;
+        color: #6B7280;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    @media (max-width: 640px) {
+        .profile-body-section {
+            @apply flex-col items-center text-center gap-4;
+        }
+        .profile-data-section {
+            @apply w-full;
+        }
+        .profile-reward-card, .profile-reward-card-large {
+            flex-basis: calc(50% - 0.5rem);
+            aspect-ratio: 1/1;
+        }
+        .profile-stats-row {
+            @apply flex-wrap gap-2;
+        }
+    }
+}
+
