@@ -1,7 +1,7 @@
 // Posizione utente fittizia (per prototipo)
 const USER_PROTO_POSITION = {
-    lat: 41.8962,
-    lng: 12.4873
+    lat: 41.8650,
+    lng: 12.5517
 };
 
 // Raggio medio della Terra in km
