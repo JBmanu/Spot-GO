@@ -21,6 +21,8 @@ let spots;
 // Mappa in "formato" Leaflet
 let map;
 
+const userPosition = [41.8962, 12.4873];
+
 async function initializeMap() {
     // const categoryContainer = document.getElementById("home-categories-container");
 
@@ -66,18 +68,22 @@ async function loadMap() {
         return;
     }
 
-    // Inizializza la mappa centrata su Roma (lat, lon) con zoom 13
-    map = L.map(mapEl).setView([41.8902, 12.4922], 13);
+    // Inizializza la mappa
+    map = L.map(mapEl).setView(userPosition, 14);
 
-    // Aggiunge layer OpenStreetMap
+    // Aggiunta layer OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 19,
     }).addTo(map);
 
-    // Marker esempio
-    const marker = L.marker([41.8902, 12.4922]).addTo(map);
-    marker.bindPopup("<b>Colosseo</b><br>Roma").openPopup();
+    // Aggiunta posizione corrente dell'utente (simulata)
+    L.circle(userPosition, {
+        radius: 100, // raggio in metri
+        color: 'rgba(9, 79, 159, 1)',
+        fillColor: 'rgba(0, 217, 255, 1)',
+        fillOpacity: 0.2
+    }).addTo(map);
 }
 
 async function loadMarkers() {
@@ -86,7 +92,13 @@ async function loadMarkers() {
         // Converto coord1 e coord2 in array [lat, lng]
         const markerPosition = [luogo.posizione.coord1, luogo.posizione.coord2];
 
-        L.marker(markerPosition)
+        L.marker(markerPosition, {
+            icon: L.icon({
+                iconUrl: '../assets/icons/map/Marker.png',
+                iconSize: [46, 46],
+                iconAnchor: [23, 46]
+            })
+        })
         .addTo(map)
         .bindPopup(`<b>${luogo.nome}</b><br>${luogo.descrizione}`);
     });
