@@ -32,6 +32,32 @@ Promise.all([
 let spots;
 // Mappa in "formato" Leaflet
 let map;
+// Layer corrente della mappa (stile selezionato)
+let currentTileLayer;
+
+const MAP_TILE_SERVERS = {
+    OSM_STANDARD: {
+        name: "OpenStreetMap Standard",
+        url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        attribution: "&copy; OpenStreetMap contributors"
+    },
+    CARTO_LIGHT: {
+        name: "Carto Light",
+        url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+        attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+        subdomains: "abcd"
+    },
+    CYCLOSM: {
+        name: "CyclOSM",
+        url: "https://tile.cyclosm.org/{z}/{x}/{y}.png",
+        attribution: "&copy; OpenStreetMap contributors & CyclOSM"
+    },
+    ESRI_LIGHT_GRAY: {
+        name: "ESRI Light Gray",
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        attribution: "&copy; Esri"
+    }
+};
 
 async function initializeMap() {
     // const categoryContainer = document.getElementById("home-categories-container");
@@ -104,6 +130,8 @@ async function loadMap() {
     })
     .addTo(map)
     .bindPopup(`<b>La tua posizione</b>`);
+
+    // setTileServer(MAP_TILE_SERVERS.ESRI_LIGHT_GRAY);
 }
 
 async function loadMarkers() {
@@ -147,6 +175,16 @@ async function loadNearbySpotsList() {
             console.error("Errore nel creare la card per lo spot:", spot.nome, err);
         }
     }
+}
+
+function setTileServer(server) {
+    if (currentTileLayer) {
+        map.removeLayer(currentTileLayer);
+    }
+
+    currentTileLayer = L.tileLayer(server.url, {
+        attribution: server.attribution
+    }).addTo(map);
 }
 
 window.reloadProfile = async function () {
