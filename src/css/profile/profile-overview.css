@@ -4,6 +4,7 @@
         @apply space-y-4;
     }
 
+
     .profile-name {
         @apply text-3xl font-bold text-center mb-4;
         font-family: 'Montserrat', sans-serif;

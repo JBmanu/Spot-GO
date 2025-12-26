@@ -8,9 +8,9 @@
 
 @import "./common/utils.css";
 
-@import "./profile/profile.css";
-
 @import "./profile/profile-overview.css";
+
+@import "./profile/profile-diary.css";
 
 @import "./profile/profile-album.css";
 

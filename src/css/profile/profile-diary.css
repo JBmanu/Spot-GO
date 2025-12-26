@@ -1,0 +1,99 @@
+@layer components {
+
+    /* ===== PROFILE WRAPPER ===== */
+    .profile-wrapper {
+        @apply space-y-6;
+    }
+
+    /* ===== PROFILE CARDS ===== */
+    .profile-card {
+        @apply rounded-2xl border p-5 space-y-5;
+        background: linear-gradient(145deg, #F7F8F9 0%, #E1E5E9 100%);
+        border: 1px solid #D1D5DB;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    /* ===== DIARY SECTION HEADER ===== */
+    .profile-diary-header {
+        @apply flex items-center justify-between;
+    }
+
+    .profile-diary-title {
+        @apply text-2xl font-black tracking-tight;
+        font-family: 'Montserrat', sans-serif;
+        color: #2D3748;
+    }
+
+    .profile-diary-add-btn {
+        @apply w-12 h-12 rounded-xl border grid place-items-center font-bold text-xl;
+        border: 1px solid #D1D5DB;
+        background: transparent;
+        color: #2D3748;
+    }
+
+    /* ===== ALBUM BUTTON ===== */
+    .profile-album-btn {
+        @apply flex items-center gap-2 px-4 py-2 rounded-lg border;
+        border: 1px solid #D1D5DB;
+        background: transparent;
+        color: #2D3748;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    /* ===== CAROUSEL ===== */
+    .profile-carousel {
+        @apply flex items-center gap-4 justify-between;
+    }
+
+    .profile-carousel-arrow {
+        @apply w-10 h-10 rounded-full grid place-items-center text-2xl;
+        border: 1px solid #D1D5DB;
+        background: transparent;
+        color: #2D3748;
+    }
+
+    /* ===== POLAROID ===== */
+    .profile-polaroid {
+        @apply relative flex-1 rounded-xl border p-4 space-y-3;
+        background: var(--color-main_paper);
+        border: 1px solid #D1D5DB;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .profile-polaroid-menu {
+        @apply absolute top-2 right-2 w-8 h-8 rounded-full grid place-items-center;
+        background: rgba(0,0,0,0.05);
+        color: #2D3748;
+    }
+
+    .profile-polaroid-image-container {
+        @apply w-full aspect-square rounded-lg overflow-hidden;
+        background: #D1D5DB;
+    }
+
+    .profile-polaroid-image {
+        @apply w-full h-full object-cover;
+    }
+
+    .profile-polaroid-text {
+        @apply space-y-1;
+    }
+
+    .profile-polaroid-title {
+        @apply text-lg font-bold;
+        font-family: 'Montserrat', sans-serif;
+        color: #2D3748;
+    }
+
+    .profile-polaroid-subtitle {
+        @apply text-sm;
+        color: #6B7280;
+    }
+
+    /* ===== CAROUSEL COUNTER ===== */
+    .profile-carousel-counter {
+        @apply text-center text-sm;
+        color: #6B7280;
+    }
+}
+
