@@ -2,6 +2,9 @@
 // Import dinamici
 let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots;
 
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
 Promise.all([
     import("./carousel.js").then(module => {
         initializeCarousel = module.initializeCarousel;
@@ -23,6 +26,7 @@ async function initializeMap() {
     // Carica le sezioni
     // loadSavedSpotsSection();
     loadNearbySpotsSection();
+    loadMap();
     // loadVerticalCarouselSection();
 
     // Gestisci i click sui filtri categoria
@@ -42,6 +46,27 @@ async function initializeMap() {
     //     // Filtra gli spot in base alle categorie selezionate
     //     loadContentByCategories(Array.from(activeCategories));
     // });
+}
+
+async function loadMap() {
+    const mapEl = document.getElementById('map');
+    if (!mapEl) {
+        console.error("Elemento #map non trovato!");
+        return;
+    }
+
+    // Inizializza la mappa centrata su Roma (lat, lon) con zoom 13
+    const map = L.map(mapEl).setView([41.8902, 12.4922], 13);
+
+    // Aggiunge layer OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19,
+    }).addTo(map);
+
+    // Marker esempio
+    const marker = L.marker([41.8902, 12.4922]).addTo(map);
+    marker.bindPopup("<b>Colosseo</b><br>Roma").openPopup();
 }
 
 async function loadNearbySpotsSection() {
