@@ -7,6 +7,12 @@ const USER_PROTO_POSITION = {
 // Raggio medio della Terra in km
 const EARTH_RADIUS_KM = 6371;
 
+/**
+ * Calcola la distanza (in linea d'aria) tra la posizione corrente dell'utente e un determinato spot.
+ * 
+ * @param {spot} spot - Il luogo dal quale calcolare la distanza
+ * @returns {decimal} Distanza in linea d'aria
+ */
 export function distanceFromUserToSpot(spot) {
     const lat1 = USER_PROTO_POSITION.lat;
     const lon1 = USER_PROTO_POSITION.lng;
@@ -35,6 +41,45 @@ export function distanceFromUserToSpot(spot) {
 
 function degToRad(deg) {
     return deg * (Math.PI / 180);
+}
+
+/**
+ * Converte una distanza in metri in stringa leggibile.
+ * <1000 m → mostra in metri, >=1000 m → mostra in km con una cifra decimale
+ *
+ * @param {number} meters - Distanza in metri
+ * @returns {string} Distanza formattata (es. "350 m", "1.2 km")
+ */
+export function formatDistance(meters) {
+    if (typeof meters !== "number" || isNaN(meters)) return "";
+
+    if (meters < 1000) {
+        return `${Math.round(meters)} m`;
+    } else {
+        return `${(meters / 1000).toFixed(1)} km`;
+    }
+}
+
+/**
+ * Ordina gli spot in base alla distanza dall'utente.
+ *
+ * @param {Array} spots - Array di oggetti spot dal DB.
+ * @returns {Array} Nuovo array ordinato dal più vicino al più lontano.
+ */
+export function orderByDistanceFromUser(spots) {
+    if (!Array.isArray(spots)) return [];
+
+    // Nuovo array per non modificare l'originale
+    const spotsCopy = [...spots];
+
+    // Ordinamento in base alla distanza calcolata
+    spotsCopy.sort((a, b) => {
+        const distanceA = distanceFromUserToSpot(a);
+        const distanceB = distanceFromUserToSpot(b);
+        return distanceA - distanceB; // crescente
+    });
+
+    return spotsCopy;
 }
 
 export { USER_PROTO_POSITION }

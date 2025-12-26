@@ -1,7 +1,8 @@
 // map.js
 // Import dinamici
 let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots,
-    USER_PROTO_POSITION, distanceFromUserToSpot, createSearchBar;
+    USER_PROTO_POSITION, distanceFromUserToSpot, createSearchBar, createNearbySpotCard,
+    formatDistance, orderByDistanceFromUser;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -18,9 +19,12 @@ Promise.all([
     import("./common.js").then(module => {
         USER_PROTO_POSITION = module.USER_PROTO_POSITION;
         distanceFromUserToSpot = module.distanceFromUserToSpot;
+        formatDistance = module.formatDistance;
+        orderByDistanceFromUser = module.orderByDistanceFromUser;
     }),
     import("./createComponent.js").then(module => {
         createSearchBar = module.createSearchBar;
+        createNearbySpotCard = module.createNearbySpotCard;
     }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
@@ -42,7 +46,7 @@ async function initializeMap() {
     await loadSpots();
     loadMap();
     loadMarkers();
-    loadNearbySpotsSection();
+    loadNearbySpotsList();
     // loadVerticalCarouselSection();
 
     // Gestisci i click sui filtri categoria
@@ -66,11 +70,12 @@ async function initializeMap() {
 
 async function loadSearchBar() {
     const searchBar = await createSearchBar("Cerca Spot", (e) => {});
-    document.querySelector('.home-section').appendChild(searchBar);
+    document.querySelector('.home-section').prepend(searchBar);
 }
 
 async function loadSpots() {
     spots = await getSpots();
+    spots = orderByDistanceFromUser(spots);
 }
 
 async function loadMap() {
@@ -91,11 +96,13 @@ async function loadMap() {
 
     // Aggiunta posizione corrente dell'utente (simulata)
     L.circle(USER_PROTO_POSITION, {
-        radius: 100, // raggio in metri
+        radius: 75, // raggio in metri
         color: 'rgba(9, 79, 159, 1)',
         fillColor: 'rgba(0, 217, 255, 1)',
-        fillOpacity: 0.2
-    }).addTo(map);
+        fillOpacity: 0.5
+    })
+    .addTo(map)
+    .bindPopup(`<b>La tua posizione</b>`);
 }
 
 async function loadMarkers() {
@@ -116,26 +123,28 @@ async function loadMarkers() {
     });
 }
 
-async function loadNearbySpotsSection() {
-    try {
-        const response = await fetch("../html/common-components/vertical-carousel.html");
-        if (!response.ok) return;
+async function loadNearbySpotsList() {
+    const spotContainer = document.getElementById('map-nearby-spots-container');
+    if (!spotContainer) return;
 
-        const html = await response.text();
-        const container = document.getElementById("map-nearby-section");
+    spotContainer.innerHTML = "";
 
-        if (container) {
-            container.innerHTML = html;
-            initializeCarousel(".nearby-swipe-track");
+    for (const spot of spots) {
+        try {
+            // Calcolo distanza dall'utente
+            const distanceMeters = distanceFromUserToSpot(spot);
+            const formattedDistance = formatDistance(distanceMeters);
+
+            // Creo la card già popolata
+            const card = await createNearbySpotCard(spot, formattedDistance);
+
+            if (card) {
+                // Aggiungo la card al container
+                spotContainer.appendChild(card);
+            }
+        } catch (err) {
+            console.error("Errore nel creare la card per lo spot:", spot.nome, err);
         }
-
-        const track = document.querySelector(".vertical-carousel-track");
-        spots.forEach(spot => {
-            const card = createSpotCardItem(spot);
-            track.appendChild(card);
-        });
-    } catch (err) {
-        // Errore nel caricamento
     }
 }
 
