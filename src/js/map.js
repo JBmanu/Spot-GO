@@ -16,6 +16,11 @@ Promise.all([
     })
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
+// Cache per i luoghi vicini
+let spots;
+// Mappa in "formato" Leaflet
+let map;
+
 async function initializeMap() {
     // const categoryContainer = document.getElementById("home-categories-container");
 
@@ -25,8 +30,10 @@ async function initializeMap() {
 
     // Carica le sezioni
     // loadSavedSpotsSection();
-    loadNearbySpotsSection();
+    await loadSpots();
     loadMap();
+    loadMarkers();
+    loadNearbySpotsSection();
     // loadVerticalCarouselSection();
 
     // Gestisci i click sui filtri categoria
@@ -48,6 +55,10 @@ async function initializeMap() {
     // });
 }
 
+async function loadSpots() {
+    spots = await getSpots();
+}
+
 async function loadMap() {
     const mapEl = document.getElementById('map');
     if (!mapEl) {
@@ -56,7 +67,7 @@ async function loadMap() {
     }
 
     // Inizializza la mappa centrata su Roma (lat, lon) con zoom 13
-    const map = L.map(mapEl).setView([41.8902, 12.4922], 13);
+    map = L.map(mapEl).setView([41.8902, 12.4922], 13);
 
     // Aggiunge layer OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -67,6 +78,18 @@ async function loadMap() {
     // Marker esempio
     const marker = L.marker([41.8902, 12.4922]).addTo(map);
     marker.bindPopup("<b>Colosseo</b><br>Roma").openPopup();
+}
+
+async function loadMarkers() {
+    // Creazione dei marker Leaflet
+    spots.forEach(luogo => {
+        // Converto coord1 e coord2 in array [lat, lng]
+        const markerPosition = [luogo.posizione.coord1, luogo.posizione.coord2];
+
+        L.marker(markerPosition)
+        .addTo(map)
+        .bindPopup(`<b>${luogo.nome}</b><br>${luogo.descrizione}`);
+    });
 }
 
 async function loadNearbySpotsSection() {
@@ -81,10 +104,6 @@ async function loadNearbySpotsSection() {
             container.innerHTML = html;
             initializeCarousel(".nearby-swipe-track");
         }
-
-        const spots = await getSpots();
-
-        console.log(spots);
 
         const track = document.querySelector(".vertical-carousel-track");
         spots.forEach(spot => {
