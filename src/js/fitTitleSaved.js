@@ -14,7 +14,7 @@ export function fitSavedTitles() {
         el.dataset.originalFontSize = originalFs;
 
         let font = parseFloat(originalFs);
-        const minFont = 10;
+        const minFont = 10.5;
 
         let lineH = parseFloat(cs.lineHeight);
         if (isNaN(lineH)) lineH = font * 1.05;
