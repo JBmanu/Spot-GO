@@ -1,25 +1,27 @@
 @import "tailwindcss";
 
-@import "common/smartphone.css";
+@import "leaflet/dist/leaflet.css";
+
+@import "./common/smartphone.css";
 
 @import "./theme.css";
 
-@import "common/utils.css";
+@import "./common/utils.css";
 
-@import "profile/profile.css";
+@import "./profile/profile.css";
 
-@import "common/carousel.css";
+@import "./common/carousel.css";
 
-@import "homepage/homepage.css";
+@import "./homepage/homepage.css";
 
-@import "homepage/saved-spots.css";
+@import "./homepage/saved-spots.css";
 
-@import "homepage/nearby-spots.css";
+@import "./homepage/nearby-spots.css";
 
-@import "homepage/toprated-spots.css";
+@import "./homepage/toprated-spots.css";
 
-@import "common/spot-detail.css";
+@import "./common/spot-detail.css";
 
-@import "homepage/view-all-saved.css";
+@import "./homepage/view-all-saved.css";
 
-@import "leaflet/dist/leaflet.css";
+@import "./map/map.css";
