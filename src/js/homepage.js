@@ -376,22 +376,20 @@ async function loadViewAllSaved(fromPage = "homepage") {
 function initializeViewAllSavedSearch() {
     const searchInput = document.getElementById("view-all-saved-search");
     const keyboard = document.getElementById("view-all-saved-keyboard");
+    const overlay = document.getElementById("view-all-saved-keyboard-overlay");
 
-    console.log("Search input:", searchInput);
-    console.log("Keyboard:", keyboard);
-
-    if (!searchInput || !keyboard) {
-        console.error("Search input or keyboard not found!");
+    if (!searchInput || !keyboard || !overlay) {
+        console.error("Search input, keyboard, or overlay not found!");
         return;
     }
 
     const track = document.querySelector(".view-all-saved-track");
 
     searchInput.addEventListener("focus", () => {
-        console.log("Focus event triggered!");
         keyboard.classList.add("keyboard-visible");
+        overlay.classList.add("overlay-visible");
         keyboard.style.transform = "translateY(0)";
-        console.log("Keyboard visible set");
+        overlay.style.transform = "translateY(0)";
 
         if (track && window.innerWidth <= 1024) {
             track.style.transform = "translateY(-320px)";
@@ -400,9 +398,10 @@ function initializeViewAllSavedSearch() {
     });
 
     searchInput.addEventListener("blur", () => {
-        console.log("Blur event triggered!");
         keyboard.classList.remove("keyboard-visible");
+        overlay.classList.remove("overlay-visible");
         keyboard.style.transform = "translateY(100%)";
+        overlay.style.transform = "translateY(100%)";
 
         if (track) {
             track.style.transform = "translateY(0)";
@@ -412,8 +411,6 @@ function initializeViewAllSavedSearch() {
 
     const keyButtons = keyboard.querySelectorAll(".kb-key, .kb-space, .kb-backspace");
     const closeBtn = keyboard.querySelector(".kb-close");
-
-    console.log("Key buttons found:", keyButtons.length);
 
     keyButtons.forEach(button => {
         button.addEventListener("click", (e) => {
@@ -440,11 +437,14 @@ function initializeViewAllSavedSearch() {
         });
     }
 
+    overlay.addEventListener("click", (e) => {
+        e.preventDefault();
+        searchInput.blur();
+    });
+
     keyboard.addEventListener("mousedown", (e) => {
         e.preventDefault();
     });
-
-    console.log("Search initialization complete!");
 }
 
 async function goToHomepage() {

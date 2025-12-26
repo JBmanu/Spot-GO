@@ -196,7 +196,22 @@
         box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
 
-    /* Tastiera virtuale */
+    .keyboard-overlay {
+        @apply fixed left-0 right-0 transition-transform duration-300 ease-out;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(2px);
+        top: 70px;
+        bottom: 0;
+        z-index: 999;
+        display: none;
+        pointer-events: none;
+    }
+
+    .keyboard-overlay.overlay-visible {
+        display: block;
+        pointer-events: auto;
+        transform: translateY(0) !important;
+    }
     #view-all-saved-keyboard {
         @apply fixed bottom-0 left-0 right-0 transition-transform duration-300 ease-out;
         background: #d1d5db;
