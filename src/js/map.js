@@ -95,11 +95,12 @@ async function loadMap() {
     }).addTo(map);
 
     // Aggiunta posizione corrente dell'utente (simulata)
-    L.circle(USER_PROTO_POSITION, {
-        radius: 75, // raggio in metri
-        color: 'rgba(9, 79, 159, 1)',
-        fillColor: 'rgba(0, 217, 255, 1)',
-        fillOpacity: 0.5
+    L.marker(USER_PROTO_POSITION, {
+        icon: L.icon({
+            iconUrl: '../assets/icons/map/Arrow.png',
+            iconSize: [40, 40],
+            iconAnchor: [20, 40]
+        })
     })
     .addTo(map)
     .bindPopup(`<b>La tua posizione</b>`);
