@@ -366,9 +366,85 @@ async function loadViewAllSaved(fromPage = "homepage") {
                 }
             });
         }
+
+        initializeViewAllSavedSearch();
     } catch (err) {
         console.error("Errore nel caricamento view-all-saved:", err);
     }
+}
+
+function initializeViewAllSavedSearch() {
+    const searchInput = document.getElementById("view-all-saved-search");
+    const keyboard = document.getElementById("view-all-saved-keyboard");
+
+    console.log("Search input:", searchInput);
+    console.log("Keyboard:", keyboard);
+
+    if (!searchInput || !keyboard) {
+        console.error("Search input or keyboard not found!");
+        return;
+    }
+
+    const track = document.querySelector(".view-all-saved-track");
+
+    searchInput.addEventListener("focus", () => {
+        console.log("Focus event triggered!");
+        keyboard.classList.add("keyboard-visible");
+        keyboard.style.transform = "translateY(0)";
+        console.log("Keyboard visible set");
+
+        if (track && window.innerWidth <= 1024) {
+            track.style.transform = "translateY(-320px)";
+            track.style.transition = "transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+        }
+    });
+
+    searchInput.addEventListener("blur", () => {
+        console.log("Blur event triggered!");
+        keyboard.classList.remove("keyboard-visible");
+        keyboard.style.transform = "translateY(100%)";
+
+        if (track) {
+            track.style.transform = "translateY(0)";
+            track.style.transition = "transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+        }
+    });
+
+    const keyButtons = keyboard.querySelectorAll(".kb-key, .kb-space, .kb-backspace");
+    const closeBtn = keyboard.querySelector(".kb-close");
+
+    console.log("Key buttons found:", keyButtons.length);
+
+    keyButtons.forEach(button => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+            const key = button.dataset.key;
+
+            if (key === "backspace") {
+                searchInput.value = searchInput.value.slice(0, -1);
+            } else if (key === " ") {
+                searchInput.value += " ";
+            } else {
+                searchInput.value += key.toLowerCase();
+            }
+
+            searchInput.focus();
+            searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            searchInput.blur();
+        });
+    }
+
+    keyboard.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+    });
+
+    console.log("Search initialization complete!");
 }
 
 async function goToHomepage() {
