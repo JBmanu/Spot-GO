@@ -1,6 +1,7 @@
 // map.js
 // Import dinamici
-let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots;
+let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots,
+    USER_PROTO_POSITION, distanceFromUserToSpot;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -13,15 +14,17 @@ Promise.all([
     }),
     import("./query.js").then(module => {
         getSpots = module.getSpots;
-    })
+    }),
+    import("./common.js").then(module => {
+        USER_PROTO_POSITION = module.USER_PROTO_POSITION;
+        distanceFromUserToSpot = module.distanceFromUserToSpot;
+    }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
 // Cache per i luoghi vicini
 let spots;
 // Mappa in "formato" Leaflet
 let map;
-
-const userPosition = [41.8962, 12.4873];
 
 async function initializeMap() {
     // const categoryContainer = document.getElementById("home-categories-container");
@@ -69,7 +72,7 @@ async function loadMap() {
     }
 
     // Inizializza la mappa
-    map = L.map(mapEl).setView(userPosition, 14);
+    map = L.map(mapEl).setView(USER_PROTO_POSITION, 14);
 
     // Aggiunta layer OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -78,7 +81,7 @@ async function loadMap() {
     }).addTo(map);
 
     // Aggiunta posizione corrente dell'utente (simulata)
-    L.circle(userPosition, {
+    L.circle(USER_PROTO_POSITION, {
         radius: 100, // raggio in metri
         color: 'rgba(9, 79, 159, 1)',
         fillColor: 'rgba(0, 217, 255, 1)',
