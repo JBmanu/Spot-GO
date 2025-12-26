@@ -402,6 +402,18 @@ function initializeViewAllSavedSearch() {
         overlay.classList.remove("overlay-visible");
         keyboard.style.transform = "translateY(100%)";
         overlay.style.transform = "translateY(100%)";
+        searchInput.value = "";
+
+        const spotCards = document.querySelectorAll(".view-all-saved-card");
+        spotCards.forEach(card => {
+            const spotId = card.getAttribute("data-spot-id");
+            if (spotId && spotId.trim() !== "") {
+                card.style.display = "";
+                card.style.zIndex = "998";
+            } else {
+                card.style.display = "none";
+            }
+        });
 
         if (track) {
             track.style.transform = "translateY(0)";
@@ -449,14 +461,13 @@ function initializeViewAllSavedSearch() {
     searchInput.addEventListener("input", () => {
         const searchQuery = searchInput.value.toLowerCase().trim();
         const spotCards = document.querySelectorAll(".view-all-saved-card");
-        const overlay = document.getElementById("view-all-saved-keyboard-overlay");
-        let hasVisibleResults = false;
 
         spotCards.forEach(card => {
             const spotId = card.getAttribute("data-spot-id");
 
             if (!spotId || spotId.trim() === "") {
                 card.style.display = "none";
+                card.style.zIndex = "998";
                 return;
             }
 
@@ -465,20 +476,13 @@ function initializeViewAllSavedSearch() {
 
             if (searchQuery === "") {
                 card.style.display = "";
+                card.style.zIndex = "998";
             } else {
                 const matches = titleText.includes(searchQuery);
                 card.style.display = matches ? "" : "none";
-                if (matches) {
-                    hasVisibleResults = true;
-                }
+                card.style.zIndex = matches ? "1001" : "998";
             }
         });
-
-        if (overlay && searchQuery !== "") {
-            overlay.style.display = "none";
-        } else if (overlay) {
-            overlay.style.display = "";
-        }
     });
 }
 

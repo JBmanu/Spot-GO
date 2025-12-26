@@ -7,6 +7,7 @@
     .view-all-saved-track {
         @apply flex flex-col gap-3 overflow-y-auto w-full h-full scroll-smooth p-4;
         -webkit-overflow-scrolling: touch;
+        position: relative;
     }
 
     .view-all-saved-card {
@@ -20,6 +21,7 @@
         position: relative;
         align-items: stretch;
         height: 110px;
+        z-index: 998;
     }
 
     .view-all-saved-card[data-category="food"] {
@@ -198,7 +200,7 @@
 
     .keyboard-overlay {
         @apply fixed left-0 right-0 transition-transform duration-300 ease-out;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(2px);
         top: 70px;
         bottom: 0;
