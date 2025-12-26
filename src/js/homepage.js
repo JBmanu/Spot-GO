@@ -6,6 +6,12 @@ import {
     populateSavedSpots,
 } from "./spotDetail.js";
 import {initFitSavedTitles} from "./fitTitleSaved.js";
+import {
+    getFirstUser,
+    getSavedSpots,
+    getSpots,
+    getCategoryNameIt,
+} from "./query.js";
 
 let activeCategories = new Set();
 let previousPage = "homepage";
@@ -211,6 +217,95 @@ function deactivateAllToolbarButtons() {
     });
 }
 
+async function populateViewAllSavedSpots() {
+    try {
+        const currentUser = await getFirstUser();
+        if (!currentUser) return;
+
+        const savedSpotRelations = await getSavedSpots(currentUser.id);
+        const savedContainer = document.getElementById('view-all-saved-container');
+
+        if (!savedContainer) return;
+
+        if (!savedSpotRelations || savedSpotRelations.length === 0) {
+            savedContainer.innerHTML = '<p class="text-center text-text_color/60 py-8">Nessuno spot salvato</p>';
+            return;
+        }
+
+        const allSpots = await getSpots();
+        const neededIds = savedSpotRelations.map(r => r.idLuogo);
+        const allCards = Array.from(savedContainer.querySelectorAll('[role="listitem"]'));
+
+        if (allCards.length === 0) return;
+
+        const accounted = new Set();
+        allCards.forEach(card => {
+            const spotId = card.getAttribute('data-spot-id') || '';
+            if (spotId && neededIds.includes(spotId)) {
+                accounted.add(spotId);
+            } else if (spotId && !neededIds.includes(spotId)) {
+                card.setAttribute('data-spot-id', '');
+                const titleEl = card.querySelector('[data-field="title"]');
+                if (titleEl) titleEl.textContent = '';
+                const imageEl = card.querySelector('[data-field="image"]');
+                if (imageEl) imageEl.src = '';
+                const distanceEl = card.querySelector('[data-field="distance"]');
+                if (distanceEl) distanceEl.textContent = '';
+                const categoryEl = card.querySelector('[data-field="category"]');
+                if (categoryEl) categoryEl.textContent = '';
+                const ratingEl = card.querySelector('[data-field="rating"]');
+                if (ratingEl) ratingEl.textContent = '';
+            }
+        });
+
+        let placeholderCards = allCards.filter(c => !c.getAttribute('data-spot-id'));
+
+        for (const idLuogo of neededIds) {
+            if (accounted.has(idLuogo)) continue;
+
+            const spot = allSpots.find(s => s.id === idLuogo);
+            if (!spot) continue;
+
+            let cardToFill = placeholderCards.shift();
+            if (!cardToFill) {
+                const templateCard = allCards[0];
+                if (!templateCard) continue;
+
+                cardToFill = templateCard.cloneNode(true);
+                savedContainer.appendChild(cardToFill);
+                allCards.push(cardToFill);
+            }
+
+            cardToFill.setAttribute('data-spot-id', spot.id);
+            const titleEl = cardToFill.querySelector('[data-field="title"]');
+            if (titleEl) titleEl.textContent = spot.nome || "Spot";
+
+            const imageEl = cardToFill.querySelector('[data-field="image"]');
+            if (imageEl && spot.immagine) imageEl.src = spot.immagine;
+
+            const distanceEl = cardToFill.querySelector('[data-field="distance"]');
+            if (distanceEl) distanceEl.textContent = spot.distanza ? `${spot.distanza} m` : '0 m';
+
+            const categoryEl = cardToFill.querySelector('[data-field="category"]');
+            if (categoryEl && spot.idCategoria) {
+                categoryEl.textContent = await getCategoryNameIt(spot.idCategoria);
+            }
+
+            const ratingEl = cardToFill.querySelector('[data-field="rating"]');
+            if (ratingEl) ratingEl.textContent = spot.rating || "0";
+
+            cardToFill.setAttribute('data-category', (spot.idCategoria || 'unknown').toLowerCase());
+            cardToFill.style.display = '';
+            accounted.add(spot.id);
+        }
+
+        placeholderCards.forEach(pc => pc.style.display = 'none');
+
+    } catch (error) {
+        console.error("Errore nel popolare gli spot salvati view-all:", error);
+    }
+}
+
 /**
  * Mostra la pagina "View All Saved".
  */
@@ -249,11 +344,10 @@ async function loadViewAllSaved(fromPage = "homepage") {
         initializeBookmarks();
 
         (async () => {
-            await populateSpotCards();
+            await populateViewAllSavedSpots();
             initializeSpotClickHandlers();
             initializeBookmarks();
             await syncAllBookmarks();
-            initFitSavedTitles();
         })().catch((err) => console.error("Errore init view-all-saved:", err));
 
         const backButton = document.getElementById("header-back-button");
