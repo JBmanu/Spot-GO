@@ -2,7 +2,7 @@
 // Import dinamici
 let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots,
     USER_PROTO_POSITION, distanceFromUserToSpot, createSearchBar, createNearbySpotCard,
-    formatDistance, orderByDistanceFromUser;
+    formatDistance, orderByDistanceFromUser, getFilteredSpots;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -15,6 +15,7 @@ Promise.all([
     }),
     import("./query.js").then(module => {
         getSpots = module.getSpots;
+        getFilteredSpots = module.getFilteredSpots;
     }),
     import("./common.js").then(module => {
         USER_PROTO_POSITION = module.USER_PROTO_POSITION;
@@ -30,11 +31,18 @@ Promise.all([
 
 // Cache per i luoghi vicini
 let spots;
+// Categorie attive nei filtri
+let activeCategories = new Set();
+// Testo corrente di ricerca
+let currentSearchText = "";
 // Mappa in "formato" Leaflet
 let map;
 // Layer corrente della mappa (stile selezionato)
 let currentTileLayer;
+// Lista dei marker attualmente attivi sulla mappa
+let spotMarkers = [];
 
+// Stili della mappa
 const MAP_TILE_SERVERS = {
     OSM_STANDARD: {
         name: "OpenStreetMap Standard",
@@ -60,47 +68,63 @@ const MAP_TILE_SERVERS = {
 };
 
 async function initializeMap() {
-    // const categoryContainer = document.getElementById("home-categories-container");
+    initializeCategoryFilters();
 
-    // if (!categoryContainer) {
-    //     return;
-    // }
-
-    // Carica le sezioni
-    // loadSavedSpotsSection();
     loadSearchBar();
+    await loadMap();
+    loadSpotsDependentObjects();
+}
+
+async function loadSpotsDependentObjects() {
     await loadSpots();
-    loadMap();
     loadMarkers();
     loadNearbySpotsList();
-    // loadVerticalCarouselSection();
+}
+
+function initializeCategoryFilters() {
+    activeCategories = new Set();
+    const categoryContainer = document.getElementById("map-categories-container");
+
+    if (!categoryContainer) {
+        return;
+    }
 
     // Gestisci i click sui filtri categoria
-    // categoryContainer.addEventListener("click", (e) => {
-    //     const button = e.target.closest(".home-chip");
-    //     if (!button) return;
+    categoryContainer.addEventListener("click", (e) => {
+        const button = e.target.closest(".home-chip");
+        if (!button) return;
 
-    //     const category = button.dataset.category;
+        const category = button.dataset.category;
+        const isActive = activeCategories.has(category);
 
-    //     // Toggle categoria attiva
-    //     if (activeCategories.has(category)) {
-    //         deactivateCategory(categoryContainer, category);
-    //     } else {
-    //         activateCategory(categoryContainer, category);
-    //     }
+        if (isActive) {
+            activeCategories.delete(category);
+            button.classList.remove("active");
+            button.setAttribute("aria-pressed", "false");
+        } else {
+            activeCategories.add(category);
+            button.classList.add("active");
+            button.setAttribute("aria-pressed", "true");
+        }
 
-    //     // Filtra gli spot in base alle categorie selezionate
-    //     loadContentByCategories(Array.from(activeCategories));
-    // });
+        loadSpotsDependentObjects();
+    });
 }
 
 async function loadSearchBar() {
-    const searchBar = await createSearchBar("Cerca Spot", (e) => {});
+    currentSearchText = "";
+    const searchBar = await createSearchBar("Cerca Spot", (e) => {
+        currentSearchText = e;
+        loadSpotsDependentObjects();
+    });
     document.querySelector('.home-section').prepend(searchBar);
 }
 
 async function loadSpots() {
-    spots = await getSpots();
+    const categories = Array.from(activeCategories);
+    const searchText = currentSearchText;
+
+    spots = await getFilteredSpots(categories, searchText);
     spots = orderByDistanceFromUser(spots);
 }
 
@@ -135,12 +159,16 @@ async function loadMap() {
 }
 
 async function loadMarkers() {
+    // Rimozione di tutti i marker degli spot precedenti
+    spotMarkers.forEach(marker => map.removeLayer(marker));
+    spotMarkers = [];
+
     // Creazione dei marker Leaflet
     spots.forEach(luogo => {
         // Converto coord1 e coord2 in array [lat, lng]
         const markerPosition = [luogo.posizione.coord1, luogo.posizione.coord2];
 
-        L.marker(markerPosition, {
+        const marker = L.marker(markerPosition, {
             icon: L.icon({
                 iconUrl: '../assets/icons/map/Marker.png',
                 iconSize: [46, 46],
@@ -149,6 +177,8 @@ async function loadMarkers() {
         })
         .addTo(map)
         .bindPopup(`<b>${luogo.nome}</b><br>${luogo.descrizione}`);
+
+        spotMarkers.push(marker);
     });
 }
 

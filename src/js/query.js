@@ -160,6 +160,29 @@ export async function getSpots() {
 }
 
 /**
+ * Funzione specifica per ottenere gli spot filtrando per categorie e testo di ricerca
+ */
+export async function getFilteredSpots(categories = [], searchText = "") {
+    const noFilter = (!categories || categories.length === 0)
+                  && (!searchText || searchText.trim() === "");
+    if (noFilter) return await getSpots();
+
+    // Filtra almeno per categorie lato Firestore
+    let filter = null;
+    if (categories.length > 0) {
+        filter = where("idCategoria", "in", categories);
+    }
+
+    const spots = await getItems("Luogo", filter, (id, data) => ({ id, ...data }));
+
+    if (!searchText || searchText.trim() === "") return spots;
+
+    // Filtra in memoria, case-insensitive
+    const searchLower = searchText.trim().toLowerCase();
+    return spots.filter(spot => (spot.nome || "").toLowerCase().includes(searchLower));
+}
+
+/**
  * Metodo generico per ottenere items da una collection con un filtro opzionale.
  */
 async function getItems(collectionName, filter, itemParser) {
