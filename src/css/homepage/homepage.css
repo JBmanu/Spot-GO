@@ -1,102 +1,67 @@
 @layer components {
 
     .home-section {
-        @apply space-y-2;
+        @apply space-y-2
+        relative
+        bg-transparent;
     }
 
     .home-section-title {
-        @apply text-xl font-semibold;
+        @apply text-xl
+        font-semibold;
         font-family: 'Montserrat', sans-serif;
+        color: rgba(17, 24, 39, 0.94);
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .home-section-subtitle {
+        font-family: 'Montserrat', sans-serif;
+        color: rgba(17, 24, 39, 0.7);
     }
 
     .home-chips-row {
-        @apply sticky top-0 z-30 flex flex-wrap gap-2 bg-main_paper py-2 px-3;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 500;
-        letter-spacing: 0.05em;
+        @apply sticky
+        top-0
+        z-30
+        flex
+        flex-wrap
+        gap-2
+        py-2
+        px-3
+        font-medium
+        tracking-wide
+        border-b;
+        border-color: var(--paper-border);
     }
 
     .home-chip {
-        @apply flex-1 min-w-0 inline-flex items-center justify-center gap-1
-        rounded-2xl border-2 px-3 py-3 text-xs font-normal
-        transition-all duration-150 ease-out
-        active:scale-95 active:brightness-90
+        @apply flex-1
+        min-w-0
+        inline-flex
+        items-center
+        justify-center
+        gap-1
+        rounded-2xl
+        border-2
+        px-3
+        py-3
+        text-xs
+        font-normal
+        transition-all
+        duration-150
+        ease-out
+        active:scale-95
+        active:brightness-90
         shadow-sm;
-        border-color: var(--color-border_color);
-        background-color: var(--color-main_paper);
-        color: var(--color-text_color);
+        border-color: var(--paper-border);
+        background: var(--profile-sheet-2);
+        color: rgba(17, 24, 39, 0.92);
+        backdrop-filter: blur(var(--glass-blur-light)) saturate(var(--glass-sat-light)) contrast(var(--glass-contrast));
     }
 
     .home-chip img {
-        @apply transition-all duration-150 ease-out;
+        @apply transition-all
+        duration-150
+        ease-out;
     }
-
-    .home-chip.active[data-category="food"] {
-        @apply font-semibold text-sm;
-        background: linear-gradient(135deg, rgba(245, 242, 235, 0.6) 0%, var(--color-category-food) 100%);
-        border-color: rgba(227, 100, 20, 0.8);
-        color: var(--color-text_color);
-        box-shadow: 0 4px 12px rgba(227, 100, 20, 0.35),
-        0 2px 4px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-
-    .home-chip.active[data-category="food"] img {
-        @apply scale-150;
-    }
-
-    .home-chip.active[data-category="culture"] {
-        @apply font-semibold text-sm;
-        background: linear-gradient(135deg, rgba(245, 242, 235, 0.6) 0%, var(--color-category-culture) 100%);
-        border-color: rgba(201, 162, 106, 0.8);
-        color: var(--color-text_color);
-        box-shadow: 0 4px 12px rgba(201, 162, 106, 0.35),
-        0 2px 4px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-
-    .home-chip.active[data-category="culture"] img {
-        @apply scale-150;
-    }
-
-    .home-chip.active[data-category="nature"] {
-        @apply font-semibold text-sm;
-        background: linear-gradient(135deg, rgba(245, 242, 235, 0.6) 0%, var(--color-category-nature) 100%);
-        border-color: rgba(28, 124, 84, 0.8);
-        color: var(--color-text_color);
-        box-shadow: 0 4px 12px rgba(28, 124, 84, 0.35),
-        0 2px 4px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-
-    .home-chip.active[data-category="nature"] img {
-        @apply scale-150;
-    }
-
-    .home-chip.active[data-category="mystery"] {
-        @apply font-semibold text-sm;
-        background: linear-gradient(135deg, rgba(245, 242, 235, 0.6) 0%, var(--color-category-mystery) 100%);
-        border-color: rgba(91, 43, 130, 0.8);
-        color: var(--color-text_color);
-        box-shadow: 0 4px 12px rgba(91, 43, 130, 0.35),
-        0 2px 4px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-
-    .home-chip.active[data-category="mystery"] img {
-        @apply scale-150;
-    }
-
-    .vedi-tutti-button {
-        @apply text-xs font-bold underline underline-offset-2
-        transition-all duration-150 ease-out
-        active:opacity-70;
-        color: var(--color-primary_color);
-        border: none;
-        background: none;
-        padding: 0;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-
 }
