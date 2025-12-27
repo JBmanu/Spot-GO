@@ -1,21 +1,110 @@
 @layer components {
 
-    .profile-overview {
-        @apply space-y-4;
+    :root {
+        --glass-blur: 46px;
+        --glass-sat: 150%;
+        --glass-contrast: 105%;
+        --profile-icon-size-data: 28px;
+        --profile-icon-size-badge: 36px;
+        --vibrant-blob-1: rgba(102, 217, 178, 0.12);
+        --vibrant-blob-2: rgba(255, 183, 128, 0.10);
+        --vibrant-blob-3: rgba(163, 196, 255, 0.10);
+        --vibrant-gradient: linear-gradient(120deg, rgba(255, 145, 175, 0.16), rgba(255, 195, 125, 0.12));
+        --profile-sheet-1: rgba(255, 255, 255, 0.78);
+        --profile-sheet-2: rgba(255, 255, 255, 0.62);
+        --profile-wash-green: rgba(102, 217, 178, 0.10);
+        --profile-wash-orange: rgba(255, 183, 128, 0.08);
+        --profile-wash-blue: rgba(163, 196, 255, 0.09);
+        --paper-border: rgba(12, 16, 20, 0.04);
+        --paper-shadow: rgba(16, 24, 40, 0.06);
+        --ring-pad: 14px;
+        --ring-bg: rgba(255, 255, 255, 0.22);
+        --ring-stroke: rgba(255, 255, 255, 0.34);
+        --ring-shadow: rgba(15, 23, 42, 0.14);
+        --ring-specular: 0.48;
+        --sheet-1: rgba(255, 255, 255, 0.22);
+        --sheet-2: rgba(255, 255, 255, 0.06);
+        --c-green: rgba(16, 185, 129, 0.12);
+        --c-orange: rgba(227, 100, 20, 0.10);
+        --c-blue: rgba(59, 130, 246, 0.10);
+        --frost-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='40' height='40' filter='url(%23n)' opacity='0.06' fill='%23ffffff'/></svg>");
+        --section-vibrant-1: linear-gradient(135deg, rgba(255, 102, 146, 0.14), rgba(163, 196, 255, 0.08));
+        --section-vibrant-2: linear-gradient(135deg, rgba(102, 217, 178, 0.12), rgba(255, 183, 128, 0.08));
+        --section-vibrant-3: linear-gradient(135deg, rgba(255, 210, 102, 0.12), rgba(163, 196, 255, 0.06));
+        --profile-defined-gradient: linear-gradient(135deg, rgba(255, 165, 190, 0.36) 0%, rgba(255, 215, 150, 0.30) 32%, rgba(160, 230, 200, 0.24) 64%, rgba(180, 210, 255, 0.28) 100%);
     }
 
+    .profile-wrapper {
+        @apply space-y-6;
+        background: var(--profile-defined-gradient);
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+    }
+
+    .profile-wrapper::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.04));
+        mix-blend-mode: overlay;
+        z-index: 0;
+    }
+
+    .profile-overview, .profile-main-card, .profile-reward-card, .profile-reward-card-large {
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-overview {
+        @apply space-y-5;
+        padding: 0.5rem;
+        color: rgba(17, 24, 39, 0.92);
+        background: transparent;
+    }
 
     .profile-name {
         @apply text-3xl font-bold text-center mb-4;
         font-family: 'Montserrat', sans-serif;
-        color: #2D3748; /* Grigio Scuro */
+        color: rgba(17, 24, 39, 0.94) !important;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.02);
     }
 
     .profile-main-card {
-        @apply p-4 rounded-2xl;
-        background: linear-gradient(145deg, #F7F8F9 0%, #E1E5E9 100%);
-        border: 1px solid #D1D5DB;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        @apply p-3 rounded-2xl;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.5)) saturate(120%);
+        backdrop-filter: blur(calc(var(--glass-blur) * 0.5)) saturate(120%);
+        box-shadow: 0 28px 84px rgba(15, 23, 42, 0.16), 0 18px 40px rgba(16, 24, 40, 0.06), 0 2px 14px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.58);
+    }
+
+    .profile-main-card::before {
+        content: "";
+        position: absolute;
+        inset: -8px;
+        border-radius: 1rem;
+        pointer-events: none;
+        background: radial-gradient(420px 220px at 18% 18%, var(--profile-wash-green) 0%, rgba(255, 255, 255, 0) 62%), radial-gradient(420px 220px at 84% 26%, var(--profile-wash-orange) 0%, rgba(255, 255, 255, 0) 62%), radial-gradient(360px 200px at 70% 86%, var(--profile-wash-blue) 0%, rgba(255, 255, 255, 0) 60%);
+        opacity: 0.18;
+        filter: blur(0.6px) saturate(1.02);
+        mix-blend-mode: screen;
+    }
+
+    .profile-main-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 1rem;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.00) 100%);
+        opacity: 0.9;
+        mix-blend-mode: overlay;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .profile-body-section {
@@ -28,20 +117,32 @@
 
     .profile-avatar {
         @apply w-24 h-24 rounded-2xl grid place-items-center shrink-0 text-4xl font-black;
-        background: linear-gradient(135deg, #F7F8F9 0%, #E1E5E9 100%);
-        border: 2px solid #B0B8BF;
-        color: #2D3748;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 249, 251, 0.95));
+        border: 1px solid rgba(12, 16, 20, 0.04);
+        color: rgba(17, 24, 39, 0.88);
         font-family: 'Montserrat', sans-serif;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.08), inset 0 2px 2px rgba(255,255,255,0.7);
+        text-shadow: none;
+        box-shadow: 0 10px 30px rgba(16, 24, 40, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .profile-avatar::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 1rem;
+        pointer-events: none;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), inset 0 -14px 30px rgba(0, 0, 0, 0.12);
+        opacity: 0.90;
     }
 
     .profile-username {
         @apply text-xs font-semibold uppercase tracking-wide;
-        color: #6B7280;
-        opacity: 0.8;
+        color: rgba(99, 102, 106, 0.88) !important;
         font-family: 'Montserrat', sans-serif;
     }
-
 
     .profile-data-section {
         @apply flex-1 flex flex-col gap-1;
@@ -50,40 +151,106 @@
     .profile-data-item {
         @apply flex items-center gap-4 p-3.5 rounded-xl;
         background: transparent;
-        border: 1px solid transparent;
-    }
-
-    .profile-data-icon {
-        @apply w-6 h-6 opacity-80;
-        color: #6B7280;
+        border: 0;
+        box-shadow: none;
     }
 
     .profile-data-content {
         @apply flex-1 flex flex-col;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .profile-data-content::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 2px;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.46) 0%, rgba(16, 185, 129, 0.18) 30%, rgba(59, 130, 246, 0.16) 60%, rgba(227, 100, 20, 0.18) 100%);
+        opacity: 0.85;
+        border-radius: 999px;
+    }
+
+    .profile-data-item:focus-within .profile-data-content::after {
+        height: 2px;
+        opacity: 1;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.56) 0%, rgba(16, 185, 129, 0.30) 30%, rgba(59, 130, 246, 0.26) 60%, rgba(227, 100, 20, 0.30) 100%);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .profile-data-icon {
+        width: var(--profile-icon-size-data);
+        height: var(--profile-icon-size-data);
+        color: rgba(16, 185, 129, 0.86);
+        opacity: 1;
+        display: inline-grid;
+        place-items: center;
+        filter: drop-shadow(0 5px 14px rgba(15, 23, 42, 0.16)) drop-shadow(0 1px 0 rgba(255, 255, 255, 0.36));
+    }
+
+    .profile-data-icon img,
+    .profile-data-icon svg {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
 
     .profile-data-label {
         @apply text-[11px] font-bold uppercase tracking-wider;
-        color: #6B7280;
+        color: rgba(17, 24, 39, 0.70);
         font-family: 'Montserrat', sans-serif;
     }
 
     .profile-data-value {
         @apply text-sm font-semibold;
-        color: #2D3748;
+        color: rgba(22, 24, 29, 0.94);
     }
 
     .profile-stats-row {
         @apply flex gap-3 flex-nowrap my-5;
     }
 
+    .glass-ring {
+        @apply relative rounded-2xl;
+        padding: var(--ring-pad);
+        background: var(--ring-bg);
+        backdrop-filter: blur(26px) saturate(195%);
+        -webkit-backdrop-filter: blur(26px) saturate(195%);
+        box-shadow: 0 26px 58px var(--ring-shadow), 0 10px 22px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.62), inset 0 -18px 26px rgba(255, 255, 255, 0.10);
+        isolation: isolate;
+    }
+
+    .glass-ring::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 1rem;
+        pointer-events: none;
+        box-shadow: inset 0 0 0 1px var(--ring-stroke), inset 0 -1px 0 rgba(255, 255, 255, 0.14), inset 0 14px 24px rgba(255, 255, 255, 0.10);
+        opacity: 1;
+    }
+
+    .glass-ring::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 1rem;
+        pointer-events: none;
+        background: radial-gradient(120% 90% at 30% 10%, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.00) 62%), linear-gradient(135deg, rgba(255, 255, 255, 0.56) 0%, rgba(255, 255, 255, 0.16) 26%, rgba(255, 255, 255, 0.00) 52%, rgba(255, 255, 255, 0.12) 74%, rgba(255, 255, 255, 0.34) 100%);
+        opacity: var(--ring-specular);
+        mix-blend-mode: overlay;
+    }
+
     .profile-reward-card, .profile-reward-card-large {
-        @apply relative rounded-2xl border p-4 flex flex-col items-center
-        justify-center overflow-hidden;
-        background: linear-gradient(145deg, #F7F8F9 0%, #E1E5E9 100%);
-        border: 1px solid #D1D5DB;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04), inset 0 1px 1px rgba(255,255,255,0.8);
-        border-bottom: 4px solid #B0B8BF;
+        @apply relative rounded-2xl p-4 flex flex-col items-center justify-center overflow-hidden;
+        background: rgba(255, 255, 255, 0.64);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        box-shadow: 0 12px 34px rgba(16, 24, 40, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.85)) saturate(120%);
+        backdrop-filter: blur(calc(var(--glass-blur) * 0.85)) saturate(120%);
+        isolation: isolate;
     }
 
     .profile-reward-card {
@@ -97,47 +264,113 @@
         aspect-ratio: 2 / 1;
     }
 
+    .profile-reward-card::before, .profile-reward-card-large::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image: linear-gradient(135deg, var(--profile-wash-green), rgba(255, 255, 255, 0) 55%), var(--frost-noise);
+        background-blend-mode: overlay, normal;
+        opacity: 0.28;
+        mix-blend-mode: multiply;
+        transition: opacity 240ms ease;
+    }
+
+    .profile-reward-card::after, .profile-reward-card-large::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: radial-gradient(100% 60% at 20% 12%, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.00) 36%), linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.00) 36%);
+        opacity: 0.98;
+        mix-blend-mode: screen;
+        filter: saturate(1.06) blur(1px);
+    }
+
+    .profile-reward-card:hover, .profile-reward-card-large:hover {
+        transform: translateY(-6px) scale(1.01);
+        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(calc(var(--glass-sat) + 20%)) contrast(calc(var(--glass-contrast) + 6%));
+        backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(calc(var(--glass-sat) + 20%)) contrast(calc(var(--glass-contrast) + 6%));
+        box-shadow: 0 36px 96px rgba(15, 23, 42, 0.18), 0 10px 30px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+    }
+
+    .profile-reward-card:hover::before, .profile-reward-card-large:hover::before {
+        opacity: 0.36;
+    }
+
     .profile-overview-badge-icon {
-        @apply w-9 h-9 mb-2 opacity-90;
-        color: #6B7280;
+        width: var(--profile-icon-size-badge);
+        height: var(--profile-icon-size-badge);
+        margin-bottom: 0.5rem;
+        color: rgba(16, 142, 110, 0.95);
+        opacity: 1;
+        display: inline-grid;
+        place-items: center;
+        filter: drop-shadow(0 6px 18px rgba(16, 24, 40, 0.08));
+    }
+
+    .profile-overview-badge-icon img,
+    .profile-overview-badge-icon svg {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
 
     .profile-overview-number-badge {
         @apply text-3xl font-black leading-none;
-        color: #2D3748;
+        color: rgba(17, 24, 39, 0.92);
+        filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.8));
     }
 
     .profile-overview-text-badge {
         @apply text-[10px] font-bold text-center mt-1 uppercase tracking-wide;
-        color: #6B7280;
+        color: rgba(99, 102, 106, 0.92) !important;
         font-family: 'Montserrat', sans-serif;
     }
 
     .profile-overview-level-badge {
         @apply text-base font-bold;
         font-family: 'Montserrat', sans-serif;
-        color: #2D3748;
+        color: rgba(22, 24, 29, 0.94);
     }
 
     .profile-overview-level-number {
         @apply font-black text-2xl ml-1;
-        color: #B0B8BF; /* Argento */
+        background: linear-gradient(135deg, rgba(6, 95, 70, 1.0) 0%, rgba(5, 122, 85, 1.0) 35%, rgba(16, 145, 110, 1.0) 65%, rgba(20, 184, 166, 1.0) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.16));
     }
 
     .profile-overview-progress-bar-container {
         @apply h-3 rounded-full overflow-hidden mt-3;
-        background: #E1E5E9;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        background: rgba(255, 255, 255, 0.16);
+        border: 0;
+        box-shadow: inset 0 2px 8px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.52);
+        position: relative;
+    }
+
+    .profile-overview-progress-bar-container::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.00) 60%);
+        opacity: 0.65;
     }
 
     .profile-overview-progress-bar {
         @apply h-full rounded-full;
-        background: linear-gradient(90deg, #B0B8BF 0%, #949DA6 100%);
+        background: linear-gradient(90deg, rgba(16, 185, 129, 0.94) 0%, rgba(227, 100, 20, 0.82) 45%, rgba(59, 130, 246, 0.86) 100%);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38);
     }
 
     .profile-overview-text-large-badge {
         @apply text-xs font-semibold mt-2;
-        color: #6B7280;
+        color: rgba(17, 24, 39, 0.80);
         font-family: 'Montserrat', sans-serif;
     }
 
@@ -145,16 +378,39 @@
         .profile-body-section {
             @apply flex-col items-center text-center gap-4;
         }
+
         .profile-data-section {
             @apply w-full;
         }
+
         .profile-reward-card, .profile-reward-card-large {
             flex-basis: calc(50% - 0.5rem);
             aspect-ratio: 1/1;
         }
+
         .profile-stats-row {
             @apply flex-wrap gap-2;
         }
     }
-}
 
+    @media (max-width: 640px) {
+        :root {
+            --profile-icon-size-data: 24px;
+            --profile-icon-size-badge: 28px;
+        }
+    }
+
+    .profile-overview .profile-main-card, .profile-section-bg--vibrant .profile-main-card, .profile-section-bg--vibrant-1 .profile-main-card, .profile-section-bg--vibrant-2 .profile-main-card, .profile-section-bg--vibrant-3 .profile-main-card {
+        background: rgba(255, 255, 255, 0.72) !important;
+        border: 1px solid rgba(255, 255, 255, 0.6) !important;
+        box-shadow: 0 18px 40px rgba(16, 24, 40, 0.06) !important;
+        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.5)) saturate(120%) !important;
+        backdrop-filter: blur(calc(var(--glass-blur) * 0.5)) saturate(120%) !important;
+    }
+
+    .profile-overview .profile-main-card::before, .profile-section-bg--vibrant .profile-main-card::before, .profile-section-bg--vibrant-1 .profile-main-card::before, .profile-section-bg--vibrant-2 .profile-main-card::before, .profile-section-bg--vibrant-3 .profile-main-card::before, .profile_overview .profile-main-card::after, .profile-section-bg--vibrant .profile-main-card::after, .profile-section-bg--vibrant-1 .profile-main-card::after, .profile-section-bg--vibrant-2 .profile-main-card::after, .profile-section-bg--vibrant-3 .profile-main-card::after {
+        opacity: 0.18 !important;
+        mix-blend-mode: screen !important;
+    }
+
+}
