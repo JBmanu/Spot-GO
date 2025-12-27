@@ -67,7 +67,7 @@
 
     .phone-screen > * {
         @apply relative
-        z-index-2;
+        z-2;
     }
 
     .dynamic-island {
