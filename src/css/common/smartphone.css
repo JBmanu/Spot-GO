@@ -34,6 +34,7 @@
         pointer-events: none;
         background: rgba(255, 255, 255, 0.24);
         backdrop-filter: blur(6px) saturate(112%) contrast(102%);
+        -webkit-backdrop-filter: blur(6px) saturate(112%) contrast(102%);
         border: 1px solid rgba(255, 255, 255, 0.40);
         border-radius: 25px;
         box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
@@ -55,15 +56,67 @@
 
     .app-header {
         @apply relative flex items-center h-[100px] pt-12 px-5 pb-3 text-text_color;
-        background: rgba(255, 255, 255, 0.68);
-        backdrop-filter: blur(var(--glass-blur-medium)) saturate(var(--glass-sat-light)) contrast(var(--glass-contrast));
-        box-shadow: 0 10px 30px rgba(0,0,0,0.10), 0 1px 0 rgba(255,255,255,0.55) inset;
+        background: rgba(255, 255, 255, 0.1); /* Riduzione ulteriore per massima trasparenza */
+        /* backdrop-filter rimosso per evitare sfocatura eccessiva */
+        box-shadow:
+                0 18px 44px rgba(0,0,0,0.12),
+                0 1px 0 rgba(255,255,255,0.70) inset,
+                0 0 0 1px rgba(255,255,255,0.14) inset;
     }
 
+    .app-header > * { position: relative; z-index: 2; }
+
     .app-header-left { @apply flex items-center gap-2; }
+
     .header-left-logo { @apply flex items-center justify-center; }
-    .header-left-title { @apply text-xs font-semibold tracking-[0.18em] uppercase text-text_color; }
-    #notification-button { @apply ml-auto shrink-0; }
+
+    .header-left-title {
+        @apply text-xs font-semibold tracking-[0.18em] uppercase;
+        color: rgba(17, 24, 39, 0.80);
+        text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    }
+
+    #notification-button,
+    #header-bookmark-button {
+        @apply relative grid place-items-center w-11 h-11 rounded-2xl shrink-0;
+        background: rgba(255,255,255,0.22);
+        border: 1px solid rgba(255,255,255,0.32);
+
+        backdrop-filter:
+                blur(calc(var(--glass-blur-strong) * 0.55))
+                saturate(calc(var(--glass-sat-light) * 1.06))
+                contrast(var(--glass-contrast));
+        -webkit-backdrop-filter:
+                blur(calc(var(--glass-blur-strong) * 0.55))
+                saturate(calc(var(--glass-sat-light) * 1.06))
+                contrast(var(--glass-contrast));
+
+        box-shadow:
+                0 14px 26px rgba(0,0,0,0.12),
+                0 1px 0 rgba(255,255,255,0.55) inset;
+
+        -webkit-tap-highlight-color: transparent;
+        transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    #notification-button:active,
+    #header-bookmark-button:active {
+        transform: scale(0.97);
+        box-shadow:
+                0 10px 18px rgba(0,0,0,0.10),
+                0 1px 0 rgba(255,255,255,0.55) inset;
+    }
+
+    .icon-notification,
+    .bookmark-icon {
+        width: 22px;
+        height: 22px;
+        filter:
+                drop-shadow(0 16px 18px rgba(0,0,0,0.16))
+                drop-shadow(0 2px 0 rgba(255,255,255,0.75));
+    }
+
+    #notification-button { @apply ml-auto; }
 
     .app-toolbar {
         @apply relative flex items-center justify-between px-3 pt-2 pb-2 h-16 rounded-t-[30px] text-text_color;
@@ -78,6 +131,10 @@
         border-top: 1px solid rgba(255,255,255,0.60);
 
         backdrop-filter:
+                blur(calc(var(--glass-blur-strong) * 0.95))
+                saturate(calc(var(--glass-sat-light) * 1.12))
+                contrast(calc(var(--glass-contrast) * 1.03));
+        -webkit-backdrop-filter:
                 blur(calc(var(--glass-blur-strong) * 0.95))
                 saturate(calc(var(--glass-sat-light) * 1.12))
                 contrast(calc(var(--glass-contrast) * 1.03));
@@ -144,10 +201,7 @@
         -webkit-tap-highlight-color: transparent;
     }
 
-    .toolbar-button:hover {
-        transform: none;
-        box-shadow: none;
-    }
+    .toolbar-button:hover { transform: none; box-shadow: none; }
     .toolbar-button:active { transform: translateY(0) scale(0.985); }
 
     .icon-wrap {
@@ -163,7 +217,7 @@
         display: block;
         margin: 0;
         opacity: 0.96;
-        transform: translateZ(0);
+        transform: translateZ(0) scale(1);
         transition: transform 180ms ease, filter 180ms ease, opacity 180ms ease;
         filter:
                 drop-shadow(0 16px 18px rgba(0,0,0,0.18))
@@ -171,7 +225,7 @@
     }
 
     .toolbar-button:active .icon-toolbar {
-        transform: scale(1.12);
+        transform: translateZ(0) scale(1.10);
         opacity: 1;
     }
 
@@ -180,30 +234,30 @@
         position: absolute;
         inset: -6px;
         border-radius: 15px 15px 0 0;
+
         background: radial-gradient(140% 120% at 50% 0%,
         color-mix(in srgb, var(--color-primary_color) 18%, rgba(255,255,255,0.72)) 0%,
         rgba(255,255,255,0.40) 58%,
         rgba(255,255,255,0.18) 100%);
+
         border: 1px solid rgba(255,255,255,0.55);
+
         box-shadow:
                 0 18px 34px rgba(0,0,0,0.12),
                 0 1px 0 rgba(255,255,255,0.80) inset,
                 0 0 26px color-mix(in srgb, var(--color-primary_color) 22%, transparent);
+
         backdrop-filter: blur(10px) saturate(145%) contrast(152%);
+        -webkit-backdrop-filter: blur(10px) saturate(145%) contrast(152%);
         z-index: -1;
     }
 
     .toolbar-button[aria-current="page"] .icon-toolbar {
-        transform: scale(1.45);
+        transform: translateZ(0) scale(1.22);
         opacity: 1;
         filter:
                 drop-shadow(0 20px 20px rgba(0,0,0,0.20))
                 drop-shadow(0 2px 0 rgba(255,255,255,0.85));
-    }
-
-    .toolbar-button[aria-current="page"]::before {
-        margin-top: 2px;
-        border-radius: 2px;
     }
 
 }
