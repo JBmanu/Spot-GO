@@ -1,3 +1,7 @@
+/**
+ * Configurazione e inizializzazione di Firebase.
+ */
+
 import {initializeApp} from "firebase/app";
 import {getFirestore} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
@@ -36,12 +40,9 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
         window.firebaseApp = app;
         window.db = db;
         window.firebaseAuth = auth;
-
-        console.log("Firebase inizializzato correttamente!");
     } catch (error) {
         console.error("ERRORE di configurazione in Firebase!", error);
     }
 }
 
 export { db };
-

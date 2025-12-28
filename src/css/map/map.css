@@ -1,0 +1,6 @@
+@layer components {
+
+    .map {
+        @apply w-full h-[400px];
+    }
+}

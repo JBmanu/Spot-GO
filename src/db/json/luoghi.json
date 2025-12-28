@@ -1,0 +1,65 @@
+[
+  {
+    "nome": "Colosseo",
+    "descrizione": "Famoso anfiteatro romano, simbolo dell'Impero Romano. Uno dei siti archeologici più importanti del mondo.",
+    "posizione": { "coord1": 41.8902, "coord2": 12.4922 },
+    "idCategoria": "culture",
+    "immagine": "/db/img/colosseo.jpg",
+    "indirizzo": "Piazza del Colosseo, 1 - Roma",
+    "orari": [
+      { "inizio": "08:30", "fine": "12:30" },
+      { "inizio": "14:00", "fine": "19:00" }
+    ],
+    "costo": [
+      { "tipo": "Intero", "prezzo": 18 },
+      { "tipo": "Ridotto", "prezzo": 12 }
+    ],
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Romolo e Remo",
+    "descrizione": "Ristorante tradizionale romano con cucina autentica. Perfetto per assaporare i piatti tipici della capitale in un'atmosfera accogliente.",
+    "posizione": { "coord1": 41.8955, "coord2": 12.4732 },
+    "idCategoria": "food",
+    "immagine": "/db/img/romolo-e-remo.jpg",
+    "indirizzo": "Via di San Giovanni in Laterano, 12 - Roma",
+    "orari": [
+      { "inizio": "12:00", "fine": "15:00" },
+      { "inizio": "19:00", "fine": "23:00" }
+    ],
+    "costo": [
+      { "tipo": "Menu medio", "prezzo": 25 }
+    ],
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Parco degli Acquedotti",
+    "descrizione": "Parco affascinante con i resti degli antichi acquedotti romani. Un'oasi di verde perfetta per passeggiate e pic-nic tra la storia.",
+    "posizione": { "coord1": 41.8733, "coord2": 12.5567 },
+    "idCategoria": "nature",
+    "immagine": "/db/img/parco-degli-acquedotti.jpg",
+    "indirizzo": "Via Lemonia - Roma",
+    "orari": [
+      { "inizio": "06:00", "fine": "21:00" }
+    ],
+    "costo": [
+      { "tipo": "Gratuito", "prezzo": 0 }
+    ],
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Escape Room Mystery",
+    "descrizione": "Escape room immersiva tematizzata sull'antico Egitto. Risolvere enigmi e misteri per fuggire dalla tomba prima che il tempo scada!",
+    "posizione": { "coord1": 41.9028, "coord2": 12.4964 },
+    "idCategoria": "mystery",
+    "immagine": "/db/img/escamotage-escape-room.jpg",
+    "indirizzo": "Via dei Serpenti, 24 - Roma",
+    "orari": [
+      { "inizio": "10:00", "fine": "22:00" }
+    ],
+    "costo": [
+      { "tipo": "Persona", "prezzo": 15 }
+    ],
+    "idCreatore": "master"
+  }
+]
