@@ -104,7 +104,7 @@ async function loadSpotDetail(spotId) {
         _spotData = spotData;
         savePageState();
 
-        const res = await fetch("../html/spot-detail.html", { cache: "no-store" });
+        const res = await fetch("../html/common-pages/spot-detail.html", { cache: "no-store" });
         if (!res.ok) return;
 
         const main = document.getElementById("main");

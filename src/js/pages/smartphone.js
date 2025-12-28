@@ -46,7 +46,7 @@ Promise.all([
  * Carica il markup dell'header.
  */
 async function loadHeader() {
-    const response = await fetch("../html/header.html");
+    const response = await fetch("../html/common-pages/header.html");
     if (!response.ok) return;
 
     const html = await response.text();
@@ -67,7 +67,7 @@ async function loadHeader() {
  * Carica il template della toolbar.
  */
 async function loadToolbar() {
-    const response = await fetch("../html/toolbar.html");
+    const response = await fetch("../html/common-pages/toolbar.html");
     if (!response.ok) return;
 
     const html = await response.text();
