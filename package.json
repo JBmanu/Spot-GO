@@ -24,6 +24,7 @@
         "@tailwindcss/typography": "^0.5.19",
         "dotenv": "^17.2.3",
         "firebase": "^12.6.0",
+        "leaflet": "^1.9.4",
         "tailwindcss": "^4.1.17",
         "tailwindcss-animate": "^1.0.7"
     },

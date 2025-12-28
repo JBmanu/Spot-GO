@@ -1,14 +1,16 @@
-<section class="flex flex-col space-y-3">
+<section class="flex flex-col">
+
+    <div class="px-3 py-1 bg-main_paper">
+        <h2 class="text-2xl font-semibold mb-1" style="font-family: 'Montserrat', sans-serif;">Scopri Mappa</h2>
+        <p class="text-sm text-text_color/70" style="font-family: 'Montserrat', sans-serif;">Ricerca e/o seleziona una o più categorie da esplorare</p>
+    </div>
 
     <!-- Esplora per categoria -->
     <section class="home-section">
-        <header>
-            <h2 class="home-section-title">Esplora per categoria</h2>
-        </header>
-
+        <!-- [dynamic] Search Bar-->
         <!-- Filtri categorie -->
         <div
-                id="home-categories-container"
+                id="map-categories-container"
                 class="home-chips-row"
                 role="group"
                 aria-label="Filtri categoria"
@@ -40,8 +42,34 @@
         </div>
     </section>
 
-    <!-- TODO: mappa -->
-    <div id="map-container" class="mt-2"></div>
-    <!-- Spots vicino a te - Caricato dinamicamente -->
-    <div id="map-nearby-section" class="mt-2"></div>
+    <!-- Mappa -->
+    <div id="map-container" class="mt-2 px-3">
+        <div id="map" class="map"></div>
+    </div>
+
+    <!-- Spot vicini -->
+    <section class="px-3 mt-2">
+        <header class="flex flex-row items-center justify-between">
+            <h2 class="home-section-title">Spot vicini</h2>
+            <button
+                    type="button"
+                    id="home-toprated-carousel-see-all"
+                    class="vedi-tutti-button"
+                    aria-label="Scopri gli spot della community"
+            >
+                Vedi tutti
+            </button>
+        </header>
+        <div id="map-nearby-section" class="mt-2">
+            <div class="toprated-carousel" aria-label="Carosello spot vicini (scorri su e giù)">
+                <div
+                        id="map-nearby-spots-container"
+                        class="toprated-carousel-track vertical-carousel-track"
+                        role="list"
+                        aria-label="Lista spot vicini">
+
+                </div>
+            </div>
+        </div>
+    </section>
 </section>

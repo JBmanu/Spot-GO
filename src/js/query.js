@@ -1,10 +1,55 @@
-import { collection, getDocs, query, where, limit } from "firebase/firestore";
+/**
+ * Wrapper per le query al database (Firestore) e parsing dei documenti.
+ * Espone funzioni per leggere utenti, luoghi, salvataggi e categorie.
+ */
+
+import { collection, getDocs, query, where, limit, deleteDoc, setDoc, doc } from "firebase/firestore";
 import { db } from "./firebase.js";
-import firebase from "firebase/compat/app";
+
+// Cache per le categorie
+let categorieCache = null;
 
 /**
- * Restituisce i dati del primo utente nella collezione "Utente"
- * @returns {Promise<Object|null>} Oggetto dati utente o null se non trovato
+ * Carica le categorie dal file JSON e le converte in una mappa.
+ * Restituisce una mappa id_categoria -> nome italiano (cached).
+ */
+export async function getCategorieMap() {
+    if (categorieCache) {
+        return categorieCache;
+    }
+
+    try {
+        const response = await fetch('/db/json/categorie.json');
+        const categorie = await response.json();
+
+        categorieCache = {};
+        categorie.forEach(cat => {
+            categorieCache[cat.id] = cat.nomeIt;
+        });
+
+        return categorieCache;
+    } catch (error) {
+        console.error("Errore nel caricamento categorie:", error);
+        // Fallback se il file non viene trovato
+        return {
+            "culture": "Cultura",
+            "food": "Cibo",
+            "nature": "Natura",
+            "mystery": "Mistero"
+        };
+    }
+}
+
+/**
+ * Converte un ID categoria nel nome italiano.
+ */
+export async function getCategoryNameIt(categoriaId) {
+    const categorieMap = await getCategorieMap();
+    return categorieMap[categoriaId] || categoriaId;
+}
+
+/**
+ * Restituisce i dati del primo utente nella collezione "Utente".
  */
 export async function getFirstUser() {
     try {
@@ -27,7 +72,9 @@ export async function getFirstUser() {
     }
 }
 
-/** Restituisce tutte le recensioni dell'utente con userId*/
+/**
+ * Restituisce tutte le recensioni dell'utente con userId.
+ */
 export async function getReviews(userId) {
     return getItems('Recensione', 
         where('idUtente', '==', userId), 
@@ -41,6 +88,9 @@ export async function getReviews(userId) {
     );
 }
 
+/**
+ * Restituisce gli spot creati dall'utente.
+ */
 export async function getCreatedSpots(userId) {
     return getItems(
         "LuogoCreato", 
@@ -53,18 +103,25 @@ export async function getCreatedSpots(userId) {
     );
 }
 
+/**
+ * Restituisce i LuogoSalvato dell'utente.
+ */
 export async function getSavedSpots(userId) {
     return getItems(
-        "LuogoSalvato", 
+        "LuogoSalvato",
         where('idUtente', '==', userId),
         (id, data) => ({
             id: id,
             idLuogo: data.idLuogo,
             idUtente: data.idUtente
         })
+
     );
 }
 
+/**
+ * Restituisce i LuogoVisitato dell'utente.
+ */
 export async function getVisitedSpots(userId) {
     return getItems(
         "LuogoVisitato", 
@@ -77,6 +134,9 @@ export async function getVisitedSpots(userId) {
     );
 }
 
+/**
+ * Restituisce tutti i Luogo dalla collection.
+ */
 export async function getSpots() {
     return getItems(
         "Luogo", 
@@ -90,17 +150,40 @@ export async function getSpots() {
             posizione: {
                 coord1: data.posizione.coord1,
                 coord2: data.posizione.coord2
-            }
+            },
+            indirizzo: data.indirizzo,
+            orari: data.orari,
+            costo: data.costo,
+            idCreatore: data.idCreatore
         })
     );
 }
 
 /**
- * Generic methods to get documents from collection.
- * @param {*} collectionName name of collection
- * @param {*} filter optional filter of query
- * @param {*} itemParser converts from firebase snapshot (id, data) to javascript object
- * @returns ritorna un array di oggetti definiti dal itemParser
+ * Funzione specifica per ottenere gli spot filtrando per categorie e testo di ricerca
+ */
+export async function getFilteredSpots(categories = [], searchText = "") {
+    const noFilter = (!categories || categories.length === 0)
+                  && (!searchText || searchText.trim() === "");
+    if (noFilter) return await getSpots();
+
+    // Filtra almeno per categorie lato Firestore
+    let filter = null;
+    if (categories.length > 0) {
+        filter = where("idCategoria", "in", categories);
+    }
+
+    const spots = await getItems("Luogo", filter, (id, data) => ({ id, ...data }));
+
+    if (!searchText || searchText.trim() === "") return spots;
+
+    // Filtra in memoria, case-insensitive
+    const searchLower = searchText.trim().toLowerCase();
+    return spots.filter(spot => (spot.nome || "").toLowerCase().includes(searchLower));
+}
+
+/**
+ * Metodo generico per ottenere items da una collection con un filtro opzionale.
  */
 async function getItems(collectionName, filter, itemParser) {
     try {
@@ -116,5 +199,38 @@ async function getItems(collectionName, filter, itemParser) {
     } catch (error) {
         console.error("Errore recupero items da " + collectionName + ": " , error);
         return [];
+    }
+}
+
+/**
+ * Salva uno spot nei preferiti dell'utente.
+ */
+export async function addBookmark(idUtente, idLuogo) {
+    try {
+        const docRef = doc(db, "LuogoSalvato", `${idUtente}_${idLuogo}`);
+        await setDoc(docRef, {
+            idUtente: idUtente,
+            idLuogo: idLuogo,
+            dataSalvataggio: new Date()
+        });
+    } catch (error) {
+        console.error("Errore nel salvataggio del bookmark:", error);
+    }
+}
+
+/**
+ * Rimuove uno spot dai preferiti dell'utente.
+ */
+export async function removeBookmark(idUtente, idLuogo) {
+    try {
+        const lukRef = collection(db, "LuogoSalvato");
+        const q = query(lukRef, where("idUtente", "==", idUtente), where("idLuogo", "==", idLuogo));
+        const querySnapshot = await getDocs(q);
+
+        for (const docSnap of querySnapshot.docs) {
+            await deleteDoc(docSnap.ref);
+        }
+    } catch (error) {
+        console.error("Errore nella rimozione del bookmark:", error);
     }
 }

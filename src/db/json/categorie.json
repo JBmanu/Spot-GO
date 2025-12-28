@@ -1,0 +1,23 @@
+[
+  {
+    "id": "culture",
+    "nomeIt": "Cultura",
+    "nomeEn": "Culture"
+  },
+  {
+    "id": "food",
+    "nomeIt": "Cibo",
+    "nomeEn": "Food"
+  },
+  {
+    "id": "nature",
+    "nomeIt": "Natura",
+    "nomeEn": "Nature"
+  },
+  {
+    "id": "mystery",
+    "nomeIt": "Mistero",
+    "nomeEn": "Mystery"
+  }
+]
+
