@@ -1,7 +1,5 @@
-// src/js/common/populateTopratedSpots.js
-
 import { getSpots } from "../query.js";
-import { fillSpotSlots } from "../common/populateSpotCards.js";
+import { fillSpotCard } from "../common/populateSpotCards.js";
 
 function toNumberOrNull(v) {
     if (v === undefined || v === null) return null;
@@ -11,20 +9,39 @@ function toNumberOrNull(v) {
 
 function getRatingValue(spot) {
     return (
-        toNumberOrNull(spot.rating) ??
-        toNumberOrNull(spot.valutazione) ??
-        toNumberOrNull(spot.stelle) ??
-        toNumberOrNull(spot.mediaVoti) ??
+        toNumberOrNull(spot?.rating) ??
+        toNumberOrNull(spot?.valutazione) ??
+        toNumberOrNull(spot?.stelle) ??
+        toNumberOrNull(spot?.mediaVoti) ??
         null
     );
 }
 
+function pickDistance(spot) {
+    return spot?.distanza ?? spot?.distance ?? spot?.metri ?? spot?.meters ?? null;
+}
+
+function setText(el, value) {
+    if (!el) return;
+    el.textContent = value == null ? "" : String(value);
+}
+
 export async function populateTopratedSpots({
-                                                containerId = "home-toprated-carousel-container",
-                                                limit = 10,
-                                            } = {}) {
+    containerId = "home-toprated-carousel-container",
+    templateSelector = '[data-template="toprated-item"]',
+    limit = 10,
+} = {}) {
     const container = document.getElementById(containerId);
     if (!container) return;
+
+    const templateCard = container.querySelector(templateSelector);
+    if (!templateCard) {
+        console.warn("Template toprated-item non trovato dentro", `#${containerId}`);
+        return;
+    }
+
+    templateCard.hidden = true;
+    templateCard.setAttribute("aria-hidden", "true");
 
     const all = await getSpots();
 
@@ -36,25 +53,29 @@ export async function populateTopratedSpots({
 
     const top = scored.slice(0, limit).map((x) => x.spot);
 
-    fillSpotSlots(container, top);
+    container.innerHTML = "";
+    container.appendChild(templateCard);
 
-    // extra fields: rating + distance (se presenti nel template)
-    const cards = container.querySelectorAll('[role="listitem"][data-spot-id]');
-    for (let i = 0; i < cards.length; i++) {
-        const card = cards[i];
-        const spot = top?.[i];
-        if (!spot) continue;
+    if (!top.length) return;
 
-        const ratingEl = card.querySelector('[data-field="rating"]');
-        if (ratingEl) {
-            const r = getRatingValue(spot);
-            if (r !== null) ratingEl.textContent = String(r);
-        }
+    for (const spot of top) {
+        const card = templateCard.cloneNode(true);
 
-        const distEl = card.querySelector('[data-field="distance"]');
-        if (distEl) {
-            const d = spot.distanza ?? spot.distance ?? spot.metri ?? spot.meters;
-            if (d !== undefined && d !== null && d !== "") distEl.textContent = String(d);
-        }
+        card.removeAttribute("data-template");
+        card.removeAttribute("aria-hidden");
+        card.hidden = false;
+
+        fillSpotCard(card, spot, {
+            wrapperEl: null,
+            setCategoryText: false,
+            hideIfMissingId: true,
+        });
+
+        if (card.style.display === "none") continue;
+
+        setText(card.querySelector('[data-field="rating"]'), getRatingValue(spot));
+        setText(card.querySelector('[data-field="distance"]'), pickDistance(spot));
+
+        container.appendChild(card);
     }
 }

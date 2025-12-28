@@ -1,54 +1,65 @@
-// src/js/common/populateNearbySpots.js
-
 import { getSpots } from "../query.js";
-import { fillSpotSlots } from "../common/populateSpotCards.js";
+import { fillSpotCard } from "../common/populateSpotCards.js";
 
-/**
- * Popola la sezione "Nearby" (A pochi passi) usando gli slot già presenti nell'HTML.
- * - richiede: #home-nearby-container con children [role="listitem"][data-spot-id]
- */
-export async function populateNearbySpots({ containerId = "home-nearby-container" } = {}) {
+function setText(el, value) {
+    if (!el) return;
+    el.textContent = value == null ? "" : String(value);
+}
+
+function pickDistance(spot) {
+    return spot?.distanza ?? spot?.distance ?? spot?.metri ?? spot?.meters ?? null;
+}
+
+function pickRating(spot) {
+    return spot?.rating ?? spot?.valutazione ?? spot?.stelle ?? spot?.mediaVoti ?? null;
+}
+
+export async function populateNearbySpots({
+    containerId = "home-nearby-container",
+    templateSelector = '[data-template="nearby-card"]',
+    limit = 10,
+} = {}) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
+    const templateShell = container.querySelector(templateSelector);
+    if (!templateShell) {
+        console.warn("Template nearby-card non trovato dentro", `#${containerId}`);
+        return;
+    }
+
+    templateShell.hidden = true;
+    templateShell.setAttribute("aria-hidden", "true");
+
     const spots = await getSpots();
+    const list = (spots || []).slice(0, limit);
 
-    // riempi titolo/immagine/categoria/id + data-category (via fillSpotCard)
-    fillSpotSlots(container, spots);
+    container.innerHTML = "";
+    container.appendChild(templateShell);
 
-    // campi extra (se presenti nel template)
-    const cards = container.querySelectorAll('[role="listitem"][data-spot-id]');
-    for (let i = 0; i < cards.length; i++) {
-        const card = cards[i];
-        const spot = spots?.[i];
-        if (!spot) continue; // card già nascosta da fillSpotSlots
+    if (!list.length) return;
 
-        // Distance (se esiste nei dati)
-        const distEl = card.querySelector('[data-field="distance"]');
-        if (distEl) {
-            // prova varie chiavi possibili senza imporre struttura
-            const d =
-                spot.distanza ??
-                spot.distance ??
-                spot.metri ??
-                spot.meters;
+    for (const spot of list) {
+        const shell = templateShell.cloneNode(true);
 
-            if (d !== undefined && d !== null && d !== "") {
-                distEl.textContent = String(d);
-            }
-        }
+        shell.removeAttribute("data-template");
+        shell.removeAttribute("aria-hidden");
+        shell.hidden = false;
 
-        // Rating (se esiste nei dati)
-        const ratingEl = card.querySelector('[data-field="rating"]');
-        if (ratingEl) {
-            const r =
-                spot.rating ??
-                spot.valutazione ??
-                spot.stelle;
+        const card = shell.querySelector('[role="listitem"]');
+        if (!card) continue;
 
-            if (r !== undefined && r !== null && r !== "") {
-                ratingEl.textContent = String(r);
-            }
-        }
+        fillSpotCard(card, spot, {
+            wrapperEl: shell,
+            setCategoryText: true,
+            hideIfMissingId: true,
+        });
+
+        if (card.style.display === "none") continue;
+
+        setText(card.querySelector('[data-field="distance"]'), pickDistance(spot));
+        setText(card.querySelector('[data-field="rating"]'), pickRating(spot));
+
+        container.appendChild(shell);
     }
 }
