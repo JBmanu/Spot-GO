@@ -44,10 +44,18 @@ async function updateUserCounters(userId) {
     const createdSpots = document.getElementById("created-spots");
     const visitedSpots = document.getElementById("visited-spots");
     const savedSpots = document.getElementById("saved-spots");
-    if (writtenReviews) writtenReviews.textContent = (await getReviews(userId)).length;
-    if (createdSpots) createdSpots.textContent = (await getCreatedSpots(userId)).length;
-    if (visitedSpots) visitedSpots.textContent = (await getVisitedSpots(userId)).length;
-    if (savedSpots) savedSpots.textContent = (await getSavedSpots(userId)).length;
+
+    const [reviews, created, visited, saved] = await Promise.all([
+        getReviews(userId),
+        getCreatedSpots(userId),
+        getVisitedSpots(userId),
+        getSavedSpots(userId)
+    ]);
+
+    if (writtenReviews) writtenReviews.textContent = reviews.length;
+    if (createdSpots) createdSpots.textContent = created.length;
+    if (visitedSpots) visitedSpots.textContent = visited.length;
+    if (savedSpots) savedSpots.textContent = saved.length;
 }
 
 // Aggiorna l'interfaccia del profilo con i dati
