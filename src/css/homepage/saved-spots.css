@@ -122,7 +122,10 @@
     }
 
     .spot-card-bookmark {
-        @apply absolute top-2 right-2 grid place-items-center w-8 h-8 rounded-xl;
+        @apply absolute top-0 right-0 grid place-items-center w-12 h-12 rounded-xl;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
         @apply backdrop-blur-[18px] backdrop-saturate-160;
         @apply shadow-[0_6px_16px_rgba(0,0,0,0.14)];
         z-index: 10;
@@ -134,7 +137,7 @@
     }
 
     .spot-card-bookmark .bookmark-icon {
-        @apply w-6 h-6;
+        @apply w-9 h-9;
     }
 
     .spot-card-body {

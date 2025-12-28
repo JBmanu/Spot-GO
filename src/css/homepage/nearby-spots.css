@@ -17,7 +17,7 @@
     .nearby-spot-shell {
         @apply relative shrink-0 snap-start flex items-center justify-center;
         width: 100%;
-        max-width: 350px;
+        max-width: 300px; /* ridotto da 350px a 260px */
         aspect-ratio: 1.15 / 1;
         border-radius: 28px;
         padding: 10px;
@@ -125,9 +125,9 @@
     .nearby-card:active .nearby-image { transform: scale(1.02); }
 
     .nearby-bookmark {
-        @apply absolute top-3 right-3 grid place-items-center;
-        width: 44px;
-        height: 44px;
+        @apply absolute top-0 right-0 grid place-items-center;
+        width: 48px;
+        height: 48px;
         border-radius: 14px;
 
         @apply backdrop-blur-[18px] backdrop-saturate-160;
@@ -144,7 +144,7 @@
 
     .nearby-bookmark:active { transform: scale(0.96); }
 
-    .nearby-bookmark-icon { @apply w-8 h-8 object-contain; }
+    .nearby-bookmark-icon { @apply w-9 h-9 object-contain; }
 
     .nearby-body {
         @apply relative flex-1 px-3 pt-3 pb-3 flex flex-col;
