@@ -21,43 +21,42 @@
         >
             <!-- Template -->
             <article
-                    class="toprated-carousel-item"
+                    class="spot-card-toprated"
                     data-spot-wrapper
                     role="listitem"
                     data-template="toprated-item"
                     data-spot-id=""
                     data-saved="false"
+                    data-category="food"
                     hidden
             >
-
-            <div class="toprated-item-image">
+                <div data-slot="image">
                     <img
                             src=""
                             alt="Foto spot"
-                            class="spot-card-image"
                             data-field="image"
                     />
 
-                    <div class="toprated-item-distance">
+                    <div data-slot="distance">
                         <img
                                 src="../../assets/icons/homepage/Place%20Marker.svg"
                                 alt="distanza"
                                 class="icon-mini"
                         />
-                        <span class="toprated-distance" data-field="distance"></span>
+                        <span data-slot="distance-text" data-field="distance"></span>
                     </div>
                 </div>
 
-                <div class="toprated-item-info">
-                    <h3 class="toprated-item-title" data-field="title"></h3>
+                <div data-slot="info">
+                    <h3 data-slot="title" data-field="title"></h3>
 
-                    <div class="toprated-item-rating-container">
-                        <p class="toprated-item-rating">
-                            <span class="spot-rating-value" data-field="rating"></span>
+                    <div data-slot="rating-row">
+                        <p data-slot="rating-pill">
+                            <span data-slot="rating-value" data-field="rating"></span>
                             <img
                                     src="../../assets/icons/homepage/Star.svg"
                                     alt="stella"
-                                    class="rating-star"
+                                    data-slot="rating-star"
                             />
                         </p>
                     </div>
@@ -65,7 +64,7 @@
 
                 <button
                         type="button"
-                        class="toprated-item-bookmark"
+                        data-slot="bookmark"
                         aria-label="Aggiungi ai salvati"
                         data-bookmark-button
                         data-bookmark-type="toprated"
