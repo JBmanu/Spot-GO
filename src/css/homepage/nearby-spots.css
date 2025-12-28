@@ -48,8 +48,8 @@
         @apply absolute inset-0;
         z-index: 0;
         opacity: 1;
-        transform: scale(1.05);
-        filter: blur(4px) saturate(1.65);
+        transform: scale(1.1);
+        filter: blur(6px) saturate(1.45);
     }
 
     .nearby-spot-shell[data-category] .nearby-spot-pedestal {
