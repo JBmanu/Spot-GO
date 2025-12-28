@@ -21,119 +21,119 @@ const SECTION_CONFIG = {
     },
 };
 
-
 let loadProfileOverview, initializeHomepageFilters, initializeMap;
 
 Promise.all([
-    import("./profile.js").then(module => {
-        loadProfileOverview = module.loadProfileOverview;
-    }),
-    import("./homepage.js").then(module => {
-        initializeHomepageFilters = module.initializeHomepageFilters;
-    }),
-    import("../map.js").then(module => {
-        initializeMap = module.initializeMap;
-    })
-]).catch(err => console.error("Errore nel caricamento dei moduli in smartphone.js:", err));
-
+    import("./profile.js").then(m => loadProfileOverview = m.loadProfileOverview),
+    import("./homepage.js").then(m => initializeHomepageFilters = m.initializeHomepageFilters),
+    import("../map.js").then(m => initializeMap = m.initializeMap),
+]).catch(err =>
+    console.error("Errore nel caricamento dei moduli in smartphone.js:", err)
+);
 
 async function loadHeader() {
     const response = await fetch("../html/common-pages/header.html");
     if (!response.ok) return;
+
     const html = await response.text();
     const header = document.querySelector("header.app-header");
-    if (header) {
-        const parsed = new DOMParser().parseFromString(html, "text/html");
-        const newHeader = parsed.querySelector("header");
-        if (newHeader) {
-            header.innerHTML = newHeader.innerHTML;
-            Array.from(newHeader.attributes).forEach(attr => {
-                header.setAttribute(attr.name, attr.value);
-            });
-        }
-    }
+    if (!header) return;
+
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    const newHeader = parsed.querySelector("header");
+    if (!newHeader) return;
+
+    header.innerHTML = newHeader.innerHTML;
+    Array.from(newHeader.attributes).forEach(attr =>
+        header.setAttribute(attr.name, attr.value)
+    );
 }
 
 async function loadToolbar() {
     const response = await fetch("../html/common-pages/toolbar.html");
     if (!response.ok) return;
+
     const html = await response.text();
     const toolbar = document.querySelector(".app-toolbar");
-    if (toolbar) {
-        const parsed = new DOMParser().parseFromString(html, "text/html");
-        const newToolbar = parsed.querySelector("nav");
-        if (newToolbar) {
-            toolbar.innerHTML = newToolbar.innerHTML;
-            Array.from(newToolbar.attributes).forEach(attr => {
-                toolbar.setAttribute(attr.name, attr.value);
-            });
-        }
-    }
+    if (!toolbar) return;
+
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    const newToolbar = parsed.querySelector("nav");
+    if (!newToolbar) return;
+
+    toolbar.innerHTML = newToolbar.innerHTML;
+    Array.from(newToolbar.attributes).forEach(attr =>
+        toolbar.setAttribute(attr.name, attr.value)
+    );
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
     await loadHeader();
     await loadToolbar();
+
     const main = document.getElementById("main");
     const toolbar = document.querySelector(".app-toolbar");
     const titleEl = document.getElementById("header-title");
     const logoTextEl = document.getElementById("header-logo-text");
+
     if (!main || !toolbar) return;
-    toolbar.addEventListener("click", (e) => {
+
+    toolbar.addEventListener("click", e => {
         const btn = e.target.closest("button[data-section]");
         if (!btn) return;
         navigateTo(btn.dataset.section);
     });
+
     navigateTo("homepage");
+
     async function navigateTo(section) {
         const cfg = SECTION_CONFIG[section];
         if (!cfg) return;
+
         updateHeader(section, cfg);
         updateToolbar(section);
         await loadMainContent(cfg);
     }
+
     function updateHeader(section, cfg) {
         if (!titleEl || !logoTextEl) return;
+
         const headerLeftLogo = document.querySelector(".header-left-logo");
         const isHome = section === "homepage";
-        logoTextEl.classList.toggle("hidden", !isHome);
+
         logoTextEl.style.display = isHome ? "" : "none";
         titleEl.classList.toggle("hidden", isHome);
+
         if (!isHome) titleEl.textContent = cfg.title;
-        if (headerLeftLogo && headerLeftLogo.querySelector("#header-back-button")) {
-            headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
+
+        if (headerLeftLogo?.querySelector("#header-back-button")) {
+            headerLeftLogo.innerHTML =
+                `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
         }
     }
+
     function updateToolbar(activeSection) {
         toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
-            const section = btn.dataset.section;
-            const cfg = SECTION_CONFIG[section];
-            const icon = btn.querySelector("[data-role='icon']");
-            const text = btn.querySelector("span");
-            if (!cfg || !icon) return;
-            const active = section === activeSection;
-            btn.classList.toggle("active", active);
-            text?.classList.toggle("font-bold", active);
-            text?.classList.toggle("font-normal", !active);
-            icon.classList.toggle("scale-140", active);
+            const isActive = btn.dataset.section === activeSection;
+            if (isActive) btn.setAttribute("aria-current", "page");
+            else btn.removeAttribute("aria-current");
         });
     }
+
+
     async function loadMainContent(cfg) {
         const res = await fetch(cfg.content, { cache: "no-store" });
         if (!res.ok) {
             main.innerHTML = `<div class="p-4">Errore caricamento</div>`;
             return;
         }
+
         main.innerHTML = await res.text();
-        if (cfg.content.includes('map.html')) {
-            await initializeMap();
-        }
-        if (cfg.content.includes('profile.html')) {
-            await loadProfileOverview();
-        }
-        if (cfg.content.includes('homepage.html')) {
-            await initializeHomepageFilters();
-        }
+
+        if (cfg.content.includes("map.html")) await initializeMap?.();
+        if (cfg.content.includes("profile.html")) await loadProfileOverview?.();
+        if (cfg.content.includes("homepage.html")) await initializeHomepageFilters?.();
+
         main.scrollTop = 0;
     }
 });
