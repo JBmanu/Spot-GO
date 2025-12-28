@@ -1,23 +1,25 @@
+import { PATHS } from "../paths.js";
+
 const SECTION_CONFIG = {
     homepage: {
         title: "Spot & Go",
-        content: "./html/homepage.html",
+        content: PATHS.html.homepage,
     },
     map: {
         title: "Mappa",
-        content: "./html/map.html",
+        content: PATHS.html.map,
     },
     community: {
         title: "Community",
-        content: "./html/community.html",
+        content: PATHS.html.community,
     },
     goals: {
         title: "Missioni",
-        content: "./html/goals.html",
+        content: PATHS.html.goals,
     },
     profile: {
         title: "Il mio Profilo",
-        content: "./html/profile.html",
+        content: PATHS.html.profile,
     },
 };
 
@@ -32,7 +34,7 @@ Promise.all([
 );
 
 async function loadHeader() {
-    const response = await fetch("../html/common-pages/header.html");
+    const response = await fetch(PATHS.html.header);
     if (!response.ok) return;
 
     const html = await response.text();
@@ -50,7 +52,7 @@ async function loadHeader() {
 }
 
 async function loadToolbar() {
-    const response = await fetch("../html/common-pages/toolbar.html");
+    const response = await fetch(PATHS.html.toolbar);
     if (!response.ok) return;
 
     const html = await response.text();
