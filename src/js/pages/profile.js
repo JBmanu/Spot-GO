@@ -5,7 +5,7 @@
 let getFirstUser, getReviews, getCreatedSpots, getVisitedSpots, getSavedSpots, loadViewAllSaved;
 
 Promise.all([
-    import("./query.js").then(module => {
+    import("../query.js").then(module => {
         getFirstUser = module.getFirstUser;
         getReviews = module.getReviews;
         getCreatedSpots = module.getCreatedSpots;

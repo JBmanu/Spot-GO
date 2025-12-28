@@ -4,9 +4,9 @@
  * - sincronizza la UI con lo stato nel DB
  */
 
-import {addBookmark, removeBookmark, getFirstUser, getSavedSpots} from "./query.js";
+import {addBookmark, removeBookmark, getFirstUser, getSavedSpots} from "../query.js";
 import {showConfirmModal} from "./confirmModal.js";
-import {populateSavedSpots} from "./spotDetail.js";
+import { populateSavedSpots } from "../pages/savedSpots.js";
 
 const BOOKMARK_ICONS = {
     filled: "../assets/icons/homepage/Bookmark.svg",

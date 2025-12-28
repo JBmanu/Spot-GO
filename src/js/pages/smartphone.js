@@ -36,7 +36,7 @@ Promise.all([
     import("./homepage.js").then(module => {
         initializeHomepageFilters = module.initializeHomepageFilters;
     }),
-    import("./map.js").then(module => {
+    import("../map.js").then(module => {
         initializeMap = module.initializeMap;
     })
 ]).catch(err => console.error("Errore nel caricamento dei moduli in smartphone.js:", err));
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!isHome) titleEl.textContent = cfg.title;
 
         if (headerLeftLogo && headerLeftLogo.querySelector("#header-back-button")) {
-            headerLeftLogo.innerHTML = `<img src="../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
+            headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
         }
     }
 

@@ -189,12 +189,18 @@ export function addCarouselItem(trackElement, itemElement) {
  * Crea e ritorna un elemento DOM per la card di uno spot.
  */
 export function createSpotCardItem(spotData) {
+    const shell = document.createElement("div");
+    shell.className = "saved-spot-shell";
+    shell.setAttribute("data-category", spotData.category?.toLowerCase() || "");
+
+    const pedestal = document.createElement("div");
+    pedestal.className = "saved-spot-pedestal";
+    shell.appendChild(pedestal);
+
     const article = document.createElement("article");
     article.className = "spot-card spot-card--saved carousel-item carousel-item--spot";
     article.setAttribute("role", "listitem");
     article.setAttribute("data-spot-id", spotData.id || "");
-
-    article.setAttribute("data-category", spotData.category?.toLowerCase() || "");
 
     article.innerHTML = `
         <div class="spot-card-media">
@@ -215,5 +221,6 @@ export function createSpotCardItem(spotData) {
         </div>
     `;
 
-    return article;
+    shell.appendChild(article);
+    return shell;
 }

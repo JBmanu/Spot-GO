@@ -36,9 +36,9 @@
 
     .profile-wrapper {
         @apply space-y-6;
-        background: var(--profile-defined-gradient);
-        background-repeat: no-repeat;
-        background-size: cover;
+        /*background: var(--profile-defined-gradient);*/
+        /*background-repeat: no-repeat;*/
+        /*background-size: cover;*/
         position: relative;
     }
 

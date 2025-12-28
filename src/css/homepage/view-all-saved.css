@@ -1,7 +1,10 @@
 @layer components {
 
     .view-all-saved-container {
-        @apply w-full overflow-hidden bg-main_paper;
+        @apply w-full overflow-hidden;
+        background: linear-gradient(120deg, rgba(247,248,249,0.95) 0%, rgba(230,236,245,0.93) 100%);
+        /* oppure usa la variabile se definita: background: var(--profile-wash-1); */
+        /* effetto glass: backdrop-filter: blur(24px) saturate(120%); */
     }
 
     .view-all-saved-track {
@@ -12,10 +15,12 @@
 
     .view-all-saved-card {
         @apply flex gap-0.5 rounded-2xl overflow-hidden shrink-0 w-full relative;
-        background: var(--color-main_paper);
-        border: 1px solid rgba(0,0,0,0.06);
-        border-bottom: 4px solid var(--color-primary_color);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+        background: rgba(255,255,255,0.68);
+        border: 1.5px solid var(--hp-border-color);
+        border-bottom: 4px solid rgba(var(--hp-cat-nature),0.12);
+        box-shadow: 0 4px 24px 0 rgba(15,23,42,0.10), 0 1.5px 3px 0 rgba(15,23,42,0.04), inset 0 1px 0 rgba(255,255,255,0.18);
+        backdrop-filter: blur(18px) saturate(120%);
+        -webkit-backdrop-filter: blur(18px) saturate(120%);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         padding: 0;
         position: relative;
@@ -25,23 +30,23 @@
     }
 
     .view-all-saved-card[data-category="food"] {
-        border-bottom-color: #e36414;
-        background: linear-gradient(to bottom, rgba(227,100,20,0.08) 0%, transparent 100%), var(--color-main_paper);
+        border-bottom-color: rgba(var(--hp-cat-food),1);
+        background: linear-gradient(135deg, rgba(255,255,255,0.68) 0%, rgba(var(--hp-cat-food),0.13) 100%);
     }
 
     .view-all-saved-card[data-category="culture"] {
-        border-bottom-color: #c9a26a;
-        background: linear-gradient(to bottom, rgba(201,162,106,0.08) 0%, transparent 100%), var(--color-main_paper);
+        border-bottom-color: rgba(var(--hp-cat-culture),1);
+        background: linear-gradient(135deg, rgba(255,255,255,0.68) 0%, rgba(var(--hp-cat-culture),0.13) 100%);
     }
 
     .view-all-saved-card[data-category="nature"] {
-        border-bottom-color: #1c7c54;
-        background: linear-gradient(to bottom, rgba(28,124,84,0.08) 0%, transparent 100%), var(--color-main_paper);
+        border-bottom-color: rgba(var(--hp-cat-nature),1);
+        background: linear-gradient(135deg, rgba(255,255,255,0.68) 0%, rgba(var(--hp-cat-nature),0.13) 100%);
     }
 
     .view-all-saved-card[data-category="mystery"] {
-        border-bottom-color: #5b2b82;
-        background: linear-gradient(to bottom, rgba(91,43,130,0.08) 0%, transparent 100%), var(--color-main_paper);
+        border-bottom-color: rgba(var(--hp-cat-mystery),1);
+        background: linear-gradient(135deg, rgba(255,255,255,0.68) 0%, rgba(var(--hp-cat-mystery),0.13) 100%);
     }
 
     .view-all-saved-image {
@@ -60,7 +65,7 @@
 
     .view-all-saved-title {
         @apply text-base font-semibold text-left;
-        color: var(--color-text_color);
+        color: var(--hp-text-color);
         line-height: 1.2;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -73,11 +78,12 @@
         letter-spacing: 0.05em;
         padding: 2px 0;
         margin-top: 4px;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.18);
     }
 
     .view-all-saved-meta {
         @apply flex items-center gap-1 text-xs;
-        color: var(--color-text_color);
+        color: var(--hp-text-color);
         opacity: 0.75;
         margin: 0;
         padding: 2px 0;
@@ -99,13 +105,13 @@
 
     .view-all-saved-distance {
         @apply text-xs font-medium;
-        color: var(--color-text_color);
+        color: var(--hp-text-color);
         font-family: 'Montserrat', sans-serif;
     }
 
     .view-all-saved-category {
         @apply text-xs font-medium;
-        color: var(--color-text_color);
+        color: var(--hp-text-color);
         font-family: 'Montserrat', sans-serif;
     }
 
@@ -116,8 +122,8 @@
 
     .view-all-saved-bookmark {
         @apply w-12 h-12 ml-5 rounded-lg grid place-items-center;
-        background: rgba(255,255,255,0.09);
-        backdrop-filter: blur(12px);
+        background: rgba(255,255,255,0.13);
+        backdrop-filter: blur(12px) saturate(120%);
         border: 0.5px solid rgba(255,255,255,0.4);
         box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         transition: all 0.2s ease;
@@ -142,46 +148,48 @@
 
     .view-all-saved-badge {
         @apply inline-flex items-center gap-1.5 px-4 py-2 mr-2 rounded-full text-sm font-black;
-        background: linear-gradient(135deg, rgba(28,124,84,0.12), rgba(28,124,84,0.08));
-        border: 1.5px solid rgba(28,124,84,0.35);
+        background: linear-gradient(135deg, rgba(var(--hp-cat-nature),0.12), rgba(var(--hp-cat-nature),0.08));
+        border: 1.5px solid rgba(var(--hp-cat-nature),0.35);
         transition: all 0.2s ease;
         text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        backdrop-filter: blur(8px) saturate(120%);
+        -webkit-backdrop-filter: blur(8px) saturate(120%);
     }
 
     .view-all-saved-card[data-category="food"] .view-all-saved-badge {
-        background: linear-gradient(135deg, rgba(227,100,20,0.12), rgba(227,100,20,0.08));
-        border-color: rgba(227,100,20,0.35);
+        background: linear-gradient(135deg, rgba(var(--hp-cat-food),0.12), rgba(var(--hp-cat-food),0.08));
+        border-color: rgba(var(--hp-cat-food),0.35);
     }
 
     .view-all-saved-card[data-category="food"] .view-all-saved-rating {
-        color: #b8470f;
+        color: var(--hp-cat-food-dark);
     }
 
     .view-all-saved-card[data-category="culture"] .view-all-saved-badge {
-        background: linear-gradient(135deg, rgba(201,162,106,0.12), rgba(201,162,106,0.08));
-        border-color: rgba(201,162,106,0.35);
+        background: linear-gradient(135deg, rgba(var(--hp-cat-culture),0.12), rgba(var(--hp-cat-culture),0.08));
+        border-color: rgba(var(--hp-cat-culture),0.35);
     }
 
     .view-all-saved-card[data-category="culture"] .view-all-saved-rating {
-        color: #8b6a3d;
+        color: var(--hp-cat-culture-dark);
     }
 
     .view-all-saved-card[data-category="nature"] .view-all-saved-badge {
-        background: linear-gradient(135deg, rgba(28,124,84,0.12), rgba(28,124,84,0.08));
-        border-color: rgba(28,124,84,0.35);
+        background: linear-gradient(135deg, rgba(var(--hp-cat-nature),0.12), rgba(var(--hp-cat-nature),0.08));
+        border-color: rgba(var(--hp-cat-nature),0.35);
     }
 
     .view-all-saved-card[data-category="nature"] .view-all-saved-rating {
-        color: #0d5f39;
+        color: var(--hp-cat-nature-dark);
     }
 
     .view-all-saved-card[data-category="mystery"] .view-all-saved-badge {
-        background: linear-gradient(135deg, rgba(91,43,130,0.12), rgba(91,43,130,0.08));
-        border-color: rgba(91,43,130,0.35);
+        background: linear-gradient(135deg, rgba(var(--hp-cat-mystery),0.12), rgba(var(--hp-cat-mystery),0.08));
+        border-color: rgba(var(--hp-cat-mystery),0.35);
     }
 
     .view-all-saved-card[data-category="mystery"] .view-all-saved-rating {
-        color: #3d1b5a;
+        color: var(--hp-cat-mystery-dark);
     }
 
     .view-all-saved-rating {
@@ -200,7 +208,7 @@
 
     .keyboard-overlay {
         @apply fixed left-0 right-0 transition-transform duration-300 ease-out;
-        background: rgba(0, 0, 0, 0.1);
+        background: rgba(0, 0, 0, 0.06);
         backdrop-filter: blur(2px);
         top: 70px;
         bottom: 0;
@@ -216,7 +224,7 @@
     }
     #view-all-saved-keyboard {
         @apply fixed bottom-0 left-0 right-0 transition-transform duration-300 ease-out;
-        background: #d1d5db;
+        background: rgba(209,213,219,0.95);
         z-index: 1000;
         display: none;
         pointer-events: none;
@@ -297,4 +305,3 @@
     }
 
 }
-
