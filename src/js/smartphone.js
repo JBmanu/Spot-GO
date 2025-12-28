@@ -44,6 +44,7 @@ const SECTION_CONFIG = {
 };
 
 import { loadProfileOverview } from "./profile.js";
+import { loadCommunityData } from "./community.js";
 import { initializeHomepageFilters } from "./homepage.js";
 import { initializeMap } from "./map.js";
 
@@ -158,6 +159,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (cfg.content.includes('profile.html')) {
             await loadProfileOverview();
+        }
+
+        if (cfg.content.includes('community.html')) {
+            await loadCommunityData();
         }
 
         if (cfg.content.includes('homepage.html')) {

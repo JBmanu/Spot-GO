@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, limit } from "firebase/firestore";
+import { collection, getDocs, query, where, limit, getDoc} from "firebase/firestore";
 import { db } from "./firebase.js";
 import firebase from "firebase/compat/app";
 
@@ -95,6 +95,34 @@ export async function getSpots() {
     );
 }
 
+
+export async function getFriends(userId) {
+    if (userId == null) {
+        return "Errore: id utente mancante!"
+    }
+    return getItems(
+        "Amico",
+        null,
+        (id, data) => {
+            if (id == userId) {
+                const friendIds = data.friends || [];
+                var friends = [];
+                friendIds.map(friendRef => 
+                    getDoc(friendRef).then(doc => {
+                        var friendData = {
+                            id: doc.id,
+                            email: doc.data().email || "",
+                            username: doc.data().username || "Utente"
+                            };
+                        friends.push(friendData);
+                    }
+                ))
+                return friends;
+            }
+        }
+    );
+}
+
 /**
  * Generic methods to get documents from collection.
  * @param {*} collectionName name of collection
@@ -102,7 +130,7 @@ export async function getSpots() {
  * @param {*} itemParser converts from firebase snapshot (id, data) to javascript object
  * @returns ritorna un array di oggetti definiti dal itemParser
  */
-async function getItems(collectionName, filter, itemParser) {
+export async function getItems(collectionName, filter, itemParser) {
     try {
         const items = [];
         const colRef = collection(db, collectionName);
