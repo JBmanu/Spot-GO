@@ -1,14 +1,19 @@
 @layer components {
 
-    .phone-container { @apply min-h-screen flex items-center justify-center bg-background_phone; }
+    .phone-container {
+        @apply min-h-screen flex items-center justify-center bg-background_phone;
+    }
 
-    .phone { @apply relative w-[440px] h-[956px] p-2 rounded-[40px] bg-[#1f2933]; }
+    .phone {
+        @apply relative w-[440px] h-[956px] p-2 rounded-[40px] bg-[#1f2933];
+    }
 
-    .phone-border { @apply pointer-events-none absolute inset-0 rounded-[40px] border-border_color; }
+    .phone-border {
+        @apply pointer-events-none absolute inset-0 rounded-[40px] border-border_color;
+    }
 
     .phone-screen {
         @apply relative flex h-full flex-col overflow-hidden rounded-4xl text-text_color;
-        background: transparent;
         isolation: isolate;
     }
 
@@ -18,10 +23,8 @@
         inset: 0;
         z-index: 0;
         pointer-events: none;
-        background-image: url("../../assets/images/wallpaper.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+
+        background: url("../../assets/images/wallpaper.jpg") center / cover no-repeat;
         filter: blur(4px) saturate(105%);
         transform: scale(1.02);
     }
@@ -32,200 +35,132 @@
         inset: 0;
         z-index: 1;
         pointer-events: none;
+
         background: rgba(255, 255, 255, 0.24);
         backdrop-filter: blur(6px) saturate(112%) contrast(102%);
-        -webkit-backdrop-filter: blur(6px) saturate(112%) contrast(102%);
         border: 1px solid rgba(255, 255, 255, 0.40);
         border-radius: 25px;
+
         box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
     }
 
-    .phone-screen > * { @apply relative z-2; }
+    .phone-screen > * {
+        @apply relative z-[2];
+    }
 
     .dynamic-island {
-        @apply absolute left-1/2 -translate-x-1/2 top-3 h-[35px] w-[120px] rounded-[18px] z-10;
-        background-color: #020617;
+        @apply absolute left-1/2 -translate-x-1/2 top-3
+        h-[35px] w-[120px] rounded-[18px] z-10;
+        background: #020617;
         box-shadow: 0 0 0 2px #020617;
     }
 
     .spot-main {
-        @apply flex-1 overflow-y-auto px-0 py-0;
-        will-change: transform;
+        @apply flex-1 overflow-y-auto;
         contain: layout style paint;
     }
 
     .app-header {
-        @apply relative flex items-center h-[100px] pt-12 px-5 pb-3 text-text_color;
-        background: rgba(255, 255, 255, 0.1); /* Riduzione ulteriore per massima trasparenza */
-        /* backdrop-filter rimosso per evitare sfocatura eccessiva */
+        @apply relative flex items-center h-[100px]
+        pt-12 px-5 pb-3 text-text_color;
+        background: rgba(255, 255, 255, 0.10);
         box-shadow:
                 0 18px 44px rgba(0,0,0,0.12),
                 0 1px 0 rgba(255,255,255,0.70) inset,
                 0 0 0 1px rgba(255,255,255,0.14) inset;
     }
 
-    .app-header > * { position: relative; z-index: 2; }
+    .app-header > * {
+        @apply relative z-[2];
+    }
 
-    .app-header-left { @apply flex items-center gap-2; }
+    .app-header-left {
+        @apply flex items-center gap-2;
+    }
 
-    .header-left-logo { @apply flex items-center justify-center; }
+    .header-left-logo {
+        @apply flex items-center justify-center;
+    }
 
     .header-left-title {
-        @apply text-xs font-semibold tracking-[0.18em] uppercase;
+        @apply text-xs font-semibold uppercase tracking-[0.18em];
         color: rgba(17, 24, 39, 0.80);
         text-shadow: 0 1px 0 rgba(255,255,255,0.35);
     }
 
     #notification-button,
     #header-bookmark-button {
-        @apply relative grid place-items-center w-11 h-11 rounded-2xl shrink-0;
+        @apply relative grid place-items-center
+        w-11 h-11 rounded-2xl shrink-0
+        transition duration-200 ease-out;
         background: rgba(255,255,255,0.22);
         border: 1px solid rgba(255,255,255,0.32);
 
-        backdrop-filter:
-                blur(calc(var(--glass-blur-strong) * 0.55))
-                saturate(calc(var(--glass-sat-light) * 1.06))
-                contrast(var(--glass-contrast));
-        -webkit-backdrop-filter:
-                blur(calc(var(--glass-blur-strong) * 0.55))
-                saturate(calc(var(--glass-sat-light) * 1.06))
-                contrast(var(--glass-contrast));
-
+        backdrop-filter: blur(10px) saturate(110%);
         box-shadow:
                 0 14px 26px rgba(0,0,0,0.12),
                 0 1px 0 rgba(255,255,255,0.55) inset;
-
-        -webkit-tap-highlight-color: transparent;
-        transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
     }
 
     #notification-button:active,
     #header-bookmark-button:active {
-        transform: scale(0.97);
-        box-shadow:
-                0 10px 18px rgba(0,0,0,0.10),
-                0 1px 0 rgba(255,255,255,0.55) inset;
+        @apply scale-[0.97];
     }
 
     .icon-notification,
     .bookmark-icon {
-        width: 22px;
-        height: 22px;
+        @apply w-[22px] h-[22px];
         filter:
                 drop-shadow(0 16px 18px rgba(0,0,0,0.16))
                 drop-shadow(0 2px 0 rgba(255,255,255,0.75));
     }
 
-    #notification-button { @apply ml-auto; }
+    #notification-button {
+        @apply ml-auto;
+    }
 
     .app-toolbar {
-        @apply relative flex items-center justify-between px-3 pt-2 pb-2 h-16 rounded-t-[30px] text-text_color;
-        overflow: hidden;
+        @apply relative flex items-center justify-between
+        px-3 py-2 h-16
+        rounded-t-[30px] text-text_color
+        transition duration-200 ease-out;
         isolation: isolate;
-
-        background: radial-gradient(140% 120% at 50% -10%,
-        rgba(255, 255, 255, 0.66) 0%,
-        rgba(255, 248, 235, 0.44) 42%,
-        rgba(255, 241, 220, 0.36) 100%);
-
-        border-top: 1px solid rgba(255,255,255,0.60);
-
-        backdrop-filter:
-                blur(calc(var(--glass-blur-strong) * 0.95))
-                saturate(calc(var(--glass-sat-light) * 1.12))
-                contrast(calc(var(--glass-contrast) * 1.03));
-        -webkit-backdrop-filter:
-                blur(calc(var(--glass-blur-strong) * 0.95))
-                saturate(calc(var(--glass-sat-light) * 1.12))
-                contrast(calc(var(--glass-contrast) * 1.03));
-
+        background: rgba(255, 255, 255, 0.01);
         box-shadow:
-                0 -26px 60px rgba(0,0,0,0.18),
-                0 -10px 20px rgba(0,0,0,0.10),
-                0 1px 0 rgba(255,255,255,0.72) inset,
-                0 0 0 1px rgba(255,255,255,0.16) inset;
-
-        transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+                0 18px 44px rgba(0,0,0,0.12),
+                0 1px 0 rgba(255,255,255,0.70) inset,
+                0 0 0 1px rgba(255,255,255,0.14) inset;
     }
 
-    .app-toolbar::before {
-        content: "";
-        position: absolute;
-        inset: -2px;
-        pointer-events: none;
-        z-index: 0;
-        background-image: var(--profile-overlay-wash);
-        mix-blend-mode: soft-light;
-        opacity: 0.90;
-        filter: blur(0.25px);
+    .app-toolbar > * {
+        @apply relative z-[2];
     }
-
-    .app-toolbar::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 1;
-
-        background-image:
-                radial-gradient(120% 70% at 50% 0%,
-                rgba(255,255,255,0.76) 0%,
-                rgba(255,255,255,0.22) 45%,
-                rgba(255,255,255,0.00) 70%),
-                linear-gradient(90deg,
-                rgba(255,255,255,0.00) 0%,
-                rgba(255,255,255,0.18) 25%,
-                rgba(255,255,255,0.00) 60%),
-                var(--frost-noise);
-
-        background-repeat: no-repeat, no-repeat, repeat;
-        background-size: 100% 62%, 240% 100%, auto;
-        background-position: 50% 0, 180% 0, 0 0;
-
-        mix-blend-mode: overlay;
-        opacity: 0.24;
-        animation: toolbar-sheen 2600ms ease-in-out infinite;
-    }
-
-    @keyframes toolbar-sheen {
-        0%   { background-position: 50% 0, 190% 0, 0 0; }
-        50%  { background-position: 50% 0, 8%   0, 0 0; }
-        100% { background-position: 50% 0, 190% 0, 0 0; }
-    }
-
-    .app-toolbar > * { position: relative; z-index: 2; }
 
     .toolbar-button {
-        @apply relative flex flex-1 items-center justify-center h-12 rounded-[20px];
-        @apply transition duration-200 ease-out select-none;
-        -webkit-tap-highlight-color: transparent;
+        @apply flex flex-1 items-center justify-center
+        h-12 rounded-[20px]
+        transition duration-200 ease-out;
     }
 
-    .toolbar-button:hover { transform: none; box-shadow: none; }
-    .toolbar-button:active { transform: translateY(0) scale(0.985); }
+    .toolbar-button:active {
+        @apply scale-[0.985];
+    }
 
     .icon-wrap {
-        @apply relative flex items-center justify-center;
-        width: 44px;
-        height: 44px;
-        border-radius: 999px;
+        @apply relative flex items-center justify-center
+        w-[44px] h-[44px] rounded-full;
     }
 
     .icon-toolbar {
-        width: 28px;
-        height: 28px;
-        display: block;
-        margin: 0;
-        opacity: 0.96;
-        transform: translateZ(0) scale(1);
-        transition: transform 180ms ease, filter 180ms ease, opacity 180ms ease;
+        @apply block w-[28px] h-[28px] opacity-[0.96]
+        transition duration-200 ease-out;
         filter:
                 drop-shadow(0 16px 18px rgba(0,0,0,0.18))
                 drop-shadow(0 2px 0 rgba(255,255,255,0.78));
     }
 
     .toolbar-button:active .icon-toolbar {
-        transform: translateZ(0) scale(1.10);
+        transform: scale(1.10);
         opacity: 1;
     }
 
@@ -233,33 +168,28 @@
         content: "";
         position: absolute;
         inset: -6px;
+        z-index: -1;
         border-radius: 15px 15px 0 0;
 
-        background: radial-gradient(140% 120% at 50% 0%,
-        color-mix(in srgb, var(--color-primary_color) 18%, rgba(255,255,255,0.72)) 0%,
-        rgba(255,255,255,0.40) 58%,
-        rgba(255,255,255,0.18) 100%);
+        background: radial-gradient(
+                140% 120% at 50% 0%,
+                color-mix(in srgb, var(--color-primary_color) 18%, rgba(255,255,255,0.72)) 0%,
+                rgba(255,255,255,0.40) 58%,
+                rgba(255,255,255,0.18) 100%
+        );
 
         border: 1px solid rgba(255,255,255,0.55);
-
-        box-shadow:
-                0 18px 34px rgba(0,0,0,0.12),
-                0 1px 0 rgba(255,255,255,0.80) inset,
-                0 0 26px color-mix(in srgb, var(--color-primary_color) 22%, transparent);
-
         backdrop-filter: blur(10px) saturate(145%) contrast(152%);
-        -webkit-backdrop-filter: blur(10px) saturate(145%) contrast(152%);
-        z-index: -1;
     }
 
     .toolbar-button[aria-current="page"] .icon-toolbar {
-        transform: translateZ(0) scale(1.22);
+        transform: scale(1.45);
         opacity: 1;
-        filter:
-                drop-shadow(0 20px 20px rgba(0,0,0,0.20))
-                drop-shadow(0 2px 0 rgba(255,255,255,0.85));
     }
 
 }
 
-html, body { @apply h-full; }
+html,
+body {
+    @apply h-full;
+}
