@@ -1,4 +1,3 @@
-<!-- Carosello Verticale (scorri su e giù) -->
 <section class="home-section px-3">
     <header class="flex flex-row items-center justify-between">
         <h2 class="home-section-title">Scelti dalla community</h2>
@@ -13,29 +12,52 @@
         </button>
     </header>
 
-    <!-- Toprated carousel container -->
     <div class="toprated-carousel" aria-label="Carosello toprated (scorri su e giù)">
         <div
                 id="home-toprated-carousel-container"
                 class="toprated-carousel-track vertical-carousel-track"
                 role="list"
-                aria-label="Lista scelti dalla community">
-            <!-- Card 1 - Placeholder -->
-            <article class="toprated-carousel-item" role="listitem" data-spot-id="" data-saved="false" data-category="food">
+                aria-label="Lista scelti dalla community"
+        >
+            <!-- Template -->
+            <article
+                    class="toprated-carousel-item"
+                    role="listitem"
+                    data-template="toprated-item"
+                    data-spot-id=""
+                    data-saved="false"
+                    data-category="food"
+                    hidden
+            >
                 <div class="toprated-item-image">
-                    <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
+                    <img
+                            src=""
+                            alt="Foto spot"
+                            class="spot-card-image"
+                            data-field="image"
+                    />
+
                     <div class="toprated-item-distance">
-                        <img src="../../assets/icons/homepage/Place Marker.svg" alt="distanza" class="icon-mini"/>
-                        <span class="toprated-distance" data-field="distance">0 m</span>
+                        <img
+                                src="../../assets/icons/homepage/Place%20Marker.svg"
+                                alt="distanza"
+                                class="icon-mini"
+                        />
+                        <span class="toprated-distance" data-field="distance"></span>
                     </div>
                 </div>
 
                 <div class="toprated-item-info">
-                    <h3 class="toprated-item-title" data-field="title">Nome spot</h3>
+                    <h3 class="toprated-item-title" data-field="title"></h3>
+
                     <div class="toprated-item-rating-container">
                         <p class="toprated-item-rating">
-                            <span class="spot-rating-value" data-field="rating">4.9</span>
-                            <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                            <span class="spot-rating-value" data-field="rating"></span>
+                            <img
+                                    src="../../assets/icons/homepage/Star.svg"
+                                    alt="stella"
+                                    class="rating-star"
+                            />
                         </p>
                     </div>
                 </div>
@@ -44,71 +66,17 @@
                         type="button"
                         class="toprated-item-bookmark"
                         aria-label="Aggiungi ai salvati"
-                        data-bookmark-button>
-                    <img src="../../assets/icons/homepage/BookmarkEmpty.svg" class="bookmark-icon" alt="Bookmark">
+                        data-bookmark-button
+                        data-bookmark-type="toprated"
+                >
+                    <img
+                            src="../../assets/icons/homepage/BookmarkEmpty.svg"
+                            class="bookmark-icon"
+                            alt="Bookmark"
+                    />
                 </button>
             </article>
-
-            <!-- Card 2 - Placeholder -->
-            <article class="toprated-carousel-item" role="listitem" data-spot-id="" data-saved="false" data-category="culture">
-                <div class="toprated-item-image">
-                    <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
-                    <div class="toprated-item-distance">
-                        <img src="../../assets/icons/homepage/Place Marker.svg" alt="distanza" class="icon-mini"/>
-                        <span class="toprated-distance" data-field="distance">0 m</span>
-                    </div>
-                </div>
-
-                <div class="toprated-item-info">
-                    <h3 class="toprated-item-title" data-field="title">Nome spot</h3>
-                    <div class="toprated-item-rating-container">
-                        <p class="toprated-item-rating">
-                            <span class="spot-rating-value" data-field="rating">4.8</span>
-                            <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
-                        </p>
-                    </div>
-                </div>
-
-                <button
-                        type="button"
-                        class="toprated-item-bookmark"
-                        aria-label="Aggiungi ai salvati"
-                        data-bookmark-button>
-                    <img src="../../assets/icons/homepage/BookmarkEmpty.svg" class="bookmark-icon" alt="Bookmark">
-                </button>
-            </article>
-
-            <!-- Card 3 - Placeholder -->
-            <article class="toprated-carousel-item" role="listitem" data-spot-id="" data-saved="false" data-category="nature">
-                <div class="toprated-item-image">
-                    <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
-                    <div class="toprated-item-distance">
-                        <img src="../../assets/icons/homepage/Place Marker.svg" alt="distanza" class="icon-mini"/>
-                        <span class="toprated-distance" data-field="distance">0 m</span>
-                    </div>
-                </div>
-
-                <div class="toprated-item-info">
-                    <h3 class="toprated-item-title" data-field="title">Nome spot</h3>
-                    <div class="toprated-item-rating-container">
-                        <p class="toprated-item-rating">
-                            <span class="spot-rating-value" data-field="rating">4.7</span>
-                            <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
-                        </p>
-                    </div>
-                </div>
-
-                <button
-                        type="button"
-                        class="toprated-item-bookmark"
-                        aria-label="Aggiungi ai salvati"
-                        data-bookmark-button>
-                    <img src="../../assets/icons/homepage/BookmarkEmpty.svg" class="bookmark-icon" alt="Bookmark">
-                </button>
-            </article>
+            <!-- altre cards -->
         </div>
     </div>
 </section>
-
-
-
