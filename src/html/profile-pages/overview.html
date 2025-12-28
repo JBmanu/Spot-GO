@@ -1,115 +1,101 @@
-<div class="flex gap-4">
-    <!-- Colonna con avatar e tag -->
-    <div class="flex flex-col justify-items-center gap-1.5">
-        <!-- Avatar -->
-        <div
-                id="profile-avatar"
-                class="grid place-items-center w-24 h-24 rounded-full border border-border_color text-2xl font-bold"
-        >
-            P
+<div class="profile-main-card">
+
+    <h2 id="profile-name" class="profile-name">
+        Paperino
+    </h2>
+
+    <div class="profile-body-section">
+        <!-- Colonna sinistra: Avatar e Username -->
+        <div class="profile-avatar-column">
+            <div id="profile-avatar" class="profile-avatar">
+                P
+            </div>
+            <p id="profile-username" class="profile-username">
+                @paperino1
+            </p>
         </div>
 
-        <!-- Username -->
-        <p id="profile-username" class="text-sm text-text_color text-center">
-            @paperino1
-        </p>
-    </div>
-
-    <!-- Colonna destra: Nome + email + password -->
-    <div class="flex-1 flex flex-col space-y-3">
-        <!-- Nome -->
-        <h2 id="profile-name" class="text-base font-semibold">
-            Paperino
-        </h2>
-
-        <div class="flex flex-col">
-
+        <!-- Colonna destra: Dati Utente -->
+        <div class="profile-data-section">
             <!-- Email -->
-            <div class="data-container">
-                <img src="../../assets/icons/profile/Email.svg" alt="Email icon" class="profile-badge-icon"/>
-                <div class="flex flex-col flex-1 min-w-0">
-                    <span class="data-label">Email</span>
-                    <span id="profile-email" class="data-text truncate"></span>
+            <div class="profile-data-item" tabindex="0">
+                <img src="../../assets/icons/profile/Email.svg" alt="Email icon" class="profile-data-icon"/>
+                <div class="profile-data-content">
+                    <span class="profile-data-label">Email</span>
+                    <span id="profile-email" class="profile-data-value"></span>
                 </div>
             </div>
 
             <!-- Password -->
-            <div class="data-container">
-                <img src="../../assets/icons/profile/Lock.svg" alt="Password icon" class="profile-badge-icon"/>
-                <div class="flex flex-col flex-1 min-w-0">
-                    <span class="data-label">Password</span>
-                    <span id="profile-password" class="data-text truncate">****</span>
+            <div class="profile-data-item" tabindex="0">
+                <img src="../../assets/icons/profile/Lock.svg" alt="Password icon" class="profile-data-icon"/>
+                <div class="profile-data-content">
+                    <span class="profile-data-label">Password</span>
+                    <span id="profile-password" class="profile-data-value">****</span>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <!-- Riga con recensioni scritte e livello utente -->
+    <div class="profile-stats-row">
+        <!-- Recensioni scritte -->
+        <div class="profile-reward-card">
+            <img
+                    src="../../assets/icons/profile/Thumbs%20Up%20Down.svg"
+                    alt="Written reviews icon"
+                    class="profile-overview-badge-icon"/>
+            <div id="written-reviews" class="profile-overview-number-badge">0</div>
+            <div class="profile-overview-text-badge">Recensioni scritte</div>
         </div>
 
+        <!-- Livello utente -->
+        <div class="profile-reward-card-large">
+            <div class="profile-overview-level-badge">
+                Livello
+                <span id="explorer-level" class="profile-overview-level-number">1</span>
+            </div>
 
+            <div class="profile-overview-progress-bar-container">
+                <div id="profile-progress-bar" class="profile-overview-progress-bar"></div>
+            </div>
 
+            <p id="progress-bar-label" class="profile-overview-text-large-badge">
+                100% al prossimo livello!
+            </p>
+        </div>
     </div>
-</div>
 
-<!-- Riga con recensioni scritte e livello utente -->
-<div class="flex gap-4 mt-4">
-
-    <!-- Recensioni scritte -->
-    <div class="profile-reward-card">
-        <img
-                src="../../assets/icons/profile/Thumbs%20Up%20Down.svg"
-                alt="Written reviews icon"
-                class="icon profile-badge-icon"/>
-        <div id="written-reviews" class="profile-number-badge">0</div>
-        <div class="profile-text-badge">Recensioni scritte</div>
-    </div>
-
-    <!-- Livello utente -->
-    <div class="profile-reward-card-large">
-        <div class="profile-level-large-badge">
-            Livello
-            <span id="explorer-level">1</span>
+    <!-- Riga con spot: visitati, creati e salvati -->
+    <div class="profile-stats-row">
+        <!-- Posti visitati -->
+        <div class="profile-reward-card">
+            <img
+                    src="../../assets/icons/profile/Souvenirs.svg"
+                    alt="Visited spots icon"
+                    class="profile-overview-badge-icon"/>
+            <div id="visited-spots" class="profile-overview-number-badge">0</div>
+            <div class="profile-overview-text-badge">Spot visitati</div>
         </div>
 
-        <div class="mt-5 h-3 rounded-full bg-black/10 overflow-hidden">
-            <div
-                    id="profile-progress-bar"
-                    class="h-full rounded-full bg-primary w-[0%] transition-[width] duration-300"></div>
+        <!-- Spot creati -->
+        <div class="profile-reward-card">
+            <img
+                    src="../../assets/icons/profile/Place%20Marker.svg"
+                    alt="Created spots icon"
+                    class="profile-overview-badge-icon"/>
+            <div id="created-spots" class="profile-overview-number-badge">0</div>
+            <div class="profile-overview-text-badge">Spot creati</div>
         </div>
 
-        <p id="progress-bar-label" class="profile-text-large-badge mt-2">
-            100% al prossimo livello!
-        </p>
-    </div>
-</div>
-
-<!-- Riga con spot: visitati, creati e salvati -->
-<div class="flex gap-3 mt-3">
-    <!-- Posti visitati -->
-    <div class="profile-reward-card">
-        <img
-                src="../../assets/icons/profile/Souvenirs.svg"
-                alt="Visited spots icon"
-                class="icon profile-badge-icon"/>
-        <div id="visited-spots" class="profile-number-badge">0</div>
-        <div class="profile-text-badge">Spot visitati</div>
-    </div>
-
-    <!-- Spot creati -->
-    <div class="profile-reward-card">
-        <img
-                src="../../assets/icons/profile/Place%20Marker.svg"
-                alt="Created spots icon"
-                class="icon profile-badge-icon"/>
-        <div id="created-spots" class="profile-number-badge">0</div>
-        <div class="profile-text-badge">Spot creati</div>
-    </div>
-
-    <!-- Spot salvati -->
-    <div class="profile-reward-card">
-        <img
-                src="../../assets/icons/profile/Bookmark.svg"
-                alt="Saved spots icon"
-                class="icon profile-badge-icon"/>
-        <div id="saved-spots" class="profile-number-badge">0</div>
-        <div class="profile-text-badge">Spot salvati</div>
+        <!-- Spot salvati -->
+        <div class="profile-reward-card" id="profile-saved-spots-button">
+            <img
+                    src="../../assets/icons/profile/Bookmark.svg"
+                    alt="Saved spots icon"
+                    class="profile-overview-badge-icon"/>
+            <div id="saved-spots" class="profile-overview-number-badge">0</div>
+            <div class="profile-overview-text-badge">Spot salvati</div>
+        </div>
     </div>
 </div>

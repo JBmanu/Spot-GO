@@ -3,11 +3,17 @@
 
 import dotenv  from 'dotenv';
 import path from 'path';
+import { readFileSync } from 'fs';
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore"; 
 import { getAuth } from "firebase/auth";
 
 dotenv.config({ path: path.resolve('src/.env') });
+
+// Carica da file JSON
+const luoghi = JSON.parse(readFileSync(path.resolve('src/db/json/luoghi.json'), 'utf-8'));
+const utenti = JSON.parse(readFileSync(path.resolve('src/db/json/utenti.json'), 'utf-8'));
+const relazioniUtentiLuoghi = JSON.parse(readFileSync(path.resolve('src/db/json/relazioni_utenti_luoghi.json'), 'utf-8'));
 
 const firebaseConfig = {
     apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -18,14 +24,14 @@ const firebaseConfig = {
     appId: process.env.VITE_FIREBASE_APP_ID
 };
 
-console.log("Variabili env caricate correttamente?", {
-    apiKey: process.env.VITE_FIREBASE_API_KEY ? "Si" : "No",
-    authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN ? "Si" : "No",
-    projectId: process.env.VITE_FIREBASE_PROJECT_ID ? "Si" : "No",
-    storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET ? "Si" : "No",
-    messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID ? "Si" : "No",
-    appId: process.env.VITE_FIREBASE_APP_ID ? "Si" : "No",
-});
+// console.log("Variabili env caricate correttamente?", {
+//     apiKey: process.env.VITE_FIREBASE_API_KEY ? "Si" : "No",
+//     authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN ? "Si" : "No",
+//     projectId: process.env.VITE_FIREBASE_PROJECT_ID ? "Si" : "No",
+//     storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET ? "Si" : "No",
+//     messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID ? "Si" : "No",
+//     appId: process.env.VITE_FIREBASE_APP_ID ? "Si" : "No",
+// });
 
 // Inizializza Firebase
 let db;
@@ -75,7 +81,7 @@ async function resetAndPopulateDatabase() {
   
   // Lista delle collezioni da resettare
   const collections = [
-    "Utente", "Categoria", "Luogo", "Cartolina", "Missione", "Notifica",
+    "Categoria", "Luogo", "Cartolina", "Missione", "Notifica",
     "Amico", "LuogoVisitato", "LuogoSalvato", "LuogoCreato",
     "Recensione", "CartolinaInviata"
   ];
@@ -89,33 +95,43 @@ async function resetAndPopulateDatabase() {
 
   // --- Creazione record ---
   
-  // Utente
-  const utenteId = await createDocumentAutoId("Utente", {
-    email: "user@example.com",
-    username: "user1",
-    password: "hashed_password",
-    livello: 1
+  // Utenti - caricati da src/db/json/utenti.json
+  let utenteId;
+  for (const utenteData of utenti) {
+    utenteId = await createDocumentAutoId("Utente", utenteData);
+  }
+
+  // Categorie
+  const categorieCulture = await createDocumentAutoId("Categoria", {
+    nome: "culture"
+  });
+  const categoriFood = await createDocumentAutoId("Categoria", {
+    nome: "food"
+  });
+  const categorieNature = await createDocumentAutoId("Categoria", {
+    nome: "nature"
+  });
+  const categorieMystery = await createDocumentAutoId("Categoria", {
+    nome: "mystery"
   });
 
-  // Categoria
-  const categoriaId = await createDocumentAutoId("Categoria", {
-    nome: "Museo"
-  });
-
-  // Luogo
-  const luogoId = await createDocumentAutoId("Luogo", {
-    nome: "Colosseo",
-    descrizione: "Famoso anfiteatro romano",
-    posizione: { coord1: 41.8902, coord2: 12.4922 },
-    idCategoria: categoriaId,
-    immagine: "url_immagine"
-  });
+  // Luoghi - caricati da src/db/json/luoghi.json
+  const luoghiMap = {}; // Map per associare nome luogo a ID
+  let luogoId;
+  for (const luogoData of luoghi) {
+    const luogo = {
+      ...luogoData,
+      idCreatore: luogoData.idCreatore === "master" ? "master" : utenteId
+    };
+    luogoId = await createDocumentAutoId("Luogo", luogo);
+    luoghiMap[luogoData.nome] = luogoId;
+  }
 
   // Cartolina
   const cartolinaId = await createDocumentAutoId("Cartolina", {
     idUtente: utenteId,
     title: "Cartolina dal Colosseo",
-    idLuogo: luogoId,
+    idLuogo: luoghiMap["Colosseo"],
     date: new Date(),
     description: "Bellissima visita!",
     immagini: ["url_img1", "url_img2"],
@@ -125,7 +141,7 @@ async function resetAndPopulateDatabase() {
   // Missione
   await createDocumentAutoId("Missione", {
     idUtente: utenteId,
-    idLuogo: luogoId,
+    idLuogo: luoghiMap["Colosseo"],
     type: "visita",
     progressione: 0,
     obiettivo: 1,
@@ -147,31 +163,65 @@ async function resetAndPopulateDatabase() {
     friends: []
   });
 
-  // LuogoVisitato
-  await createDocumentAutoId("LuogoVisitato", {
-    idUtente: utenteId,
-    idLuogo: luogoId
-  });
+  // Carica relazioni da file JSON
+  for (const relazioneData of relazioniUtentiLuoghi) {
+    const utenteRelazione = utenti.find(u => u.username === relazioneData.username);
+    if (!utenteRelazione) continue;
 
-  // LuogoSalvato
-  await createDocumentAutoId("LuogoSalvato", {
-    idUtente: utenteId,
-    idLuogo: luogoId
-  });
+    // Recupera l'ID dell'utente dal database (o usa il primo creato se è paperino)
+    let utenteRelazioneId = utenteId;
+    if (relazioneData.username !== "paperino") {
+      // Se non è paperino, cerca negli utenti creati
+      // Per ora useremo utenteId che è l'ultimo creato
+    }
 
-  // LuogoCreato
-  await createDocumentAutoId("LuogoCreato", {
-    idUtente: utenteId,
-    idLuogo: luogoId
-  });
+    // LuogoSalvato
+    for (const salvatoData of relazioneData.salvati) {
+      const idLuogoSalvato = luoghiMap[salvatoData.nome];
+      if (idLuogoSalvato) {
+        await createDocumentAutoId("LuogoSalvato", {
+          idUtente: utenteRelazioneId,
+          idLuogo: idLuogoSalvato
+        });
+      }
+    }
 
-  // Recensione
-  await createDocumentAutoId("Recensione", {
-    idUtente: utenteId,
-    idLuogo: luogoId,
-    description: "Molto interessante!",
-    valuation: 5
-  });
+    // LuogoVisitato
+    for (const visitatoData of relazioneData.visitati) {
+      const idLuogoVisitato = luoghiMap[visitatoData.nome];
+      if (idLuogoVisitato) {
+        await createDocumentAutoId("LuogoVisitato", {
+          idUtente: utenteRelazioneId,
+          idLuogo: idLuogoVisitato,
+          data: visitatoData.data
+        });
+      }
+    }
+
+    // LuogoCreato
+    for (const creatoData of relazioneData.creati) {
+      const idLuogoCreato = luoghiMap[creatoData.nome];
+      if (idLuogoCreato) {
+        await createDocumentAutoId("LuogoCreato", {
+          idUtente: utenteRelazioneId,
+          idLuogo: idLuogoCreato
+        });
+      }
+    }
+
+    // Recensione
+    for (const recensioneData of relazioneData.recensioni) {
+      const idLuogoRecensione = luoghiMap[recensioneData.nome];
+      if (idLuogoRecensione) {
+        await createDocumentAutoId("Recensione", {
+          idUtente: utenteRelazioneId,
+          idLuogo: idLuogoRecensione,
+          description: recensioneData.testo,
+          valuation: recensioneData.valutazione
+        });
+      }
+    }
+  }
 
   // CartolinaInviata
   await createDocumentAutoId("CartolinaInviata", {
