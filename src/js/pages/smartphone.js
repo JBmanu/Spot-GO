@@ -1,8 +1,3 @@
-/**
- * Gestisce il caricamento dinamico di header, toolbar e contenuti principali.
- * Implementa la navigazione tra sezioni con aggiornamento dell'header e della toolbar.
- */
-
 const SECTION_CONFIG = {
     homepage: {
         title: "Spot & Go",
@@ -42,13 +37,9 @@ Promise.all([
 ]).catch(err => console.error("Errore nel caricamento dei moduli in smartphone.js:", err));
 
 
-/**
- * Carica il markup dell'header.
- */
 async function loadHeader() {
     const response = await fetch("../html/common-pages/header.html");
     if (!response.ok) return;
-
     const html = await response.text();
     const header = document.querySelector("header.app-header");
     if (header) {
@@ -63,13 +54,9 @@ async function loadHeader() {
     }
 }
 
-/**
- * Carica il template della toolbar.
- */
 async function loadToolbar() {
     const response = await fetch("../html/common-pages/toolbar.html");
     if (!response.ok) return;
-
     const html = await response.text();
     const toolbar = document.querySelector(".app-toolbar");
     if (toolbar) {
@@ -87,57 +74,36 @@ async function loadToolbar() {
 document.addEventListener("DOMContentLoaded", async () => {
     await loadHeader();
     await loadToolbar();
-
     const main = document.getElementById("main");
     const toolbar = document.querySelector(".app-toolbar");
     const titleEl = document.getElementById("header-title");
     const logoTextEl = document.getElementById("header-logo-text");
-
     if (!main || !toolbar) return;
-
     toolbar.addEventListener("click", (e) => {
         const btn = e.target.closest("button[data-section]");
         if (!btn) return;
         navigateTo(btn.dataset.section);
     });
-
     navigateTo("homepage");
-
-    /**
-     * Naviga verso la sezione indicata aggiornando header/toolbar e caricando il contenuto.
-     */
     async function navigateTo(section) {
         const cfg = SECTION_CONFIG[section];
         if (!cfg) return;
-
         updateHeader(section, cfg);
         updateToolbar(section);
         await loadMainContent(cfg);
     }
-
-    /**
-     * Aggiorna l'header in base alla sezione attiva.
-     */
     function updateHeader(section, cfg) {
         if (!titleEl || !logoTextEl) return;
-
         const headerLeftLogo = document.querySelector(".header-left-logo");
         const isHome = section === "homepage";
-
         logoTextEl.classList.toggle("hidden", !isHome);
         logoTextEl.style.display = isHome ? "" : "none";
         titleEl.classList.toggle("hidden", isHome);
-
         if (!isHome) titleEl.textContent = cfg.title;
-
         if (headerLeftLogo && headerLeftLogo.querySelector("#header-back-button")) {
             headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
         }
     }
-
-    /**
-     * Aggiorna lo stato visuale della toolbar (classi attive) in base alla sezione attiva.
-     */
     function updateToolbar(activeSection) {
         toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
             const section = btn.dataset.section;
@@ -145,7 +111,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const icon = btn.querySelector("[data-role='icon']");
             const text = btn.querySelector("span");
             if (!cfg || !icon) return;
-
             const active = section === activeSection;
             btn.classList.toggle("active", active);
             text?.classList.toggle("font-bold", active);
@@ -153,31 +118,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             icon.classList.toggle("scale-140", active);
         });
     }
-
-    /**
-     * Carica il contenuto principale della sezione e inizializza eventuali moduli.
-     */
     async function loadMainContent(cfg) {
         const res = await fetch(cfg.content, { cache: "no-store" });
         if (!res.ok) {
             main.innerHTML = `<div class="p-4">Errore caricamento</div>`;
             return;
         }
-
         main.innerHTML = await res.text();
-
         if (cfg.content.includes('map.html')) {
             await initializeMap();
         }
-
         if (cfg.content.includes('profile.html')) {
             await loadProfileOverview();
         }
-
         if (cfg.content.includes('homepage.html')) {
             await initializeHomepageFilters();
         }
-
         main.scrollTop = 0;
     }
 });

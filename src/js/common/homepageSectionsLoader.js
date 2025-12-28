@@ -1,15 +1,11 @@
-// js/features/spots/homepageSectionsLoader.js
-
-import { PATHS } from "../paths.js";
-
 /**
  * Carica i template HTML delle sezioni homepage dentro i container:
  * - #home-saved-section
  * - #home-nearby-section
  * - #home-vertical-section
- *
- * Poi chiama i callback (se forniti) per inizializzare carousel/bookmarks ecc.
  */
+
+import { PATHS } from "../paths.js";
 
 async function injectSection(containerId, htmlPath) {
     const container = document.getElementById(containerId);

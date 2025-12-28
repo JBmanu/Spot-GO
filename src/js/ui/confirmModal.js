@@ -1,7 +1,3 @@
-/**
- * Mostra un modal di conferma (Conferma / Annulla).
- * Restituisce una Promise che risolve true se l'utente conferma, false altrimenti.
- */
 export function showConfirmModal(title, message) {
     return new Promise((resolve) => {
         const backdrop = document.createElement('div');

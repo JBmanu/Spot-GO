@@ -1,6 +1,3 @@
-/**
- * Inizializza il comportamento di drag/scroll per i carousel.
- */
 export function initializeCarousel(trackSelector = ".carousel-track") {
     const carousels = document.querySelectorAll(trackSelector);
 
@@ -82,7 +79,6 @@ export function initializeCarousel(trackSelector = ".carousel-track") {
             }
         };
 
-        // Detect touch-capable devices to avoid intercepting native touch scroll
         const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
         const handlePointerDown = (e) => {
@@ -149,9 +145,6 @@ export function initializeCarousel(trackSelector = ".carousel-track") {
     });
 }
 
-/**
- * Rimuove lo stato di inizializzazione dai carousel.
- */
 export function resetCarouselState(trackSelector = ".carousel-track") {
     const carousels = document.querySelectorAll(trackSelector);
 
@@ -177,17 +170,11 @@ export function resetCarouselState(trackSelector = ".carousel-track") {
     });
 }
 
-/**
- * Aggiunge un elemento al track del carousel.
- */
 export function addCarouselItem(trackElement, itemElement) {
     itemElement.classList.add("carousel-item");
     trackElement.appendChild(itemElement);
 }
 
-/**
- * Crea e ritorna un elemento DOM per la card di uno spot.
- */
 export function createSpotCardItem(spotData) {
     const shell = document.createElement("div");
     shell.className = "saved-spot-shell";
