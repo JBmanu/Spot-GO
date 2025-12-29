@@ -1,6 +1,6 @@
 @layer components {
     .community-friend-card {
-        @apply flex justify-between rounded-2xl border bg-main_paper p-3;
+        @apply flex justify-between rounded-2xl border bg-main_paper p-2;
         border-color: var(--color-border_color);
         min-width: 0;
     }

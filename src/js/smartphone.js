@@ -19,7 +19,7 @@ const SECTION_CONFIG = {
     },
     community: {
         title: "Community",
-        content: "./html/community.html",
+        content: "./html/community-pages/community.html",
         icon: {
             active: "./assets/icons/filled/UserGroupsFill.svg",
             inactive: "./assets/icons/empty/UserGroups.svg",

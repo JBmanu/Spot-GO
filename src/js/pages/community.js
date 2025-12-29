@@ -1,4 +1,4 @@
-import {getFriends} from "./query";
+import {getFriends} from "../query";
 
 export async function loadCommunityData() {
     await loadFriends();
@@ -6,7 +6,14 @@ export async function loadCommunityData() {
 
 async function loadFriends() {
     const container = document.getElementById("community-friends-container");
-    const friends = await getFriends("scmccT6uz6cRjYRRVgmz");
+    container.innerHTML = "";
+    var friends = await getFriends("scmccT6uz6cRjYRRVgmz");
+    console.log(friends);
+
+    if (friends.length === 0) {
+        container.innerHTML = '<p>Nessun amico trovato</p>';
+        return;
+    }
     friends.forEach(element => {
         console.log(element);
         const friendCard = makeFriendCard(element);
@@ -22,7 +29,7 @@ function makeFriendCard(data) {
 
     const friendAvatar = document.createElement("div");
     friendAvatar.className = "friend-avatar";
-    friendAvatar.textContent = data.username;//.substring(0, 2);
+    friendAvatar.textContent = data.username.substring(0, 2);
 
     const friendCardData = document.createElement("div");
     friendCardData.className = "friend-card-data";

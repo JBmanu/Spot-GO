@@ -61,7 +61,7 @@ async function updateUserCounters(userId) {
         getVisitedSpots(userId),
         getSavedSpots(userId)
     ]);
-
+    
     if (writtenReviews) writtenReviews.textContent = reviews.length;
     if (createdSpots) createdSpots.textContent = created.length;
     if (visitedSpots) visitedSpots.textContent = visited.length;

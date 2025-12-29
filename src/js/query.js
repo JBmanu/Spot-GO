@@ -164,27 +164,22 @@ export async function getFriends(userId) {
     if (userId == null) {
         return "Errore: id utente mancante!"
     }
-    return getItems(
-        "Amico",
-        null,
-        (id, data) => {
-            if (id == userId) {
-                const friendIds = data.friends || [];
-                var friends = [];
-                friendIds.map(friendRef => 
-                    getDoc(friendRef).then(doc => {
-                        var friendData = {
-                            id: doc.id,
-                            email: doc.data().email || "",
-                            username: doc.data().username || "Utente"
-                            };
-                        friends.push(friendData);
-                    }
-                ))
-                return friends;
-            }
-        }
-    );
+    var friendIds = await getItems(
+            "Amico",
+            where('id', '==', userId),
+            (_, data) => data.friends || []
+        );
+
+    const friends = [];
+    for (const friendRef of friendIds.flat()) {
+        const doc = await getDoc(friendRef);
+        friends.push({
+            id: doc.id,
+            email: doc.data()?.email || "",
+            username: doc.data()?.username || "Utente"
+        });
+    }
+    return friends;
 }
 
 /**

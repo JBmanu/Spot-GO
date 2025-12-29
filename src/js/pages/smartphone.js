@@ -23,12 +23,13 @@ const SECTION_CONFIG = {
     },
 };
 
-let loadProfileOverview, initializeHomepageFilters, initializeMap;
+let loadProfileOverview, initializeHomepageFilters, initializeMap, initCommunity;
 
 Promise.all([
     import("./profile.js").then(m => loadProfileOverview = m.loadProfileOverview),
     import("./homepage.js").then(m => initializeHomepageFilters = m.initializeHomepageFilters),
     import("../map.js").then(m => initializeMap = m.initializeMap),
+    import("./community.js").then(m => initCommunity = m.loadCommunityData),
 ]).catch(err =>
     console.error("Errore nel caricamento dei moduli in smartphone.js:", err)
 );
@@ -135,7 +136,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (cfg.content.includes("map.html")) await initializeMap?.();
         if (cfg.content.includes("profile.html")) await loadProfileOverview?.();
         if (cfg.content.includes("homepage.html")) await initializeHomepageFilters?.();
-
+        if (cfg.content.includes("community.html")) await initCommunity?.();
+        
         main.scrollTop = 0;
     }
 });
