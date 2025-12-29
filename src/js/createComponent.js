@@ -15,32 +15,120 @@ async function loadComponentAsDocument(path) {
 }
 
 /**
- * Crea una search bar configurabile.
+ * Crea una search bar con keyboard overlay integrata
  *
- * @param {string} placeholder - Testo mostrato nel campo di ricerca.
- * @param {(value: string, event: Event) => void} onValueChanged - Funzione eseguita quando la ricerca cambia.
- * @returns {Promise<HTMLElement>} Elemento DOM pronto per essere aggiunto alla pagina.
+ * @param {string} placeholder
+ * @param {(value: string, event: Event) => void} onValueChanged
+ * @returns {Promise<{ searchBarEl: HTMLElement, keyboardOverlayEl: HTMLElement }>}
  */
-export async function createSearchBar(placeholder, onValueChanged) {
-    const doc = await loadComponentAsDocument("../html/common-components/search-bar.html");
-    const root = doc.body.firstElementChild;
+export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
+    const searchDoc = await loadComponentAsDocument("../html/common-components/search-bar.html");
+    const keyboardDoc = await loadComponentAsDocument("../html/common-components/keyboard.html");
+    const overlayDoc = await loadComponentAsDocument("../html/common-components/keyboard-overlay.html");
 
-    const input = root.querySelector("#view-all-saved-search");
+    // Root elements
+    const searchBarEl = searchDoc.body.firstElementChild;
+    const keyboardEl = keyboardDoc.body.firstElementChild;
+    const overlayEl = overlayDoc.body.firstElementChild;
 
-    // Placeholder
-    input.placeholder = placeholder;
+    const searchInput = searchBarEl.querySelector("#view-all-saved-search");
+    const keyboard = keyboardEl; // id="view-all-saved-keyboard"
+    const overlay = overlayEl;   // id="view-all-saved-keyboard-overlay"
 
-    // OnValueChanged
-    input.addEventListener("input", e => {
-        onValueChanged(e.target.value);
+    const track = document.querySelector(".view-all-saved-track");
+
+    if (!searchInput || !keyboard || !overlay) {
+        console.warn("SearchBarWithKeyboard: elementi mancanti");
+        return { searchBarEl, keyboardEl, overlayEl };
+    }
+
+    // =========================
+    // PLACEHOLDER
+    // =========================
+    searchInput.placeholder = placeholder;
+
+    // =========================
+    // INPUT
+    // =========================
+    searchInput.addEventListener("input", (e) => {
+        onValueChanged(e.target.value, e);
     });
 
-    return root;
-}
+    // =========================
+    // FOCUS / BLUR
+    // =========================
+    searchInput.addEventListener("focus", () => {
+        keyboard.classList.add("keyboard-visible");
+        overlay.classList.add("overlay-visible");
 
-// TODO
-export async function createKeyboardOverlay() {
-    // return root;
+        keyboard.style.transform = "translateY(0)";
+        overlay.style.transform = "translateY(0)";
+
+        if (track && window.innerWidth <= 1024) {
+            track.style.transform = "translateY(-320px)";
+            track.style.transition =
+                "transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+        }
+    });
+
+    searchInput.addEventListener("blur", () => {
+        keyboard.classList.remove("keyboard-visible");
+        overlay.classList.remove("overlay-visible");
+
+        keyboard.style.transform = "translateY(100%)";
+        overlay.style.transform = "translateY(100%)";
+        
+        searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+
+        if (track) {
+            track.style.transform = "translateY(0)";
+            track.style.transition =
+                "transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+        }
+    });
+
+    // =========================
+    // KEYBOARD BUTTONS
+    // =========================
+    const keyButtons = keyboard.querySelectorAll(".kb-key, .kb-space, .kb-backspace");
+    const closeBtn = keyboard.querySelector(".kb-close");
+
+    keyButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const key = button.dataset.key;
+
+            if (key === "backspace") {
+                searchInput.value = searchInput.value.slice(0, -1);
+            } else if (key === " ") {
+                searchInput.value += " ";
+            } else {
+                searchInput.value += key.toLowerCase();
+            }
+
+            searchInput.focus();
+            searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+    });
+
+    closeBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        searchInput.blur();
+    });
+
+    overlay.addEventListener("click", (e) => {
+        e.preventDefault();
+        searchInput.blur();
+    });
+
+    keyboard.addEventListener("mousedown", (e) => e.preventDefault());
+
+    return {
+        searchBarEl,
+        keyboardEl,
+        overlayEl
+    };
 }
 
 /**

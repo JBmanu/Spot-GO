@@ -1,7 +1,7 @@
 // map.js
 // Import dinamici
 let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots,
-    USER_PROTO_POSITION, distanceFromUserToSpot, createSearchBar, createNearbySpotCard,
+    USER_PROTO_POSITION, distanceFromUserToSpot, createSearchBarWithKeyboard, createNearbySpotCard,
     formatDistance, orderByDistanceFromUser, getFilteredSpots;
 
 import L from 'leaflet';
@@ -24,7 +24,7 @@ Promise.all([
         orderByDistanceFromUser = module.orderByDistanceFromUser;
     }),
     import("./createComponent.js").then(module => {
-        createSearchBar = module.createSearchBar;
+        createSearchBarWithKeyboard = module.createSearchBarWithKeyboard;
         createNearbySpotCard = module.createNearbySpotCard;
     }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
@@ -113,11 +113,21 @@ function initializeCategoryFilters() {
 
 async function loadSearchBar() {
     currentSearchText = "";
-    const searchBar = await createSearchBar("Cerca Spot", (e) => {
-        currentSearchText = e;
-        loadSpotsDependentObjects();
-    });
-    document.querySelector('.map-section').prepend(searchBar);
+
+    const { searchBarEl, keyboardEl, overlayEl } = await createSearchBarWithKeyboard(
+        "Cerca Spot",
+        (searchText) => {
+            currentSearchText = searchText;
+            loadSpotsDependentObjects();
+        });
+
+    // Aggiunta dei tre componenti
+    const mainSection = document.getElementById("map-main-section");
+    if (!mainSection) return;
+    
+    mainSection.insertBefore(searchBarEl, mainSection.children[1]);
+    mainSection.appendChild(overlayEl);
+    mainSection.appendChild(keyboardEl);
 }
 
 async function loadSpots() {
