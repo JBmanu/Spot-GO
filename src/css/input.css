@@ -10,6 +10,9 @@
 
 @import "./profile/profile-overview.css";
 
+@import "./homepage/homepage.css";
+
+@import "./community.css";
 @import "./common/carousel.css";
 
 @import "./homepage/homepage.css";
@@ -29,3 +32,5 @@
 @import "../strutture-pronte/simil-homepage-toprated/simil-toprated.css";
 
 @import "../strutture-pronte/simil-homepage-nearby/simil-nearby.css";
+
+@import "./common/bottom-sheet.css";
