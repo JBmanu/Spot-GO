@@ -1,8 +1,9 @@
 // map.js
 // Import dinamici
 let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots,
-    USER_PROTO_POSITION, distanceFromUserToSpot, createSearchBarWithKeyboard, createNearbySpotCard,
-    formatDistance, orderByDistanceFromUser, getFilteredSpots;
+    USER_PROTO_POSITION, distanceFromUserToSpot, createNearbySpotCard,
+    formatDistance, orderByDistanceFromUser, getFilteredSpots,
+    createSearchBarWithKeyboardAndFilters, createBottomSheetStandardFilters;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -24,7 +25,8 @@ Promise.all([
         orderByDistanceFromUser = module.orderByDistanceFromUser;
     }),
     import("./createComponent.js").then(module => {
-        createSearchBarWithKeyboard = module.createSearchBarWithKeyboard;
+        createSearchBarWithKeyboardAndFilters = module.createSearchBarWithKeyboardAndFilters;
+        createBottomSheetStandardFilters = module.createBottomSheetStandardFilters;
         createNearbySpotCard = module.createNearbySpotCard;
     }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
@@ -114,20 +116,24 @@ function initializeCategoryFilters() {
 async function loadSearchBar() {
     currentSearchText = "";
 
-    const { searchBarEl, keyboardEl, overlayEl } = await createSearchBarWithKeyboard(
-        "Cerca Spot",
-        (searchText) => {
-            currentSearchText = searchText;
-            loadSpotsDependentObjects();
-        });
+    const { searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl } =
+        await createSearchBarWithKeyboardAndFilters(
+            "Cerca Spot",
+            (inputText) => {
+                currentSearchText = inputText;
+                loadSpotsDependentObjects();
+            },
+            createBottomSheetStandardFilters);
 
-    // Aggiunta dei tre componenti
+    // Aggiunta dei componenti
     const mainSection = document.getElementById("map-main-section");
     if (!mainSection) return;
     
     mainSection.insertBefore(searchBarEl, mainSection.children[1]);
     mainSection.appendChild(overlayEl);
     mainSection.appendChild(keyboardEl);
+    mainSection.appendChild(bottomSheetOverlayEl);
+    mainSection.appendChild(bottomSheetEl);
 }
 
 async function loadSpots() {

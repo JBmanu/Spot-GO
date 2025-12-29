@@ -1,4 +1,5 @@
 import { getCategoryNameIt } from "./query.js";
+import { initializeBottomSheet } from "./ui/bottomSheet.js";
 
 async function loadComponentAsDocument(path) {
     try {
@@ -77,7 +78,7 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
 
         keyboard.style.transform = "translateY(100%)";
         overlay.style.transform = "translateY(100%)";
-        
+
         searchInput.dispatchEvent(new Event("input", { bubbles: true }));
 
         if (track) {
@@ -129,6 +130,61 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
         keyboardEl,
         overlayEl
     };
+}
+
+export async function createBottomSheetWithOverlay(openButtonEl) {
+    const bottomSheetDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet.html");
+    const overlayDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-overlay.html");
+
+    const bottomSheetEl = bottomSheetDoc.body.firstElementChild;
+    const bottomSheetOverlayEl = overlayDoc.body.firstElementChild;
+
+    if (!bottomSheetEl || !bottomSheetOverlayEl || !openButtonEl) {
+        console.warn("BottomSheet: elementi mancanti");
+        return { bottomSheetEl, bottomSheetOverlayEl };
+    }
+
+    initializeBottomSheet(bottomSheetEl, bottomSheetOverlayEl, openButtonEl);
+
+    return {
+        bottomSheetEl,
+        bottomSheetOverlayEl
+    };
+}
+
+export async function createSearchBarWithKeyboardAndFilters(placeholder, onValueChanged, bottomSheetContentCreator) {
+    const { searchBarEl, keyboardEl, overlayEl } =
+        await createSearchBarWithKeyboard(placeholder, onValueChanged);
+    
+    const filterButton = searchBarEl.querySelector('#view-all-saved-filter-btn');
+
+    const { bottomSheetEl, bottomSheetOverlayEl } =
+        await createBottomSheetWithOverlay(filterButton);
+
+    // Aggiunta del contenuto del bottom-sheet dinamicamente
+    const bottomSheetContent = await bottomSheetContentCreator();
+    bottomSheetEl.querySelector('.filter-content').appendChild(bottomSheetContent);
+
+    return {
+        searchBarEl,
+        keyboardEl,
+        overlayEl,
+        bottomSheetEl,
+        bottomSheetOverlayEl
+    }
+}
+
+export async function createBottomSheetStandardFilters() {
+    const filtersDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-filters.html");
+
+    const filtersEl = filtersDoc.body.firstElementChild;
+
+    if (!filtersEl) {
+        console.warn("BottomSheetFilters: elementi mancanti");
+        return filtersEl;
+    }
+
+    return filtersEl;
 }
 
 /**

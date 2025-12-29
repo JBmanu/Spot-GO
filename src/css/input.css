@@ -30,3 +30,5 @@
 @import "./map/map.css";
 
 @import "../strutture-pronte/simil-homepage-toprated/simil-toprated.css";
+
+@import "./common/bottom-sheet.css";
