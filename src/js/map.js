@@ -117,7 +117,7 @@ async function loadSearchBar() {
         currentSearchText = e;
         loadSpotsDependentObjects();
     });
-    document.querySelector('.home-section').prepend(searchBar);
+    document.querySelector('.map-section').prepend(searchBar);
 }
 
 async function loadSpots() {
