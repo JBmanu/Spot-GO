@@ -1,0 +1,101 @@
+<div class="profile-main-card">
+
+    <h2 id="profile-name" class="profile-name">
+        Paperino
+    </h2>
+
+    <div class="profile-body-section">
+        <!-- Colonna sinistra: Avatar e Username -->
+        <div class="profile-avatar-column">
+            <div id="profile-avatar" class="profile-avatar">
+                P
+            </div>
+            <p id="profile-username" class="profile-username">
+                @paperino1
+            </p>
+        </div>
+
+        <!-- Colonna destra: Dati Utente -->
+        <div class="profile-data-section">
+            <!-- Email -->
+            <div class="profile-data-item" tabindex="0">
+                <img src="../../assets/icons/profile/Email.svg" alt="Email icon" class="profile-data-icon"/>
+                <div class="profile-data-content">
+                    <span class="profile-data-label">Email</span>
+                    <span id="profile-email" class="profile-data-value"></span>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="profile-data-item" tabindex="0">
+                <img src="../../assets/icons/profile/Lock.svg" alt="Password icon" class="profile-data-icon"/>
+                <div class="profile-data-content">
+                    <span class="profile-data-label">Password</span>
+                    <span id="profile-password" class="profile-data-value">****</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Riga con recensioni scritte e livello utente -->
+    <div class="profile-stats-row">
+        <!-- Recensioni scritte -->
+        <div class="profile-reward-card">
+            <img
+                    src="../../assets/icons/profile/Thumbs%20Up%20Down.svg"
+                    alt="Written reviews icon"
+                    class="profile-overview-badge-icon"/>
+            <div id="written-reviews" class="profile-overview-number-badge">0</div>
+            <div class="profile-overview-text-badge">Recensioni scritte</div>
+        </div>
+
+        <!-- Livello utente -->
+        <div class="profile-reward-card-large">
+            <div class="profile-overview-level-badge">
+                Livello
+                <span id="explorer-level" class="profile-overview-level-number">1</span>
+            </div>
+
+            <div class="profile-overview-progress-bar-container">
+                <div id="profile-progress-bar" class="profile-overview-progress-bar"></div>
+            </div>
+
+            <p id="progress-bar-label" class="profile-overview-text-large-badge">
+                100% al prossimo livello!
+            </p>
+        </div>
+    </div>
+
+    <!-- Riga con spot: visitati, creati e salvati -->
+    <div class="profile-stats-row">
+        <!-- Posti visitati -->
+        <div class="profile-reward-card">
+            <img
+                    src="../../assets/icons/profile/Souvenirs.svg"
+                    alt="Visited spots icon"
+                    class="profile-overview-badge-icon"/>
+            <div id="visited-spots" class="profile-overview-number-badge">0</div>
+            <div class="profile-overview-text-badge">Spot visitati</div>
+        </div>
+
+        <!-- Spot creati -->
+        <div class="profile-reward-card">
+            <img
+                    src="../../assets/icons/profile/Place%20Marker.svg"
+                    alt="Created spots icon"
+                    class="profile-overview-badge-icon"/>
+            <div id="created-spots" class="profile-overview-number-badge">0</div>
+            <div class="profile-overview-text-badge">Spot creati</div>
+        </div>
+
+        <!-- Spot salvati -->
+        <div class="profile-reward-card" id="profile-saved-spots-button">
+            <img
+                    src="../../assets/icons/profile/Bookmark.svg"
+                    alt="Saved spots icon"
+                    class="profile-overview-badge-icon"/>
+            <div id="saved-spots" class="profile-overview-number-badge">0</div>
+            <div class="profile-overview-text-badge">Spot salvati</div>
+        </div>
+    </div>
+</div>

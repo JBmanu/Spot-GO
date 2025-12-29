@@ -1,0 +1,79 @@
+<section class="profile-wrapper main-page-background">
+
+    <!-- Profile Overview Section -->
+    <div id="profile-overview-container" class="profile-overview"></div>
+
+    <!-- Travel Diary Section -->
+    <div class="profile-card">
+
+        <!-- Header: titolo + plus -->
+        <div class="profile-diary-header">
+            <h1 class="profile-diary-title">Diario di viaggio</h1>
+
+            <button
+                    type="button"
+                    class="profile-diary-add-btn"
+                    aria-label="Aggiungi nuova polaroid"
+            >
+                +
+            </button>
+        </div>
+
+        <!-- Apri Album (centrato) -->
+        <button
+                type="button"
+                class="profile-album-btn"
+                aria-label="Apri album"
+        >
+            <span class="text-lg">🖼️</span>
+            <span>Apri Album</span>
+        </button>
+
+        <!-- Carousel area: hit areas laterali + polaroid -->
+        <div class="profile-carousel">
+
+            <!-- zona tap/click sinistra -->
+            <button
+                    type="button"
+                    class="profile-carousel-hit profile-carousel-hit--left"
+                    aria-label="Polaroid precedente"
+            ></button>
+
+            <!-- Polaroid -->
+            <article class="profile-polaroid">
+                <!-- menu -->
+                <button
+                        type="button"
+                        class="profile-polaroid-menu"
+                        aria-label="Menu polaroid"
+                >
+                    ⋮
+                </button>
+
+                <!-- foto placeholder -->
+                <div class="profile-polaroid-image-container">
+                    <div class="profile-polaroid-image"></div>
+                </div>
+
+                <!-- testo sotto -->
+                <div class="profile-polaroid-text">
+                    <h2 class="profile-polaroid-title">Titolo della polaroid</h2>
+                    <p class="profile-polaroid-subtitle">Luogo - Data</p>
+                </div>
+            </article>
+
+            <!-- zona tap/click destra -->
+            <button
+                    type="button"
+                    class="profile-carousel-hit profile-carousel-hit--right"
+                    aria-label="Polaroid successiva"
+            ></button>
+
+        </div>
+
+        <!-- counter -->
+        <p class="profile-carousel-counter">1/10</p>
+
+    </div>
+
+</section>

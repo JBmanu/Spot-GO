@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@import "leaflet/dist/leaflet.css";
+
+@import "./common/smartphone.css";
+
+@import "./theme.css";
+
+@import "./common/utils.css";
+
+@import "./profile/profile-overview.css";
+
+@import "./homepage/homepage.css";
+
+@import "./community.css";
+@import "./common/carousel.css";
+
+@import "./homepage/homepage.css";
+
+@import "./homepage/saved-spots.css";
+
+@import "../strutture-pronte/carousels/carousel-horizontal.css";
+
+@import "./homepage/toprated-spots.css";
+
+@import "./common/spot-detail.css";
+
+@import "./homepage/view-all-saved.css";
+
+@import "./map/map.css";
+
+@import "../strutture-pronte/simil-homepage-toprated/simil-toprated.css";
+
+@import "../strutture-pronte/simil-homepage-nearby/simil-nearby.css";
+
+@import "./common/bottom-sheet.css";

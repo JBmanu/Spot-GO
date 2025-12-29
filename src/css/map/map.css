@@ -1,0 +1,10 @@
+@layer components {
+
+    .map {
+        @apply w-full h-[400px];
+    }
+
+    .keyboard-overlay {
+        top: 130px !important;
+    }
+}

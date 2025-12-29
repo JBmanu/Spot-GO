@@ -1,0 +1,36 @@
+[
+  {
+    "username": "paperino",
+    "salvati": [
+      {
+        "nome": "Colosseo",
+        "categoria": "culture"
+      },
+      {
+        "nome": "Romolo e Remo",
+        "categoria": "food"
+      }
+    ],
+    "visitati": [
+      {
+        "nome": "Parco degli Acquedotti",
+        "categoria": "nature",
+        "data": "2025-12-20"
+      }
+    ],
+    "creati": [],
+    "recensioni": [
+      {
+        "nome": "Colosseo",
+        "valutazione": 5,
+        "testo": "Meraviglioso! Un'esperienza indimenticabile. L'atmosfera è magica soprattutto al tramonto."
+      },
+      {
+        "nome": "Parco degli Acquedotti",
+        "valutazione": 4,
+        "testo": "Bellissimo parco, un po' affollato nel weekend ma molto suggestivo."
+      }
+    ]
+  }
+]
+

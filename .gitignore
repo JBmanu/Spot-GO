@@ -2,6 +2,9 @@
 .idea/
 .vscode/
 
+# Non aggiungere output.css - va generato automaticamente
+src/css/output.css
+
 ### Intellij+iml Patch ###
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 
@@ -93,7 +96,7 @@ project/**/metals.sbt
 # Simple Build Tool
 # http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
 
-dist/*
+src/dist/*
 target/
 lib_managed/
 src_managed/
@@ -160,5 +163,8 @@ $RECYCLE.BIN/
 /.vitepress/dist/
 /docs/node_modules/
 node_modules/
-package-lock.json
+#package-lock.json
 
+# NON AGGIUNGERE
+*.env
+.env
