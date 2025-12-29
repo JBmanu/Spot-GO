@@ -52,6 +52,7 @@ function setupDragToScroll(track) {
 
     const onDown = (e) => {
         if (e.pointerType === "mouse" && e.button !== 0) return;
+        if (e.target.closest('button, [data-bookmark-button]')) return;
 
         isDown = true;
         track.classList.add("is-dragging");
