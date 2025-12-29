@@ -1,18 +1,19 @@
-import { initializeCarousel } from "../ui/carousel.js";
-import { initializeBookmarks, syncAllBookmarks } from "../ui/bookmark.js";
-import { initializeSpotClickHandlers } from "./spotDetail.js";
-import { populateSavedSpots } from "./savedSpots.js";
-import { populateNearbySpots } from "./nearbySpots.js";
-import { populateTopratedSpots } from "./populateTopratedCards.js";
-import { initFitSavedTitles } from "../fitTitleSaved.js";
-import { loadHomepageSections } from "../common/homepageSectionsLoader.js";
+import {initializeCarousel} from "../ui/carousel.js";
+import {initializeBookmarks, syncAllBookmarks} from "../ui/bookmark.js";
+import {initializeSpotClickHandlers} from "./spotDetail.js";
+import {populateSavedSpots} from "./savedSpots.js";
+import {populateNearbySpots} from "./nearbySpots.js";
+import {populateTopratedSpots} from "./populateTopratedCards.js";
+import {initFitSavedTitles} from "../fitTitleSaved.js";
+import {loadHomepageSections} from "../common/homepageSectionsLoader.js";
 import {
     setupCategoryFilter,
     resetCategoryFilter,
     filterSpotsByCategory,
     getActiveCategories,
 } from "../common/categoryFilter.js";
-import { loadViewAllSaved } from "./viewAllSaved.js";
+import {loadViewAllSaved} from "./viewAllSaved.js";
+import {initHorizontalCarousels} from "../carousel-horizontal.js";
 
 export async function initializeHomepageFilters() {
     const main = document.getElementById("main");
@@ -21,7 +22,7 @@ export async function initializeHomepageFilters() {
     resetCategoryFilter(categoryContainer);
     await loadHomepageSections({
         onSavedLoaded: async () => {
-            await populateSavedSpots({ containerId: "home-saved-container" });
+            await populateSavedSpots({containerId: "home-saved-container"});
             initFitSavedTitles();
             initializeCarousel(".saved-swipe-track");
             const savedContainer = document.getElementById("home-saved-container");
@@ -29,21 +30,21 @@ export async function initializeHomepageFilters() {
             filterSpotsByCategory(getActiveCategories(), main);
         },
         onNearbyLoaded: async () => {
-            await populateNearbySpots({ containerId: "home-nearby-container" });
-            initializeCarousel(".nearby-swipe-track");
-            const nearbyContainer = document.getElementById("home-nearby-container");
+            await populateNearbySpots({containerId: "home-nearby-section"});
+            initHorizontalCarousels();
+            const nearbyContainer = document.getElementById("home-nearby-section");
             if (nearbyContainer) initializeSpotClickHandlers(nearbyContainer);
             filterSpotsByCategory(getActiveCategories(), main);
         },
         onTopRatedLoaded: async () => {
-            await populateTopratedSpots({ containerId: "home-toprated-carousel-container", limit: 10 });
+            await populateTopratedSpots({containerId: "home-toprated-carousel-container", limit: 10});
             initializeCarousel(".vertical-carousel-track");
             const topContainer = document.getElementById("home-toprated-carousel-container");
             if (topContainer) initializeSpotClickHandlers(topContainer);
             filterSpotsByCategory(getActiveCategories(), main);
         },
     });
-    setupCategoryFilter(categoryContainer, { scopeEl: main });
+    setupCategoryFilter(categoryContainer, {scopeEl: main});
     initializeBookmarks();
     await syncAllBookmarks();
     filterSpotsByCategory(getActiveCategories(), main);
@@ -52,21 +53,21 @@ export async function initializeHomepageFilters() {
 export async function rehydrateHomepageUI(mainEl = document.getElementById("main")) {
     if (!mainEl) return;
     const savedContainer = document.getElementById("home-saved-container");
-    const nearbyContainer = document.getElementById("home-nearby-container");
+    const nearbyContainer = document.getElementById("home-nearby-section");
     const topContainer = document.getElementById("home-toprated-carousel-container");
     if (savedContainer) {
-        await populateSavedSpots({ containerId: "home-saved-container" });
+        await populateSavedSpots({containerId: "home-saved-container"});
         initFitSavedTitles();
         initializeCarousel(".saved-swipe-track");
         initializeSpotClickHandlers(savedContainer);
     }
     if (nearbyContainer) {
-        await populateNearbySpots({ containerId: "home-nearby-container" });
-        initializeCarousel(".nearby-swipe-track");
+        await populateNearbySpots({containerId: "home-nearby-section"});
+        initHorizontalCarousels();
         initializeSpotClickHandlers(nearbyContainer);
     }
     if (topContainer) {
-        await populateTopratedSpots({ containerId: "home-toprated-carousel-container", limit: 10 });
+        await populateTopratedSpots({containerId: "home-toprated-carousel-container", limit: 10});
         initializeCarousel(".vertical-carousel-track");
         initializeSpotClickHandlers(topContainer);
     }
@@ -75,4 +76,4 @@ export async function rehydrateHomepageUI(mainEl = document.getElementById("main
     filterSpotsByCategory(getActiveCategories(), mainEl);
 }
 
-export { loadViewAllSaved };
+export {loadViewAllSaved};

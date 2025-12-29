@@ -1,101 +1,98 @@
-<section class="home-section px-3">
+<section class="home-section px-3" data-template="carousel-horizontal">
     <header class="flex flex-row items-center justify-between">
-        <h2 class="home-section-title">A pochi passi</h2>
+        <h2 class="home-section-title" data-slot="title">A pochi passi</h2>
 
         <button
                 type="button"
                 id="home-nearby-see-all"
                 class="vedi-tutti-button"
+                data-slot="cta"
                 aria-label="Scopri gli spots vicini"
         >
             Apri Mappa
         </button>
     </header>
 
-    <div class="nearby-swipe" aria-label="Spots vicino a te (scorri)">
-        <div
-                id="home-nearby-container"
-                class="nearby-swipe-track"
-                role="list"
-                aria-label="Lista spots vicino a te"
-        >
-            <!-- Template -->
-            <div
-                    class="nearby-spot-shell"
-                    data-spot-wrapper
-                    role="presentation"
-                    data-template="nearby-card"
-                    hidden
-            >
-
-            <div class="nearby-spot-pedestal" aria-hidden="true"></div>
-
-                <article
-                        class="nearby-card"
-                        role="listitem"
-                        data-spot-id=""
-                        data-saved="false"
-                        data-category="food"
-                >
-                    <div class="nearby-media">
-                        <div class="nearby-image-container">
-                            <img
-                                    src=""
-                                    alt="Foto spot"
-                                    class="nearby-image"
-                                    data-field="image"
-                            />
-                        </div>
-
-                        <button
-                                type="button"
-                                class="nearby-bookmark"
-                                aria-label="Aggiungi ai salvati"
-                                data-bookmark-button
-                                data-bookmark-type="nearby"
-                        >
-                            <img
-                                    src="../../assets/icons/homepage/Bookmark.svg"
-                                    class="nearby-bookmark-icon bookmark-icon"
-                                    alt="Bookmark"
-                            />
-                        </button>
-                    </div>
-
-                    <div class="nearby-body">
-                        <h3 class="nearby-title" data-field="title"></h3>
-
-                        <div class="nearby-meta-row">
-                            <p class="nearby-meta">
-                <span class="nearby-meta-item">
-                  <img
-                          src="../../assets/icons/homepage/Place%20Marker.svg"
-                          class="nearby-icon-mini"
-                          alt="Posizione"
-                  />
-                  <span class="nearby-distance" data-field="distance"></span>
-                </span>
-
-                                <span class="nearby-meta-sep">•</span>
-
-                                <span class="nearby-meta-item">
-                  <span class="nearby-category" data-field="category"></span>
-                </span>
-                            </p>
-
-                            <div class="nearby-rating-badge">
-                                <span class="nearby-rating-value" data-field="rating"></span>
-                                <img
-                                        src="../../assets/icons/homepage/Star.svg"
-                                        alt="stella"
-                                        class="nearby-rating-star"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </article>
-            </div>
-            <!-- altre cards -->
-        </div>
+    <div
+            id="home-nearby-container"
+            class="js-carousel-horizontal"
+            data-slot="container-horizontal"
+            role="list"
+            aria-label="Lista spots vicino a te"
+    >
     </div>
 </section>
+
+<div
+        class="spot-card-nearby"
+        data-template="nearby-card"
+        data-spot-wrapper
+        role="presentation"
+        hidden
+>
+    <div class="spot-card-nearby_pedestal" aria-hidden="true"></div>
+
+    <article
+            class="spot-card-nearby_card"
+            role="listitem"
+            data-spot-id=""
+            data-saved="false"
+    >
+        <div class="spot-card-nearby_media" data-slot="media">
+            <div class="spot-card-nearby_image-wrap">
+                <img
+                        class="spot-card-nearby_image"
+                        data-field="image"
+                        src=""
+                        alt="Foto spot"
+                />
+            </div>
+
+            <button
+                    class="spot-card-nearby_bookmark"
+                    type="button"
+                    aria-label="Aggiungi ai salvati"
+                    data-bookmark-button
+                    data-bookmark-type="nearby"
+            >
+                <img
+                        class="spot-card-nearby__bookmark-icon bookmark-icon"
+                        src="../../assets/icons/homepage/Bookmark.svg"
+                        alt="Bookmark"
+                />
+            </button>
+        </div>
+
+        <div class="spot-card-nearby_body" data-slot="body">
+            <h3 class="spot-card-nearby_title" data-field="title"></h3>
+
+            <div class="spot-card-nearby_meta-row">
+                <p class="spot-card-nearby_meta">
+                    <span class="spot-card-nearby_meta-item">
+                        <img
+                                class="spot-card-nearby_icon"
+                                src="../../assets/icons/homepage/Place%20Marker.svg"
+                                alt="Posizione"
+                        />
+                        <span class="spot-card-nearby_distance" data-field="distance"></span>
+                    </span>
+
+                    <span class="spot-card-nearby_sep">•</span>
+
+                    <span class="spot-card-nearby_meta-item">
+                        <span class="spot-card-nearby_category" data-field="category"></span>
+                    </span>
+                </p>
+
+                <div class="spot-card-nearby_rating">
+                    <span class="spot-card-nearby__rating-value" data-field="rating"></span>
+                    <img
+                            class="spot-card-nearby_rating-star"
+                            src="../../assets/icons/homepage/Star.svg"
+                            alt="stella"
+                    />
+                </div>
+            </div>
+        </div>
+    </article>
+</div>

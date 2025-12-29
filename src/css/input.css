@@ -16,7 +16,7 @@
 
 @import "./homepage/saved-spots.css";
 
-@import "./homepage/nearby-spots.css";
+@import "../strutture-pronte/carousels/carousel-horizontal.css";
 
 @import "./homepage/toprated-spots.css";
 

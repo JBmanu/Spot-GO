@@ -6,16 +6,16 @@ function isIgnorableNode(el) {
 }
 
 function ensureTrack(carouselEl) {
-    let track = carouselEl.querySelector(":scope > .carousel-horizontal__track");
+    let track = carouselEl.querySelector(":scope > .carousel-horizontal_track");
     if (!track) {
         track = document.createElement("div");
-        track.className = "carousel-horizontal__track";
+        track.className = "carousel-horizontal_track";
         carouselEl.appendChild(track);
     }
     return track;
 }
 
-function wrapCardsIntoTrack(carouselEl, { cardSelector } = {}) {
+function wrapCardsIntoTrack(carouselEl, {cardSelector} = {}) {
     const track = ensureTrack(carouselEl);
 
     const directChildren = Array.from(carouselEl.children).filter(
@@ -29,14 +29,14 @@ function wrapCardsIntoTrack(carouselEl, { cardSelector } = {}) {
     });
 
     candidates.forEach((card) => {
-        card.classList.add("carousel-horizontal__item");
+        card.classList.add("carousel-horizontal_item");
         track.appendChild(card);
     });
 
     Array.from(track.children).forEach((child) => {
         if (isIgnorableNode(child)) return;
         if (cardSelector && !child.matches(cardSelector)) return;
-        child.classList.add("carousel-horizontal__item");
+        child.classList.add("carousel-horizontal_item");
     });
 
     return track;
@@ -76,14 +76,15 @@ function setupDragToScroll(track) {
         track.classList.remove("is-dragging");
         try {
             track.releasePointerCapture?.(e.pointerId);
-        } catch (_) {}
+        } catch (_) {
+        }
     };
 
-    track.addEventListener("pointerdown", onDown, { passive: true });
-    track.addEventListener("pointermove", onMove, { passive: false });
-    track.addEventListener("pointerup", endDrag, { passive: true });
-    track.addEventListener("pointercancel", endDrag, { passive: true });
-    track.addEventListener("pointerleave", endDrag, { passive: true });
+    track.addEventListener("pointerdown", onDown, {passive: true});
+    track.addEventListener("pointermove", onMove, {passive: false});
+    track.addEventListener("pointerup", endDrag, {passive: true});
+    track.addEventListener("pointercancel", endDrag, {passive: true});
+    track.addEventListener("pointerleave", endDrag, {passive: true});
 
     track.querySelectorAll("img").forEach((img) => {
         img.draggable = false;
@@ -92,14 +93,14 @@ function setupDragToScroll(track) {
 
 export function initHorizontalCarousels(
     root = document,
-    { cardSelector = ".spot-card-nearby", enableDrag = true } = {}
+    {cardSelector = ".spot-card-nearby", enableDrag = true} = {}
 ) {
     const carousels = root.querySelectorAll(".js-carousel-horizontal");
 
     carousels.forEach((carouselEl) => {
         carouselEl.classList.add("carousel-horizontal");
 
-        const track = wrapCardsIntoTrack(carouselEl, { cardSelector });
+        const track = wrapCardsIntoTrack(carouselEl, {cardSelector});
 
         if (enableDrag) setupDragToScroll(track);
     });
@@ -107,10 +108,10 @@ export function initHorizontalCarousels(
 
 export function refreshHorizontalCarousel(
     carouselEl,
-    { cardSelector = ".spot-card-nearby", enableDrag = true } = {}
+    {cardSelector = ".spot-card-nearby", enableDrag = true} = {}
 ) {
     if (!carouselEl) return;
     carouselEl.classList.add("carousel-horizontal");
-    const track = wrapCardsIntoTrack(carouselEl, { cardSelector });
+    const track = wrapCardsIntoTrack(carouselEl, {cardSelector});
     if (enableDrag) setupDragToScroll(track);
 }
