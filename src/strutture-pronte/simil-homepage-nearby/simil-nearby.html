@@ -1,31 +1,6 @@
-<section class="home-section px-3" data-template="carousel-horizontal">
-    <header class="flex flex-row items-center justify-between">
-        <h2 class="home-section-title" data-slot="title">A pochi passi</h2>
-
-        <button
-                type="button"
-                id="home-nearby-see-all"
-                class="vedi-tutti-button"
-                data-slot="cta"
-                aria-label="Scopri gli spots vicini"
-        >
-            Apri Mappa
-        </button>
-    </header>
-
-    <div
-            id="home-nearby-container"
-            class="js-carousel-horizontal"
-            data-slot="container-horizontal"
-            role="list"
-            aria-label="Lista spots vicino a te"
-    >
-    </div>
-</section>
-
 <div
         class="spot-card-nearby"
-        data-template="nearby-card"
+        data-template="spot-card"
         data-spot-wrapper
         role="presentation"
         hidden
@@ -68,20 +43,21 @@
 
             <div class="spot-card-nearby_meta-row">
                 <p class="spot-card-nearby_meta">
-                    <span class="spot-card-nearby_meta-item">
-                        <img
-                                class="spot-card-nearby_icon"
-                                src="../../assets/icons/homepage/Place%20Marker.svg"
-                                alt="Posizione"
-                        />
-                        <span class="spot-card-nearby_distance" data-field="distance"></span>
-                    </span>
+
+        <span class="spot-card-nearby_meta-item">
+            <img
+                    class="spot-card-nearby_icon"
+                    src="../../assets/icons/homepage/Place%20Marker.svg"
+                    alt="Posizione"
+            />
+
+            <span class="spot-card-nearby_distance" data-field="distance"></span>
+        </span>
 
                     <span class="spot-card-nearby_sep">•</span>
-
                     <span class="spot-card-nearby_meta-item">
-                        <span class="spot-card-nearby_category" data-field="category"></span>
-                    </span>
+            <span class="spot-card-nearby_category" data-field="category"></span>
+        </span>
                 </p>
 
                 <div class="spot-card-nearby_rating">

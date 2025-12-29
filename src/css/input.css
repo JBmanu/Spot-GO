@@ -19,7 +19,7 @@
 
 @import "./homepage/saved-spots.css";
 
-@import "./homepage/nearby-spots.css";
+@import "../strutture-pronte/carousels/carousel-horizontal.css";
 
 @import "./homepage/toprated-spots.css";
 
@@ -30,3 +30,7 @@
 @import "./map/map.css";
 
 @import "../strutture-pronte/simil-homepage-toprated/simil-toprated.css";
+
+@import "../strutture-pronte/simil-homepage-nearby/simil-nearby.css";
+
+@import "./common/bottom-sheet.css";
