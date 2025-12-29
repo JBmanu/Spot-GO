@@ -3,7 +3,7 @@
  * Espone funzioni per leggere utenti, luoghi, salvataggi e categorie.
  */
 
-import { collection, getDocs, query, where, limit, deleteDoc, setDoc, doc } from "firebase/firestore";
+import { collection, getDocs, query, where, limit, deleteDoc, setDoc, doc, getDoc} from "firebase/firestore";
 import { db } from "./firebase.js";
 
 // Cache per le categorie
@@ -159,6 +159,34 @@ export async function getSpots() {
     );
 }
 
+
+export async function getFriends(userId) {
+    if (userId == null) {
+        return "Errore: id utente mancante!"
+    }
+    return getItems(
+        "Amico",
+        null,
+        (id, data) => {
+            if (id == userId) {
+                const friendIds = data.friends || [];
+                var friends = [];
+                friendIds.map(friendRef => 
+                    getDoc(friendRef).then(doc => {
+                        var friendData = {
+                            id: doc.id,
+                            email: doc.data().email || "",
+                            username: doc.data().username || "Utente"
+                            };
+                        friends.push(friendData);
+                    }
+                ))
+                return friends;
+            }
+        }
+    );
+}
+
 /**
  * Funzione specifica per ottenere gli spot filtrando per categorie e testo di ricerca
  */
@@ -185,7 +213,7 @@ export async function getFilteredSpots(categories = [], searchText = "") {
 /**
  * Metodo generico per ottenere items da una collection con un filtro opzionale.
  */
-async function getItems(collectionName, filter, itemParser) {
+export async function getItems(collectionName, filter, itemParser) {
     try {
         const items = [];
         const colRef = collection(db, collectionName);

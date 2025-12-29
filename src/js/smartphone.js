@@ -1,50 +1,54 @@
-/**
- * Gestisce il caricamento dinamico di header, toolbar e contenuti principali.
- * Implementa la navigazione tra sezioni con aggiornamento dell'header e della toolbar.
- */
+// Gestisce la navigazione tra sezioni della app e il caricamento dei contenuti
 
 const SECTION_CONFIG = {
     homepage: {
         title: "Spot & Go",
         content: "./html/homepage.html",
+        icon: {
+            active: "./assets/icons/filled/HomePageFill.svg",
+            inactive: "./assets/icons/empty/HomePage.svg",
+        },
     },
     map: {
         title: "Mappa",
         content: "./html/map.html",
+        icon: {
+            active: "./assets/icons/filled/MapFill.svg",
+            inactive: "./assets/icons/empty/Map.svg",
+        },
     },
     community: {
         title: "Community",
         content: "./html/community.html",
+        icon: {
+            active: "./assets/icons/filled/UserGroupsFill.svg",
+            inactive: "./assets/icons/empty/UserGroups.svg",
+        },
     },
     goals: {
         title: "Missioni",
         content: "./html/goals.html",
+        icon: {
+            active: "./assets/icons/filled/GoalFill.svg",
+            inactive: "./assets/icons/empty/Goal.svg",
+        },
     },
     profile: {
         title: "Il mio Profilo",
         content: "./html/profile.html",
+        icon: {
+            active: "./assets/icons/filled/CustomerFill.svg",
+            inactive: "./assets/icons/empty/Customer.svg",
+        },
     },
 };
 
+import { loadProfileOverview } from "./profile.js";
+import { loadCommunityData } from "./community.js";
+import { initializeHomepageFilters } from "./homepage.js";
+import { initializeMap } from "./map.js";
 
-let loadProfileOverview, initializeHomepageFilters, initializeMap;
-
-Promise.all([
-    import("./profile.js").then(module => {
-        loadProfileOverview = module.loadProfileOverview;
-    }),
-    import("./homepage.js").then(module => {
-        initializeHomepageFilters = module.initializeHomepageFilters;
-    }),
-    import("./map.js").then(module => {
-        initializeMap = module.initializeMap;
-    })
-]).catch(err => console.error("Errore nel caricamento dei moduli in smartphone.js:", err));
-
-
-/**
- * Carica il markup dell'header.
- */
+// Carica l'header da file separato
 async function loadHeader() {
     const response = await fetch("../html/header.html");
     if (!response.ok) return;
@@ -56,6 +60,7 @@ async function loadHeader() {
         const newHeader = parsed.querySelector("header");
         if (newHeader) {
             header.innerHTML = newHeader.innerHTML;
+            // Copia gli attributi
             Array.from(newHeader.attributes).forEach(attr => {
                 header.setAttribute(attr.name, attr.value);
             });
@@ -63,9 +68,7 @@ async function loadHeader() {
     }
 }
 
-/**
- * Carica il template della toolbar.
- */
+// Carica la toolbar da file separato
 async function loadToolbar() {
     const response = await fetch("../html/toolbar.html");
     if (!response.ok) return;
@@ -77,6 +80,7 @@ async function loadToolbar() {
         const newToolbar = parsed.querySelector("nav");
         if (newToolbar) {
             toolbar.innerHTML = newToolbar.innerHTML;
+            // Copia gli attributi
             Array.from(newToolbar.attributes).forEach(attr => {
                 toolbar.setAttribute(attr.name, attr.value);
             });
@@ -103,9 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     navigateTo("homepage");
 
-    /**
-     * Naviga verso la sezione indicata aggiornando header/toolbar e caricando il contenuto.
-     */
+    // Naviga verso una sezione
     async function navigateTo(section) {
         const cfg = SECTION_CONFIG[section];
         if (!cfg) return;
@@ -115,48 +117,33 @@ document.addEventListener("DOMContentLoaded", async () => {
         await loadMainContent(cfg);
     }
 
-    /**
-     * Aggiorna l'header in base alla sezione attiva.
-     */
+    // Aggiorna l'header in base alla sezione attiva
     function updateHeader(section, cfg) {
         if (!titleEl || !logoTextEl) return;
 
-        const headerLeftLogo = document.querySelector(".header-left-logo");
         const isHome = section === "homepage";
-
         logoTextEl.classList.toggle("hidden", !isHome);
-        logoTextEl.style.display = isHome ? "" : "none";
         titleEl.classList.toggle("hidden", isHome);
 
         if (!isHome) titleEl.textContent = cfg.title;
-
-        if (headerLeftLogo && headerLeftLogo.querySelector("#header-back-button")) {
-            headerLeftLogo.innerHTML = `<img src="../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
-        }
     }
 
-    /**
-     * Aggiorna lo stato visuale della toolbar (classi attive) in base alla sezione attiva.
-     */
+    // Aggiorna gli stili della toolbar in base alla sezione attiva
     function updateToolbar(activeSection) {
         toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
             const section = btn.dataset.section;
             const cfg = SECTION_CONFIG[section];
             const icon = btn.querySelector("[data-role='icon']");
-            const text = btn.querySelector("span");
             if (!cfg || !icon) return;
 
             const active = section === activeSection;
-            btn.classList.toggle("active", active);
-            text?.classList.toggle("font-bold", active);
-            text?.classList.toggle("font-normal", !active);
-            icon.classList.toggle("scale-140", active);
+            btn.classList.toggle("text-spotPrimary", active);
+            btn.classList.toggle("text-toolbarText", !active);
+            icon.src = active ? cfg.icon.active : cfg.icon.inactive;
         });
     }
 
-    /**
-     * Carica il contenuto principale della sezione e inizializza eventuali moduli.
-     */
+    // Carica il contenuto principale della sezione
     async function loadMainContent(cfg) {
         const res = await fetch(cfg.content, { cache: "no-store" });
         if (!res.ok) {
@@ -174,8 +161,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             await loadProfileOverview();
         }
 
+        if (cfg.content.includes('community.html')) {
+            await loadCommunityData();
+        }
+
         if (cfg.content.includes('homepage.html')) {
-            await initializeHomepageFilters();
+            initializeHomepageFilters();
         }
 
         main.scrollTop = 0;

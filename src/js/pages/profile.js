@@ -1,11 +1,7 @@
-/**
- * Utility per la gestione della pagina del profilo utente.
- */
-
 let getFirstUser, getReviews, getCreatedSpots, getVisitedSpots, getSavedSpots, loadViewAllSaved;
 
 Promise.all([
-    import("./query.js").then(module => {
+    import("../query.js").then(module => {
         getFirstUser = module.getFirstUser;
         getReviews = module.getReviews;
         getCreatedSpots = module.getCreatedSpots;
@@ -17,9 +13,6 @@ Promise.all([
     })
 ]).catch(err => console.error("Errore nel caricamento dei moduli in profile.js:", err));
 
-/**
- * Carica l'overview del profilo nell'area prevista.
- */
 async function loadProfileOverview() {
     const overviewContainer = document.getElementById("profile-overview-container");
     if (!overviewContainer) {
@@ -36,9 +29,6 @@ async function loadProfileOverview() {
     await initializeProfileData();
 }
 
-/**
- * Inizializza i dati del profilo.
- */
 async function initializeProfileData() {
     const user = await getFirstUser();
     const profileData = {
@@ -59,23 +49,25 @@ async function initializeProfileData() {
     }
 }
 
-/**
- * Aggiorna i contatori dell'utente.
- */
 async function updateUserCounters(userId) {
     const writtenReviews = document.getElementById("written-reviews");
     const createdSpots = document.getElementById("created-spots");
     const visitedSpots = document.getElementById("visited-spots");
     const savedSpots = document.getElementById("saved-spots");
-    if (writtenReviews) writtenReviews.textContent = (await getReviews(userId)).length;
-    if (createdSpots) createdSpots.textContent = (await getCreatedSpots(userId)).length;
-    if (visitedSpots) visitedSpots.textContent = (await getVisitedSpots(userId)).length;
-    if (savedSpots) savedSpots.textContent = (await getSavedSpots(userId)).length;
+
+    const [reviews, created, visited, saved] = await Promise.all([
+        getReviews(userId),
+        getCreatedSpots(userId),
+        getVisitedSpots(userId),
+        getSavedSpots(userId)
+    ]);
+
+    if (writtenReviews) writtenReviews.textContent = reviews.length;
+    if (createdSpots) createdSpots.textContent = created.length;
+    if (visitedSpots) visitedSpots.textContent = visited.length;
+    if (savedSpots) savedSpots.textContent = saved.length;
 }
 
-/**
- * Aggiorna l'interfaccia del profilo con i dati forniti.
- */
 function updateProfileUI(data) {
     const nameEl = document.getElementById("profile-name");
     const usernameEl = document.getElementById("profile-username");
@@ -92,7 +84,4 @@ window.reloadProfile = async function () {
     await loadProfileOverview();
 };
 
-/**
- * Export della funzione principale per smartphone.js
- */
 export {loadProfileOverview};

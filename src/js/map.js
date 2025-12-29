@@ -8,7 +8,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 Promise.all([
-    import("./carousel.js").then(module => {
+    import("./ui/carousel.js").then(module => {
         initializeCarousel = module.initializeCarousel;
         createSpotCardItem = module.createSpotCardItem;
         addCarouselItem = module.addCarouselItem;

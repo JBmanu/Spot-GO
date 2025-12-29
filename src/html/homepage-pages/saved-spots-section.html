@@ -1,19 +1,17 @@
-<!-- Spots salvati -->
-<section class="home-section px-3 py-2">
-    <header class="flex flex-row items-center justify-between">
+<section class="home-section px-3">
+    <header class="flex flex-row items-center justify-between relative z-1">
         <h2 class="home-section-title">I tuoi preferiti</h2>
 
         <button
                 type="button"
                 id="home-saved-see-all"
                 class="vedi-tutti-button"
-                aria-label="Apri lista degli spots salvati"
+                aria-label="Apri lista degli spot salvati"
         >
             Vedi tutti
         </button>
     </header>
 
-    <!-- Swipe carousel -->
     <div class="saved-swipe" aria-label="Elenco preferiti">
         <div
                 id="home-saved-container"
@@ -21,99 +19,59 @@
                 role="list"
                 aria-label="Elenco preferiti"
         >
-            <!-- Card 1 - Placeholder -->
-            <article class="spot-card spot-card--saved" role="listitem" data-spot-id="" data-category="food">
-                <div class="spot-card-media">
-                    <div class="spot-image-container">
-                        <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
+            <!-- Template -->
+            <div
+                    class="saved-spot-shell"
+                    data-spot-wrapper
+                    role="presentation"
+                    data-template="saved-card"
+                    hidden
+            >
+
+            <div class="saved-spot-pedestal" aria-hidden="true"></div>
+
+                <article
+                        class="spot-card spot-card--saved"
+                        role="listitem"
+                        data-spot-id=""
+                >
+                    <div class="spot-card-media">
+                        <img
+                                src=""
+                                alt=""
+                                class="spot-card-image"
+                                data-field="image"
+                        />
+
+                        <button
+                                type="button"
+                                class="spot-card-bookmark"
+                                aria-label="Rimuovi dai salvati"
+                                data-bookmark-button
+                                data-bookmark-type="saved"
+                        >
+                            <img
+                                    src="../../assets/icons/homepage/Bookmark.svg"
+                                    alt="Bookmark"
+                                    class="bookmark-icon"
+                            />
+                        </button>
                     </div>
-                    <button
-                            type="button"
-                            class="spot-card-bookmark"
-                            aria-label="Rimuovi dai salvati"
-                            data-bookmark-button
-                            data-bookmark-type="saved"
-                    >
-                        <img src="../../assets/icons/homepage/Bookmark.svg" alt="Bookmark" class="bookmark-icon" style="-webkit-filter: saturate(1.5) contrast(1.1); filter: saturate(1.5) contrast(1.1);">
-                    </button>
-                </div>
 
-                <div class="spot-card-body">
-                    <h3 class="spot-card-title" data-field="title">Nome spot</h3>
-                </div>
-            </article>
-
-            <!-- Card 2 - Placeholder -->
-            <article class="spot-card spot-card--saved" role="listitem" data-spot-id="" data-category="culture">
-                <div class="spot-card-media">
-                    <div class="spot-image-container">
-                        <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
+                    <div class="spot-card-body">
+                        <h3 class="spot-card-title" data-field="title"></h3>
                     </div>
-                    <button
-                            type="button"
-                            class="spot-card-bookmark"
-                            aria-label="Rimuovi dai salvati"
-                            data-bookmark-button
-                            data-bookmark-type="saved"
-                    >
-                        <img src="../../assets/icons/homepage/Bookmark.svg" alt="Bookmark" class="bookmark-icon" style="-webkit-filter: saturate(1.5) contrast(1.1); filter: saturate(1.5) contrast(1.1);">
-                    </button>
-                </div>
+                </article>
+            </div>
 
-                <div class="spot-card-body">
-                    <h3 class="spot-card-title" data-field="title">Nome spot</h3>
-                </div>
-            </article>
-
-            <!-- Card 3 - Placeholder -->
-            <article class="spot-card spot-card--saved" role="listitem" data-spot-id="" data-category="nature">
-                <div class="spot-card-media">
-                    <div class="spot-image-container">
-                        <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
-                    </div>
-                    <button
-                            type="button"
-                            class="spot-card-bookmark"
-                            aria-label="Rimuovi dai salvati"
-                            data-bookmark-button
-                            data-bookmark-type="saved"
-                    >
-                        <img src="../../assets/icons/homepage/Bookmark.svg" alt="Bookmark" class="bookmark-icon" style="-webkit-filter: saturate(1.5) contrast(1.1); filter: saturate(1.5) contrast(1.1);">
-                    </button>
-                </div>
-
-                <div class="spot-card-body">
-                    <h3 class="spot-card-title" data-field="title">Nome spot</h3>
-                </div>
-            </article>
-
-            <!-- Card 4 - Placeholder -->
-            <article class="spot-card spot-card--saved" role="listitem" data-spot-id="" data-category="mystery">
-                <div class="spot-card-media">
-                    <div class="spot-image-container">
-                        <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
-                    </div>
-                    <button
-                            type="button"
-                            class="spot-card-bookmark"
-                            aria-label="Rimuovi dai salvati"
-                            data-bookmark-button
-                            data-bookmark-type="saved"
-                    >
-                        <img src="../../assets/icons/homepage/Bookmark.svg" alt="Bookmark" class="bookmark-icon" style="-webkit-filter: saturate(1.5) contrast(1.1); filter: saturate(1.5) contrast(1.1);">
-                    </button>
-                </div>
-
-                <div class="spot-card-body">
-                    <h3 class="spot-card-title" data-field="title">Nome spot</h3>
-                </div>
-            </article>
+            <!-- altre cards -->
         </div>
     </div>
 
-    <!-- Banner empty state (quando non ci sono preferiti) -->
-    <div id="saved-empty-state" class="empty-state-banner hidden py-8 px-4 text-center">
+    <div id="saved-empty-state" class="empty-state-banner hidden">
         <h3 class="text-lg font-semibold mb-2">Non hai ancora Preferiti.</h3>
-        <p class="text-sm text-text_color/70">Esplora la mappa o ascolta la community e salva gli spot che ti ispirano.</p>
+        <p class="text-sm text-text_color/70">
+            Esplora la mappa o ascolta la community e salva gli spot che ti ispirano.
+        </p>
     </div>
 </section>

@@ -8,8 +8,11 @@
 
 @import "./common/utils.css";
 
-@import "./profile/profile.css";
+@import "./profile/profile-overview.css";
 
+@import "./homepage/homepage.css";
+
+@import "./community.css";
 @import "./common/carousel.css";
 
 @import "./homepage/homepage.css";
@@ -25,3 +28,5 @@
 @import "./homepage/view-all-saved.css";
 
 @import "./map/map.css";
+
+@import "../strutture-pronte/simil-homepage-toprated/simil-toprated.css";
