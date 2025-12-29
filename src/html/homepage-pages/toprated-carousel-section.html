@@ -1,4 +1,4 @@
-<section class="home-section px-3">
+<section class="home-section px-3" data-template="carousel-vertical">
     <header class="flex flex-row items-center justify-between">
         <h2 class="home-section-title">Scelti dalla community</h2>
 
@@ -12,71 +12,70 @@
         </button>
     </header>
 
-    <div class="toprated-carousel" aria-label="Carosello toprated (scorri su e giù)">
-        <div
-                id="home-toprated-carousel-container"
-                class="toprated-carousel-track vertical-carousel-track"
-                role="list"
-                aria-label="Lista scelti dalla community"
+    <div
+            id="home-toprated-carousel"
+            class="js-carousel-vertical"
+            role="list"
+            aria-label="Lista scelti dalla community"
+            data-size="md"
+    >
+        <!-- Template -->
+        <article
+                class="spot-card-toprated"
+                data-spot-wrapper
+                role="listitem"
+                data-template="toprated-item"
+                data-spot-id=""
+                data-saved="false"
+                data-category="food"
+                hidden
         >
-            <!-- Template -->
-            <article
-                    class="spot-card-toprated"
-                    data-spot-wrapper
-                    role="listitem"
-                    data-template="toprated-item"
-                    data-spot-id=""
-                    data-saved="false"
-                    data-category="food"
-                    hidden
-            >
-                <div data-slot="image">
-                    <img
-                            src=""
-                            alt="Foto spot"
-                            data-field="image"
-                    />
+            <div data-slot="image">
+                <img
+                        src=""
+                        alt="Foto spot"
+                        data-field="image"
+                />
 
-                    <div data-slot="distance">
+                <div data-slot="distance">
+                    <img
+                            src="../../assets/icons/homepage/Place%20Marker.svg"
+                            alt="distanza"
+                            class="icon-mini"
+                    />
+                    <span data-slot="distance-text" data-field="distance"></span>
+                </div>
+            </div>
+
+            <div data-slot="info">
+                <h3 data-slot="title" data-field="title"></h3>
+
+                <div data-slot="rating-row">
+                    <p data-slot="rating-pill">
+                        <span data-slot="rating-value" data-field="rating"></span>
                         <img
-                                src="../../assets/icons/homepage/Place%20Marker.svg"
-                                alt="distanza"
-                                class="icon-mini"
+                                src="../../assets/icons/homepage/Star.svg"
+                                alt="stella"
+                                data-slot="rating-star"
                         />
-                        <span data-slot="distance-text" data-field="distance"></span>
-                    </div>
+                    </p>
                 </div>
+            </div>
 
-                <div data-slot="info">
-                    <h3 data-slot="title" data-field="title"></h3>
+            <button
+                    type="button"
+                    data-slot="bookmark"
+                    aria-label="Aggiungi ai salvati"
+                    data-bookmark-button
+                    data-bookmark-type="toprated"
+            >
+                <img
+                        src="../../assets/icons/homepage/BookmarkEmpty.svg"
+                        class="bookmark-icon"
+                        alt="Bookmark"
+                />
+            </button>
+        </article>
 
-                    <div data-slot="rating-row">
-                        <p data-slot="rating-pill">
-                            <span data-slot="rating-value" data-field="rating"></span>
-                            <img
-                                    src="../../assets/icons/homepage/Star.svg"
-                                    alt="stella"
-                                    data-slot="rating-star"
-                            />
-                        </p>
-                    </div>
-                </div>
-
-                <button
-                        type="button"
-                        data-slot="bookmark"
-                        aria-label="Aggiungi ai salvati"
-                        data-bookmark-button
-                        data-bookmark-type="toprated"
-                >
-                    <img
-                            src="../../assets/icons/homepage/BookmarkEmpty.svg"
-                            class="bookmark-icon"
-                            alt="Bookmark"
-                    />
-                </button>
-            </article>
-            <!-- altre cards -->
-        </div>
     </div>
 </section>
