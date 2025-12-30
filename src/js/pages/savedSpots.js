@@ -1,5 +1,6 @@
 import { getFirstUser, getSavedSpots, getSpots } from "../query.js";
 import { fillSpotCard } from "../common/populateSpotCards.js";
+import { fitText } from "../common/fitText.js";
 
 export async function getSavedSpotsData() {
     const user = await getFirstUser();
@@ -52,6 +53,7 @@ export async function populateSavedSpots({
             const shellEl = createSavedSpotShellFromTemplate(templateShell, spot);
             if (shellEl) container.appendChild(shellEl);
         });
+        fitText('.saved-card .spot-card-title', '#' + containerId, 2, 10.5);
     } catch (err) {
         console.error("Errore populateSavedSpots:", err);
     }

@@ -4,7 +4,7 @@ import {initializeSpotClickHandlers} from "./spotDetail.js";
 import {populateSavedSpots} from "./savedSpots.js";
 import {populateNearbySpots} from "./nearbySpots.js";
 import {populateTopratedSpots} from "./populateTopratedCards.js";
-import {initFitSavedTitles} from "../fitTitleSaved.js";
+import {initFitText} from "../common/fitText.js";
 import {loadHomepageSections} from "../common/homepageSectionsLoader.js";
 import {
     setupCategoryFilter,
@@ -23,7 +23,7 @@ export async function initializeHomepageFilters() {
     await loadHomepageSections({
         onSavedLoaded: async () => {
             await populateSavedSpots({containerId: "home-saved-container"});
-            initFitSavedTitles();
+            initFitText('.spot-card--saved .spot-card-title', '#home-saved-container', 2, 10.5);
             initializeCarousel(".saved-swipe-track");
             const savedContainer = document.getElementById("home-saved-container");
             if (savedContainer) initializeSpotClickHandlers(savedContainer);
@@ -58,7 +58,7 @@ export async function rehydrateHomepageUI(mainEl = document.getElementById("main
     const topContainer = document.getElementById("home-toprated-carousel");
     if (savedContainer) {
         await populateSavedSpots({containerId: "home-saved-container"});
-        initFitSavedTitles();
+        initFitText('.spot-card--saved .spot-card-title', '#home-saved-container', 2, 10.5);
         initializeCarousel(".saved-swipe-track");
         initializeSpotClickHandlers(savedContainer);
     }
