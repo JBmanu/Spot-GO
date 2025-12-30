@@ -1,15 +1,12 @@
 [
   {
     "nome": "Colosseo",
-    "descrizione": "Famoso anfiteatro romano, simbolo dell'Impero Romano. Uno dei siti archeologici più importanti del mondo.",
-    "posizione": { "coord1": 41.8902, "coord2": 12.4922 },
+    "descrizione": "Famoso anfiteatro romano, simbolo dell'Impero Romano. Uno dei siti archeologici più importanti al mondo.",
+    "posizione": { "coord1": 41.89, "coord2": 12.49222 },
     "idCategoria": "culture",
     "immagine": "/db/img/colosseo.jpg",
     "indirizzo": "Piazza del Colosseo, 1 - Roma",
-    "orari": [
-      { "inizio": "08:30", "fine": "12:30" },
-      { "inizio": "14:00", "fine": "19:00" }
-    ],
+    "orari": [{ "inizio": "08:30", "fine": "19:00" }],
     "costo": [
       { "tipo": "Intero", "prezzo": 18 },
       { "tipo": "Ridotto", "prezzo": 12 }
@@ -19,51 +16,202 @@
   },
   {
     "nome": "Romolo e Remo",
-    "descrizione": "Ristorante tradizionale romano con cucina autentica. Perfetto per assaporare i piatti tipici della capitale in un'atmosfera accogliente.",
-    "posizione": { "coord1": 41.8955, "coord2": 12.4732 },
+    "descrizione": "Ristorante tradizionale romano con cucina autentica di piatti tipici capitolini.",
+    "posizione": { "coord1": 41.88043, "coord2": 12.50109 },
     "idCategoria": "food",
     "immagine": "/db/img/romolo-e-remo.jpg",
-    "indirizzo": "Via di San Giovanni in Laterano, 12 - Roma",
+    "indirizzo": "Via Pannonia, 22 - Roma",
     "orari": [
       { "inizio": "12:00", "fine": "15:00" },
       { "inizio": "19:00", "fine": "23:00" }
     ],
-    "costo": [
-      { "tipo": "Menu medio", "prezzo": 25 }
-    ],
+    "costo": [{ "tipo": "Menu medio", "prezzo": 25 }],
     "valutazione": 4.2,
     "idCreatore": "master"
   },
   {
     "nome": "Parco degli Acquedotti",
-    "descrizione": "Parco affascinante con i resti degli antichi acquedotti romani. Un'oasi di verde perfetta per passeggiate e pic-nic tra la storia.",
-    "posizione": { "coord1": 41.8733, "coord2": 12.5567 },
+    "descrizione": "Parco con resti degli antichi acquedotti romani, ottimo per passeggiate storiche e picnic.",
+    "posizione": { "coord1": 41.8468, "coord2": 12.56335 },
     "idCategoria": "nature",
     "immagine": "/db/img/parco-degli-acquedotti.jpg",
     "indirizzo": "Via Lemonia - Roma",
-    "orari": [
-      { "inizio": "06:00", "fine": "21:00" }
-    ],
-    "costo": [
-      { "tipo": "Gratuito", "prezzo": 0 }
-    ],
+    "orari": [{ "inizio": "06:00", "fine": "21:00" }],
+    "costo": [{ "tipo": "Gratuito", "prezzo": 0 }],
     "valutazione": 4.0,
     "idCreatore": "master"
   },
   {
-    "nome": "Escape Room Mystery",
-    "descrizione": "Escape room immersiva tematizzata sull'antico Egitto. Risolvere enigmi e misteri per fuggire dalla tomba prima che il tempo scada!",
-    "posizione": { "coord1": 41.9028, "coord2": 12.4964 },
+    "nome": "Antica Spezieria",
+    "descrizione": "Storica farmacia monastica con strumenti, alambicchi e ricette secolari.",
+    "posizione": { "coord1": 41.89111, "coord2": 12.46778 },
     "idCategoria": "mystery",
-    "immagine": "/db/img/escamotage-escape-room.jpg",
-    "indirizzo": "Via dei Serpenti, 24 - Roma",
+    "immagine": "/db/img/spezieria-trastevere.jpg",
+    "indirizzo": "Via della Scala, 23 - Roma",
+    "orari": [{ "inizio": "10:00", "fine": "17:00" }],
+    "costo": [{ "tipo": "Offerta", "prezzo": 5 }],
+    "valutazione": 4.4,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Gnomone Clementino",
+    "descrizione": "Antica meridiana astronomica all’interno della Basilica di Santa Maria degli Angeli e dei Martiri.",
+    "posizione": { "coord1": 41.90306, "coord2": 12.49694 },
+    "idCategoria": "mystery",
+    "immagine": "/db/img/gnomone-clementino.jpg",
+    "indirizzo": "Piazza della Repubblica, Roma",
+    "orari": [{ "inizio": "07:00", "fine": "18:30" }],
+    "costo": [{ "tipo": "Gratuito", "prezzo": 0 }],
+    "valutazione": 4.2,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Quartiere Coppedè",
+    "descrizione": "Quartiere eclettico dal forte carattere architettonico, con dettagli simbolici unici.",
+    "posizione": { "coord1": 41.92633, "coord2": 12.51141 },
+    "idCategoria": "mystery",
+    "immagine": "/db/img/quartiere-coppede.jpg",
+    "indirizzo": "Piazza Mincio - Roma",
+    "orari": [{ "inizio": "00:00", "fine": "23:59" }],
+    "costo": [{ "tipo": "Gratuito", "prezzo": 0 }],
+    "valutazione": 4.3,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Te la do io la Brioscia",
+    "descrizione": "Locale storico nella Tuscolana/Appio Claudio, famoso per briosce, pangoccioli ripieni e prodotti da forno locali.",
+    "posizione": { "coord1": 41.85196, "coord2": 12.56459 },
+    "idCategoria": "food",
+    "immagine": "/db/img/superciccio.jpg",
+    "indirizzo": "Viale Anicio Gallo, 170 - Roma",
+    "orari": [{ "inizio": "07:30", "fine": "02:00" }],
+    "costo": [{ "tipo": "Prodotto da forno", "prezzo": 3 }],
+    "valutazione": 4.4,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Mercato Rionale Tuscolano III",
+    "descrizione": "Mercato rionale popolare con prodotti freschi e bancarelle frequentate dai locali.",
+    "posizione": { "coord1": 41.85902, "coord2": 12.55438 },
+    "idCategoria": "food",
+    "immagine": "/db/img/mercato-tuscolano.jpg",
+    "indirizzo": "Viale Spartaco, 45 - Roma",
+    "orari": [{ "inizio": "07:00", "fine": "15:00" }],
+    "costo": [{ "tipo": "Libero", "prezzo": 0 }],
+    "valutazione": 4.4,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Parco di Tor Fiscale",
+    "descrizione": "Ampio parco urbano inserito nel Parco Archeologico dell’Appia Antica, con resti storici e percorsi verdi.",
+    "posizione": { "coord1": 41.86018, "coord2": 12.54411 },
+    "idCategoria": "nature",
+    "immagine": "/db/img/parco-tor-fiscale.jpg",
+    "indirizzo": "Via dell’Acquedotto Felice, 120 - Roma",
+    "orari": [{ "inizio": "07:30", "fine": "19:30" }],
+    "costo": [{ "tipo": "Gratuito", "prezzo": 0 }],
+    "valutazione": 4.5,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Percorso Murales M.U.Ro.",
+    "descrizione": "Murales open-air nel quartiere Quadraro, parte del Museo Urban Art di Roma (M.U.Ro.), con opere di artisti italiani e internazionali.",
+    "posizione": { "coord1": 41.86446, "coord2": 12.54717 },
+    "idCategoria": "culture",
+    "immagine": "/db/img/quadraro-street-art.jpg",
+    "indirizzo": "Via dei Quintili, 2 - Roma (punto di partenza consigliato)",
+    "orari": [{ "inizio": "00:00", "fine": "23:59" }],
+    "costo": [{ "tipo": "Gratuito", "prezzo": 0 }],
+    "valutazione": 4.7,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Metro A - Porta Furba Quadraro",
+    "descrizione": "Stazione della Metro A con mosaici artistici e accesso veloce al quartiere Quadraro.",
+    "posizione": { "coord1": 41.8638, "coord2": 12.5483 },
+    "idCategoria": "mystery",
+    "immagine": "/db/img/porta-furba-quadraro.jpg",
+    "indirizzo": "Piazza di Porta Furba - Roma",
+    "orari": [{ "inizio": "05:30", "fine": "00:30" }],
+    "costo": [{ "tipo": "Biglietto ATAC", "prezzo": 1.5 }],
+    "valutazione": 4.0,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Studi di Cinecittà",
+    "descrizione": "Storici studi cinematografici di Roma, culla del cinema internazionale e italiano, spesso sede di tour e visite guidate.",
+    "posizione": { "coord1": 41.84926, "coord2": 12.57471 },
+    "idCategoria": "culture",
+    "immagine": "/db/img/cinecitta.jpg",
+    "indirizzo": "Via Tuscolana, 1055 - Roma",
+    "orari": [{ "inizio": "10:00", "fine": "18:00" }],
+    "costo": [{ "tipo": "Biglietto", "prezzo": 12 }],
+    "valutazione": 4.3,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Fugacemente Escape Room",
+    "descrizione": "Escape room in zona Cinecittà (Tuscolana): più stanze e temi diversi, perfetta per la categoria mystery come esperienza.",
+    "posizione": { "coord1": 41.85, "coord2": 12.566666666666666 },
+    "idCategoria": "mystery",
+    "immagine": "/db/img/fugacemente-cinecitta.jpg",
+    "indirizzo": "Viale Palmiro Togliatti, 70 - Roma",
+    "orari": [{ "inizio": "14:00", "fine": "00:00" }],
+    "costo": [{ "tipo": "A partire da", "prezzo": 25 }],
+    "valutazione": 4.6,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Mausoleo di Monte del Grano",
+    "descrizione": "Monumento funerario romano poco conosciuto. Struttura circolare imponente, immersa nel verde, con un'atmosfera misteriosa.",
+    "posizione": { "coord1": 41.864732, "coord2": 12.550592 },
+    "idCategoria": "culture",
+    "immagine": "/db/img/mausoleo-monte-del-grano.jpg",
+    "indirizzo": "Via Tuscolana / area Monte del Grano - Roma",
+    "orari": [{ "inizio": "00:00", "fine": "23:59" }],
+    "costo": [{ "tipo": "Gratuito", "prezzo": 0 }],
+    "valutazione": 4.2,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "La Mejo Pizza der Quadraro",
+    "descrizione": "Pizza al taglio e street food di quartiere nel cuore del Quadraro.",
+    "posizione": { "coord1": 41.857859, "coord2": 12.555114 },
+    "idCategoria": "food",
+    "immagine": "/db/img/la-mejo-pizza-quadraro.jpg",
+    "indirizzo": "Via del Quadraro, 34 - Roma",
     "orari": [
-      { "inizio": "10:00", "fine": "22:00" }
+      { "inizio": "11:00", "fine": "22:00" }
     ],
     "costo": [
-      { "tipo": "Persona", "prezzo": 15 }
+      { "tipo": "Trancio", "prezzo": 3.5 }
     ],
+    "valutazione": 4.5,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Piazza dei Consoli",
+    "descrizione": "Ampia piazza storica della zona Tuscolana, punto di passaggio tra quartieri residenziali e aree verdi, vicina al Parco degli Acquedotti.",
+    "posizione": { "coord1": 41.85172, "coord2": 12.55394 },
+    "idCategoria": "culture",
+    "immagine": "/db/img/piazza-dei-consoli.jpg",
+    "indirizzo": "Piazza dei Consoli - Roma",
+    "orari": [{ "inizio": "00:00", "fine": "23:59" }],
+    "costo": [{ "tipo": "Gratuito", "prezzo": 0 }],
+    "valutazione": 4.1,
+    "idCreatore": "master"
+  },
+  {
+    "nome": "Piazza Don Bosco",
+    "descrizione": "Piazza centrale e molto vissuta del quartiere Cinecittà/Tuscolana, con negozi, locali e la Basilica di San Giovanni Bosco.",
+    "posizione": { "coord1": 41.85298, "coord2": 12.56533 },
+    "idCategoria": "culture",
+    "immagine": "/db/img/piazza-don-bosco.jpg",
+    "indirizzo": "Piazza Don Bosco - Roma",
+    "orari": [{ "inizio": "00:00", "fine": "23:59" }],
+    "costo": [{ "tipo": "Gratuito", "prezzo": 0 }],
     "valutazione": 4.3,
     "idCreatore": "master"
   }
+
 ]
