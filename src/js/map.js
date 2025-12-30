@@ -195,16 +195,29 @@ async function loadMarkers() {
         const iconName = categoryToMarkerMap[luogo.idCategoria] || "MarkerBase.svg";
         
         const marker = L.marker(markerPosition, {
-            icon: L.icon({
-                iconUrl: `../assets/icons/map/${iconName}`,
-                iconSize: [56, 56],
-                iconAnchor: [28, 56]
+            icon: L.divIcon({
+                html: `<img src="../assets/icons/map/${iconName}" class="marker-pop-up">`,
+                className: 'custom-div-icon', // lascia vuoto per non avere classi aggiuntive di Leaflet
+                iconSize: [64, 64],
+                iconAnchor: [32, 64]
             })
         })
         .addTo(map)
         .bindPopup(`<b>${luogo.nome}</b><br>${luogo.descrizione}`);
 
         spotMarkers.push(marker);
+    });
+
+    const interval = 500;
+
+    // Comparsa dei marker uno ad uno
+    spotMarkers.forEach((marker, index) => {
+        const iconElem = marker.getElement().querySelector('img.marker-pop-up');
+        if (iconElem) {
+            setTimeout(() => {
+                iconElem.classList.add('show');
+            }, index * interval);
+        }
     });
 }
 
