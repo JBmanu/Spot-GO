@@ -227,10 +227,5 @@ export async function createNearbySpotCard(spot, distance) {
     card.dataset.category = spot.idCategoria;
     card.dataset.saved = "true";
 
-    // Eventi (?)
-    card.addEventListener("click", () => {
-        console.log("Apri dettaglio spot:", spot.nome);
-    });
-
     return card;
 }
