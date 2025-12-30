@@ -43,6 +43,14 @@ let currentTileLayer;
 // Lista dei marker attualmente attivi sulla mappa
 let spotMarkers = [];
 
+// Mappa categoria -> icona marker
+const categoryToMarkerMap = {
+    "culture": "MarkerCulture.svg",
+    "food": "MarkerFood.svg",
+    "nature": "MarkerNature.svg",
+    "mystery": "MarkerMistery.svg"
+};
+
 // Stili della mappa
 const MAP_TILE_SERVERS = {
     OSM_STANDARD: {
@@ -184,12 +192,13 @@ async function loadMarkers() {
     spots.forEach(luogo => {
         // Converto coord1 e coord2 in array [lat, lng]
         const markerPosition = [luogo.posizione.coord1, luogo.posizione.coord2];
-
+        const iconName = categoryToMarkerMap[luogo.idCategoria] || "MarkerBase.svg";
+        
         const marker = L.marker(markerPosition, {
             icon: L.icon({
-                iconUrl: '../assets/icons/map/Marker.png',
-                iconSize: [46, 46],
-                iconAnchor: [23, 46]
+                iconUrl: `../assets/icons/map/${iconName}`,
+                iconSize: [56, 56],
+                iconAnchor: [28, 56]
             })
         })
         .addTo(map)
