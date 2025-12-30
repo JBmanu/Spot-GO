@@ -2,12 +2,11 @@ import {getFirstUser, getSavedSpots, getSpots} from "../query.js";
 import {fillSpotCard} from "../common/populateSpotCards.js";
 import {fitText} from "../common/fitText.js";
 
-function ensureSavedBookmarkDataset(cardEl) {
-    const btn = cardEl.querySelector("[data-bookmark-button]");
+function ensureSavedBookmarkDataset(shellEl) {
+    const btn = shellEl.querySelector("[data-bookmark-button]");
     if (!btn) return;
 
     btn.dataset.saved = "true";
-
     btn.setAttribute("data-bookmark-type", "saved");
 }
 
@@ -41,14 +40,14 @@ export function createSavedSpotShellFromTemplate(templateShell, spot) {
     shell.removeAttribute("aria-hidden");
     shell.hidden = false;
 
-    const card = shell.querySelector('[role="listitem"]');
-    if (!card) return null;
+    shell.setAttribute("role", "listitem");
+    if (spot?.id) shell.setAttribute("data-spot-id", String(spot.id));
 
-    if (spot?.id) card.setAttribute("data-spot-id", String(spot.id));
+    const cardEl = shell.querySelector('[data-category="card"]');
+    if (!cardEl) return null;
 
-    fillSpotCard(card, spot, {wrapperEl: shell, setCategoryText: false});
-
-    ensureSavedBookmarkDataset(card);
+    fillSpotCard(cardEl, spot, {wrapperEl: shell, setCategoryText: false});
+    ensureSavedBookmarkDataset(shell);
 
     return shell;
 }
@@ -63,15 +62,19 @@ export async function populateSavedSpots({
 
     const emptyState = document.getElementById(emptyStateId);
 
-    const templateShell = container.querySelector(templateSelector);
+    let templateShell = container.querySelector(templateSelector);
     if (!templateShell) {
-        console.warn("Template saved-card non trovato dentro", `#${containerId}`);
+        templateShell = container.parentElement?.querySelector(templateSelector);
+    }
+    if (!templateShell) {
+        templateShell = document.querySelector(`#${containerId} ~ ${templateSelector}`);
+    }
+    if (!templateShell) {
+        console.warn("Template saved-card non trovato vicino a", `#${containerId}`);
         return;
     }
-
     templateShell.hidden = true;
     templateShell.setAttribute("aria-hidden", "true");
-
     try {
         const spots = await getSavedSpotsData();
 
@@ -81,15 +84,17 @@ export async function populateSavedSpots({
             if (emptyState) emptyState.classList.remove("hidden");
             return;
         }
-
         if (emptyState) emptyState.classList.add("hidden");
-
         spots.forEach((spot) => {
             const shellEl = createSavedSpotShellFromTemplate(templateShell, spot);
             if (shellEl) container.appendChild(shellEl);
         });
-
-        fitText(".saved-card .spot-card-title", "#" + containerId, 2, 10.5);
+        fitText(
+            '.spot-card-saved [data-category="title"]',
+            "#" + containerId,
+            2,
+            10.5
+        );
     } catch (err) {
         console.error("Errore populateSavedSpots:", err);
     }

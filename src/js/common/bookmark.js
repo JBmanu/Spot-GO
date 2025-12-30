@@ -1,6 +1,6 @@
-import { getFirstUser, getSavedSpots } from "../query.js";
-import { showConfirmModal } from "../ui/confirmModal.js";
-import { populateSavedSpots } from "../pages/savedSpots.js";
+import {getFirstUser, getSavedSpots} from "../query.js";
+import {showConfirmModal} from "../ui/confirmModal.js";
+import {populateSavedSpots} from "../pages/populateSavedSpots.js";
 import {
     collection,
     getDocs,
@@ -10,7 +10,7 @@ import {
     setDoc,
     doc,
 } from "firebase/firestore";
-import { db } from "../firebase.js";
+import {db} from "../firebase.js";
 
 const BOOKMARK_ICONS = {
     filled: "../assets/icons/homepage/Bookmark.svg",
@@ -25,6 +25,7 @@ const SELECTORS = {
     spotIdAttr: "data-spot-id",
     titleField: '[data-field="title"]',
     carouselSavedRoot: "#home-saved-container",
+    savedShell: ".spot-card-saved",
 };
 
 const MESSAGES = {
@@ -34,7 +35,7 @@ const MESSAGES = {
     userNotFound: "Utente non trovato",
 };
 
-const TIMING = { animationRemove: 300 };
+const TIMING = {animationRemove: 300};
 
 document.addEventListener("click", (e) => {
     const btn = e.target.closest(SELECTORS.bookmarkButton);
@@ -97,7 +98,7 @@ export async function toggleBookmarkForSpot(spotId) {
             await addBookmark(currentUser.id, spotId);
             updateIconsForSpot(spotId, true);
             emitBookmarkChanged(spotId, true);
-            await updateSavedSection();
+            await updateSavedSection({preserveScroll: true});
             return;
         }
         const confirmed = await showConfirmModal(
@@ -108,7 +109,7 @@ export async function toggleBookmarkForSpot(spotId) {
         await removeBookmark(currentUser.id, spotId);
         updateIconsForSpot(spotId, false);
         emitBookmarkChanged(spotId, false);
-        await updateSavedSection();
+        await updateSavedSection({preserveScroll: true});
     } catch (error) {
         console.error("Errore toggleBookmarkForSpot:", error);
     }
@@ -135,7 +136,7 @@ async function handleBookmarkClick(button, card) {
                 MESSAGES.removeConfirmMessage(spotTitle)
             );
             if (!confirmed) return;
-            await removeBookmarkFlow(userId, spotId, { removeCard: true, card });
+            await removeBookmarkFlow(userId, spotId, {removeCard: true, card});
             return;
         }
         if (!isSaved) {
@@ -157,34 +158,68 @@ async function addBookmarkFlow(userId, spotId) {
     await addBookmark(userId, spotId);
     updateIconsForSpot(spotId, true);
     emitBookmarkChanged(spotId, true);
-    await updateSavedSection();
+    await updateSavedSection({preserveScroll: true});
 }
 
-async function removeBookmarkFlow(userId, spotId, { removeCard = false, card = null } = {}) {
+async function removeBookmarkFlow(
+    userId,
+    spotId,
+    {removeCard = false, card = null} = {}
+) {
     await removeBookmark(userId, spotId);
     updateIconsForSpot(spotId, false);
     emitBookmarkChanged(spotId, false);
     if (removeCard && card) {
         await removeCardFromView(card);
+        await maybeToggleSavedEmptyState();
+        return;
     }
-    await updateSavedSection();
+    await updateSavedSection({preserveScroll: true});
 }
 
-async function updateSavedSection() {
+function getCarouselTrack(rootEl) {
+    return (
+        rootEl.querySelector(":scope > .carousel-horizontal_track") ||
+        rootEl.querySelector(".carousel-horizontal_track") ||
+        rootEl
+    );
+}
+
+async function updateSavedSection({preserveScroll = true} = {}) {
     try {
         if (typeof populateSavedSpots !== "function") return;
-        await populateSavedSpots({ containerId: "home-saved-container" });
-        await nextFrame();
-        await nextFrame();
         const savedRoot = document.querySelector(SELECTORS.carouselSavedRoot);
         if (!savedRoot) return;
-        const { refreshHorizontalCarousel } = await import("../common/carousels.js");
+        const trackBefore = getCarouselTrack(savedRoot);
+        const prevScrollLeft = preserveScroll ? trackBefore.scrollLeft : 0;
+        await populateSavedSpots({containerId: "home-saved-container"});
+        await nextFrame();
+        await nextFrame();
+        const {refreshHorizontalCarousel} = await import("../common/carousels.js");
         savedRoot.classList.add("js-carousel-horizontal");
-        refreshHorizontalCarousel(savedRoot, { cardSelector: ".saved-spot-shell" });
+        refreshHorizontalCarousel(savedRoot, {cardSelector: SELECTORS.savedShell});
+        await nextFrame();
+        if (preserveScroll) {
+            const trackAfter = getCarouselTrack(savedRoot);
+            trackAfter.scrollLeft = prevScrollLeft;
+        }
         initializeBookmarks(savedRoot);
+        await maybeToggleSavedEmptyState();
     } catch (error) {
         console.error("Errore aggiornamento sezione salvati:", error);
     }
+}
+
+async function maybeToggleSavedEmptyState() {
+    const savedRoot = document.querySelector(SELECTORS.carouselSavedRoot);
+    const empty = document.getElementById("saved-empty-state");
+    if (!savedRoot || !empty) return;
+    const track = getCarouselTrack(savedRoot);
+    const count = track.querySelectorAll(
+        `${SELECTORS.savedShell}:not([data-template])`
+    ).length;
+    if (count === 0) empty.classList.remove("hidden");
+    else empty.classList.add("hidden");
 }
 
 async function getSavedSpotIds(userId) {
@@ -209,7 +244,7 @@ function updateIconsForSpot(spotId, isSaved) {
 function emitBookmarkChanged(spotId, isSaved) {
     if (!spotId) return;
     document.dispatchEvent(
-        new CustomEvent("bookmark:changed", { detail: { spotId, isSaved } })
+        new CustomEvent("bookmark:changed", {detail: {spotId, isSaved}})
     );
 }
 
@@ -218,7 +253,11 @@ function getSpotIdFromCard(card) {
 }
 
 function getSpotTitle(card) {
-    return card.querySelector(SELECTORS.titleField)?.textContent?.trim() || "questo spot";
+    return (
+        card.querySelector(SELECTORS.titleField)?.textContent?.trim() ||
+        card.querySelector('[data-category="title"]')?.textContent?.trim() ||
+        "questo spot"
+    );
 }
 
 export async function addBookmark(idUtente, idLuogo) {
@@ -253,7 +292,7 @@ export async function removeBookmark(idUtente, idLuogo) {
 
 export async function syncAllBookmarks(scope = document) {
     await syncBookmarksUI(scope);
-    await updateSavedSection?.();
+    await updateSavedSection({preserveScroll: true});
 }
 
 function isProcessingAllowed(button) {

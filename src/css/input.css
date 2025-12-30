@@ -16,10 +16,7 @@
 
 @import "./homepage/homepage.css";
 
-@import "./homepage/saved-spots.css";
-
 @import "../base/carousels/carousel-horizontal.css";
-
 
 @import "./common/spot-detail.css";
 
@@ -32,5 +29,7 @@
 @import "../base/simil-homepage-toprated/simil-toprated.css";
 
 @import "../base/simil-homepage-nearby/simil-nearby.css";
+
+@import "../base/simil-homepage-saved/simil-saved.css";
 
 @import "./common/bottom-sheet.css";
