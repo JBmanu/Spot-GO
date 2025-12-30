@@ -163,6 +163,7 @@
 
     .spot-card-nearby__bookmark-icon {
         @apply w-9 h-9 object-contain;
+        filter: saturate(1.7);
     }
 
     .spot-card-nearby_body {

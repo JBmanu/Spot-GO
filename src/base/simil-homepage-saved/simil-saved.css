@@ -119,6 +119,7 @@
 
     .spot-card-saved [data-category="bookmark-icon"] {
         @apply w-9 h-9;
+        filter: saturate(1.7);
     }
 
     .spot-card-saved [data-category="body"] {
