@@ -17,8 +17,9 @@
     }
 
     .saved-swipe-track {
-        @apply flex flex-nowrap gap-4 overflow-x-auto px-6 pb-3 scroll-smooth snap-x snap-mandatory;
+        @apply flex flex-nowrap gap-4 overflow-x-auto px-3 scroll-smooth snap-x snap-mandatory;
         scrollbar-width: none;
+        width: 100%;
     }
 
     .saved-swipe-track::-webkit-scrollbar { display: none; }
@@ -141,7 +142,7 @@
     }
 
     .spot-card-body {
-        @apply relative flex-1 px-2 pt-2 pb-3 flex items-start justify-center text-center;
+        @apply relative flex-1 px-2 pt-1 pb-1 flex items-start justify-center text-center;
         border-top: 1px solid rgba(255, 255, 255, 0.18);
         background: linear-gradient(
                 to bottom,
