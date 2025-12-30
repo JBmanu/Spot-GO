@@ -3,6 +3,8 @@ function isIgnorableNode(el) {
 
     if (el.dataset && el.dataset.template) return true;
 
+    if (el.hasAttribute("hidden")) return true;
+
     return false;
 }
 
@@ -16,12 +18,10 @@ function ensureTrack(carouselEl) {
     return track;
 }
 
-function wrapCardsIntoTrack(carouselEl, { cardSelector } = {}) {
+function wrapCardsIntoTrack(carouselEl, {cardSelector} = {}) {
     const track = ensureTrack(carouselEl);
 
-    const directChildren = Array.from(carouselEl.children).filter(
-        (ch) => ch !== track
-    );
+    const directChildren = Array.from(carouselEl.children).filter((ch) => ch !== track);
 
     const candidates = directChildren.filter((el) => {
         if (isIgnorableNode(el)) return false;
@@ -30,13 +30,21 @@ function wrapCardsIntoTrack(carouselEl, { cardSelector } = {}) {
     });
 
     candidates.forEach((card) => {
+        if (card.parentElement !== track) track.appendChild(card);
         card.classList.add("carousel-horizontal_item");
-        track.appendChild(card);
     });
 
     Array.from(track.children).forEach((child) => {
-        if (isIgnorableNode(child)) return;
-        if (cardSelector && !child.matches(cardSelector)) return;
+        if (isIgnorableNode(child)) {
+            child.remove();
+            return;
+        }
+
+        if (cardSelector && !child.matches(cardSelector)) {
+            carouselEl.insertBefore(child, track);
+            return;
+        }
+
         child.classList.add("carousel-horizontal_item");
     });
 
@@ -53,11 +61,18 @@ function setupDragToScroll(track) {
 
     const onDown = (e) => {
         if (e.pointerType === "mouse" && e.button !== 0) return;
+
         if (e.target.closest("button, [data-bookmark-button]")) return;
 
         isDown = true;
         track.classList.add("is-dragging");
-        track.setPointerCapture?.(e.pointerId);
+
+        e.preventDefault?.();
+
+        try {
+            track.setPointerCapture?.(e.pointerId);
+        } catch (_) {
+        }
 
         startX = e.clientX;
         startScrollLeft = track.scrollLeft;
@@ -78,14 +93,15 @@ function setupDragToScroll(track) {
         track.classList.remove("is-dragging");
         try {
             track.releasePointerCapture?.(e.pointerId);
-        } catch (_) {}
+        } catch (_) {
+        }
     };
 
-    track.addEventListener("pointerdown", onDown, { passive: true });
-    track.addEventListener("pointermove", onMove, { passive: false });
-    track.addEventListener("pointerup", endDrag, { passive: true });
-    track.addEventListener("pointercancel", endDrag, { passive: true });
-    track.addEventListener("pointerleave", endDrag, { passive: true });
+    track.addEventListener("pointerdown", onDown, {passive: false});
+    track.addEventListener("pointermove", onMove, {passive: false});
+    track.addEventListener("pointerup", endDrag, {passive: true});
+    track.addEventListener("pointercancel", endDrag, {passive: true});
+    track.addEventListener("pointerleave", endDrag, {passive: true});
 
     track.querySelectorAll("img").forEach((img) => {
         img.draggable = false;
@@ -94,26 +110,24 @@ function setupDragToScroll(track) {
 
 export function initHorizontalCarousels(
     root = document,
-    { cardSelector = ".spot-card-nearby", enableDrag = true } = {}
+    {cardSelector = ".spot-card-nearby", enableDrag = true} = {}
 ) {
     const carousels = root.querySelectorAll(".js-carousel-horizontal");
 
     carousels.forEach((carouselEl) => {
         carouselEl.classList.add("carousel-horizontal");
-
-        const track = wrapCardsIntoTrack(carouselEl, { cardSelector });
-
+        const track = wrapCardsIntoTrack(carouselEl, {cardSelector});
         if (enableDrag) setupDragToScroll(track);
     });
 }
 
 export function refreshHorizontalCarousel(
     carouselEl,
-    { cardSelector = ".spot-card-nearby", enableDrag = true } = {}
+    {cardSelector = ".spot-card-nearby", enableDrag = true} = {}
 ) {
     if (!carouselEl) return;
     carouselEl.classList.add("carousel-horizontal");
-    const track = wrapCardsIntoTrack(carouselEl, { cardSelector });
+    const track = wrapCardsIntoTrack(carouselEl, {cardSelector});
     if (enableDrag) setupDragToScroll(track);
 }
 
@@ -127,12 +141,10 @@ function ensureVerticalTrack(carouselEl) {
     return track;
 }
 
-function wrapVerticalCardsIntoTrack(carouselEl, { cardSelector } = {}) {
+function wrapVerticalCardsIntoTrack(carouselEl, {cardSelector} = {}) {
     const track = ensureVerticalTrack(carouselEl);
 
-    const directChildren = Array.from(carouselEl.children).filter(
-        (ch) => ch !== track
-    );
+    const directChildren = Array.from(carouselEl.children).filter((ch) => ch !== track);
 
     const candidates = directChildren.filter((el) => {
         if (isIgnorableNode(el)) return false;
@@ -141,13 +153,19 @@ function wrapVerticalCardsIntoTrack(carouselEl, { cardSelector } = {}) {
     });
 
     candidates.forEach((card) => {
+        if (card.parentElement !== track) track.appendChild(card);
         card.classList.add("carousel-vertical_item");
-        track.appendChild(card);
     });
 
     Array.from(track.children).forEach((child) => {
-        if (isIgnorableNode(child)) return;
-        if (cardSelector && !child.matches(cardSelector)) return;
+        if (isIgnorableNode(child)) {
+            child.remove();
+            return;
+        }
+        if (cardSelector && !child.matches(cardSelector)) {
+            carouselEl.insertBefore(child, track);
+            return;
+        }
         child.classList.add("carousel-vertical_item");
     });
 
@@ -156,21 +174,21 @@ function wrapVerticalCardsIntoTrack(carouselEl, { cardSelector } = {}) {
 
 export function initVerticalCarousels(
     root = document,
-    { cardSelector = ".spot-card-toprated" } = {}
+    {cardSelector = ".spot-card-toprated"} = {}
 ) {
     const carousels = root.querySelectorAll(".js-carousel-vertical");
 
     carousels.forEach((carouselEl) => {
         carouselEl.classList.add("carousel-vertical");
-        wrapVerticalCardsIntoTrack(carouselEl, { cardSelector });
+        wrapVerticalCardsIntoTrack(carouselEl, {cardSelector});
     });
 }
 
 export function refreshVerticalCarousel(
     carouselEl,
-    { cardSelector = ".spot-card-toprated" } = {}
+    {cardSelector = ".spot-card-toprated"} = {}
 ) {
     if (!carouselEl) return;
     carouselEl.classList.add("carousel-vertical");
-    wrapVerticalCardsIntoTrack(carouselEl, { cardSelector });
+    wrapVerticalCardsIntoTrack(carouselEl, {cardSelector});
 }
