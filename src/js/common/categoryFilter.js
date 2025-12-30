@@ -57,7 +57,6 @@ function getCardCategory(card) {
 export function filterSpotsByCategory(categories = [], scopeEl = document) {
     const normalizedCats = categories.map(normalizeCategoryName);
     const cards = scopeEl.querySelectorAll('[role="listitem"][data-spot-id]');
-    console.log('filterSpotsByCategory: found', cards.length, 'cards in scope');
     cards.forEach((card) => {
         if (card.closest('[data-template="nearby-card"]')) return;
 
@@ -74,7 +73,6 @@ export function filterSpotsByCategory(categories = [], scopeEl = document) {
         }
         const cardCat = getCardCategory(card);
         const match = cardCat ? normalizedCats.includes(cardCat) : false;
-        console.log('Card', spotId, 'category:', cardCat, 'match:', match);
         wrapper.style.display = match ? "" : "none";
     });
 }
