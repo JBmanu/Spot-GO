@@ -3,7 +3,8 @@
 let getSpots,
     USER_PROTO_POSITION, distanceFromUserToSpot, createNearbySpotCard,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
-    createSearchBarWithKeyboardAndFilters, createBottomSheetStandardFilters;
+    createSearchBarWithKeyboardAndFilters, createBottomSheetStandardFilters,
+    initializeSpotClickHandlers;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -23,6 +24,9 @@ Promise.all([
         createSearchBarWithKeyboardAndFilters = module.createSearchBarWithKeyboardAndFilters;
         createBottomSheetStandardFilters = module.createBottomSheetStandardFilters;
         createNearbySpotCard = module.createNearbySpotCard;
+    }),
+    import("./pages/spotDetail.js").then(module => {
+        initializeSpotClickHandlers = module.initializeSpotClickHandlers;
     }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
@@ -74,8 +78,9 @@ async function initializeMap() {
 
 async function loadSpotsDependentObjects() {
     await loadSpots();
-    loadMarkers();
-    loadNearbySpotsList();
+    await loadMarkers();
+    await loadNearbySpotsList();
+    initializeSpotClickHandlers();
 }
 
 function initializeCategoryFilters() {
