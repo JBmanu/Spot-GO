@@ -2,6 +2,7 @@ import { refreshVerticalCarousel } from "../common/carousels.js";
 import { initializeBookmarks, syncAllBookmarks } from "../common/bookmark.js";
 import { initializeSpotClickHandlers } from "./spotDetail.js";
 import { getFirstUser, getSavedSpots, getSpots, getCategoryNameIt } from "../query.js";
+import { distanceFromUserToSpot, formatDistance } from "../common.js";
 
 export async function loadViewAllSaved(fromPage = "homepage") {
     try {
@@ -29,7 +30,7 @@ export async function loadViewAllSaved(fromPage = "homepage") {
             headerTitle.classList.remove("hidden");
         }
         deactivateAllToolbarButtons();
-        refreshVerticalCarousel(document.querySelector('#view-all-saved-container'), {cardSelector: '.view-all-saved-card'});
+        refreshVerticalCarousel(document.querySelector('#view-all-saved-carousel'), {cardSelector: '[data-slot="spot"]'});
         initializeBookmarks();
         await populateViewAllSavedSpots();
         initializeSpotClickHandlers();
@@ -77,85 +78,61 @@ async function populateViewAllSavedSpots() {
         const currentUser = await getFirstUser();
         if (!currentUser) return;
         const savedSpotRelations = await getSavedSpots(currentUser.id);
-        const savedContainer = document.getElementById("view-all-saved-container");
+        const savedContainer = document.getElementById("view-all-saved-carousel");
         if (!savedContainer) return;
+        // Rimuovi tutte le card esistenti
+        savedContainer.querySelectorAll('[data-slot="spot"]').forEach(el => el.remove());
         if (!savedSpotRelations || savedSpotRelations.length === 0) {
-            savedContainer.innerHTML =
+            savedContainer.innerHTML +=
                 '<p class="text-center text-text_color/60 py-8">Nessuno spot salvato</p>';
             return;
         }
         const allSpots = await getSpots();
         const neededIds = savedSpotRelations.map((r) => r.idLuogo);
-        const allCards = Array.from(savedContainer.querySelectorAll('[role="listitem"]'));
-        if (allCards.length === 0) return;
-        const accounted = new Set();
-        allCards.forEach((card) => {
-            const spotId = card.getAttribute("data-spot-id") || "";
-            if (spotId && neededIds.includes(spotId)) {
-                accounted.add(spotId);
-            } else if (spotId && !neededIds.includes(spotId)) {
-                card.setAttribute("data-spot-id", "");
-                const titleEl = card.querySelector('[data-field="title"]');
-                if (titleEl) titleEl.textContent = "";
-                const imageEl = card.querySelector('[data-field="image"]');
-                if (imageEl) imageEl.src = "";
-                const distanceEl = card.querySelector('[data-field="distance"]');
-                if (distanceEl) distanceEl.textContent = "";
-                const categoryEl = card.querySelector('[data-field="category"]');
-                if (categoryEl) categoryEl.textContent = "";
-                const ratingEl = card.querySelector('[data-field="rating"]');
-                if (ratingEl) ratingEl.textContent = "";
-            }
-        });
-        let placeholderCards = allCards.filter((c) => !c.getAttribute("data-spot-id"));
-        for (const idLuogo of neededIds) {
-            if (accounted.has(idLuogo)) continue;
-            const spot = allSpots.find((s) => s.id === idLuogo);
-            if (!spot) continue;
-            let cardToFill = placeholderCards.shift();
-            if (!cardToFill) {
-                const templateCard = allCards[0];
-                if (!templateCard) continue;
-                cardToFill = templateCard.cloneNode(true);
-                savedContainer.appendChild(cardToFill);
-                allCards.push(cardToFill);
-            }
-            cardToFill.setAttribute("data-spot-id", spot.id);
-            const titleEl = cardToFill.querySelector('[data-field="title"]');
+        const spotsToShow = allSpots.filter((s) => neededIds.includes(s.id));
+        spotsToShow.sort((a, b) => distanceFromUserToSpot(a) - distanceFromUserToSpot(b));
+        const template = document.getElementById("saved-spot-card-template");
+        for (const spot of spotsToShow) {
+            const cardNode = template.content.firstElementChild.cloneNode(true);
+            cardNode.setAttribute("data-spot-id", spot.id);
+            cardNode.setAttribute("data-category", (spot.idCategoria || "unknown").toLowerCase());
+            const titleEl = cardNode.querySelector('[data-field="title"]');
             if (titleEl) titleEl.textContent = spot.nome || "Spot";
-            const imageEl = cardToFill.querySelector('[data-field="image"]');
+            const imageEl = cardNode.querySelector('[data-field="image"]');
             if (imageEl) {
                 imageEl.src = spot.immagine || "";
                 imageEl.alt = spot.nome || "Foto spot";
             }
-            const distanceEl = cardToFill.querySelector('[data-field="distance"]');
-            if (distanceEl)
-                distanceEl.textContent = spot.distanza ? `${spot.distanza} m` : "0 m";
-            const categoryEl = cardToFill.querySelector('[data-field="category"]');
+            const categoryEl = cardNode.querySelector('[data-field="category"]');
             if (categoryEl && spot.idCategoria) {
                 categoryEl.textContent = await getCategoryNameIt(spot.idCategoria);
             }
-            const ratingEl = cardToFill.querySelector('[data-field="rating"]');
-            if (ratingEl) ratingEl.textContent = spot.rating || "0";
-            cardToFill.setAttribute(
-                "data-category",
-                (spot.idCategoria || "unknown").toLowerCase()
-            );
-            cardToFill.style.display = "";
-            accounted.add(spot.id);
+            const distanceEl = cardNode.querySelector('[data-field="distance"]');
+            if (distanceEl) {
+                distanceEl.textContent = formatDistance(distanceFromUserToSpot(spot));
+            }
+            const ratingEl = cardNode.querySelector('[data-field="rating"]');
+            if (ratingEl) {
+                const rating = spot?.rating ?? spot?.valutazione ?? spot?.stelle ?? spot?.mediaVoti ?? null;
+                if (rating != null && !isNaN(Number(rating))) {
+                    ratingEl.textContent = (Math.round(Number(rating) * 10) / 10).toFixed(1);
+                } else {
+                    ratingEl.textContent = "-";
+                }
+            }
+            savedContainer.appendChild(cardNode);
         }
-        placeholderCards.forEach((pc) => (pc.style.display = "none"));
     } catch (error) {
         console.error("Errore nel popolare gli spot salvati view-all:", error);
     }
 }
 
 function initializeViewAllSavedSearch() {
-    const searchInput = document.getElementById("view-all-saved-search");
+    const searchInput = document.getElementById("search-bar-input");
     const keyboard = document.getElementById("view-all-saved-keyboard");
     const overlay = document.getElementById("view-all-saved-keyboard-overlay");
     if (!searchInput || !keyboard || !overlay) return;
-    const track = document.querySelector("#view-all-saved-container");
+    const track = document.querySelector("#view-all-saved-carousel");
     searchInput.addEventListener("focus", () => {
         keyboard.classList.add("keyboard-visible");
         overlay.classList.add("overlay-visible");
@@ -173,7 +150,7 @@ function initializeViewAllSavedSearch() {
         keyboard.style.transform = "translateY(100%)";
         overlay.style.transform = "translateY(100%)";
         searchInput.value = "";
-        const spotCards = document.querySelectorAll(".view-all-saved-card");
+        const spotCards = document.querySelectorAll('[data-slot="spot"]');
         spotCards.forEach((card) => {
             const spotId = card.getAttribute("data-spot-id");
             card.style.display = spotId && spotId.trim() !== "" ? "" : "none";
@@ -203,7 +180,7 @@ function initializeViewAllSavedSearch() {
     keyboard.addEventListener("mousedown", (e) => e.preventDefault());
     searchInput.addEventListener("input", () => {
         const searchQuery = searchInput.value.toLowerCase().trim();
-        const spotCards = document.querySelectorAll(".view-all-saved-card");
+        const spotCards = document.querySelectorAll('[data-slot="spot"]');
         spotCards.forEach((card) => {
             const spotId = card.getAttribute("data-spot-id");
             if (!spotId || spotId.trim() === "") {
@@ -211,7 +188,7 @@ function initializeViewAllSavedSearch() {
                 card.style.zIndex = "998";
                 return;
             }
-            const title = card.querySelector(".view-all-saved-title");
+            const title = card.querySelector('[data-field="title"]');
             const titleText = title ? title.textContent.toLowerCase() : "";
             if (searchQuery === "") {
                 card.style.display = "";
