@@ -5,6 +5,11 @@
     .spot-card-toprated[data-category="nature"]  { --spot-tint: var(--cat-nature); }
     .spot-card-toprated[data-category="mystery"] { --spot-tint: var(--cat-mystery); }
 
+    @keyframes pulse-rating {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+
     .spot-card-toprated {
         @apply relative flex rounded-2xl overflow-hidden flex-shrink-0 w-full;
         @apply items-center;
@@ -95,7 +100,7 @@
     }
 
     .spot-card-toprated [data-slot="distance"] {
-        @apply absolute bottom-2 left-2 right-2 flex items-center justify-center gap-1.5 px-3 py-1.5;
+        @apply absolute bottom-0 left-2 right-2 flex items-center justify-center gap-1.5 px-3 py-1.5;
         @apply backdrop-blur-[16px] backdrop-saturate-160;
         border-radius: 999px;
 
@@ -148,12 +153,23 @@
                 0 0 0 1px rgba(var(--spot-tint) / 0.16);
 
         transition: transform 0.18s ease;
+        animation: pulse-rating 3s ease-in-out infinite;
+    }
+
+    .spot-card-toprated [data-slot="rating-pill"]:hover {
+        transform: scale(1.05);
+    }
+
+    .spot-card-toprated [data-slot="rating-pill"]:active {
+        transform: scale(0.95);
     }
 
     .spot-card-toprated [data-slot="rating-value"] {
-        @apply text-base font-black;
-        color: var(--color-text_color);
-        text-shadow: 0 1px 2px rgba(0,0,0,0.10);
+        color: #222 !important;
+        font-size: 1.15em;
+        font-weight: 700;
+        min-width: 2ch;
+        margin-right: 0.3em;
     }
 
     .spot-card-toprated [data-slot="rating-star"] {

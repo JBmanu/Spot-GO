@@ -14,6 +14,7 @@
       { "tipo": "Intero", "prezzo": 18 },
       { "tipo": "Ridotto", "prezzo": 12 }
     ],
+    "valutazione": 4.5,
     "idCreatore": "master"
   },
   {
@@ -30,6 +31,7 @@
     "costo": [
       { "tipo": "Menu medio", "prezzo": 25 }
     ],
+    "valutazione": 4.2,
     "idCreatore": "master"
   },
   {
@@ -45,6 +47,7 @@
     "costo": [
       { "tipo": "Gratuito", "prezzo": 0 }
     ],
+    "valutazione": 4.0,
     "idCreatore": "master"
   },
   {
@@ -60,6 +63,7 @@
     "costo": [
       { "tipo": "Persona", "prezzo": 15 }
     ],
+    "valutazione": 4.3,
     "idCreatore": "master"
   }
 ]

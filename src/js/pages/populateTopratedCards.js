@@ -26,11 +26,26 @@ function setText(el, value) {
     el.textContent = value == null ? "" : String(value);
 }
 
+function normalizeSpot(raw) {
+    if (!raw) return null;
+
+    const id = raw?.id ?? raw?.nome ?? raw?.name ?? null;
+
+    return {
+        ...raw,
+        id,
+        title: raw?.title ?? raw?.nome ?? raw?.name ?? "",
+        category: raw?.category ?? raw?.idCategoria ?? raw?.categoria ?? raw?.categoryId ?? null,
+        image: raw?.image ?? raw?.immagine ?? raw?.foto ?? raw?.img ?? "",
+        valutazione: raw?.valutazione ?? raw?.rating ?? raw?.stelle ?? raw?.mediaVoti ?? null,
+    };
+}
+
 export async function populateTopratedSpots({
-    containerId = "home-toprated-carousel-container",
-    templateSelector = '[data-template="toprated-item"]',
-    limit = 10,
-} = {}) {
+                                                containerId = "home-toprated-carousel",
+                                                templateSelector = '[data-template="toprated-item"]',
+                                                limit = 10,
+                                            } = {}) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -46,6 +61,8 @@ export async function populateTopratedSpots({
     const all = await getSpots();
 
     const scored = (all || [])
+        .map((s) => normalizeSpot(s))
+        .filter(Boolean)
         .map((s) => ({ spot: s, rating: getRatingValue(s) }))
         .filter((x) => x.spot && x.spot.id);
 
@@ -73,7 +90,19 @@ export async function populateTopratedSpots({
 
         if (card.style.display === "none") continue;
 
-        setText(card.querySelector('[data-field="rating"]'), getRatingValue(spot));
+
+        const ratingValue = getRatingValue(spot);
+        const ratingText =
+            ratingValue == null ? "" : (Math.round(Number(ratingValue) * 10) / 10).toFixed(1);
+
+        const ratingEl = card.querySelector('[data-slot="rating-value"]');
+        setText(ratingEl, ratingText);
+
+        if (ratingEl) {
+            if (ratingText !== "") ratingEl.setAttribute("aria-label", `${ratingText} stelle`);
+            else ratingEl.removeAttribute("aria-label");
+        }
+
         setText(card.querySelector('[data-field="distance"]'), pickDistance(spot));
 
         container.appendChild(card);
