@@ -1,5 +1,6 @@
-import { getSpots } from "../query.js";
-import { fillSpotCard } from "../common/populateSpotCards.js";
+import {getSpots} from "../query.js";
+import {fillSpotCard} from "../common/populateSpotCards.js";
+import {distanceFromUserToSpot, formatDistance} from "../common.js";
 
 function toNumberOrNull(v) {
     if (v === undefined || v === null) return null;
@@ -15,10 +16,6 @@ function getRatingValue(spot) {
         toNumberOrNull(spot?.mediaVoti) ??
         null
     );
-}
-
-function pickDistance(spot) {
-    return spot?.distanza ?? spot?.distance ?? spot?.metri ?? spot?.meters ?? null;
 }
 
 function setText(el, value) {
@@ -63,7 +60,7 @@ export async function populateTopratedSpots({
     const scored = (all || [])
         .map((s) => normalizeSpot(s))
         .filter(Boolean)
-        .map((s) => ({ spot: s, rating: getRatingValue(s) }))
+        .map((s) => ({spot: s, rating: getRatingValue(s)}))
         .filter((x) => x.spot && x.spot.id);
 
     scored.sort((a, b) => (b.rating ?? -Infinity) - (a.rating ?? -Infinity));
@@ -103,7 +100,7 @@ export async function populateTopratedSpots({
             else ratingEl.removeAttribute("aria-label");
         }
 
-        setText(card.querySelector('[data-field="distance"]'), pickDistance(spot));
+        setText(card.querySelector('[data-field="distance"]'), formatDistance(distanceFromUserToSpot(spot)));
 
         container.appendChild(card);
     }
