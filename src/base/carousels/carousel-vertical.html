@@ -1,0 +1,19 @@
+<!--
+Come usarlo:
+- Incolla questa sezione dove ti serve.
+- Il div .js-carousel-vertical verrà trasformato in un carosello verticale.
+- Aggiungi le CARD come figli diretti del div .js-carousel-vertical
+  (es: <article class="spot-card-toprated" ...>...</article>).
+- Imposta l'altezza del carosello con data-size o classe utility (vedi CSS).
+-->
+<section class="home-section px-3" data-template="carousel-vertical">
+    <div
+            class="js-carousel-vertical"
+            data-slot="container-vertical"
+            role="list"
+            aria-label="Lista scelti dalla community"
+            data-size="md"
+    >
+        <!-- CARD inserite via JS (figli diretti) -->
+    </div>
+</section>

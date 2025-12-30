@@ -1,0 +1,27 @@
+@layer components {
+    .carousel-vertical {
+        @apply overflow-hidden relative z-10 rounded-[18px];
+    }
+
+    .carousel-vertical[data-size="sm"] {
+        height: 54px;
+    }
+
+    .carousel-vertical[data-size="md"] {
+        height: 280px;
+    }
+
+    .carousel-vertical[data-size="lg"] {
+        height: 352px;
+    }
+
+    .carousel-vertical-track {
+        @apply h-full flex flex-col gap-4 p-2 overflow-y-auto scroll-smooth;
+        touch-action: pan-y;
+        scrollbar-width: none;
+    }
+
+    .carousel-vertical-track::-webkit-scrollbar {
+        display: none;
+    }
+}

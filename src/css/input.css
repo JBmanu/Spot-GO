@@ -18,7 +18,7 @@
 
 @import "./homepage/saved-spots.css";
 
-@import "../strutture-pronte/carousels/carousel-horizontal.css";
+@import "../base/carousels/carousel-horizontal.css";
 
 
 @import "./common/spot-detail.css";
@@ -27,11 +27,11 @@
 
 @import "./map/map.css";
 
-@import "../strutture-pronte/carousels/carousel-vertical.css";
+@import "../base/carousels/carousel-vertical.css";
 
-@import "../strutture-pronte/simil-homepage-toprated/simil-toprated.css";
+@import "../base/simil-homepage-toprated/simil-toprated.css";
 
-@import "../strutture-pronte/simil-homepage-nearby/simil-nearby.css";
+@import "../base/simil-homepage-nearby/simil-nearby.css";
 
 @import "./common/bottom-sheet.css";
 

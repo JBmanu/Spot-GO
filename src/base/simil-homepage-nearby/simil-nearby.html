@@ -1,0 +1,74 @@
+<div
+        class="spot-card-nearby"
+        data-template="spot-card"
+        data-spot-wrapper
+        role="presentation"
+        hidden
+>
+    <div class="spot-card-nearby_pedestal" aria-hidden="true"></div>
+
+    <article
+            class="spot-card-nearby_card"
+            role="listitem"
+            data-spot-id=""
+            data-saved="false"
+    >
+        <div class="spot-card-nearby_media" data-slot="media">
+            <div class="spot-card-nearby_image-wrap">
+                <img
+                        class="spot-card-nearby_image"
+                        data-field="image"
+                        src=""
+                        alt="Foto spot"
+                />
+            </div>
+
+            <button
+                    class="spot-card-nearby_bookmark"
+                    type="button"
+                    aria-label="Aggiungi ai salvati"
+                    data-bookmark-button
+                    data-bookmark-type="nearby"
+            >
+                <img
+                        class="spot-card-nearby__bookmark-icon bookmark-icon"
+                        src="../../assets/icons/homepage/Bookmark.svg"
+                        alt="Bookmark"
+                />
+            </button>
+        </div>
+
+        <div class="spot-card-nearby_body" data-slot="body">
+            <h3 class="spot-card-nearby_title" data-field="title"></h3>
+
+            <div class="spot-card-nearby_meta-row">
+                <p class="spot-card-nearby_meta">
+
+        <span class="spot-card-nearby_meta-item">
+            <img
+                    class="spot-card-nearby_icon"
+                    src="../../assets/icons/homepage/Place%20Marker.svg"
+                    alt="Posizione"
+            />
+
+            <span class="spot-card-nearby_distance" data-field="distance"></span>
+        </span>
+
+                    <span class="spot-card-nearby_sep">•</span>
+                    <span class="spot-card-nearby_meta-item">
+            <span class="spot-card-nearby_category" data-field="category"></span>
+        </span>
+                </p>
+
+                <div class="spot-card-nearby_rating">
+                    <span class="spot-card-nearby__rating-value" data-field="rating"></span>
+                    <img
+                            class="spot-card-nearby_rating-star"
+                            src="../../assets/icons/homepage/Star.svg"
+                            alt="stella"
+                    />
+                </div>
+            </div>
+        </div>
+    </article>
+</div>
