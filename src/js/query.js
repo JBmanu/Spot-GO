@@ -138,25 +138,14 @@ export async function getVisitedSpots(userId) {
  * Restituisce tutti i Luogo dalla collection.
  */
 export async function getSpots() {
-    return getItems(
-        "Luogo", 
-        null,
-        (id, data) => ({
-            id: id,
-            descrizione: data.descrizione,
-            idCategoria: data.idCategoria,
-            immagine: data.immagine,
-            nome: data.nome,
-            posizione: {
-                coord1: data.posizione.coord1,
-                coord2: data.posizione.coord2
-            },
-            indirizzo: data.indirizzo,
-            orari: data.orari,
-            costo: data.costo,
-            idCreatore: data.idCreatore
-        })
-    );
+    try {
+        const response = await fetch('/db/json/luoghi.json');
+        const data = await response.json();
+        return data.map((item, index) => ({ id: item.nome || `spot-${index}`, ...item }));
+    } catch (error) {
+        console.error("Errore caricamento luoghi:", error);
+        return [];
+    }
 }
 
 
