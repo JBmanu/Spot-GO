@@ -11,7 +11,7 @@
     }
 
     .spot-card-toprated {
-        @apply relative flex rounded-2xl overflow-hidden flex-shrink-0 w-full;
+        @apply relative flex rounded-2xl overflow-hidden shrink-0 w-full;
         @apply items-center;
 
         height: 110px;
@@ -114,32 +114,24 @@
         font-family: "Montserrat", sans-serif;
     }
 
-    .spot-card-toprated [data-slot="info"] {
-        @apply flex flex-col items-center justify-center gap-1 px-1 pr-6 py-2 relative;
+    .spot-card-toprated [data-slot="info"]{
+        @apply flex flex-col justify-between gap-1 px-1 pr-6 py-2 relative;
         flex: 1;
         min-width: 0;
         text-align: center;
         margin: 0 auto;
     }
 
-    .spot-card-toprated [data-slot="title"] {
-        @apply text-lg font-semibold uppercase leading-tight text-center w-full;
+    .spot-card-toprated [data-slot="title"]{
+        @apply text-lg font-semibold uppercase leading-tight text-center w-full line-clamp-2 break-words;
         color: var(--color-text_color);
-        white-space: normal;
-        word-break: break-word;
         line-height: 1.2;
-
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-
         font-family: "Montserrat", sans-serif;
         letter-spacing: 0.06em;
     }
 
-    .spot-card-toprated [data-slot="rating-row"] {
-        @apply flex items-center justify-center mt-1 w-full;
+    .spot-card-toprated [data-slot="rating-row"]{
+        @apply flex items-center justify-center w-full;
     }
 
     .spot-card-toprated [data-slot="rating-pill"] {
