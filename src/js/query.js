@@ -3,10 +3,9 @@
  * Espone funzioni per leggere utenti, luoghi, salvataggi e categorie.
  */
 
-import { collection, getDocs, query, where, limit, deleteDoc, setDoc, doc, getDoc} from "firebase/firestore";
+import { collection, getDocs, query, where, limit, getDoc} from "firebase/firestore";
 import { db } from "./firebase.js";
 
-// Cache per le categorie
 let categorieCache = null;
 
 /**
@@ -30,7 +29,6 @@ export async function getCategorieMap() {
         return categorieCache;
     } catch (error) {
         console.error("Errore nel caricamento categorie:", error);
-        // Fallback se il file non viene trovato
         return {
             "culture": "Cultura",
             "food": "Cibo",
@@ -138,15 +136,12 @@ export async function getVisitedSpots(userId) {
  * Restituisce tutti i Luogo dalla collection.
  */
 export async function getSpots() {
-    try {
-        const response = await fetch('/db/json/luoghi.json');
-        const data = await response.json();
-        return data.map((item, index) => ({ id: item.nome || `spot-${index}`, ...item }));
-    } catch (error) {
-        console.error("Errore caricamento luoghi:", error);
-        return [];
-    }
+    return getItems("Luogo", null, (id, data) => ({
+        id,          // <-- ID FIRESTORE
+        ...data
+    }));
 }
+
 
 
 export async function getFriends(userId) {
@@ -216,38 +211,5 @@ export async function getItems(collectionName, filter, itemParser) {
     } catch (error) {
         console.error("Errore recupero items da " + collectionName + ": " , error);
         return [];
-    }
-}
-
-/**
- * Salva uno spot nei preferiti dell'utente.
- */
-export async function addBookmark(idUtente, idLuogo) {
-    try {
-        const docRef = doc(db, "LuogoSalvato", `${idUtente}_${idLuogo}`);
-        await setDoc(docRef, {
-            idUtente: idUtente,
-            idLuogo: idLuogo,
-            dataSalvataggio: new Date()
-        });
-    } catch (error) {
-        console.error("Errore nel salvataggio del bookmark:", error);
-    }
-}
-
-/**
- * Rimuove uno spot dai preferiti dell'utente.
- */
-export async function removeBookmark(idUtente, idLuogo) {
-    try {
-        const lukRef = collection(db, "LuogoSalvato");
-        const q = query(lukRef, where("idUtente", "==", idUtente), where("idLuogo", "==", idLuogo));
-        const querySnapshot = await getDocs(q);
-
-        for (const docSnap of querySnapshot.docs) {
-            await deleteDoc(docSnap.ref);
-        }
-    } catch (error) {
-        console.error("Errore nella rimozione del bookmark:", error);
     }
 }
