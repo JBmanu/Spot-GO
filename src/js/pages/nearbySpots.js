@@ -1,13 +1,10 @@
-import {getSpots} from "../query.js";
-import {fillSpotCard} from "../common/populateSpotCards.js";
+import { getSpots } from "../query.js";
+import { fillSpotCard } from "../common/populateSpotCards.js";
+import { distanceFromUserToSpot, formatDistance } from "../common.js";
 
 function setText(el, value) {
     if (!el) return;
     el.textContent = value == null ? "" : String(value);
-}
-
-function pickDistance(spot) {
-    return spot?.distanza ?? spot?.distance ?? spot?.metri ?? spot?.meters ?? null;
 }
 
 function pickRating(spot) {
@@ -35,10 +32,14 @@ export async function populateNearbySpots({
     templateShell.setAttribute("aria-hidden", "true");
 
     const spots = await getSpots();
-    console.log("Spots retrieved for nearby:", spots);
-    const list = (spots || []).slice(0, limit);
+
+    const list = (spots || [])
+        .slice()
+        .sort((a, b) => distanceFromUserToSpot(a) - distanceFromUserToSpot(b))
+        .slice(0, limit);
 
     container.innerHTML = "";
+
     // Append a hidden template inside the container for cloning
     const hiddenTemplate = templateShell.cloneNode(true);
     hiddenTemplate.hidden = true;
@@ -55,7 +56,6 @@ export async function populateNearbySpots({
         shell.hidden = false;
 
         const card = shell.querySelector('[role="listitem"]');
-
         if (!card) continue;
 
         fillSpotCard(card, spot, {
@@ -66,8 +66,10 @@ export async function populateNearbySpots({
 
         if (card.style.display === "none") continue;
 
-        setText(card.querySelector('[data-field="distance"]'), pickDistance(spot));
-        setText(card.querySelector('[data-field="rating"]'), pickRating(spot));
+        setText(card.querySelector('[data-field="distance"]'), formatDistance(distanceFromUserToSpot(spot)));
+        const ratingValue = pickRating(spot);
+        const ratingText = ratingValue == null ? "" : (Math.round(Number(ratingValue) * 10) / 10).toFixed(1);
+        setText(card.querySelector('[data-field="rating"]'), ratingText);
 
         container.appendChild(shell);
     }

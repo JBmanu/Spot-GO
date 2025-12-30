@@ -1,5 +1,4 @@
 @layer components {
-
     .nearby-swipe {
         @apply overflow-visible;
         position: relative;
@@ -167,8 +166,10 @@
     }
 
     .spot-card-nearby_body {
-        @apply relative flex-1 px-3 pt-3 pb-3 flex flex-col;
+        @apply relative flex-1 px-3 pt-3 flex flex-col;
         gap: 8px;
+
+        padding-bottom: 3.2rem;
 
         border-top: 1px solid rgba(255, 255, 255, 0.18);
         background: linear-gradient(
@@ -213,9 +214,15 @@
     .spot-card-nearby_meta-row {
         @apply flex items-center justify-between w-full;
         gap: 12px;
-        margin-top: auto;
-        position: relative;
-        z-index: 1;
+
+        position: absolute;
+        left: 0;
+        right: 0;
+
+        bottom: 0.8rem;
+
+        padding-inline: 0.75rem;
+        z-index: 2;
     }
 
     .spot-card-nearby_meta {

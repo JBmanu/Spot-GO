@@ -1,3 +1,5 @@
+import { getCategoryNameIt } from "../query.js";
+
 function normalizeCat(cat) {
     return String(cat || "").trim().toLowerCase();
 }
@@ -40,7 +42,13 @@ export function fillSpotCard(cardEl, spot, {
     }
     if (setCategoryText) {
         const categoryEl = cardEl.querySelector('[data-field="category"]');
-        if (categoryEl) categoryEl.textContent = spot.idCategoria || "";
+        if (categoryEl) {
+            getCategoryNameIt(spot.idCategoria).then(name => {
+                categoryEl.textContent = name || spot.idCategoria;
+            }).catch(() => {
+                categoryEl.textContent = spot.idCategoria;
+            });
+        }
     }
 }
 
