@@ -43,6 +43,14 @@ let currentTileLayer;
 // Lista dei marker attualmente attivi sulla mappa
 let spotMarkers = [];
 
+// Mappa categoria -> icona marker
+const categoryToMarkerMap = {
+    "culture": "MarkerCulture.svg",
+    "food": "MarkerFood.svg",
+    "nature": "MarkerNature.svg",
+    "mystery": "MarkerMistery.svg"
+};
+
 // Stili della mappa
 const MAP_TILE_SERVERS = {
     OSM_STANDARD: {
@@ -152,7 +160,7 @@ async function loadMap() {
     }
 
     // Inizializza la mappa
-    map = L.map(mapEl).setView(USER_PROTO_POSITION, 14);
+    map = L.map(mapEl).setView(USER_PROTO_POSITION, 15);
 
     // Aggiunta layer OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -166,7 +174,8 @@ async function loadMap() {
             iconUrl: '../assets/icons/map/Arrow.png',
             iconSize: [40, 40],
             iconAnchor: [20, 40]
-        })
+        }),
+        zIndexOffset: 100
     })
     .addTo(map)
     .bindPopup(`<b>La tua posizione</b>`);
@@ -183,18 +192,32 @@ async function loadMarkers() {
     spots.forEach(luogo => {
         // Converto coord1 e coord2 in array [lat, lng]
         const markerPosition = [luogo.posizione.coord1, luogo.posizione.coord2];
-
+        const iconName = categoryToMarkerMap[luogo.idCategoria] || "MarkerBase.svg";
+        
         const marker = L.marker(markerPosition, {
-            icon: L.icon({
-                iconUrl: '../assets/icons/map/Marker.png',
-                iconSize: [46, 46],
-                iconAnchor: [23, 46]
+            icon: L.divIcon({
+                html: `<img src="../assets/icons/map/${iconName}" class="marker-pop-up">`,
+                className: 'custom-div-icon', // lascia vuoto per non avere classi aggiuntive di Leaflet
+                iconSize: [64, 64],
+                iconAnchor: [32, 64]
             })
         })
         .addTo(map)
         .bindPopup(`<b>${luogo.nome}</b><br>${luogo.descrizione}`);
 
         spotMarkers.push(marker);
+    });
+
+    const interval = 500;
+
+    // Comparsa dei marker uno ad uno
+    spotMarkers.forEach((marker, index) => {
+        const iconElem = marker.getElement().querySelector('img.marker-pop-up');
+        if (iconElem) {
+            setTimeout(() => {
+                iconElem.classList.add('show');
+            }, index * interval);
+        }
     });
 }
 

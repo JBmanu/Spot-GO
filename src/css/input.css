@@ -34,4 +34,6 @@
 
 @import "./common/bottom-sheet.css";
 
+@import "./common/bottom-sheet-filters.css";
+
 @import "../base/classic-spot-card/classic-spot.css";

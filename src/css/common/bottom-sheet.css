@@ -11,14 +11,15 @@
     }
 
     .filter-sheet {
-        position: absolute;
+        position: sticky;
+        margin: 0;
         bottom: 0;
         z-index: 1001;
         opacity: 0;
         background: white;
-        width: 100%;
         transform: translateY(100%);
         transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
+        overflow-x: hidden;
     }
 
     .filter-handle {
