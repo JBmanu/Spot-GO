@@ -13,7 +13,6 @@
 @import "./homepage/homepage.css";
 
 @import "./community.css";
-@import "./common/carousel.css";
 
 @import "./homepage/homepage.css";
 
@@ -21,13 +20,14 @@
 
 @import "../strutture-pronte/carousels/carousel-horizontal.css";
 
-@import "./homepage/toprated-spots.css";
 
 @import "./common/spot-detail.css";
 
 @import "./homepage/view-all-saved.css";
 
 @import "./map/map.css";
+
+@import "../strutture-pronte/carousels/carousel-vertical.css";
 
 @import "../strutture-pronte/simil-homepage-toprated/simil-toprated.css";
 
