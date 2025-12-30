@@ -152,7 +152,7 @@ async function loadMap() {
     }
 
     // Inizializza la mappa
-    map = L.map(mapEl).setView(USER_PROTO_POSITION, 14);
+    map = L.map(mapEl).setView(USER_PROTO_POSITION, 15);
 
     // Aggiunta layer OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -166,7 +166,8 @@ async function loadMap() {
             iconUrl: '../assets/icons/map/Arrow.png',
             iconSize: [40, 40],
             iconAnchor: [20, 40]
-        })
+        }),
+        zIndexOffset: 100
     })
     .addTo(map)
     .bindPopup(`<b>La tua posizione</b>`);
