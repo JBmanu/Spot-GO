@@ -13,7 +13,7 @@ const SELECTORS = {
     bookmarkIcon: ".bookmark-icon",
     carouselTrackSaved: ".saved-swipe-track",
     carouselTrackNearby: ".nearby-swipe-track",
-    carouselTrackToprated: ".vertical-carousel-track",
+    carouselTrackToprated: ".carousel-vertical-track",
     bookmarkTypeAttr: "data-bookmark-type",
     bookmarkInitializedAttr: "data-bookmark-initialized",
     spotIdAttr: "data-spot-id",

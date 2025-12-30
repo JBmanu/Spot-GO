@@ -155,7 +155,7 @@ function initializeViewAllSavedSearch() {
     const keyboard = document.getElementById("view-all-saved-keyboard");
     const overlay = document.getElementById("view-all-saved-keyboard-overlay");
     if (!searchInput || !keyboard || !overlay) return;
-    const track = document.querySelector(".view-all-saved-track");
+    const track = document.querySelector("#view-all-saved-container");
     searchInput.addEventListener("focus", () => {
         keyboard.classList.add("keyboard-visible");
         overlay.classList.add("overlay-visible");

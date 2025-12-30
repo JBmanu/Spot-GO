@@ -29,7 +29,7 @@ function savePageState() {
         _cachedState.mainScrollTop = main.scrollTop || 0;
     }
     if (header) _cachedState.headerHTML = header.innerHTML;
-    const selectors = [".saved-swipe-track", ".nearby-swipe-track", ".vertical-carousel-track"];
+    const selectors = [".saved-swipe-track", ".nearby-swipe-track", ".carousel-vertical-track"];
     selectors.forEach((sel) => {
         const el = document.querySelector(sel);
         if (el) _cachedState.carouselScroll[sel] = el.scrollLeft || 0;

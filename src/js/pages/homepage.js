@@ -13,7 +13,7 @@ import {
     getActiveCategories,
 } from "../common/categoryFilter.js";
 import {loadViewAllSaved} from "./viewAllSaved.js";
-import {initHorizontalCarousels} from "../carousel-horizontal.js";
+import {initHorizontalCarousels, initVerticalCarousels} from "../carousels.js";
 
 export async function initializeHomepageFilters() {
     const main = document.getElementById("main");
@@ -37,9 +37,10 @@ export async function initializeHomepageFilters() {
             filterSpotsByCategory(getActiveCategories(), main);
         },
         onTopRatedLoaded: async () => {
-            await populateTopratedSpots({containerId: "home-toprated-carousel-container", limit: 10});
-            initializeCarousel(".vertical-carousel-track");
-            const topContainer = document.getElementById("home-toprated-carousel-container");
+            await populateTopratedSpots({containerId: "home-toprated-carousel", limit: 10});
+            initVerticalCarousels();
+            initializeCarousel(".carousel-vertical-track");
+            const topContainer = document.getElementById("home-toprated-carousel");
             if (topContainer) initializeSpotClickHandlers(topContainer);
             filterSpotsByCategory(getActiveCategories(), main);
         },
@@ -54,7 +55,7 @@ export async function rehydrateHomepageUI(mainEl = document.getElementById("main
     if (!mainEl) return;
     const savedContainer = document.getElementById("home-saved-container");
     const nearbyContainer = document.getElementById("home-nearby-section");
-    const topContainer = document.getElementById("home-toprated-carousel-container");
+    const topContainer = document.getElementById("home-toprated-carousel");
     if (savedContainer) {
         await populateSavedSpots({containerId: "home-saved-container"});
         initFitSavedTitles();
@@ -67,8 +68,9 @@ export async function rehydrateHomepageUI(mainEl = document.getElementById("main
         initializeSpotClickHandlers(nearbyContainer);
     }
     if (topContainer) {
-        await populateTopratedSpots({containerId: "home-toprated-carousel-container", limit: 10});
-        initializeCarousel(".vertical-carousel-track");
+        await populateTopratedSpots({containerId: "home-toprated-carousel", limit: 10});
+        initVerticalCarousels();
+        initializeCarousel(".carousel-vertical-track");
         initializeSpotClickHandlers(topContainer);
     }
     initializeBookmarks();
