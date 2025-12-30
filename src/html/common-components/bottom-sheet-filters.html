@@ -1,30 +1,59 @@
-<!-- TEMP -->
-<div class="spot-detail-info-detailed">
-    <div class="info-row">
-        <img src="../../assets/icons/homepage/Detail/Clock.svg" alt="Orario" class="info-icon"/>
-        <div class="info-content">
-            <span class="info-label">Orario</span>
-            <span id="spot-detail-hours" class="info-value">9:00 - 18:00</span>
-        </div>
+<div class="bottom-sheet-filters-container">
+    <div class="filters-header">
+        <h2 class="filters-title">Filtri</h2>
+        <button class="filters-reset-btn">Reset Filtri</button>
     </div>
-    <div class="info-row">
-        <img src="../../assets/icons/homepage/Detail/Location.svg" alt="Indirizzo" class="info-icon"/>
-        <div class="info-content">
-            <div class="info-label-with-distance">
-                <span class="info-label">Indirizzo</span>
-                <span class="info-distance-label">
-                <img src="../../assets/icons/homepage/Place%20Marker.svg" class="icon-mini" alt="Distanza"/>
-                <span id="spot-detail-distance" class="spot-distance">0 m</span>
-            </span>
+
+    <div class="filters-scroll-area">
+        
+        <div class="filter-section">
+            <h3 class="filter-section-label">Orario di Apertura</h3>
+            <div class="filter-row-between">
+                <span class="filter-item-text">Aperto ora</span>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
             </div>
-            <span id="spot-detail-address" class="info-value">Via Roma, 123 - Milano</span>
+            <div class="filter-datetime-row">
+                <span>Aperto il</span>
+                <span class="input-pill">03-12-25</span>
+                <span>alle</span>
+                <span class="input-pill">10:00</span>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-row-between">
+                <h3 class="filter-section-label">Distanza</h3>
+                <span class="distance-value">5 km</span>
+            </div>
+            <input type="range" class="distance-range" min="0" max="50" value="5">
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-label">Rating minimo</h3>
+            <div class="star-rating">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-label">Stato</h3>
+            <div class="chips-container">
+                <button class="filter-chip">Visitato</button>
+                <button class="filter-chip active">Nuovo per me</button>
+                <button class="filter-chip">Salvato</button>
+            </div>
         </div>
     </div>
-    <div class="info-row">
-        <img src="../../assets/icons/profile/Lock.svg" alt="Costo" class="info-icon"/>
-        <div class="info-content">
-            <span class="info-label">Costo</span>
-            <span id="spot-detail-cost" class="info-value">Gratuito</span>
-        </div>
+
+    <div class="filters-footer">
+        <button class="btn-action btn-cancel">Annulla</button>
+        <button class="btn-action btn-apply">Applica Filtri</button>
     </div>
 </div>
