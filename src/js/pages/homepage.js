@@ -13,7 +13,7 @@ import {
     getActiveCategories,
 } from "../common/categoryFilter.js";
 import {loadViewAllSaved} from "./viewAllSaved.js";
-import {initHorizontalCarousels, initVerticalCarousels} from "../carousels.js";
+import {initHorizontalCarousels, initVerticalCarousels} from "../common/carousels.js";
 
 export async function initializeHomepageFilters() {
     const main = document.getElementById("main");
