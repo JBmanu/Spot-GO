@@ -1,6 +1,6 @@
 // map.js
 // Import dinamici
-let initializeCarousel, createSpotCardItem, addCarouselItem, getSpots,
+let getSpots,
     USER_PROTO_POSITION, distanceFromUserToSpot, createNearbySpotCard,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetStandardFilters;
@@ -9,11 +9,6 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 Promise.all([
-    import("./ui/carousel.js").then(module => {
-        initializeCarousel = module.initializeCarousel;
-        createSpotCardItem = module.createSpotCardItem;
-        addCarouselItem = module.addCarouselItem;
-    }),
     import("./query.js").then(module => {
         getSpots = module.getSpots;
         getFilteredSpots = module.getFilteredSpots;

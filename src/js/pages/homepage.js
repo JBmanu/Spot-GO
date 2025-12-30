@@ -1,81 +1,132 @@
-import {initializeCarousel} from "../ui/carousel.js";
-import {initializeBookmarks, syncAllBookmarks} from "../ui/bookmark.js";
-import {initializeSpotClickHandlers} from "./spotDetail.js";
-import {populateSavedSpots} from "./savedSpots.js";
-import {populateNearbySpots} from "./nearbySpots.js";
-import {populateTopratedSpots} from "./populateTopratedCards.js";
-import {initFitText} from "../common/fitText.js";
-import {loadHomepageSections} from "../common/homepageSectionsLoader.js";
+import { refreshHorizontalCarousel, refreshVerticalCarousel } from "../common/carousels.js";
+import { initializeBookmarks, syncBookmarksUI } from "../common/bookmark.js";
+import { initializeSpotClickHandlers } from "./spotDetail.js";
+import { populateSavedSpots } from "./savedSpots.js";
+import { populateNearbySpots } from "./populateNearbySpots.js";
+import { populateTopratedSpots } from "./populateTopratedCards.js";
+import { initFitText } from "../common/fitText.js";
+import { loadHomepageSections } from "../common/homepageSectionsLoader.js";
 import {
     setupCategoryFilter,
     resetCategoryFilter,
     filterSpotsByCategory,
     getActiveCategories,
 } from "../common/categoryFilter.js";
-import {loadViewAllSaved} from "./viewAllSaved.js";
-import {initHorizontalCarousels, initVerticalCarousels} from "../common/carousels.js";
+import { loadViewAllSaved } from "./viewAllSaved.js";
 
-export async function initializeHomepageFilters() {
-    const main = document.getElementById("main");
-    const categoryContainer = document.getElementById("home-categories-container");
-    if (!main || !categoryContainer) return;
+const HOST_ID = "main";
+
+const HOME = {
+    categoriesId: "home-categories-container",
+    savedRootId: "home-saved-container",
+    nearbySectionId: "home-nearby-section",
+    nearbyCarouselRootId: "home-nearby-container",
+    topratedRootId: "home-toprated-carousel",
+    savedCardSelector: ".saved-spot-shell",
+    nearbyCardSelector: ".spot-card-nearby",
+    topratedCardSelector: ".spot-card-toprated",
+};
+
+const $ = (id) => document.getElementById(id);
+const nearbyRoot = () => $(HOME.nearbyCarouselRootId) || $(HOME.nearbySectionId);
+
+let homeBuiltOnce = false;
+let bookmarkListenerAttached = false;
+let categoryFilterAttached = false;
+let spotHandlersAttached = false;
+
+async function buildHomeOnce(hostEl) {
+    const categoryContainer = $(HOME.categoriesId);
+    if (!categoryContainer) return;
     resetCategoryFilter(categoryContainer);
     await loadHomepageSections({
         onSavedLoaded: async () => {
-            await populateSavedSpots({containerId: "home-saved-container"});
-            initFitText('.spot-card--saved .spot-card-title', '#home-saved-container', 2, 10.5);
-            initializeCarousel(".saved-swipe-track");
-            const savedContainer = document.getElementById("home-saved-container");
-            if (savedContainer) initializeSpotClickHandlers(savedContainer);
-            filterSpotsByCategory(getActiveCategories(), main);
+            await populateSavedSpots({ containerId: HOME.savedRootId });
+            initFitText(".spot-card--saved .spot-card-title", `#${HOME.savedRootId}`, 2, 10.5);
+            const root = $(HOME.savedRootId);
+            if (root) refreshHorizontalCarousel(root, { cardSelector: HOME.savedCardSelector });
+            filterSpotsByCategory(getActiveCategories(), hostEl);
         },
         onNearbyLoaded: async () => {
-            await populateNearbySpots({containerId: "home-nearby-section"});
-            initHorizontalCarousels();
-            const nearbyContainer = document.getElementById("home-nearby-section");
-            if (nearbyContainer) initializeSpotClickHandlers(nearbyContainer);
-            filterSpotsByCategory(getActiveCategories(), main);
+            await populateNearbySpots({ containerId: HOME.nearbyCarouselRootId });
+            const root = $(HOME.nearbyCarouselRootId);
+            if (root) refreshHorizontalCarousel(root, { cardSelector: HOME.nearbyCardSelector });
+            if (root) {
+                filterSpotsByCategory(getActiveCategories(), root);
+            } else {
+                filterSpotsByCategory(getActiveCategories(), hostEl);
+            }
         },
         onTopRatedLoaded: async () => {
-            await populateTopratedSpots({containerId: "home-toprated-carousel", limit: 10});
-            initVerticalCarousels();
-            initializeCarousel(".carousel-vertical-track");
-            const topContainer = document.getElementById("home-toprated-carousel");
-            if (topContainer) initializeSpotClickHandlers(topContainer);
-            filterSpotsByCategory(getActiveCategories(), main);
+            await populateTopratedSpots({ containerId: HOME.topratedRootId, limit: 10 });
+            const root = $(HOME.topratedRootId);
+            if (root) refreshVerticalCarousel(root, { cardSelector: HOME.topratedCardSelector });
+            filterSpotsByCategory(getActiveCategories(), hostEl);
         },
     });
-    setupCategoryFilter(categoryContainer, {scopeEl: main});
-    initializeBookmarks();
-    await syncAllBookmarks();
-    filterSpotsByCategory(getActiveCategories(), main);
+    if (!categoryFilterAttached) {
+        setupCategoryFilter(categoryContainer, {
+            scopeEl: hostEl,
+            onChange: () => {
+                const savedRoot = $(HOME.savedRootId);
+                if (savedRoot) refreshHorizontalCarousel(savedRoot, { cardSelector: HOME.savedCardSelector });
+                const nearbyEl = nearbyRoot();
+                if (nearbyEl) refreshHorizontalCarousel(nearbyEl, { cardSelector: HOME.nearbyCardSelector });
+                const topratedRoot = $(HOME.topratedRootId);
+                if (topratedRoot) refreshVerticalCarousel(topratedRoot, { cardSelector: HOME.topratedCardSelector });
+            }
+        });
+        categoryFilterAttached = true;
+    }
+    if (!spotHandlersAttached) {
+        initializeSpotClickHandlers(hostEl);
+        spotHandlersAttached = true;
+    }
+    initializeBookmarks(hostEl);
+    await syncBookmarksUI(hostEl);
+    attachBookmarkChangedListener(hostEl);
+    filterSpotsByCategory(getActiveCategories(), hostEl);
+    homeBuiltOnce = true;
 }
 
-export async function rehydrateHomepageUI(mainEl = document.getElementById("main")) {
-    if (!mainEl) return;
-    const savedContainer = document.getElementById("home-saved-container");
-    const nearbyContainer = document.getElementById("home-nearby-section");
-    const topContainer = document.getElementById("home-toprated-carousel");
-    if (savedContainer) {
-        await populateSavedSpots({containerId: "home-saved-container"});
-        initFitText('.spot-card--saved .spot-card-title', '#home-saved-container', 2, 10.5);
-        initializeCarousel(".saved-swipe-track");
-        initializeSpotClickHandlers(savedContainer);
-    }
-    if (nearbyContainer) {
-        await populateNearbySpots({containerId: "home-nearby-section"});
-        initHorizontalCarousels();
-        initializeSpotClickHandlers(nearbyContainer);
-    }
-    if (topContainer) {
-        await populateTopratedSpots({containerId: "home-toprated-carousel", limit: 10});
-        initVerticalCarousels();
-        initializeCarousel(".carousel-vertical-track");
-        initializeSpotClickHandlers(topContainer);
-    }
-    initializeBookmarks();
-    await syncAllBookmarks();
-    filterSpotsByCategory(getActiveCategories(), mainEl);
+function attachBookmarkChangedListener(scopeEl) {
+    if (bookmarkListenerAttached) return;
+    bookmarkListenerAttached = true;
+    document.addEventListener("bookmark:changed", (e) => {
+        const { spotId, isSaved } = e.detail || {};
+        if (!spotId) return;
+        const buttons = scopeEl.querySelectorAll("[data-bookmark-button]");
+        buttons.forEach((btn) => {
+            const card = btn.closest('[role="listitem"]');
+            if (!card) return;
+            const cardSpotId = card.getAttribute("data-spot-id");
+            if (cardSpotId !== spotId) return;
+            btn.dataset.saved = isSaved ? "true" : "false";
+            initializeBookmarks(card);
+        });
+    });
 }
 
-export {loadViewAllSaved};
+export async function initializeHomepageFilters() {
+    const hostEl = $(HOST_ID);
+    if (!hostEl) return;
+    if (homeBuiltOnce) {
+        await syncBookmarksUI(hostEl);
+        filterSpotsByCategory(getActiveCategories(), hostEl);
+        return;
+    }
+    await buildHomeOnce(hostEl);
+}
+
+export function resetHomepageCache() {
+    homeBuiltOnce = false;
+    bookmarkListenerAttached = false;
+    categoryFilterAttached = false;
+    spotHandlersAttached = false;
+}
+
+export async function rehydrateHomepageUI() {
+    await initializeHomepageFilters();
+}
+
+export { loadViewAllSaved };

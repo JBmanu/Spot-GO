@@ -2,8 +2,7 @@ import {
     initializeBookmarks,
     toggleBookmarkForSpot,
     updateBookmarkVisual,
-    syncAllBookmarks,
-} from "../ui/bookmark.js";
+} from "../common/bookmark.js";
 import {
     getSpots,
     getCategoryNameIt,

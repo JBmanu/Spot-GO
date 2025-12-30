@@ -1,6 +1,7 @@
-import {getSpots} from "../query.js";
-import {fillSpotCard} from "../common/populateSpotCards.js";
-import {distanceFromUserToSpot, formatDistance} from "../common.js";
+import { getSpots } from "../query.js";
+import { fillSpotCard } from "../common/populateSpotCards.js";
+import { distanceFromUserToSpot, formatDistance } from "../common.js";
+import { normalizeCategoryName } from "../common/categoryFilter.js";
 
 function toNumberOrNull(v) {
     if (v === undefined || v === null) return null;
@@ -38,17 +39,47 @@ function normalizeSpot(raw) {
     };
 }
 
+function toRatingText(v) {
+    const n = toNumberOrNull(v);
+    if (n == null) return "";
+    return (Math.round(n * 10) / 10).toFixed(1);
+}
+
+function ensureBookmarkDataset(cardEl) {
+    const btn = cardEl.querySelector("[data-bookmark-button]");
+    if (!btn) return;
+
+    if (typeof btn.dataset.saved === "undefined") btn.dataset.saved = "false";
+    if (!btn.hasAttribute("data-bookmark-type")) btn.setAttribute("data-bookmark-type", "generic");
+}
+
+function getSpotCategoryRaw(spot) {
+    return spot?.category ?? spot?.idCategoria ?? spot?.categoria ?? spot?.categoryId ?? "";
+}
+
+function clearRenderedCards(container, templateSelector) {
+    const template = container.querySelector(templateSelector);
+
+    Array.from(container.children).forEach((child) => {
+        if (template && child === template) return;
+        if (child.classList?.contains("carousel-vertical-track")) return;
+        child.remove();
+    });
+}
+
 export async function populateTopratedSpots({
-                                                containerId = "home-toprated-carousel",
-                                                templateSelector = '[data-template="toprated-item"]',
-                                                limit = 10,
-                                            } = {}) {
+    containerId = "home-toprated-carousel",
+    templateSelector = '[data-template="toprated-item"]',
+    limit = 10,
+} = {}) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const templateCard = container.querySelector(templateSelector);
+    const templateCard =
+        container.querySelector(templateSelector) || document.querySelector(templateSelector);
+
     if (!templateCard) {
-        console.warn("Template toprated-item non trovato dentro", `#${containerId}`);
+        console.warn("Template toprated-item non trovato:", templateSelector);
         return;
     }
 
@@ -58,17 +89,16 @@ export async function populateTopratedSpots({
     const all = await getSpots();
 
     const scored = (all || [])
-        .map((s) => normalizeSpot(s))
+        .map(normalizeSpot)
         .filter(Boolean)
-        .map((s) => ({spot: s, rating: getRatingValue(s)}))
+        .map((s) => ({ spot: s, rating: getRatingValue(s) }))
         .filter((x) => x.spot && x.spot.id);
 
     scored.sort((a, b) => (b.rating ?? -Infinity) - (a.rating ?? -Infinity));
 
     const top = scored.slice(0, limit).map((x) => x.spot);
 
-    container.innerHTML = "";
-    container.appendChild(templateCard);
+    clearRenderedCards(container, templateSelector);
 
     if (!top.length) return;
 
@@ -79,6 +109,9 @@ export async function populateTopratedSpots({
         card.removeAttribute("aria-hidden");
         card.hidden = false;
 
+        if (!card.hasAttribute("role")) card.setAttribute("role", "listitem");
+        if (spot?.id != null) card.setAttribute("data-spot-id", String(spot.id));
+
         fillSpotCard(card, spot, {
             wrapperEl: null,
             setCategoryText: false,
@@ -87,11 +120,11 @@ export async function populateTopratedSpots({
 
         if (card.style.display === "none") continue;
 
+        const rawCat = getSpotCategoryRaw(spot);
+        const normalizedCat = normalizeCategoryName(String(rawCat));
+        if (normalizedCat) card.setAttribute("data-category", normalizedCat);
 
-        const ratingValue = getRatingValue(spot);
-        const ratingText =
-            ratingValue == null ? "" : (Math.round(Number(ratingValue) * 10) / 10).toFixed(1);
-
+        const ratingText = toRatingText(getRatingValue(spot));
         const ratingEl = card.querySelector('[data-slot="rating-value"]');
         setText(ratingEl, ratingText);
 
@@ -100,7 +133,12 @@ export async function populateTopratedSpots({
             else ratingEl.removeAttribute("aria-label");
         }
 
-        setText(card.querySelector('[data-field="distance"]'), formatDistance(distanceFromUserToSpot(spot)));
+        setText(
+            card.querySelector('[data-field="distance"]'),
+            formatDistance(distanceFromUserToSpot(spot))
+        );
+
+        ensureBookmarkDataset(card);
 
         container.appendChild(card);
     }

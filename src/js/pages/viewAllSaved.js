@@ -1,6 +1,6 @@
-import { initializeCarousel } from "../ui/carousel.js";
-import { initializeBookmarks, syncAllBookmarks } from "../ui/bookmark.js";
-import { initializeSpotClickHandlers } from "../pages/spotDetail.js";
+import { refreshVerticalCarousel } from "../common/carousels.js";
+import { initializeBookmarks, syncAllBookmarks } from "../common/bookmark.js";
+import { initializeSpotClickHandlers } from "./spotDetail.js";
 import { getFirstUser, getSavedSpots, getSpots, getCategoryNameIt } from "../query.js";
 
 export async function loadViewAllSaved(fromPage = "homepage") {
@@ -29,7 +29,7 @@ export async function loadViewAllSaved(fromPage = "homepage") {
             headerTitle.classList.remove("hidden");
         }
         deactivateAllToolbarButtons();
-        initializeCarousel(".vertical-carousel-track");
+        refreshVerticalCarousel(document.querySelector('#view-all-saved-container'), {cardSelector: '.view-all-saved-card'});
         initializeBookmarks();
         await populateViewAllSavedSpots();
         initializeSpotClickHandlers();

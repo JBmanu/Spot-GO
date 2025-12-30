@@ -1,4 +1,5 @@
 import { getCategoryNameIt } from "../query.js";
+import { normalizeCategoryName } from "./categoryFilter.js";
 
 function normalizeCat(cat) {
     return String(cat || "").trim().toLowerCase();
@@ -33,9 +34,10 @@ export function fillSpotCard(cardEl, spot, {
         imageEl.alt = spot.nome || "Foto spot";
     }
     const cat = normalizeCat(spot.idCategoria);
-    if (cat) {
-        cardEl.setAttribute("data-category", cat);
-        if (wrapperEl) wrapperEl.setAttribute("data-category", cat);
+    const normalizedCat = normalizeCategoryName(cat);
+    if (normalizedCat) {
+        cardEl.setAttribute("data-category", normalizedCat);
+        if (wrapperEl) wrapperEl.setAttribute("data-category", normalizedCat);
     } else {
         cardEl.removeAttribute("data-category");
         if (wrapperEl) wrapperEl.removeAttribute("data-category");
