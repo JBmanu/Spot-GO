@@ -42,6 +42,8 @@ let spots;
 let activeCategories = new Set();
 // Testo corrente di ricerca
 let currentSearchText = "";
+// Filtri avanzati per i luoghi
+let advancedFilters = null;
 // Mappa in "formato" Leaflet
 let map;
 // Layer corrente della mappa (stile selezionato)
@@ -139,7 +141,8 @@ async function loadSearchBar() {
             },
             bottomSheetContentCreator: createBottomSheetWithStandardFilters,
             onFiltersApplied: (filtersToApply) => {
-                console.log(filtersToApply);
+                advancedFilters = filtersToApply;
+                loadSpotsDependentObjects();
             }});
 
     // Aggiunta dei componenti
@@ -157,7 +160,7 @@ async function loadSpots() {
     const categories = Array.from(activeCategories);
     const searchText = currentSearchText;
 
-    spots = await getFilteredSpots(categories, searchText);
+    spots = await getFilteredSpots(categories, searchText, advancedFilters);
     spots = orderByDistanceFromUser(spots);
 }
 

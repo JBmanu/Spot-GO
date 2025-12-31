@@ -17,7 +17,7 @@ export function initializeBottomSheetFilters({ filtersEl, bottomSheetEl, overlay
     const defaultFilters = {
         openNow: false,
         openDateTime: null,
-        distance: 5000, // in meters
+        distance: 15000,
         rating: 3,
         status: []
     };
