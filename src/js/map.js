@@ -4,7 +4,7 @@ let getSpots,
     USER_PROTO_POSITION, distanceFromUserToSpot, createNearbySpotCard,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetStandardFilters,
-    initializeSpotClickHandlers;
+    initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -27,6 +27,12 @@ Promise.all([
     }),
     import("./pages/spotDetail.js").then(module => {
         initializeSpotClickHandlers = module.initializeSpotClickHandlers;
+    }),
+    import("./common/createCards.js").then(module => {
+        createClassicSpotCard = module.createClassicSpotCard;
+    }),
+    import("./common/carousels.js").then(module => {
+        initializeVerticalCarousel = module.initializeVerticalCarousel;
     }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
@@ -79,9 +85,9 @@ const MAP_TILE_SERVERS = {
 async function initializeMap() {
     initializeCategoryFilters();
 
-    loadSearchBar();
+    await loadSearchBar();
     await loadMap();
-    loadSpotsDependentObjects();
+    await loadSpotsDependentObjects();
 }
 
 async function loadSpotsDependentObjects() {
@@ -222,27 +228,20 @@ async function loadMarkers() {
 }
 
 async function loadNearbySpotsList() {
-    const spotContainer = document.getElementById('map-nearby-spots-container');
-    if (!spotContainer) return;
+    const carouselEl = document.getElementById("map-nearby-carousel");
+    if (!carouselEl) return;
 
-    spotContainer.innerHTML = "";
+    const track = document.getElementById("map-nearby-spots-container");
+    if (!track) return;
 
-    for (const spot of spots) {
-        try {
-            // Calcolo distanza dall'utente
-            const distanceMeters = distanceFromUserToSpot(spot);
-            const formattedDistance = formatDistance(distanceMeters);
+    track.innerHTML = "";
+    carouselEl.querySelectorAll(':scope > [data-slot="spot"]').forEach(el => el.remove()); // sicurezza
 
-            // Creo la card già popolata
-            const card = await createNearbySpotCard(spot, formattedDistance);
-
-            if (card) {
-                // Aggiungo la card al container
-                spotContainer.appendChild(card);
-            }
-        } catch (err) {
-            console.error("Errore nel creare la card per lo spot:", spot.nome, err);
-        }
+    for (const spot of (spots || [])) {
+        const distanceMeters = distanceFromUserToSpot(spot);
+        const formattedDistance = formatDistance(distanceMeters);
+        const card = await createClassicSpotCard(spot, formattedDistance);
+        if (card) track.appendChild(card);
     }
 }
 

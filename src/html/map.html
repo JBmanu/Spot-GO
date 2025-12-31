@@ -1,9 +1,5 @@
 <section class="flex flex-col" id="map-main-section">
 
-    <div class="px-3 py-1 bg-main_paper">
-        <h2 class="text-2xl font-semibold mb-1" style="font-family: 'Montserrat', sans-serif;">Scopri Mappa</h2>
-        <p class="text-sm text-text_color/70" style="font-family: 'Montserrat', sans-serif;">Ricerca e/o seleziona una o più categorie da esplorare</p>
-    </div>
 
     <!-- Esplora per categoria -->
     <section class="map-section">
@@ -49,27 +45,72 @@
 
     <!-- Spot vicini -->
     <section class="px-3 mt-2">
-        <header class="flex flex-row items-center justify-between">
-            <h2 class="home-section-title">Spot vicini</h2>
-            <button
-                    type="button"
-                    id="home-toprated-carousel-see-all"
-                    class="vedi-tutti-button"
-                    aria-label="Scopri gli spot della community"
-            >
-                Vedi tutti
-            </button>
-        </header>
+
         <div id="map-nearby-section" class="mt-2">
-            <div class="toprated-carousel" aria-label="Carosello spot vicini (scorri su e giù)">
+            <div
+                    id="map-nearby-carousel"
+                    class="carousel-vertical"
+                    aria-label="Carosello spot vicini (scorri su e giù)"
+                    data-size="lg">
+
+                <p id="map-nearby-empty" class="text-sm text-text_color/70 px-1 py-2 hidden">
+                    Nessuno spot trovato con questi filtri.
+                </p>
+
+                <!-- cards -->
                 <div
                         id="map-nearby-spots-container"
-                        class="toprated-carousel-track vertical-carousel-track"
+                        class="carousel-vertical-track"
                         role="list"
-                        aria-label="Lista spot vicini">
-
-                </div>
+                        aria-label="Lista spot vicini"
+                ></div>
             </div>
         </div>
     </section>
+
+    <template id="classic-spot-card-template">
+        <article data-slot="spot" role="listitem" data-spot-id="" data-saved="false" data-category="">
+
+        <div data-slot="image">
+                <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
+            </div>
+
+            <div data-slot="info">
+                <h3 data-slot="title" data-field="title">Nome spot</h3>
+
+                <p data-slot="meta">
+          <span data-slot="meta-item">
+            <img src="../assets/icons/homepage/Place Marker.svg" data-slot="icon" alt="Posizione">
+            <span data-slot="distance" data-field="distance">0 m</span>
+          </span>
+
+                    <span data-slot="separator">•</span>
+
+                    <span data-slot="meta-item">
+            <span data-slot="category" data-field="category">Categoria</span>
+          </span>
+                </p>
+            </div>
+
+            <div data-slot="right-column">
+                <button
+                        type="button"
+                        data-slot="bookmark"
+                        aria-label="Aggiungi ai salvati"
+                        data-bookmark-button
+                        data-bookmark-type="generic"
+                >
+                    <img src="../assets/icons/homepage/BookmarkEmpty.svg" data-slot="bookmark-icon" alt="Bookmark">
+                </button>
+
+                <div data-slot="rating-container">
+                    <div data-slot="badge">
+                        <span data-slot="rating" data-field="rating">4.5</span>
+                        <img src="../assets/icons/homepage/Star.svg" alt="stella" data-slot="star"/>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </template>
+
 </section>

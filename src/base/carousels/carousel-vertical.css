@@ -24,4 +24,18 @@
     .carousel-vertical-track::-webkit-scrollbar {
         display: none;
     }
+
+    .carousel-vertical-track > * {
+        display: block;
+        width: 100%;
+        flex-shrink: 0;
+    }
+
+    #map-nearby-spots-container {
+        padding: 0;
+    }
+    #map-nearby-spots-container > article {
+        margin: 0;
+    }
+
 }
