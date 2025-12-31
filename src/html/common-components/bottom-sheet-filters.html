@@ -1,28 +1,33 @@
 <div class="bottom-sheet-filters-container">
+
     <div class="filters-header">
         <h2 class="filters-title">Filtri</h2>
         <button class="filters-reset-btn">Reset Filtri</button>
     </div>
 
     <div class="filters-scroll-area">
-        
+
+        <!-- ORARIO DI APERTURA -->
         <div class="filter-section">
             <h3 class="filter-section-label">Orario di Apertura</h3>
+
             <div class="filter-row-between">
                 <span class="filter-item-text">Aperto ora</span>
                 <label class="toggle-switch">
-                    <input type="checkbox">
+                    <input type="checkbox" name="open_now">
                     <span class="toggle-slider"></span>
                 </label>
             </div>
+
             <div class="filter-datetime-row">
                 <span>Aperto il</span>
-                <span class="input-pill">03-12-25</span>
+                <input type="date" class="input-pill input-date">
                 <span>alle</span>
-                <span class="input-pill">10:00</span>
+                <input type="time" class="input-pill input-time">
             </div>
         </div>
 
+        <!-- DISTANZA -->
         <div class="filter-section">
             <div class="filter-row-between">
                 <h3 class="filter-section-label">Distanza</h3>
@@ -31,29 +36,34 @@
             <input type="range" class="distance-range" min="0" max="50" value="5">
         </div>
 
+        <!-- RATING -->
         <div class="filter-section">
             <h3 class="filter-section-label">Rating minimo</h3>
             <div class="star-rating">
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
+                <span class="star active">★</span>
+                <span class="star active">★</span>
+                <span class="star active">★</span>
                 <span class="star">★</span>
                 <span class="star">★</span>
             </div>
         </div>
 
+        <!-- STATO -->
         <div class="filter-section">
             <h3 class="filter-section-label">Stato</h3>
-            <div class="chips-container">
-                <button class="filter-chip">Visitato</button>
-                <button class="filter-chip active">Nuovo per me</button>
-                <button class="filter-chip">Salvato</button>
+            <div class="chips-container chips-multi">
+                <button class="filter-button-status" data-value="visited">Visitato</button>
+                <button class="filter-button-status" data-value="new">Nuovo per me</button>
+                <button class="filter-button-status" data-value="saved">Salvato</button>
             </div>
         </div>
+
     </div>
 
+    <!-- FOOTER -->
     <div class="filters-footer">
-        <button class="btn-action btn-cancel">Annulla</button>
-        <button class="btn-action btn-apply">Applica Filtri</button>
+        <button class="filter-button-footer">Annulla</button>
+        <button class="filter-button-footer">Applica Filtri</button>
     </div>
+
 </div>

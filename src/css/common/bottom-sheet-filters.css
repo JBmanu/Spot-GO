@@ -159,7 +159,7 @@
         width: 100%;
         display: flex;
         gap: 12px;
-        padding: 16px 20px;
+        padding-bottom: 16px;
         background: var(--vp-c-bg);
         border-top: 1px solid var(--vp-c-divider);
         box-sizing: border-box;
@@ -188,4 +188,64 @@
     }
 
    .btn-action:active { opacity: 0.8; }
+
+    .input-pill {
+        appearance: none;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .input-date,
+    .input-time {
+        min-height: 32px;
+    }
+
+    .input-date::-webkit-calendar-picker-indicator,
+    .input-time::-webkit-calendar-picker-indicator {
+        opacity: 0.6;
+        cursor: pointer;
+    }
+
+    .chips-multi .filter-chip {
+        user-select: none;
+    }
+
+    .chips-multi .filter-chip.active {
+        box-shadow: 0 0 0 1px var(--vp-c-brand-1) inset;
+    }
+
+    /* From [spot-details.css/.mission-banner]*/
+    .filter-button-footer {
+        @apply w-full max-w-[180px] px-4 py-3 rounded-2xl text-xs font-black uppercase text-center flex items-center justify-center;
+        font-family: "Montserrat", sans-serif;
+        letter-spacing: 0.05em;
+        color: rgba(17, 24, 39, 0.82);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(17, 24, 39, 0.82);
+        box-shadow:
+                0 14px 36px rgba(0,0,0,0.05),
+                inset 0 1px 0 rgba(255,255,255,0.7);
+        backdrop-filter: blur(14px) saturate(155%);
+        -webkit-backdrop-filter: blur(14px) saturate(155%);
+        transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .filter-button-status {
+        @apply w-full max-w-[110px] px-4 py-3 rounded-2xl font-black uppercase text-center flex items-center justify-center;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.5rem;;
+        letter-spacing: 0.05em;
+        color: rgba(17, 24, 39, 0.82);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(17, 24, 39, 0.82);
+        box-shadow:
+                0 14px 36px rgba(0,0,0,0.05),
+                inset 0 1px 0 rgba(255,255,255,0.7);
+        backdrop-filter: blur(14px) saturate(155%);
+        -webkit-backdrop-filter: blur(14px) saturate(155%);
+        transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
 }
