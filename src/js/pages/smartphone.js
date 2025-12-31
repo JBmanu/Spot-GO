@@ -1,4 +1,5 @@
 import {PATHS} from "../paths.js";
+import {activateToolbar} from "../common/back.js";
 
 const SECTION_CONFIG = {
     homepage: {title: "Spot & Go", content: PATHS.html.homepage},
@@ -14,7 +15,8 @@ Promise.all([
     import("./profile.js").then((m) => (loadProfileOverview = m.loadProfileOverview)),
     import("./homepage.js").then((m) => (initializeHomepageFilters = m.initializeHomepageFilters)),
     import("../map.js").then((m) => (initializeMap = m.initializeMap)),
-]).catch((err) => console.error("Errore nel caricamento dei moduli in smartphone.js:", err));
+]).catch(() => {
+});
 
 async function loadHeader() {
     const response = await fetch(PATHS.html.header);
@@ -48,6 +50,14 @@ async function loadToolbar() {
     Array.from(newToolbar.attributes).forEach((attr) => toolbar.setAttribute(attr.name, attr.value));
 }
 
+function closeAnyOverlay(main) {
+    if (!main) return;
+
+    main.querySelectorAll("[data-overlay-view]").forEach((el) => el.remove());
+
+    main.querySelectorAll("[data-section-view]").forEach((el) => (el.hidden = false));
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     await loadHeader();
     await loadToolbar();
@@ -68,6 +78,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const btn = e.target.closest("button[data-section]");
         if (!btn) return;
 
+        if (btn.hasAttribute("disabled") || btn.getAttribute("aria-disabled") === "true") return;
+
         e.preventDefault();
 
         const next = btn.dataset.section;
@@ -86,8 +98,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const cfg = SECTION_CONFIG[section];
             if (!cfg) return;
 
+            closeAnyOverlay(main);
+
             updateHeader(section, cfg);
-            updateToolbar(section);
 
             await mountSection(section, cfg);
             currentSection = section;
@@ -112,14 +125,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (headerLeftLogo?.querySelector("#header-back-button")) {
             headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
         }
-    }
-
-    function updateToolbar(activeSection) {
-        toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
-            const isActive = btn.dataset.section === activeSection;
-            if (isActive) btn.setAttribute("aria-current", "page");
-            else btn.removeAttribute("aria-current");
-        });
     }
 
     async function mountSection(section, cfg) {
@@ -157,6 +162,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         for (const [section, {el}] of sectionState.entries()) {
             el.hidden = section !== activeSection;
         }
+
+        activateToolbar(activeSection);
     }
 
     async function initSectionOnce(section, cfg) {
@@ -164,9 +171,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!st || st.initialized) return;
 
         if (cfg.content.includes("map.html")) await initializeMap?.();
-        if (cfg.content.includes("profile.html")) await loadProfileOverview?.();
+        if (cfg.content.includes("profile.html")) await loadProfileOverviewWrapper(st.el);
         if (cfg.content.includes("homepage.html")) await initializeHomepageFilters?.();
     }
-});
 
-export {};
+    async function loadProfileOverviewWrapper(wrapper) {
+        await loadProfileOverview(wrapper);
+        wrapper.setAttribute("data-section-view", "profile");
+    }
+});

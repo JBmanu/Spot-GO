@@ -1,5 +1,5 @@
 <section class="home-section p-0">
-    <div class="search-bar w-full px-4 py-3 bg-main_paper border-b border-border_color">
+    <div class="search-bar search-bar-fixed">
         <div class="relative flex items-center gap-2">
             <div class="relative flex-1 flex items-center">
                 <input
@@ -24,8 +24,7 @@
     </div>
 
     <div id="view-all-saved-carousel" class="js-carousel-vertical" role="list" aria-label="Lista completa spot salvati">
-        <!-- Template per le card spot salvati -->
-        <template id="saved-spot-card-template">
+        <template id="classic-spot-card-template">
             <article data-slot="spot" role="listitem" data-spot-id="" data-saved="true" data-category="food">
                 <div data-slot="image">
                     <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
