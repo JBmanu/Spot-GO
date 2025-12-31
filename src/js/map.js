@@ -4,7 +4,8 @@ let getSpots,
     USER_PROTO_POSITION, distanceFromUserToSpot, createNearbySpotCard,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
-    initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard;
+    initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard,
+    openDetailHandler;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -27,6 +28,7 @@ Promise.all([
     }),
     import("./pages/spotDetail.js").then(module => {
         initializeSpotClickHandlers = module.initializeSpotClickHandlers;
+        openDetailHandler = module.openDetailHandler;
     }),
     import("./common/createCards.js").then(module => {
         createClassicSpotCard = module.createClassicSpotCard;
@@ -205,6 +207,17 @@ async function loadMarkers() {
         // Converto coord1 e coord2 in array [lat, lng]
         const markerPosition = [luogo.posizione.coord1, luogo.posizione.coord2];
         const iconName = categoryToMarkerMap[luogo.idCategoria] || "MarkerBase.svg";
+
+        const popupHtml = `
+            <div class="spot-popup" data-spot-id="${luogo.id}">
+                <b>${luogo.nome}</b>
+                <p>${luogo.descrizione}</p>
+                <button type="button" class="filter-button-footer mt-2"
+                        data-spot-id="${luogo.id}" style="margin: auto;" data-open-detail>
+                    Visualizza dettagli
+                </button>
+            </div>
+        `;
         
         const marker = L.marker(markerPosition, {
             icon: L.divIcon({
@@ -215,7 +228,18 @@ async function loadMarkers() {
             })
         })
         .addTo(map)
-        .bindPopup(`<b>${luogo.nome}</b><br>${luogo.descrizione}`);
+        .bindPopup(popupHtml);
+
+        // Pulsante per visualizzare i dettagli
+        marker.on("popupopen", (e) => {
+            L.DomEvent.disableClickPropagation(e.popup.getElement());
+            const popupEl = e.popup.getElement();
+            if (!popupEl) return;
+
+            popupEl
+                .querySelector("[data-open-detail]")
+                ?.addEventListener("click", openDetailHandler);
+        });
 
         spotMarkers.push(marker);
     });

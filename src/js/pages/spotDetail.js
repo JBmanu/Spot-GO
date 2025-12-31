@@ -46,7 +46,7 @@ export function initializeSpotClickHandlers(scopeEl = document) {
     });
 }
 
-async function openDetailHandler(e) {
+export async function openDetailHandler(e) {
     if (e.target.closest("[data-bookmark-button]")) return;
     const spotId = e.currentTarget.getAttribute("data-spot-id");
     if (!spotId || !spotId.trim()) return;
