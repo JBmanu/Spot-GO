@@ -5,11 +5,10 @@ import {
     syncAllBookmarks,
 } from "../common/bookmark.js";
 import {
-    getSpots,
     getCategoryNameIt,
     getSavedSpots,
     getFirstUser,
-    getCategorieMap,
+    getSpotById,
 } from "../query.js";
 
 let _spotData = null;
@@ -69,23 +68,12 @@ async function loadSpotDetail(spotId) {
         if (!main) return;
         main.innerHTML = await res.text();
         main.classList.add("spot-detail-enter");
-        const categoryEnglish = await getCategoryEnglishName(spotData.idCategoria);
-        main.setAttribute("data-category", categoryEnglish);
+        main.setAttribute("data-category", spotData.idCategoria || "nature");
         updateDetailHeader(spotData);
         await populateSpotDetail(spotData);
         initializeDetailHandlers();
     } catch (err) {
         console.error("Errore loadSpotDetail:", err);
-    }
-}
-
-async function getSpotById(spotId) {
-    try {
-        const spots = await getSpots();
-        return spots.find((s) => s.id === spotId) || null;
-    } catch (err) {
-        console.error("Errore getSpotById:", err);
-        return null;
     }
 }
 
@@ -109,7 +97,7 @@ function updateDetailHeader(spotData) {
     setupHeaderBookmark(spotData);
 }
 
-function teardownHeaderBookmark() {
+function removeHeaderBookmarkButton() {
     const headerBookmarkButton = document.getElementById("header-bookmark-button");
     if (!headerBookmarkButton) return;
     try {
@@ -132,7 +120,7 @@ function teardownHeaderBookmark() {
 function setupHeaderBookmark(spotData) {
     const headerBookmarkButton = document.getElementById("header-bookmark-button");
     if (!headerBookmarkButton) return;
-    teardownHeaderBookmark();
+    removeHeaderBookmarkButton();
     headerBookmarkButton.style.display = "block";
     headerBookmarkButton.setAttribute("data-bookmark-button", "true");
     headerBookmarkButton.setAttribute("data-bookmark-type", "detail");
@@ -172,28 +160,6 @@ async function refreshHeaderBookmarkVisual(btn, spotId) {
     const isSaved = savedIds.includes(spotId);
     btn.dataset.saved = isSaved ? "true" : "false";
     updateBookmarkVisual(btn, isSaved);
-}
-
-async function getCategoryEnglishName(categoryId) {
-    try {
-        const categorieMap = await getCategorieMap();
-        const raw = categorieMap?.[categoryId] ?? categoryId ?? "nature";
-        const map = {
-            Cibo: "food",
-            Cultura: "culture",
-            Natura: "nature",
-            Mistero: "mystery",
-            food: "food",
-            culture: "culture",
-            nature: "nature",
-            mystery: "mystery",
-        };
-        const key = String(raw).trim();
-        return map[key] || String(categoryId || "nature").toLowerCase();
-    } catch (err) {
-        console.error("Errore getCategoryEnglishName:", err);
-        return "nature";
-    }
 }
 
 async function populateSpotDetail(spotData) {
@@ -287,7 +253,7 @@ async function restorePreviousPage() {
     main.setAttribute("data-section-view", _cachedState.sectionView || "homepage");
     const header = document.querySelector("header.app-header");
     if (header && _cachedState.headerHTML) header.innerHTML = _cachedState.headerHTML;
-    teardownHeaderBookmark();
+    removeHeaderBookmarkButton();
     requestAnimationFrame(() => {
         main.scrollTop = _cachedState.mainScrollTop || 0;
         requestAnimationFrame(async () => {

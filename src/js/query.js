@@ -3,8 +3,8 @@
  * Espone funzioni per leggere utenti, luoghi, salvataggi e categorie.
  */
 
-import { collection, getDocs, query, where, limit, getDoc} from "firebase/firestore";
-import { db } from "./firebase.js";
+import {collection, getDocs, query, where, limit, getDoc} from "firebase/firestore";
+import {db} from "./firebase.js";
 
 let categorieCache = null;
 
@@ -74,8 +74,8 @@ export async function getFirstUser() {
  * Restituisce tutte le recensioni dell'utente con userId.
  */
 export async function getReviews(userId) {
-    return getItems('Recensione', 
-        where('idUtente', '==', userId), 
+    return getItems('Recensione',
+        where('idUtente', '==', userId),
         (id, data) => ({
             id: id,
             description: data.description || "",
@@ -91,7 +91,7 @@ export async function getReviews(userId) {
  */
 export async function getCreatedSpots(userId) {
     return getItems(
-        "LuogoCreato", 
+        "LuogoCreato",
         where('idUtente', '==', userId),
         (id, data) => ({
             id: id,
@@ -113,7 +113,6 @@ export async function getSavedSpots(userId) {
             idLuogo: data.idLuogo,
             idUtente: data.idUtente
         })
-
     );
 }
 
@@ -122,7 +121,7 @@ export async function getSavedSpots(userId) {
  */
 export async function getVisitedSpots(userId) {
     return getItems(
-        "LuogoVisitato", 
+        "LuogoVisitato",
         where('idUtente', '==', userId),
         (id, data) => ({
             id: id,
@@ -131,17 +130,6 @@ export async function getVisitedSpots(userId) {
         })
     );
 }
-
-/**
- * Restituisce tutti i Luogo dalla collection.
- */
-export async function getSpots() {
-    return getItems("Luogo", null, (id, data) => ({
-        id,
-        ...data
-    }));
-}
-
 
 
 export async function getFriends(userId) {
@@ -152,19 +140,19 @@ export async function getFriends(userId) {
         "Amico",
         null,
         (id, data) => {
-            if (id == userId) {
+            if (id === userId) {
                 const friendIds = data.friends || [];
                 var friends = [];
-                friendIds.map(friendRef => 
+                friendIds.map(friendRef =>
                     getDoc(friendRef).then(doc => {
-                        var friendData = {
-                            id: doc.id,
-                            email: doc.data().email || "",
-                            username: doc.data().username || "Utente"
+                            var friendData = {
+                                id: doc.id,
+                                email: doc.data().email || "",
+                                username: doc.data().username || "Utente"
                             };
-                        friends.push(friendData);
-                    }
-                ))
+                            friends.push(friendData);
+                        }
+                    ))
                 return friends;
             }
         }
@@ -176,7 +164,7 @@ export async function getFriends(userId) {
  */
 export async function getFilteredSpots(categories = [], searchText = "") {
     const noFilter = (!categories || categories.length === 0)
-                  && (!searchText || searchText.trim() === "");
+        && (!searchText || searchText.trim() === "");
     if (noFilter) return await getSpots();
 
     // Filtra almeno per categorie lato Firestore
@@ -185,7 +173,7 @@ export async function getFilteredSpots(categories = [], searchText = "") {
         filter = where("idCategoria", "in", categories);
     }
 
-    const spots = await getItems("Luogo", filter, (id, data) => ({ id, ...data }));
+    const spots = await getItems("Luogo", filter, (id, data) => ({id, ...data}));
 
     if (!searchText || searchText.trim() === "") return spots;
 
@@ -209,7 +197,30 @@ export async function getItems(collectionName, filter, itemParser) {
         });
         return items;
     } catch (error) {
-        console.error("Errore recupero items da " + collectionName + ": " , error);
+        console.error("Errore recupero items da " + collectionName + ": ", error);
         return [];
+    }
+}
+
+/**
+ * Restituisce tutti i Luogo dalla collection.
+ */
+export async function getSpots() {
+    return getItems("Luogo", null, (id, data) => ({
+        id,
+        ...data
+    }));
+}
+
+/**
+ * Restituisce uno spot specifico tramite ID.
+ */
+export async function getSpotById(spotId) {
+    try {
+        const spots = await getSpots();
+        return spots.find((s) => s.id === spotId) || null;
+    } catch (err) {
+        console.error("Errore getSpotById:", err);
+        return null;
     }
 }
