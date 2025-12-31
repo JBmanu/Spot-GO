@@ -8,18 +8,22 @@
         pointer-events: none;
         transition: opacity 0.3s ease;
         z-index: 1000;
+        display: none;
     }
 
     .filter-sheet {
-        position: sticky;
+        position: fixed;
         margin: 0;
         bottom: 0;
         z-index: 1001;
         opacity: 0;
+        width: 100%;
         background: white;
         transform: translateY(100%);
         transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
         overflow-x: hidden;
+        pointer-events: none;
+        display: none;
     }
 
     .filter-handle {
@@ -43,6 +47,7 @@
 
     .filter-sheet.active {
         opacity: 1;
+        pointer-events: auto;
         transform: translateY(0);
     }
 
