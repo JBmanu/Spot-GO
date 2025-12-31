@@ -1,4 +1,4 @@
-import { refreshVerticalCarousel } from "../common/carousels.js";
+import { initializeVerticalCarousel } from "../common/carousels.js";
 import { initializeBookmarks, syncAllBookmarks } from "../common/bookmark.js";
 import { initializeSpotClickHandlers } from "./spotDetail.js";
 import { getFirstUser, getSavedSpots, getSpots, getCategoryNameIt } from "../query.js";
@@ -219,7 +219,7 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
         if (!__viewAllSavedInitialized) {
             const carouselEl = root.querySelector("#view-all-saved-carousel");
-            if (carouselEl) refreshVerticalCarousel(carouselEl, { cardSelector: '[data-slot="spot"]' });
+            if (carouselEl) initializeVerticalCarousel(carouselEl, { cardSelector: '[data-slot="spot"]' });
 
             initializeSpotClickHandlers();
             initializeViewAllSavedSearch(root);

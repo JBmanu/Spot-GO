@@ -137,7 +137,7 @@ export async function getVisitedSpots(userId) {
  */
 export async function getSpots() {
     return getItems("Luogo", null, (id, data) => ({
-        id,          // <-- ID FIRESTORE
+        id,
         ...data
     }));
 }

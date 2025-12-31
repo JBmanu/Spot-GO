@@ -195,9 +195,9 @@ async function updateSavedSection({preserveScroll = true} = {}) {
         await populateSavedSpots({containerId: "home-saved-container"});
         await nextFrame();
         await nextFrame();
-        const {refreshHorizontalCarousel} = await import("../common/carousels.js");
+        const {initializeHorizontalCarousel} = await import("../common/carousels.js");
         savedRoot.classList.add("js-carousel-horizontal");
-        refreshHorizontalCarousel(savedRoot, {cardSelector: SELECTORS.savedShell});
+        initializeHorizontalCarousel(savedRoot, {cardSelector: SELECTORS.savedShell});
         await nextFrame();
         if (preserveScroll) {
             const trackAfter = getCarouselTrack(savedRoot);

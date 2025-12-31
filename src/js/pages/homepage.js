@@ -1,4 +1,4 @@
-import {refreshHorizontalCarousel, refreshVerticalCarousel} from "../common/carousels.js";
+import {initializeHorizontalCarousel, initializeVerticalCarousel} from "../common/carousels.js";
 import {initializeBookmarks, syncBookmarksUI} from "../common/bookmark.js";
 import {initializeSpotClickHandlers} from "./spotDetail.js";
 import {populateSavedSpots} from "./populateSavedSpots.js";
@@ -72,7 +72,7 @@ function ensureBookmarkChangedListener() {
                 const savedContainer = document.getElementById("home-saved-container");
                 if (savedContainer && savedContainer.contains(card)) {
                     card.remove();
-                    refreshHorizontalCarousel(savedContainer, {cardSelector: ".spot-card-saved"});
+                    initializeHorizontalCarousel(savedContainer, {cardSelector: ".spot-card-saved"});
                 }
             }
         });
@@ -92,7 +92,7 @@ async function buildHomeOnce(hostEl) {
             initFitText(".spot-card--saved .spot-card-title", `#${HOME.savedRootId}`, 2, 10.5);
 
             const root = $(HOME.savedRootId);
-            if (root) refreshHorizontalCarousel(root, {cardSelector: HOME.savedCardSelector});
+            if (root) initializeHorizontalCarousel(root, {cardSelector: HOME.savedCardSelector});
 
             filterSpotsByCategory(getActiveCategories(), hostEl);
         },
@@ -101,7 +101,7 @@ async function buildHomeOnce(hostEl) {
             await populateNearbySpots({containerId: HOME.nearbyCarouselRootId});
 
             const root = $(HOME.nearbyCarouselRootId);
-            if (root) refreshHorizontalCarousel(root, {cardSelector: HOME.nearbyCardSelector});
+            if (root) initializeHorizontalCarousel(root, {cardSelector: HOME.nearbyCardSelector});
 
             filterSpotsByCategory(getActiveCategories(), root || hostEl);
         },
@@ -110,7 +110,7 @@ async function buildHomeOnce(hostEl) {
             await populateTopratedSpots({containerId: HOME.topratedRootId, limit: 10});
 
             const root = $(HOME.topratedRootId);
-            if (root) refreshVerticalCarousel(root, {cardSelector: HOME.topratedCardSelector});
+            if (root) initializeVerticalCarousel(root, {cardSelector: HOME.topratedCardSelector});
 
             filterSpotsByCategory(getActiveCategories(), hostEl);
         },
@@ -120,13 +120,13 @@ async function buildHomeOnce(hostEl) {
         setupCategoryFilter(categoryContainer, {
             scopeEl: hostEl, onChange: () => {
                 const savedRoot = $(HOME.savedRootId);
-                if (savedRoot) refreshHorizontalCarousel(savedRoot, {cardSelector: HOME.savedCardSelector});
+                if (savedRoot) initializeHorizontalCarousel(savedRoot, {cardSelector: HOME.savedCardSelector});
 
                 const nearbyEl = nearbyRoot();
-                if (nearbyEl) refreshHorizontalCarousel(nearbyEl, {cardSelector: HOME.nearbyCardSelector});
+                if (nearbyEl) initializeHorizontalCarousel(nearbyEl, {cardSelector: HOME.nearbyCardSelector});
 
                 const topratedRoot = $(HOME.topratedRootId);
-                if (topratedRoot) refreshVerticalCarousel(topratedRoot, {cardSelector: HOME.topratedCardSelector});
+                if (topratedRoot) initializeVerticalCarousel(topratedRoot, {cardSelector: HOME.topratedCardSelector});
             },
         });
         categoryFilterAttached = true;
