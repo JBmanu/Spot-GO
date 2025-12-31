@@ -2,6 +2,7 @@ import {
     initializeBookmarks,
     toggleBookmarkForSpot,
     updateBookmarkVisual,
+    syncAllBookmarks,
 } from "../common/bookmark.js";
 import {
     getSpots,
@@ -10,22 +11,25 @@ import {
     getFirstUser,
     getCategorieMap,
 } from "../query.js";
+
 let _spotData = null;
 let _cachedState = {
     mainHTML: null,
     headerHTML: null,
     mainScrollTop: 0,
     carouselScroll: {},
+    sectionView: null,
 };
-let _popStateHandler = null;
 let _headerBookmarkClickHandler = null;
 let _headerBookmarkChangeHandler = null;
+
 function savePageState() {
     const main = document.getElementById("main");
     const header = document.querySelector("header.app-header");
     if (main) {
         _cachedState.mainHTML = main.innerHTML;
         _cachedState.mainScrollTop = main.scrollTop || 0;
+        _cachedState.sectionView = main.getAttribute("data-section-view");
     }
     if (header) _cachedState.headerHTML = header.innerHTML;
     const selectors = [".saved-swipe-track", ".nearby-swipe-track", ".carousel-vertical-track"];
@@ -34,19 +38,7 @@ function savePageState() {
         if (el) _cachedState.carouselScroll[sel] = el.scrollLeft || 0;
     });
 }
-function setupHistoryListener() {
-    if (_popStateHandler) return;
-    _popStateHandler = async () => {
-        await restorePreviousPage();
-    };
-    window.addEventListener("popstate", _popStateHandler);
-}
-function teardownHistoryListener() {
-    if (_popStateHandler) {
-        window.removeEventListener("popstate", _popStateHandler);
-        _popStateHandler = null;
-    }
-}
+
 export function initializeSpotClickHandlers(scopeEl = document) {
     const cards = scopeEl.querySelectorAll('[role="listitem"][data-spot-id]');
     cards.forEach((card) => {
@@ -54,12 +46,14 @@ export function initializeSpotClickHandlers(scopeEl = document) {
         card.addEventListener("click", openDetailHandler);
     });
 }
+
 async function openDetailHandler(e) {
     if (e.target.closest("[data-bookmark-button]")) return;
     const spotId = e.currentTarget.getAttribute("data-spot-id");
     if (!spotId || !spotId.trim()) return;
     await loadSpotDetail(spotId);
 }
+
 async function loadSpotDetail(spotId) {
     try {
         const spotData = await getSpotById(spotId);
@@ -69,16 +63,10 @@ async function loadSpotDetail(spotId) {
         }
         _spotData = spotData;
         savePageState();
-        const res = await fetch("../html/common-pages/spot-detail.html", { cache: "no-store" });
+        const res = await fetch("../html/common-pages/spot-detail.html", {cache: "no-store"});
         if (!res.ok) return;
         const main = document.getElementById("main");
         if (!main) return;
-        try {
-            history.pushState({ spotId }, "", location.pathname + "#spot-" + spotId);
-            setupHistoryListener();
-        } catch (e) {
-            console.warn("History API non disponibile:", e);
-        }
         main.innerHTML = await res.text();
         main.classList.add("spot-detail-enter");
         const categoryEnglish = await getCategoryEnglishName(spotData.idCategoria);
@@ -86,11 +74,11 @@ async function loadSpotDetail(spotId) {
         updateDetailHeader(spotData);
         await populateSpotDetail(spotData);
         initializeDetailHandlers();
-        disableToolbarButtons();
     } catch (err) {
         console.error("Errore loadSpotDetail:", err);
     }
 }
+
 async function getSpotById(spotId) {
     try {
         const spots = await getSpots();
@@ -100,6 +88,7 @@ async function getSpotById(spotId) {
         return null;
     }
 }
+
 function updateDetailHeader(spotData) {
     const headerLeftLogo = document.querySelector(".header-left-logo");
     const headerLogoText = document.getElementById("header-logo-text");
@@ -119,6 +108,7 @@ function updateDetailHeader(spotData) {
     }
     setupHeaderBookmark(spotData);
 }
+
 function teardownHeaderBookmark() {
     const headerBookmarkButton = document.getElementById("header-bookmark-button");
     if (!headerBookmarkButton) return;
@@ -131,12 +121,14 @@ function teardownHeaderBookmark() {
             document.removeEventListener("bookmark:changed", _headerBookmarkChangeHandler);
             _headerBookmarkChangeHandler = null;
         }
-    } catch (_) {}
+    } catch (_) {
+    }
     headerBookmarkButton.style.display = "none";
     headerBookmarkButton.removeAttribute("data-bookmark-button");
     headerBookmarkButton.removeAttribute("data-bookmark-type");
     headerBookmarkButton.removeAttribute("data-saved");
 }
+
 function setupHeaderBookmark(spotData) {
     const headerBookmarkButton = document.getElementById("header-bookmark-button");
     if (!headerBookmarkButton) return;
@@ -159,7 +151,7 @@ function setupHeaderBookmark(spotData) {
     _headerBookmarkChangeHandler = (ev) => {
         try {
             if (!ev?.detail) return;
-            const { spotId, isSaved } = ev.detail;
+            const {spotId, isSaved} = ev.detail;
             if (spotId !== spotData.id) return;
             headerBookmarkButton.dataset.saved = isSaved ? "true" : "false";
             updateBookmarkVisual(headerBookmarkButton, isSaved);
@@ -168,8 +160,10 @@ function setupHeaderBookmark(spotData) {
         }
     };
     document.addEventListener("bookmark:changed", _headerBookmarkChangeHandler);
-    refreshHeaderBookmarkVisual(headerBookmarkButton, spotData.id).catch(() => {});
+    refreshHeaderBookmarkVisual(headerBookmarkButton, spotData.id).catch(() => {
+    });
 }
+
 async function refreshHeaderBookmarkVisual(btn, spotId) {
     const user = await getFirstUser();
     if (!user) return;
@@ -179,6 +173,7 @@ async function refreshHeaderBookmarkVisual(btn, spotId) {
     btn.dataset.saved = isSaved ? "true" : "false";
     updateBookmarkVisual(btn, isSaved);
 }
+
 async function getCategoryEnglishName(categoryId) {
     try {
         const categorieMap = await getCategorieMap();
@@ -200,6 +195,7 @@ async function getCategoryEnglishName(categoryId) {
         return "nature";
     }
 }
+
 async function populateSpotDetail(spotData) {
     const els = {
         image: document.getElementById("spot-detail-main-image"),
@@ -243,6 +239,7 @@ async function populateSpotDetail(spotData) {
             : "";
     }
 }
+
 function initializeDetailHandlers() {
     const backButton = document.getElementById("header-back-button");
     if (backButton) {
@@ -254,11 +251,7 @@ function initializeDetailHandlers() {
                 main.classList.add("spot-detail-exit");
                 await new Promise((r) => setTimeout(r, 300));
             }
-            try {
-                history.back();
-            } catch (_) {
-                await restorePreviousPage();
-            }
+            await restorePreviousPage();
         });
     }
     const missionsToggle = document.getElementById("spot-missions-toggle");
@@ -275,20 +268,7 @@ function initializeDetailHandlers() {
     }
     initializeBookmarks();
 }
-function disableToolbarButtons() {
-    const toolbar = document.querySelector(".app-toolbar");
-    if (!toolbar) return;
-    toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
-        btn.classList.remove("active");
-        const text = btn.querySelector("span");
-        const icon = btn.querySelector('[data-role="icon"]');
-        if (text) {
-            text.classList.remove("font-bold");
-            text.classList.add("font-normal");
-        }
-        if (icon) icon.classList.remove("scale-125");
-    });
-}
+
 async function restorePreviousPage() {
     const main = document.getElementById("main");
     if (!main || !_cachedState.mainHTML) {
@@ -300,10 +280,11 @@ async function restorePreviousPage() {
         }
         return;
     }
-    teardownHistoryListener();
     main.classList.remove("spot-detail-enter", "spot-detail-exit");
     main.removeAttribute("data-category");
     main.innerHTML = _cachedState.mainHTML;
+    if (window.rebuildSectionState) window.rebuildSectionState();
+    main.setAttribute("data-section-view", _cachedState.sectionView || "homepage");
     const header = document.querySelector("header.app-header");
     if (header && _cachedState.headerHTML) header.innerHTML = _cachedState.headerHTML;
     teardownHeaderBookmark();
@@ -320,16 +301,43 @@ async function restorePreviousPage() {
             } catch (err) {
                 console.warn("Errore rehydrate homepage dopo restore:", err);
             }
+            // Activate the correct toolbar button
+            const toolbar = document.querySelector(".app-toolbar");
+            if (toolbar) {
+                toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
+                    btn.classList.remove("active");
+                    const text = btn.querySelector("span");
+                    const icon = btn.querySelector('[data-role="icon"]');
+                    if (text) {
+                        text.classList.remove("font-bold");
+                        text.classList.add("font-normal");
+                    }
+                    if (icon) icon.classList.remove("scale-125");
+                });
+                const activeBtn = toolbar.querySelector(`button[data-section="${_cachedState.sectionView || 'homepage'}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add("active");
+                    const text = activeBtn.querySelector("span");
+                    const icon = activeBtn.querySelector('[data-role="icon"]');
+                    if (text) {
+                        text.classList.add("font-bold");
+                        text.classList.remove("font-normal");
+                    }
+                    if (icon) icon.classList.add("scale-125");
+                }
+            }
             initializeSpotClickHandlers();
             try {
                 await syncAllBookmarks();
-            } catch (_) {}
+            } catch (_) {
+            }
             initializeBookmarks();
             _cachedState = {
                 mainHTML: null,
                 headerHTML: null,
                 mainScrollTop: 0,
                 carouselScroll: {},
+                sectionView: null,
             };
             _spotData = null;
         });

@@ -179,4 +179,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         await loadProfileOverview(wrapper);
         wrapper.setAttribute("data-section-view", "profile");
     }
+
+    window.rebuildSectionState = () => {
+        sectionState.clear();
+        main.querySelectorAll('[data-section-view]').forEach(el => {
+            const section = el.dataset.sectionView;
+            sectionState.set(section, {el, initialized: true});
+        });
+        currentSection = Array.from(sectionState.keys()).find(section => !sectionState.get(section).el.hidden) || null;
+    };
 });
