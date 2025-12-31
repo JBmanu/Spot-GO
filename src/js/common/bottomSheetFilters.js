@@ -1,6 +1,16 @@
 import { closeBottomSheet } from "../ui/bottomSheet";
 
-export function initializeBottomSheetFilters({ filtersEl, bottomSheetEl, overlayEl, onFiltersApplied }) {
+// --- STATO DEFAULT ---
+const defaultFilters = {
+    openNow: false,
+    openDateTime: null,
+    distance: 15000,
+    rating: 3,
+    status: []
+};
+
+export function initializeBottomSheetFilters(
+    { filtersEl, bottomSheetEl, overlayEl, buttonEl, onFiltersApplied }) {
     // --- ELEMENTI DEL DOM ---
     const openNowCheckbox = filtersEl.querySelector('input[name="open_now"]');
     const dateInput = filtersEl.querySelector('.input-date');
@@ -12,15 +22,6 @@ export function initializeBottomSheetFilters({ filtersEl, bottomSheetEl, overlay
     const resetBtn = filtersEl.querySelector('.filters-reset-btn');
     const cancelBtn = filtersEl.querySelector('.filter-button-footer:nth-child(1)');
     const applyBtn = filtersEl.querySelector('.filter-button-footer:nth-child(2)');
-
-    // --- STATO DEFAULT ---
-    const defaultFilters = {
-        openNow: false,
-        openDateTime: null,
-        distance: 15000,
-        rating: 3,
-        status: []
-    };
 
     // --- UTILITY ---
     const getSelectedRating = () => {
@@ -56,6 +57,9 @@ export function initializeBottomSheetFilters({ filtersEl, bottomSheetEl, overlay
         });
         // Stato
         statusButtons.forEach(btn => btn.classList.remove('active'));
+
+        // Reset contatore filtri attivi
+        updateFiltersBadge(buttonEl, 0);
     };
 
     const readFilters = () => {
@@ -125,10 +129,56 @@ export function initializeBottomSheetFilters({ filtersEl, bottomSheetEl, overlay
     // Applica filtri
     applyBtn.addEventListener('click', () => {
         const filtersToApply = readFilters();
-        closeBottomSheet(bottomSheetEl, overlayEl);        
+        closeBottomSheet(bottomSheetEl, overlayEl);
+        updateFiltersBadge(buttonEl, countActiveFilters(filtersToApply, defaultFilters));
         onFiltersApplied(filtersToApply);
     });
 
     // Inizializza UI con valori di default
     resetFiltersUI();
 };
+
+function updateFiltersBadge(buttonEl, activeCount) {
+    const badge = buttonEl.querySelector("#active-filters-badge");
+
+    if (!badge) return;
+
+    if (activeCount > 0) {
+        badge.textContent = activeCount;
+        badge.classList.remove("hidden");
+    } else {
+        badge.classList.add("hidden");
+    }
+}
+
+function countActiveFilters(current, defaults) {
+    let count = 0;
+
+    // Aperto ora
+    if (current.openNow !== defaults.openNow) {
+        count++;
+    }
+
+    // Data / ora
+    if (current.openDateTime !== defaults.openDateTime) {
+        count++;
+    }
+
+    // Distanza
+    if (current.distance !== defaults.distance) {
+        count++;
+    }
+
+    // Rating
+    if (current.rating !== defaults.rating) {
+        count++;
+    }
+
+    // Stato (multi-select)
+    if (Array.isArray(current.status) && current.status.length !== defaults.status.length) {
+        count++;
+    }
+
+    return count;
+}
+

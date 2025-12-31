@@ -165,7 +165,7 @@ export async function createSearchBarWithKeyboardAndFilters(
 
     // Aggiunta del contenuto del bottom-sheet dinamicamente
     const bottomSheetContent =
-        await bottomSheetContentCreator(bottomSheetEl, bottomSheetOverlayEl, onFiltersApplied);
+        await bottomSheetContentCreator(bottomSheetEl, bottomSheetOverlayEl, filterButton, onFiltersApplied);
     
     bottomSheetEl.querySelector('.filter-content').appendChild(bottomSheetContent);
 
@@ -178,7 +178,7 @@ export async function createSearchBarWithKeyboardAndFilters(
     }
 }
 
-export async function createBottomSheetWithStandardFilters(bottomSheetEl, overlayEl, onFiltersApplied) {
+export async function createBottomSheetWithStandardFilters(bottomSheetEl, overlayEl, buttonEl, onFiltersApplied) {
     const filtersDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-filters.html");
 
     const filtersEl = filtersDoc.body.firstElementChild;
@@ -192,6 +192,7 @@ export async function createBottomSheetWithStandardFilters(bottomSheetEl, overla
         filtersEl: filtersEl,
         bottomSheetEl : bottomSheetEl,
         overlayEl: overlayEl,
+        buttonEl: buttonEl,
         onFiltersApplied: onFiltersApplied});
 
     return filtersEl;
