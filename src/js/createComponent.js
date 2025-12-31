@@ -1,5 +1,6 @@
 import { getCategoryNameIt } from "./query.js";
 import { initializeBottomSheet } from "./ui/bottomSheet.js";
+import { initializeBottomSheetFilters } from "./common/bottomSheetFilters.js";
 
 async function loadComponentAsDocument(path) {
     try {
@@ -152,7 +153,8 @@ export async function createBottomSheetWithOverlay(openButtonEl) {
     };
 }
 
-export async function createSearchBarWithKeyboardAndFilters(placeholder, onValueChanged, bottomSheetContentCreator) {
+export async function createSearchBarWithKeyboardAndFilters(
+    { placeholder, onValueChanged, bottomSheetContentCreator, onFiltersApplied }) {
     const { searchBarEl, keyboardEl, overlayEl } =
         await createSearchBarWithKeyboard(placeholder, onValueChanged);
     
@@ -162,7 +164,9 @@ export async function createSearchBarWithKeyboardAndFilters(placeholder, onValue
         await createBottomSheetWithOverlay(filterButton);
 
     // Aggiunta del contenuto del bottom-sheet dinamicamente
-    const bottomSheetContent = await bottomSheetContentCreator();
+    const bottomSheetContent =
+        await bottomSheetContentCreator(bottomSheetEl, bottomSheetOverlayEl, onFiltersApplied);
+    
     bottomSheetEl.querySelector('.filter-content').appendChild(bottomSheetContent);
 
     return {
@@ -174,7 +178,7 @@ export async function createSearchBarWithKeyboardAndFilters(placeholder, onValue
     }
 }
 
-export async function createBottomSheetStandardFilters() {
+export async function createBottomSheetWithStandardFilters(bottomSheetEl, overlayEl, onFiltersApplied) {
     const filtersDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-filters.html");
 
     const filtersEl = filtersDoc.body.firstElementChild;
@@ -183,6 +187,12 @@ export async function createBottomSheetStandardFilters() {
         console.warn("BottomSheetFilters: elementi mancanti");
         return filtersEl;
     }
+
+    initializeBottomSheetFilters({
+        filtersEl: filtersEl,
+        bottomSheetEl : bottomSheetEl,
+        overlayEl: overlayEl,
+        onFiltersApplied: onFiltersApplied});
 
     return filtersEl;
 }

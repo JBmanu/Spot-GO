@@ -1,39 +1,42 @@
 export function initializeBottomSheet(bottomSheetEl, overlayEl, openButtonEl) {
-    let isClosing = false;
+    isClosing = false;
 
-    function openSheet() {
-        isClosing = false;
+    openButtonEl.addEventListener('click', () => openBottomSheet(bottomSheetEl, overlayEl));
+    overlayEl.addEventListener('click', () => closeBottomSheet(bottomSheetEl, overlayEl));
 
-        bottomSheetEl.style.display = 'block';
-        overlayEl.style.display = 'block';
+    closeBottomSheet(bottomSheetEl, overlayEl);
+}
 
-        requestAnimationFrame(() => {
-            bottomSheetEl.classList.add('active');
-            overlayEl.classList.add('active');
-        });
-    }
+// Non dovrebbe essere globale (problema multiple istanze di bottom-sheet), ma non importa
+let isClosing = false;
 
-    function closeSheet() {
-        isClosing = true;
+export function openBottomSheet(bottomSheetEl, overlayEl) {
+    isClosing = false;
 
-        bottomSheetEl.classList.remove('active');
-        overlayEl.classList.remove('active');
+    bottomSheetEl.style.display = 'block';
+    overlayEl.style.display = 'block';
 
-        const onEnd = (e) => {
-            if (e.target !== bottomSheetEl) return;
-            if (e.propertyName !== 'transform') return;
-            if (!isClosing) return;
+    requestAnimationFrame(() => {
+        bottomSheetEl.classList.add('active');
+        overlayEl.classList.add('active');
+    });
+}
 
-            bottomSheetEl.style.display = 'none';
-            overlayEl.style.display = 'none';
-            bottomSheetEl.removeEventListener('transitionend', onEnd);
-        };
+export function closeBottomSheet(bottomSheetEl, overlayEl) {
+    isClosing = true;
 
-        bottomSheetEl.addEventListener('transitionend', onEnd);
-    }
+    bottomSheetEl.classList.remove('active');
+    overlayEl.classList.remove('active');
 
-    openButtonEl.addEventListener('click', openSheet);
-    overlayEl.addEventListener('click', closeSheet);
+    const onEnd = (e) => {
+        if (e.target !== bottomSheetEl) return;
+        if (e.propertyName !== 'transform') return;
+        if (!isClosing) return;
 
-    closeSheet();
+        bottomSheetEl.style.display = 'none';
+        overlayEl.style.display = 'none';
+        bottomSheetEl.removeEventListener('transitionend', onEnd);
+    };
+
+    bottomSheetEl.addEventListener('transitionend', onEnd);
 }

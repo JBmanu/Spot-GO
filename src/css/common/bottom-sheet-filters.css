@@ -17,6 +17,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding-bottom: 6px;
     }
 
    .filters-title {
@@ -60,12 +61,20 @@
         margin-bottom: 8px;
     }
 
+    .filter-flex-start {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
     /* --- TOGGLE SWITCH --- */
    .toggle-switch {
         position: relative;
         display: inline-block;
         width: 44px;
         height: 24px;
+        margin-left: 14px;
     }
 
    .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -74,8 +83,8 @@
         position: absolute;
         cursor: pointer;
         top: 0; left: 0; right: 0; bottom: 0;
-        background-color: var(--vp-c-bg-alt);
-        border: 2px solid var(--vp-c-divider);
+        background-color: white; /* var(--vp-c-bg-alt); */
+        border: 2px solid black;/* var(--vp-c-divider); */
         transition:.3s;
         border-radius: 24px;
     }
@@ -85,13 +94,20 @@
         content: "";
         height: 16px; width: 16px;
         left: 2px; bottom: 2px;
-        background-color: var(--vp-c-text-1);
+        background-color: black; /* var(--vp-c-text-1); */
         transition:.3s;
         border-radius: 50%;
     }
 
-    input:checked +.toggle-slider { background-color: var(--vp-c-brand-1); border-color: var(--vp-c-brand-1); }
-    input:checked +.toggle-slider:before { transform: translateX(20px); background-color: white; }
+    input:checked +.toggle-slider { 
+        background-color: skyblue; /* var(--vp-c-brand-1); */
+        border-color: black; /* var(--vp-c-brand-1); */
+    }
+
+    input:checked +.toggle-slider:before {
+        transform: translateX(20px);
+        background-color: black;
+    }
 
     /* --- DATETIME PILLS --- */
    .filter-datetime-row {

@@ -3,7 +3,7 @@
 let getSpots,
     USER_PROTO_POSITION, distanceFromUserToSpot, createNearbySpotCard,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
-    createSearchBarWithKeyboardAndFilters, createBottomSheetStandardFilters,
+    createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
     initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard;
 
 import L from 'leaflet';
@@ -22,7 +22,7 @@ Promise.all([
     }),
     import("./createComponent.js").then(module => {
         createSearchBarWithKeyboardAndFilters = module.createSearchBarWithKeyboardAndFilters;
-        createBottomSheetStandardFilters = module.createBottomSheetStandardFilters;
+        createBottomSheetWithStandardFilters = module.createBottomSheetWithStandardFilters;
         createNearbySpotCard = module.createNearbySpotCard;
     }),
     import("./pages/spotDetail.js").then(module => {
@@ -131,13 +131,16 @@ async function loadSearchBar() {
     currentSearchText = "";
 
     const { searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl } =
-        await createSearchBarWithKeyboardAndFilters(
-            "Cerca Spot",
-            (inputText) => {
+        await createSearchBarWithKeyboardAndFilters({
+            placeholder: "Cerca Spot",
+            onValueChanged: (inputText) => {
                 currentSearchText = inputText;
                 loadSpotsDependentObjects();
             },
-            createBottomSheetStandardFilters);
+            bottomSheetContentCreator: createBottomSheetWithStandardFilters,
+            onFiltersApplied: (filtersToApply) => {
+                console.log(filtersToApply);
+            }});
 
     // Aggiunta dei componenti
     const mainSection = document.getElementById("map-main-section");
@@ -203,7 +206,7 @@ async function loadMarkers() {
         const marker = L.marker(markerPosition, {
             icon: L.divIcon({
                 html: `<img src="../assets/icons/map/${iconName}" class="marker-pop-up">`,
-                className: 'custom-div-icon', // lascia vuoto per non avere classi aggiuntive di Leaflet
+                className: 'custom-div-icon',
                 iconSize: [64, 64],
                 iconAnchor: [32, 64]
             })
