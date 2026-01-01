@@ -5,6 +5,7 @@ import { createStarRating } from "../createComponent";
 let __newSpotPageHtml = null;
 let newSpotSection;
 let map;
+let spotPositionMarker;
 
 async function getNewSpotPageHtml() {
     if (__newSpotPageHtml) return __newSpotPageHtml;
@@ -132,11 +133,33 @@ async function loadMap() {
             iconUrl: '../../assets/icons/map/Arrow.png',
             iconSize: [40, 40],
             iconAnchor: [20, 40]
-        })
+        }),
+        interactive: false
     })
     .addTo(map);
 
     // setTileServer(MAP_TILE_SERVERS.ESRI_LIGHT_GRAY);
+
+    map.on('mousedown', function (e) {
+      if (spotPositionMarker) {
+        map.removeLayer(spotPositionMarker)
+      }
+
+      const { lat, lng } = e.latlng;
+
+      const icon = L.divIcon({
+          html: '<img src="../../assets/icons/map/MarkerBase.svg" class="marker-pop-up show">',
+          className: 'custom-div-icon',
+          iconSize: [64, 64],
+          iconAnchor: [32, 64],
+      });
+
+      spotPositionMarker = L.marker([lat, lng], { icon, interactive: false })
+        .addTo(map);
+
+      newSpotSection.querySelector('#spot-position').textContent = `${lat.toFixed(4)} : ${lng.toFixed(4)}`;
+    });
+
 }
 
 async function loadStarRating() {
