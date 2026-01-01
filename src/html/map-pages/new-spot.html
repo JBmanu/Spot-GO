@@ -1,26 +1,10 @@
-<div class="max-w-md mx-auto bg-white min-h-screen flex flex-col p-4 font-sans text-black">
-  <div class="flex items-center justify-between mb-6">
-    <button class="p-2 -ml-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-    </button>
-    <h1 class="text-xl font-bold">Nuovo Spot</h1>
-    <div class="w-10"></div> </div>
-
+<section data-section-view="new-spot" class="max-w-md mx-auto bg-white min-h-screen flex flex-col p-4 font-sans text-black">
   <div class="space-y-6 pb-24">
     <section>
       <label class="block font-bold mb-2">Posizione : <span class="font-normal underline">__________</span></label>
-      <div class="w-full h-48 bg-gray-50 border-2 border-black rounded-3xl flex items-center justify-center relative overflow-hidden mb-3">
-        <div class="flex flex-col items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round"></path>
-            <div class="w-1 h-4 bg-black -mt-1"></div>
-        </div>
+      <div id="new-spot-map-container" class="mt-2 px-3">
+          <div id="new-spot-map" class="new-spot-map"></div>
       </div>
-      <button class="w-full py-2 border-2 border-black rounded-full font-bold text-sm">
-        Sposta Pin sulla mappa
-      </button>
     </section>
 
     <section class="space-y-4">
@@ -38,7 +22,10 @@
       <div class="flex items-center gap-3">
         <label class="font-bold">Categoria *</label>
         <select class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[100px]">
-          <option></option>
+          <option value="culture">Cultura</option>
+          <option value="food">Cibo</option>
+          <option value="nature">Natura</option>
+          <option value="mystery">Mistero</option>
         </select>
       </div>
       
@@ -95,4 +82,4 @@
       Aggiungi
     </button>
   </div>
-</div>
+</section>

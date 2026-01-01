@@ -7,7 +7,7 @@
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
-        z-index: 1000;
+        z-index: 1001;
         display: none;
     }
 
@@ -15,7 +15,7 @@
         position: fixed;
         margin: 0;
         bottom: 0;
-        z-index: 1001;
+        z-index: 1002;
         opacity: 0;
         width: 100%;
         background: white;

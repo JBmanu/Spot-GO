@@ -5,7 +5,7 @@ let getSpots,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
     initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard,
-    openDetailHandler;
+    openDetailHandler, openNewSpotPage;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -29,6 +29,9 @@ Promise.all([
     import("./pages/spotDetail.js").then(module => {
         initializeSpotClickHandlers = module.initializeSpotClickHandlers;
         openDetailHandler = module.openDetailHandler;
+    }),
+    import("./pages/newSpot.js").then(module => {
+        openNewSpotPage = module.openNewSpotPage;
     }),
     import("./common/createCards.js").then(module => {
         createClassicSpotCard = module.createClassicSpotCard;
@@ -88,6 +91,7 @@ const MAP_TILE_SERVERS = {
 
 async function initializeMap() {
     initializeCategoryFilters();
+    initializeNewSpotButton();
 
     await loadSearchBar();
     await loadMap();
@@ -129,6 +133,11 @@ function initializeCategoryFilters() {
 
         loadSpotsDependentObjects();
     });
+}
+
+function initializeNewSpotButton() {
+    const button = document.getElementById('new-spot-button');
+    button.addEventListener('click', openNewSpotPage);
 }
 
 async function loadSearchBar() {
@@ -175,6 +184,10 @@ async function loadMap() {
 
     // Inizializza la mappa
     map = L.map(mapEl).setView(USER_PROTO_POSITION, 15);
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 0);
 
     // Aggiunta layer OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

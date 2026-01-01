@@ -2,7 +2,7 @@ import { getCategoryNameIt } from "./query.js";
 import { initializeBottomSheet } from "./ui/bottomSheet.js";
 import { initializeBottomSheetFilters } from "./common/bottomSheetFilters.js";
 
-async function loadComponentAsDocument(path) {
+export async function loadComponentAsDocument(path) {
     try {
         const response = await fetch(path);
         if (!response.ok) return;
