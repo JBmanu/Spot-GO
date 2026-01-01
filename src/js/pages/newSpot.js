@@ -1,7 +1,9 @@
 import { loadComponentAsDocument } from "../createComponent";
 import { USER_PROTO_POSITION } from "../common";
+import { createStarRating } from "../createComponent";
 
 let __newSpotPageHtml = null;
+let newSpotSection;
 let map;
 
 async function getNewSpotPageHtml() {
@@ -51,7 +53,7 @@ function showSection(viewName) {
 }
 
 async function ensureNewSpotPageInDom() {
-    let newSpotSection = document.querySelector('[data-section-view="new-spot"]');
+    newSpotSection = document.querySelector('[data-section-view="new-spot"]');
     if (newSpotSection) return newSpotSection;
 
     const html = await getNewSpotPageHtml();
@@ -82,6 +84,7 @@ export async function openNewSpotPage() {
     renderHeaderForNewSpotPage();
     
     loadMap();
+    await loadStarRating();
 
     // Bottone indietro
     const backBtn = document.querySelector("[data-back]");
@@ -134,4 +137,9 @@ async function loadMap() {
     .addTo(map);
 
     // setTileServer(MAP_TILE_SERVERS.ESRI_LIGHT_GRAY);
+}
+
+async function loadStarRating() {
+  const starRatingEl = await createStarRating();
+  newSpotSection.querySelector('.rating-container').appendChild(starRatingEl);
 }

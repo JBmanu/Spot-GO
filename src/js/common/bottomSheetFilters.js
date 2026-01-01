@@ -1,4 +1,6 @@
 import { closeBottomSheet } from "../ui/bottomSheet";
+import { initializeStarRating, getSelectedStarRating, resetStarRating } from "./starRating";
+import { createStarRating } from "../createComponent";
 
 // --- STATO DEFAULT ---
 const defaultFilters = {
@@ -9,7 +11,7 @@ const defaultFilters = {
     status: []
 };
 
-export function initializeBottomSheetFilters(
+export async function initializeBottomSheetFilters(
     { filtersEl, bottomSheetEl, overlayEl, buttonEl, onFiltersApplied }) {
     // --- ELEMENTI DEL DOM ---
     const openNowCheckbox = filtersEl.querySelector('input[name="open_now"]');
@@ -17,21 +19,13 @@ export function initializeBottomSheetFilters(
     const timeInput = filtersEl.querySelector('.input-time');
     const distanceRange = filtersEl.querySelector('.distance-range');
     const distanceValueSpan = filtersEl.querySelector('.distance-value');
-    const starElements = filtersEl.querySelectorAll('.star-rating .star');
+    const starRatingContainer = filtersEl.querySelector('.rating-container');
     const statusButtons = filtersEl.querySelectorAll('.filter-button-status');
     const resetBtn = filtersEl.querySelector('.filters-reset-btn');
     const cancelBtn = filtersEl.querySelector('.filter-button-footer:nth-child(1)');
     const applyBtn = filtersEl.querySelector('.filter-button-footer:nth-child(2)');
 
     // --- UTILITY ---
-    const getSelectedRating = () => {
-        let rating = 0;
-        starElements.forEach(star => {
-            if (star.classList.contains('active')) rating++;
-        });
-        return rating;
-    };
-
     const getSelectedStatus = () => {
         const selected = [];
         statusButtons.forEach(btn => {
@@ -41,6 +35,10 @@ export function initializeBottomSheetFilters(
         });
         return selected;
     };
+
+    // Star Rating
+    const starRatingEl = await createStarRating();
+    starRatingContainer.appendChild(starRatingEl);
 
     const resetFiltersUI = () => {
         // "Aperto ora"
@@ -52,9 +50,7 @@ export function initializeBottomSheetFilters(
         distanceRange.value = defaultFilters.distance / 1000;
         distanceValueSpan.textContent = `${defaultFilters.distance / 1000} km`;
         // Rating
-        starElements.forEach((star, i) => {
-            star.classList.toggle('active', i < defaultFilters.rating);
-        });
+        resetStarRating(starRatingEl, defaultFilters);
         // Stato
         statusButtons.forEach(btn => btn.classList.remove('active'));
 
@@ -79,7 +75,7 @@ export function initializeBottomSheetFilters(
         const distance = distanceKm * 1000;
 
         // Rating
-        const rating = getSelectedRating();
+        const rating = getSelectedStarRating(starRatingEl);
 
         // Stato
         const status = getSelectedStatus();
@@ -100,13 +96,6 @@ export function initializeBottomSheetFilters(
     // Toggle distanza display
     distanceRange.addEventListener('input', () => {
         distanceValueSpan.textContent = `${distanceRange.value} km`;
-    });
-
-    // Toggle rating
-    starElements.forEach((star, index) => {
-        star.addEventListener('click', () => {
-            starElements.forEach((s, i) => s.classList.toggle('active', i <= index));
-        });
     });
 
     // Toggle status buttons

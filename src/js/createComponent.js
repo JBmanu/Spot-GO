@@ -1,6 +1,7 @@
 import { getCategoryNameIt } from "./query.js";
 import { initializeBottomSheet } from "./ui/bottomSheet.js";
 import { initializeBottomSheetFilters } from "./common/bottomSheetFilters.js";
+import { initializeStarRating } from "./common/starRating.js";
 
 export async function loadComponentAsDocument(path) {
     try {
@@ -188,7 +189,7 @@ export async function createBottomSheetWithStandardFilters(bottomSheetEl, overla
         return filtersEl;
     }
 
-    initializeBottomSheetFilters({
+    await initializeBottomSheetFilters({
         filtersEl: filtersEl,
         bottomSheetEl : bottomSheetEl,
         overlayEl: overlayEl,
@@ -196,6 +197,21 @@ export async function createBottomSheetWithStandardFilters(bottomSheetEl, overla
         onFiltersApplied: onFiltersApplied});
 
     return filtersEl;
+}
+
+export async function createStarRating() {
+    const starRatingDoc = await loadComponentAsDocument("../html/common-components/star-rating.html");
+
+    const starRatingEl = starRatingDoc.body.firstElementChild;
+
+    if (!starRatingEl) {
+        console.warn("StarRating: elementi mancanti");
+        return starRatingEl;
+    }
+
+    initializeStarRating(starRatingEl);
+
+    return starRatingEl;
 }
 
 /**
