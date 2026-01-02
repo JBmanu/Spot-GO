@@ -1,67 +1,177 @@
 <section class="space-y-3">
 
     <!--Current missions-->
-    <div>
-        La tua missione in corso
-    </div>
-    <!--Mission card-->
-    <div>
-        <!--Top section-->
-        <div>
-            <div>Type mission</div>
-            <div>Experience</div>
+    <div class="mx-4 my-6">
+        <!-- Titolo principale -->
+        <div class="flex items-center gap-2 mb-4">
+            <img src="/src/assets/icons/mission.svg" class="w-6 h-6" alt="Mission Icon" />
+            <h1 class="text-xl font-bold text-gray-800">La tua missione in corso</h1>
         </div>
-        <!--Center section-->
-        <div>
-            <!--Top section-->
-            <div>
-                <div>Type mission</div>
-                <div>Experience</div>
-            </div>
-            <!--Center section-->
-            <div>
-                <!--Info section-->
-                <div>
-                    <div>Mission title</div>
-                    <div>Mission description</div>
+
+        <!-- Contenitore principale -->
+        <div class="bg-white rounded-2xl shadow px-6 py-5 space-y-6">
+
+            <!-- ================= TOP ================= -->
+            <div class="flex justify-between items-center">
+                <!-- sinistra -->
+                <div class="flex items-center gap-2 text-gray-600">
+                    <img src="/src/assets/icons/mission.svg" class="w-5 h-5" />
+                    <span class="text-sm font-medium">Type mission</span>
                 </div>
-                <div>Mission Progress</div>
+
+                <!-- destra -->
+                <span class="text-sm font-semibold text-green-600">+250 XP</span>
             </div>
 
-        </div>
-        <!--Bottom section-->
-        <div>
-            <!--Mission card-->
-            <div>
-                <div>Mission</div>
-                <div>Progress</div>
+            <!-- ================= CENTER ================= -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        Luogo luogoso
+                    </h2>
+                    <span class="text-sm text-gray-500">4 / 5</span>
+                </div>
+
+                <p class="text-sm text-gray-600">
+                    Completa tutte le missioni del luogo luogoso per ottenere ricompense esclusive!
+                </p>
+            </div>
+
+            <!-- ================= BOTTOM ================= -->
+            <div class="space-y-4">
+
+                <!-- Mission Item -->
+                <div class="bg-gray-50 rounded-xl px-4 py-3 flex justify-between items-center">
+
+                    <!-- Left -->
+                    <div class="space-y-1">
+                        <h3 class="text-sm font-semibold text-gray-800">
+                            Scatta la foto
+                        </h3>
+                        <p class="text-xs text-gray-600">
+                            Usa quella fotocamera del cellulare, ora!
+                        </p>
+
+                        <!-- reward -->
+                        <div class="flex items-center gap-1 text-xs text-gray-700">
+                            <img src="/src/assets/icons/reward.svg" class="w-4 h-4" />
+                            <span>+50 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Right -->
+                    <div class="flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                            ✓
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission Item -->
+                <div class="bg-gray-50 rounded-xl px-4 py-3 flex justify-between items-center">
+
+                    <!-- Left -->
+                    <div class="space-y-1">
+                        <h3 class="text-sm font-semibold text-gray-800">
+                            Scrivi una recensione
+                        </h3>
+                        <p class="text-xs text-gray-600">
+                            Non è cosi difficile usare la tastiera, dai!
+                        </p>
+
+                        <!-- reward -->
+                        <div class="flex items-center gap-1 text-xs text-gray-700">
+                            <img src="/src/assets/icons/reward.svg" class="w-4 h-4" />
+                            <span>+30 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Right -->
+                    <div class="flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                            ☐
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <!--Type missions bar-->
-    <div>
-        <div>Daily</div>
-        <div>Theme</div>
-        <div>Level</div>
-    </div>
+    <div class="mx-4 my-0">
+        <!-- contenitore esterno -->
+        <div class="bg-white rounded-2xl shadow px-6 py-4">
+            <!-- contenitore interno -->
+            <div class="flex justify-between">
 
-    <!--Missions carousels-->
-    <div>
-        <!--Card mission-->
-        <div>
-            <!--Left section-->
-            <div>
-                <div>Title</div>
-                <div>Description</div>
-                <div>Reward</div>
-            </div>
-            <!--Right section-->
-            <div>
-                <div>Progress</div>
+                <!-- Daily -->
+                <div class="flex items-center gap-2 text-gray-700 cursor-pointer hover:text-blue-500 transition">
+                    <img src="/src/assets/icons/daily.svg" class="w-5 h-5" />
+                    <span class="font-medium">Daily</span>
+                </div>
+
+                <!-- Theme -->
+                <div class="flex items-center gap-2 text-gray-700 cursor-pointer hover:text-blue-500 transition">
+                    <img src="/src/assets/icons/theme.svg" class="w-5 h-5" />
+                    <span class="font-medium">Theme</span>
+                </div>
+
+                <!-- Level -->
+                <div class="flex items-center gap-2 text-gray-700 cursor-pointer hover:text-blue-500 transition">
+                    <img src="/src/assets/icons/level.svg" class="w-5 h-5" />
+                    <span class="font-medium">Level</span>
+                </div>
+
             </div>
         </div>
     </div>
+
+
+    <!-- Missions -->
+    <div class="px-4 py-4 space-y-4">
+
+        <!-- ================= Elemento 1 ================= -->
+        <div class="bg-white rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+
+            <!-- Lato sinistro -->
+            <div class="space-y-1">
+                <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
+                <p class="text-xs text-gray-600">Complete daily activities</p>
+                <div class="flex items-center gap-1 text-xs text-gray-700">
+                    <img src="/src/assets/icons/reward.svg" class="w-4 h-4" alt="Reward Icon" />
+                    <span>+50 XP</span>
+                </div>
+            </div>
+
+            <!-- Lato destro -->
+            <div class="flex items-center justify-center">
+                <span class="text-sm font-medium text-gray-500">1 / 7</span>
+            </div>
+
+        </div>
+
+        <!-- ================= Elemento 2 ================= -->
+        <div class="bg-white rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+
+            <!-- Lato sinistro -->
+            <div class="space-y-1">
+                <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
+                <p class="text-xs text-gray-600">Open the app at least once</p>
+                <div class="flex items-center gap-1 text-xs text-gray-700">
+                    <img src="/src/assets/icons/reward.svg" class="w-4 h-4" alt="Reward Icon" />
+                    <span>+30 XP</span>
+                </div>
+            </div>
+
+            <!-- Lato destro -->
+            <div class="flex items-center justify-center">
+                <span class="text-sm font-medium text-gray-500">✓</span>
+            </div>
+        </div>
+
+    </div>
+
 
 
 </section>
