@@ -25,9 +25,9 @@ export async function loadComponentAsDocument(path) {
  * @returns {Promise<{ searchBarEl: HTMLElement, keyboardOverlayEl: HTMLElement }>}
  */
 export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
-    const searchDoc = await loadComponentAsDocument("../html/common-components/search-bar.html");
-    const keyboardDoc = await loadComponentAsDocument("../html/common-components/keyboard.html");
-    const overlayDoc = await loadComponentAsDocument("../html/common-components/keyboard-overlay.html");
+    const searchDoc = await loadComponentAsDocument("../html/common-components/search-bar/search-bar.html");
+    const keyboardDoc = await loadComponentAsDocument("../html/common-components/search-bar/keyboard.html");
+    const overlayDoc = await loadComponentAsDocument("../html/common-components/search-bar/keyboard-overlay.html");
 
     // Root elements
     const searchBarEl = searchDoc.body.firstElementChild;
@@ -135,8 +135,8 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
 }
 
 export async function createBottomSheetWithOverlay(openButtonEl) {
-    const bottomSheetDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet.html");
-    const overlayDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-overlay.html");
+    const bottomSheetDoc = await loadComponentAsDocument("../html/common-components/search-bar/bottom-sheet.html");
+    const overlayDoc = await loadComponentAsDocument("../html/common-components/search-bar/bottom-sheet-overlay.html");
 
     const bottomSheetEl = bottomSheetDoc.body.firstElementChild;
     const bottomSheetOverlayEl = overlayDoc.body.firstElementChild;
@@ -180,7 +180,7 @@ export async function createSearchBarWithKeyboardAndFilters(
 }
 
 export async function createBottomSheetWithStandardFilters(bottomSheetEl, overlayEl, buttonEl, onFiltersApplied) {
-    const filtersDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-filters.html");
+    const filtersDoc = await loadComponentAsDocument("../html/common-components/search-bar/bottom-sheet-filters.html");
 
     const filtersEl = filtersDoc.body.firstElementChild;
 
@@ -200,7 +200,7 @@ export async function createBottomSheetWithStandardFilters(bottomSheetEl, overla
 }
 
 export async function createStarRating() {
-    const starRatingDoc = await loadComponentAsDocument("../html/common-components/star-rating.html");
+    const starRatingDoc = await loadComponentAsDocument("../html/common-components/star-rating/star-rating.html");
 
     const starRatingEl = starRatingDoc.body.firstElementChild;
 
