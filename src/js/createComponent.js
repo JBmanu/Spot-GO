@@ -25,9 +25,9 @@ export async function loadComponentAsDocument(path) {
  * @returns {Promise<{ searchBarEl: HTMLElement, keyboardOverlayEl: HTMLElement }>}
  */
 export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
-    const searchDoc = await loadComponentAsDocument("../html/common-components/search-bar.html");
-    const keyboardDoc = await loadComponentAsDocument("../html/common-components/keyboard.html");
-    const overlayDoc = await loadComponentAsDocument("../html/common-components/keyboard-overlay.html");
+    const searchDoc = await loadComponentAsDocument("../html/common-components/search-bar/search-bar.html");
+    const keyboardDoc = await loadComponentAsDocument("../html/common-components/search-bar/keyboard.html");
+    const overlayDoc = await loadComponentAsDocument("../html/common-components/search-bar/keyboard-overlay.html");
 
     // Root elements
     const searchBarEl = searchDoc.body.firstElementChild;
@@ -135,8 +135,8 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
 }
 
 export async function createBottomSheetWithOverlay(openButtonEl) {
-    const bottomSheetDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet.html");
-    const overlayDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-overlay.html");
+    const bottomSheetDoc = await loadComponentAsDocument("../html/common-components/search-bar/bottom-sheet.html");
+    const overlayDoc = await loadComponentAsDocument("../html/common-components/search-bar/bottom-sheet-overlay.html");
 
     const bottomSheetEl = bottomSheetDoc.body.firstElementChild;
     const bottomSheetOverlayEl = overlayDoc.body.firstElementChild;
@@ -180,7 +180,7 @@ export async function createSearchBarWithKeyboardAndFilters(
 }
 
 export async function createBottomSheetWithStandardFilters(bottomSheetEl, overlayEl, buttonEl, onFiltersApplied) {
-    const filtersDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-filters.html");
+    const filtersDoc = await loadComponentAsDocument("../html/common-components/search-bar/bottom-sheet-filters.html");
 
     const filtersEl = filtersDoc.body.firstElementChild;
 
@@ -200,7 +200,7 @@ export async function createBottomSheetWithStandardFilters(bottomSheetEl, overla
 }
 
 export async function createStarRating() {
-    const starRatingDoc = await loadComponentAsDocument("../html/common-components/star-rating.html");
+    const starRatingDoc = await loadComponentAsDocument("../html/common-components/star-rating/star-rating.html");
 
     const starRatingEl = starRatingDoc.body.firstElementChild;
 
@@ -212,47 +212,4 @@ export async function createStarRating() {
     initializeStarRating(starRatingEl);
 
     return starRatingEl;
-}
-
-/**
- * Crea una card "spot vicino".
- *
- * @param {Object} spot - Oggetto spot dal DB.
- * @param {string} distance - Distanza formattata (es. "350 m").
- * @returns {Promise<HTMLElement>} Elemento DOM pronto per essere aggiunto alla pagina.
- */
-export async function createNearbySpotCard(spot, distance) {
-    const doc = await loadComponentAsDocument("../html/common-components/nearby-spot-card.html");
-
-    if (!doc) return null;
-
-    const card = doc.body.firstElementChild;
-
-    // Nome
-    const title = card.querySelector('[data-field="title"]');
-    if (title) title.textContent = spot.nome;
-
-    // Immagine
-    const image = card.querySelector('[data-field="image"]');
-    if (image) {
-        image.src = spot.immagine;
-        image.alt = `Foto di ${spot.nome}`;
-    }
-
-    // Distanza
-    const distanceEl = card.querySelector('[data-field="distance"]');
-    if (distanceEl) distanceEl.textContent = distance;
-
-    // Categoria
-    const categoryEl = card.querySelector('[data-field="category"]');
-    if (categoryEl) {
-        categoryEl.textContent = await getCategoryNameIt(spot.idCategoria);
-    }
-
-    // Dataset
-    card.dataset.spotId = spot.id ?? "";
-    card.dataset.category = spot.idCategoria;
-    card.dataset.saved = "true";
-
-    return card;
 }

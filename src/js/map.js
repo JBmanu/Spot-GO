@@ -1,7 +1,7 @@
 // map.js
 // Import dinamici
 let getSpots,
-    USER_PROTO_POSITION, distanceFromUserToSpot, createNearbySpotCard,
+    USER_PROTO_POSITION, distanceFromUserToSpot,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
     initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard,
@@ -25,7 +25,6 @@ Promise.all([
     import("./createComponent.js").then(module => {
         createSearchBarWithKeyboardAndFilters = module.createSearchBarWithKeyboardAndFilters;
         createBottomSheetWithStandardFilters = module.createBottomSheetWithStandardFilters;
-        createNearbySpotCard = module.createNearbySpotCard;
     }),
     import("./pages/spotDetail.js").then((module) => {
         initializeSpotClickHandlers = module.initializeSpotClickHandlers;
@@ -56,6 +55,7 @@ let map;
 let currentTileLayer;
 // Lista dei marker attualmente attivi sulla mappa
 let spotMarkers = [];
+let searchBarLoaded = false;
 
 // Mappa categoria -> icona marker
 const categoryToMarkerMap = {
@@ -146,7 +146,10 @@ function initializeNewSpotButton() {
 async function loadSearchBar() {
     currentSearchText = "";
 
-    const {searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl} =
+    if (searchBarLoaded) return;
+    searchBarLoaded = true;
+
+    const { searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl } =
         await createSearchBarWithKeyboardAndFilters({
             placeholder: "Cerca Spot",
             onValueChanged: (inputText) => {
