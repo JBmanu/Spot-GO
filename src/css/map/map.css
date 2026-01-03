@@ -20,6 +20,26 @@
         animation: squishy-pop 0.5s ease-out forwards;
     }
 
+    .new-spot-button {
+        @apply py-3 px-3 mt-2 rounded-2xl font-black uppercase text-center flex items-center justify-center;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        width: 100%;
+        margin-bottom: 5px;
+        /* position: relative; */
+        z-index: 1000;
+        letter-spacing: 0.05em;
+        color: rgba(17, 24, 39, 0.82);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(17, 24, 39, 0.82);
+        box-shadow:
+                0 14px 36px rgba(0,0,0,0.05),
+                inset 0 1px 0 rgba(255,255,255,0.7);
+        backdrop-filter: blur(14px) saturate(155%);
+        -webkit-backdrop-filter: blur(14px) saturate(155%);
+        transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
     @keyframes squishy-pop {
         0% {
             transform: scale(1.2, 0.5); /* inizialmente larga e compressa verticalmente */

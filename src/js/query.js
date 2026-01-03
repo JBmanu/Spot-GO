@@ -5,6 +5,7 @@
 
 import {collection, getDocs, query, where, limit, getDoc} from "firebase/firestore";
 import {db} from "./firebase.js";
+import { distanceFromUserToSpot } from "./common.js";
 
 let categorieCache = null;
 
@@ -162,24 +163,67 @@ export async function getFriends(userId) {
 /**
  * Funzione specifica per ottenere gli spot filtrando per categorie e testo di ricerca
  */
-export async function getFilteredSpots(categories = [], searchText = "") {
-    const noFilter = (!categories || categories.length === 0)
-        && (!searchText || searchText.trim() === "");
+export async function getFilteredSpots(categories = [], searchText = "", filters = null) {
+    const noFilter =
+        (!categories || categories.length === 0) &&
+        (!searchText || searchText.trim() === "") &&
+        (!filters);
+
     if (noFilter) return await getSpots();
 
-    // Filtra almeno per categorie lato Firestore
-    let filter = null;
-    if (categories.length > 0) {
-        filter = where("idCategoria", "in", categories);
+    // Filtro db (categorie)
+    let firestoreFilter = null;
+    if (categories && categories.length > 0) {
+        firestoreFilter = where("idCategoria", "in", categories);
     }
 
-    const spots = await getItems("Luogo", filter, (id, data) => ({id, ...data}));
+    let spots = await getItems(
+        "Luogo",
+        firestoreFilter,
+        (id, data) => ({ id, ...data })
+    );
 
-    if (!searchText || searchText.trim() === "") return spots;
+    // Filtro testo (in memoria)
+    if (searchText && searchText.trim() !== "") {
+        const searchLower = searchText.trim().toLowerCase();
+        spots = spots.filter(spot =>
+            (spot.nome || "").toLowerCase().includes(searchLower)
+        );
+    }
 
-    // Filtra in memoria, case-insensitive
-    const searchLower = searchText.trim().toLowerCase();
-    return spots.filter(spot => (spot.nome || "").toLowerCase().includes(searchLower));
+    // Filtro DISTANZA
+    if (filters?.distance != null) {
+        spots = spots.filter(spot => {
+            if (!spot.posizione) return false;
+
+            const dist = distanceFromUserToSpot(spot);
+            return dist <= filters.distance;
+        });
+    }
+
+    // Filtro "APERTO ORA"
+    if (filters?.openNow === true) {
+        const now = new Date();
+        const currentMinutes =
+            now.getHours() * 60 + now.getMinutes();
+
+        spots = spots.filter(spot => {
+            if (!Array.isArray(spot.orari)) return false;
+
+            return spot.orari.some(orario => {
+                const [hStart, mStart] = orario.inizio.split(":").map(Number);
+                const [hEnd, mEnd] = orario.fine.split(":").map(Number);
+
+                const startMinutes = hStart * 60 + mStart;
+                const endMinutes = hEnd * 60 + mEnd;
+
+                return currentMinutes >= startMinutes &&
+                       currentMinutes <= endMinutes;
+            });
+        });
+    }
+
+    return spots;
 }
 
 /**

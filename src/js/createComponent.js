@@ -1,7 +1,9 @@
 import { getCategoryNameIt } from "./query.js";
 import { initializeBottomSheet } from "./ui/bottomSheet.js";
+import { initializeBottomSheetFilters } from "./common/bottomSheetFilters.js";
+import { initializeStarRating } from "./common/starRating.js";
 
-async function loadComponentAsDocument(path) {
+export async function loadComponentAsDocument(path) {
     try {
         const response = await fetch(path);
         if (!response.ok) return;
@@ -152,7 +154,8 @@ export async function createBottomSheetWithOverlay(openButtonEl) {
     };
 }
 
-export async function createSearchBarWithKeyboardAndFilters(placeholder, onValueChanged, bottomSheetContentCreator) {
+export async function createSearchBarWithKeyboardAndFilters(
+    { placeholder, onValueChanged, bottomSheetContentCreator, onFiltersApplied }) {
     const { searchBarEl, keyboardEl, overlayEl } =
         await createSearchBarWithKeyboard(placeholder, onValueChanged);
     
@@ -162,7 +165,9 @@ export async function createSearchBarWithKeyboardAndFilters(placeholder, onValue
         await createBottomSheetWithOverlay(filterButton);
 
     // Aggiunta del contenuto del bottom-sheet dinamicamente
-    const bottomSheetContent = await bottomSheetContentCreator();
+    const bottomSheetContent =
+        await bottomSheetContentCreator(bottomSheetEl, bottomSheetOverlayEl, filterButton, onFiltersApplied);
+    
     bottomSheetEl.querySelector('.filter-content').appendChild(bottomSheetContent);
 
     return {
@@ -174,7 +179,7 @@ export async function createSearchBarWithKeyboardAndFilters(placeholder, onValue
     }
 }
 
-export async function createBottomSheetStandardFilters() {
+export async function createBottomSheetWithStandardFilters(bottomSheetEl, overlayEl, buttonEl, onFiltersApplied) {
     const filtersDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-filters.html");
 
     const filtersEl = filtersDoc.body.firstElementChild;
@@ -184,7 +189,29 @@ export async function createBottomSheetStandardFilters() {
         return filtersEl;
     }
 
+    await initializeBottomSheetFilters({
+        filtersEl: filtersEl,
+        bottomSheetEl : bottomSheetEl,
+        overlayEl: overlayEl,
+        buttonEl: buttonEl,
+        onFiltersApplied: onFiltersApplied});
+
     return filtersEl;
+}
+
+export async function createStarRating() {
+    const starRatingDoc = await loadComponentAsDocument("../html/common-components/star-rating.html");
+
+    const starRatingEl = starRatingDoc.body.firstElementChild;
+
+    if (!starRatingEl) {
+        console.warn("StarRating: elementi mancanti");
+        return starRatingEl;
+    }
+
+    initializeStarRating(starRatingEl);
+
+    return starRatingEl;
 }
 
 /**

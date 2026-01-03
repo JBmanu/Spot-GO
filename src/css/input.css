@@ -39,3 +39,5 @@
 @import "./common/bottom-sheet-filters.css";
 
 @import "../base/classic-spot-card/classic-spot.css";
+
+@import "./map/new-spot.css";

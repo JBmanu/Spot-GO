@@ -3,8 +3,9 @@
 let getSpots,
     USER_PROTO_POSITION, distanceFromUserToSpot, createNearbySpotCard,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
-    createSearchBarWithKeyboardAndFilters, createBottomSheetStandardFilters,
-    initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard;
+    createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
+    initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard,
+    openDetailHandler, openNewSpotPage;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -22,11 +23,15 @@ Promise.all([
     }),
     import("./createComponent.js").then(module => {
         createSearchBarWithKeyboardAndFilters = module.createSearchBarWithKeyboardAndFilters;
-        createBottomSheetStandardFilters = module.createBottomSheetStandardFilters;
+        createBottomSheetWithStandardFilters = module.createBottomSheetWithStandardFilters;
         createNearbySpotCard = module.createNearbySpotCard;
     }),
     import("./pages/spotDetail.js").then(module => {
         initializeSpotClickHandlers = module.initializeSpotClickHandlers;
+        openDetailHandler = module.openDetailHandler;
+    }),
+    import("./pages/newSpot.js").then(module => {
+        openNewSpotPage = module.openNewSpotPage;
     }),
     import("./common/createCards.js").then(module => {
         createClassicSpotCard = module.createClassicSpotCard;
@@ -42,6 +47,8 @@ let spots;
 let activeCategories = new Set();
 // Testo corrente di ricerca
 let currentSearchText = "";
+// Filtri avanzati per i luoghi
+let advancedFilters = null;
 // Mappa in "formato" Leaflet
 let map;
 // Layer corrente della mappa (stile selezionato)
@@ -84,6 +91,7 @@ const MAP_TILE_SERVERS = {
 
 async function initializeMap() {
     initializeCategoryFilters();
+    initializeNewSpotButton();
 
     await loadSearchBar();
     await loadMap();
@@ -127,17 +135,26 @@ function initializeCategoryFilters() {
     });
 }
 
+function initializeNewSpotButton() {
+    const button = document.getElementById('new-spot-button');
+    button.addEventListener('click', openNewSpotPage);
+}
+
 async function loadSearchBar() {
     currentSearchText = "";
 
     const { searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl } =
-        await createSearchBarWithKeyboardAndFilters(
-            "Cerca Spot",
-            (inputText) => {
+        await createSearchBarWithKeyboardAndFilters({
+            placeholder: "Cerca Spot",
+            onValueChanged: (inputText) => {
                 currentSearchText = inputText;
                 loadSpotsDependentObjects();
             },
-            createBottomSheetStandardFilters);
+            bottomSheetContentCreator: createBottomSheetWithStandardFilters,
+            onFiltersApplied: (filtersToApply) => {
+                advancedFilters = filtersToApply;
+                loadSpotsDependentObjects();
+            }});
 
     // Aggiunta dei componenti
     const mainSection = document.getElementById("map-main-section");
@@ -154,7 +171,7 @@ async function loadSpots() {
     const categories = Array.from(activeCategories);
     const searchText = currentSearchText;
 
-    spots = await getFilteredSpots(categories, searchText);
+    spots = await getFilteredSpots(categories, searchText, advancedFilters);
     spots = orderByDistanceFromUser(spots);
 }
 
@@ -167,6 +184,10 @@ async function loadMap() {
 
     // Inizializza la mappa
     map = L.map(mapEl).setView(USER_PROTO_POSITION, 15);
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 0);
 
     // Aggiunta layer OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -199,17 +220,39 @@ async function loadMarkers() {
         // Converto coord1 e coord2 in array [lat, lng]
         const markerPosition = [luogo.posizione.coord1, luogo.posizione.coord2];
         const iconName = categoryToMarkerMap[luogo.idCategoria] || "MarkerBase.svg";
+
+        const popupHtml = `
+            <div class="spot-popup" data-spot-id="${luogo.id}">
+                <b>${luogo.nome}</b>
+                <p>${luogo.descrizione}</p>
+                <button type="button" class="filter-button-footer mt-2"
+                        data-spot-id="${luogo.id}" style="margin: auto;" data-open-detail>
+                    Visualizza dettagli
+                </button>
+            </div>
+        `;
         
         const marker = L.marker(markerPosition, {
             icon: L.divIcon({
                 html: `<img src="../assets/icons/map/${iconName}" class="marker-pop-up">`,
-                className: 'custom-div-icon', // lascia vuoto per non avere classi aggiuntive di Leaflet
+                className: 'custom-div-icon',
                 iconSize: [64, 64],
                 iconAnchor: [32, 64]
             })
         })
         .addTo(map)
-        .bindPopup(`<b>${luogo.nome}</b><br>${luogo.descrizione}`);
+        .bindPopup(popupHtml);
+
+        // Pulsante per visualizzare i dettagli
+        marker.on("popupopen", (e) => {
+            L.DomEvent.disableClickPropagation(e.popup.getElement());
+            const popupEl = e.popup.getElement();
+            if (!popupEl) return;
+
+            popupEl
+                .querySelector("[data-open-detail]")
+                ?.addEventListener("click", openDetailHandler);
+        });
 
         spotMarkers.push(marker);
     });
