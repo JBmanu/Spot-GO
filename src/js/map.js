@@ -56,6 +56,7 @@ let map;
 let currentTileLayer;
 // Lista dei marker attualmente attivi sulla mappa
 let spotMarkers = [];
+let searchBarLoaded = false;
 
 // Mappa categoria -> icona marker
 const categoryToMarkerMap = {
@@ -146,7 +147,10 @@ function initializeNewSpotButton() {
 async function loadSearchBar() {
     currentSearchText = "";
 
-    const {searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl} =
+    if (searchBarLoaded) return;
+    searchBarLoaded = true;
+
+    const { searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl } =
         await createSearchBarWithKeyboardAndFilters({
             placeholder: "Cerca Spot",
             onValueChanged: (inputText) => {
