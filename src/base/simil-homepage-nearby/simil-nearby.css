@@ -128,7 +128,7 @@
     }
 
     .spot-card-nearby_image-wrap {
-        @apply w-full h-full overflow-hidden;
+        @apply w-fit h-fit overflow-hidden;
     }
 
     .spot-card-nearby_image {

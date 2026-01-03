@@ -113,7 +113,7 @@
     }
 
     .spot-card-toprated [data-slot="distance"] {
-        @apply absolute bottom-0 left-2 right-2 flex items-center justify-center gap-1.5 px-3 py-1.5;
+        @apply absolute bottom-0 left-3 right-3 flex items-center justify-center gap-1.5 px-3 py-1.5;
         @apply backdrop-blur-[16px] backdrop-saturate-160;
         border-radius: 999px;
 
@@ -123,7 +123,7 @@
     }
 
     .spot-card-toprated [data-slot="distance-text"] {
-        @apply text-xs font-bold text-white pr-2;
+        @apply text-xs font-bold text-white pl-2;
         font-family: "Montserrat", sans-serif;
         white-space: nowrap;
     }

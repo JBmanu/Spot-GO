@@ -6,7 +6,6 @@
 
     .home-section-title {
         @apply text-xl font-semibold text-slate-900/95;
-        font-family: 'Montserrat', sans-serif;
         text-shadow: 0 1px 0 rgba(255, 255, 255, 0.02);
     }
 
@@ -17,7 +16,7 @@
 
     .home-chips-row {
         @apply sticky top-0 z-30 flex flex-wrap gap-3 px-3 font-medium tracking-wide overflow-hidden;
-        @apply border-y border-white/25;
+        @apply border-y border-white/10;
         @apply bg-white/35;
         @apply backdrop-blur-md;
         @apply shadow-[0_10px_26px_rgba(0,0,0,0.07),inset_0_1px_0_rgba(255,255,255,0.52)];
@@ -49,7 +48,6 @@
         content: "";
         @apply absolute inset-0 pointer-events-none z-0;
         opacity: 0.20;
-        background-image: var(--frost-noise);
         mix-blend-mode: overlay;
     }
 
@@ -84,14 +82,10 @@
         z-index: 1;
         background: linear-gradient(
                 135deg,
-                rgba(255,255,255,0.72),
+                rgba(255,255,255,0.52),
                 rgba(255,255,255,0.20) 45%,
                 rgba(0,0,0,0.10)
         );
-        -webkit-mask:
-                linear-gradient(#000 0 0) content-box,
-                linear-gradient(#000 0 0);
-        -webkit-mask-composite: xor;
         mask:
                 linear-gradient(#000 0 0) content-box,
                 linear-gradient(#000 0 0);
@@ -113,9 +107,9 @@
         content: "";
         @apply absolute pointer-events-none z-0;
         inset: -18px -22px -22px -22px;
-        opacity: 0.62;
+        opacity: 0.82;
         background:
-                radial-gradient(circle at 18% 28%, rgba(var(--chip-tint-rgb), 0.20), transparent 58%),
+                radial-gradient(circle at 18% 28%, rgba(var(--chip-tint-rgb), 0.20), transparent 78%),
                 radial-gradient(circle at 88% 16%, rgba(255,255,255,0.24), transparent 56%),
                 linear-gradient(135deg,
                 rgba(var(--chip-tint-rgb), 0.12) 0%,

@@ -45,4 +45,8 @@
         position: relative;
     }
 
+    .vedi-tutti-button {
+        @apply text-sm font-bold underline mr-4 bg-transparent border-none p-0 cursor-pointer;
+    }
+
 }
