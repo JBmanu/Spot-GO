@@ -1,7 +1,7 @@
 // map.js
 // Import dinamici
 let getSpots,
-    USER_PROTO_POSITION, distanceFromUserToSpot, createNearbySpotCard,
+    USER_PROTO_POSITION, distanceFromUserToSpot,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
     initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard,
@@ -25,7 +25,6 @@ Promise.all([
     import("./createComponent.js").then(module => {
         createSearchBarWithKeyboardAndFilters = module.createSearchBarWithKeyboardAndFilters;
         createBottomSheetWithStandardFilters = module.createBottomSheetWithStandardFilters;
-        createNearbySpotCard = module.createNearbySpotCard;
     }),
     import("./pages/spotDetail.js").then((module) => {
         initializeSpotClickHandlers = module.initializeSpotClickHandlers;
