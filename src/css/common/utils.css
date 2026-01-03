@@ -1,74 +1,48 @@
 @layer utilities {
 
-    /* =======================
-       Icons
-    ======================= */
-    .icon { @apply block w-9 h-9; }
-    .icon-toolbar { @apply w-[70px] h-[30px]; }
-    .icon-notification { @apply w-8 h-8; }
-    .icon-mini { @apply w-5 h-5; }
-    .icon-minimini { @apply w-4 h-4; }
+    .icon {
+        @apply block w-9 h-9;
+    }
 
-    /* =======================
-       Header Bookmark Button
-    ======================= */
+    .icon-toolbar {
+        @apply w-[70px] h-[30px];
+    }
+
+    .icon-notification {
+        @apply w-8 h-8;
+    }
+
+    .icon-mini {
+        @apply w-5 h-5;
+    }
+
+    .icon-minimini {
+        @apply w-4 h-4;
+    }
+
     .header-bookmark-button {
         @apply bg-none border-none cursor-pointer p-0 w-12 h-12
         flex items-center justify-center
         transition-opacity duration-200;
     }
 
-    .header-bookmark-button:hover { @apply opacity-75; }
-    .header-bookmark-button:active { @apply scale-95; }
+    .header-bookmark-button:hover {
+        @apply opacity-75;
+    }
+
+    .header-bookmark-button:active {
+        @apply scale-95;
+    }
 
     .header-bookmark-button .bookmark-icon {
         @apply w-8 h-8;
     }
 
-    /* =======================
-       Page Background
-    ======================= */
     .main-page-background {
         background: var(--profile-defined-gradient);
         background-repeat: no-repeat;
         background-size: cover;
         position: relative;
-    }
-
-    /* =======================
-       Glass Utilities
-    ======================= */
-    .u-glass-section {
-        background: var(--profile-sheet-2);
-        border: 1px solid var(--glass-border-strong);
-        backdrop-filter:
-                blur(calc(var(--glass-blur-strong) * 0.5))
-                saturate(var(--glass-sat-light))
-                contrast(var(--glass-contrast));
-    }
-
-    .u-glass-badge {
-        background: rgba(255,255,255,0.64);
-        border: 1px solid rgba(255,255,255,0.55);
-        backdrop-filter:
-                blur(calc(var(--glass-blur-strong) * 0.85))
-                saturate(var(--glass-sat-light))
-                contrast(var(--glass-contrast));
-    }
-
-    .u-glass-overlay {
-        background-image: var(--profile-overlay-wash);
-        mix-blend-mode: overlay;
-    }
-
-    .u-glass-overlay--softlight {
-        background-image: var(--profile-overlay-wash);
-        mix-blend-mode: soft-light;
-    }
-
-    .u-frost-noise {
-        background-image: var(--frost-noise);
-        mix-blend-mode: overlay;
     }
 
 }
