@@ -1,4 +1,4 @@
-import { PATHS } from "../paths.js";
+import {PATHS} from "../paths.js";
 import {
     activateToolbar,
     resetHeaderBaseForSection,
@@ -6,60 +6,68 @@ import {
 } from "../common/back.js";
 
 const SECTION_CONFIG = {
-    homepage: { title: "Spot & Go", content: PATHS.html.homepage },
-    map: { title: "Mappa", content: PATHS.html.map },
-    community: { title: "Community", content: PATHS.html.community },
-    goals: { title: "Missioni", content: PATHS.html.goals },
-    profile: { title: "Il mio Profilo", content: PATHS.html.profile },
+    homepage: {title: "Spot & Go", content: PATHS.html.homepage},
+    map: {title: "Mappa", content: PATHS.html.map},
+    community: {title: "Community", content: PATHS.html.community},
+    goals: {title: "Missioni", content: PATHS.html.goals},
+    profile: {title: "Il mio Profilo", content: PATHS.html.profile},
 };
 
 let loadProfileOverview, initializeHomepageFilters, initializeMap;
 
-Promise.all([
+Promise.allSettled([
     import("./profile.js").then((m) => (loadProfileOverview = m.loadProfileOverview)),
     import("./homepage.js").then((m) => (initializeHomepageFilters = m.initializeHomepageFilters)),
     import("../map.js").then((m) => (initializeMap = m.initializeMap)),
-]).catch(() => {});
+]);
 
-async function loadHeader() {
-    const response = await fetch(PATHS.html.header);
-    if (!response.ok) return;
+async function replaceNodeFromHtml({url, targetSelector, sourceSelector}) {
+    const target = document.querySelector(targetSelector);
+    if (!target) return false;
 
-    const html = await response.text();
-    const header = document.querySelector("header.app-header");
-    if (!header) return;
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return false;
 
-    const parsed = new DOMParser().parseFromString(html, "text/html");
-    const newHeader = parsed.querySelector("header");
-    if (!newHeader) return;
+        const html = await res.text();
+        const parsed = new DOMParser().parseFromString(html, "text/html");
+        const source = parsed.querySelector(sourceSelector);
+        if (!source) return false;
 
-    header.innerHTML = newHeader.innerHTML;
-    Array.from(newHeader.attributes).forEach((attr) =>
-        header.setAttribute(attr.name, attr.value)
-    );
+        target.innerHTML = source.innerHTML;
+        Array.from(source.attributes).forEach((attr) =>
+            target.setAttribute(attr.name, attr.value)
+        );
+
+        return true;
+    } catch {
+        return false;
+    }
 }
 
-async function loadToolbar() {
-    const response = await fetch(PATHS.html.toolbar);
-    if (!response.ok) return;
+function getVisibleSectionKey(mainEl) {
+    const visible = mainEl.querySelector('[data-section-view]:not([hidden])');
+    return visible?.dataset?.sectionView || null;
+}
 
-    const html = await response.text();
-    const toolbar = document.querySelector(".app-toolbar");
-    if (!toolbar) return;
-
-    const parsed = new DOMParser().parseFromString(html, "text/html");
-    const newToolbar = parsed.querySelector("nav");
-    if (!newToolbar) return;
-
-    toolbar.innerHTML = newToolbar.innerHTML;
-    Array.from(newToolbar.attributes).forEach((attr) =>
-        toolbar.setAttribute(attr.name, attr.value)
-    );
+function closeAnyOverlay(main) {
+    const overlay = main.querySelector("[data-overlay-view]");
+    if (overlay) closeOverlayAndReveal({overlay});
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await loadHeader();
-    await loadToolbar();
+    await Promise.all([
+        replaceNodeFromHtml({
+            url: PATHS.html.header,
+            targetSelector: "header.app-header",
+            sourceSelector: "header",
+        }),
+        replaceNodeFromHtml({
+            url: PATHS.html.toolbar,
+            targetSelector: ".app-toolbar",
+            sourceSelector: "nav",
+        }),
+    ]);
 
     const main = document.getElementById("main");
     const toolbar = document.querySelector(".app-toolbar");
@@ -71,23 +79,119 @@ document.addEventListener("DOMContentLoaded", async () => {
     let currentSection = null;
     let isNavigating = false;
 
+    async function navigateTo(section) {
+        if (isNavigating) return;
+        const cfg = SECTION_CONFIG[section];
+        if (!cfg) return;
+
+        isNavigating = true;
+        try {
+            closeAnyOverlay(main);
+
+            updateHeader(section, cfg);
+            await mountSection(section, cfg);
+
+            currentSection = section;
+            main.scrollTop = 0;
+        } finally {
+            isNavigating = false;
+        }
+    }
+
+    window.navigateToSection = navigateTo;
+
+    function updateHeader(section, cfg) {
+        resetHeaderBaseForSection(section);
+
+        const isHome = section === "homepage";
+        if (titleEl) titleEl.textContent = isHome ? "Spot & Go" : cfg.title;
+    }
+
+    async function mountSection(section, cfg) {
+        if (sectionState.has(section)) {
+            showOnly(section);
+            return;
+        }
+
+        let html = "";
+        try {
+            const res = await fetch(cfg.content);
+            if (!res.ok) throw new Error("fetch failed");
+            html = await res.text();
+        } catch {
+            main.innerHTML = `<div class="p-4">Errore caricamento</div>`;
+            sectionState.clear();
+            return;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.dataset.sectionView = section;
+        wrapper.hidden = true;
+        wrapper.innerHTML = html;
+
+        main.appendChild(wrapper);
+        sectionState.set(section, {el: wrapper, initialized: false});
+
+        showOnly(section);
+        await initSectionOnce(section, wrapper);
+
+        const st = sectionState.get(section);
+        if (st) st.initialized = true;
+    }
+
+    function showOnly(activeSection) {
+        for (const [section, {el}] of sectionState.entries()) {
+            el.hidden = section !== activeSection;
+        }
+        activateToolbar(activeSection);
+        currentSection = activeSection;
+    }
+
+    async function initSectionOnce(section, wrapperEl) {
+        const st = sectionState.get(section);
+        if (!st || st.initialized) return;
+
+        if (section === "map") {
+            try {
+                await initializeMap?.();
+            } catch (_) {
+            }
+            return;
+        }
+
+        if (section === "homepage") {
+            try {
+                await initializeHomepageFilters?.(wrapperEl);
+            } catch (_) {
+            }
+            return;
+        }
+
+        if (section === "profile") {
+            try {
+                await loadProfileOverview?.(wrapperEl);
+                wrapperEl.dataset.sectionView = "profile";
+            } catch (_) {
+            }
+        }
+    }
+
     toolbar.addEventListener("click", async (e) => {
         const btn = e.target.closest("button[data-section]");
         if (!btn) return;
 
+        if (isNavigating) return;
         if (btn.hasAttribute("disabled") || btn.getAttribute("aria-disabled") === "true") return;
-
-        e.preventDefault();
 
         const next = (btn.dataset.section || "").trim();
         if (!next) return;
 
-        const overlay = main.querySelector("[data-overlay-view]");
-        if (overlay) closeOverlayAndReveal({ overlay });
+        e.preventDefault();
 
-        currentSection = getVisibleSectionKey(main) || currentSection;
+        closeAnyOverlay(main);
 
-        if (next === currentSection) return;
+        const visible = getVisibleSectionKey(main) || currentSection;
+        if (next === visible) return;
 
         await navigateTo(next);
     });
@@ -103,117 +207,27 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const mod = await import("./homepage.js");
                 const homeWrapper = main.querySelector('[data-section-view="homepage"]');
                 await mod.rehydrateHomepageUI?.(homeWrapper || document);
-            } catch (_) {}
+            } catch (_) {
+            }
         }
 
         if (shown === "map") {
-            try { await initializeMap?.(); } catch (_) {}
+            try {
+                await initializeMap?.();
+            } catch (_) {
+            }
         }
 
         if (shown === "profile") {
             try {
                 const profileWrapper = main.querySelector('[data-section-view="profile"]');
                 if (profileWrapper) await loadProfileOverview?.(profileWrapper);
-            } catch (_) {}
+            } catch (_) {
+            }
         }
     });
 
     await navigateTo("homepage");
-
-    async function navigateTo(section) {
-        if (isNavigating) return;
-        isNavigating = true;
-
-        try {
-            const cfg = SECTION_CONFIG[section];
-            if (!cfg) return;
-
-            const overlay = main.querySelector("[data-overlay-view]");
-            if (overlay) closeOverlayAndReveal({ overlay });
-
-            updateHeader(section, cfg);
-
-            await mountSection(section, cfg);
-            currentSection = section;
-
-            main.scrollTop = 0;
-        } finally {
-            isNavigating = false;
-        }
-    }
-
-    window.navigateToSection = navigateTo;
-
-    function updateHeader(section, cfg) {
-        resetHeaderBaseForSection(section);
-
-        const isHome = section === "homepage";
-        if (!isHome && titleEl) titleEl.textContent = cfg.title;
-    }
-
-    async function mountSection(section, cfg) {
-        if (sectionState.has(section)) {
-            showOnly(section);
-            return;
-        }
-
-        const res = await fetch(cfg.content);
-        if (!res.ok) {
-            main.innerHTML = `<div class="p-4">Errore caricamento</div>`;
-            sectionState.clear();
-            return;
-        }
-
-        const html = await res.text();
-
-        const wrapper = document.createElement("div");
-        wrapper.dataset.sectionView = section;
-        wrapper.hidden = true;
-        wrapper.innerHTML = html;
-
-        main.appendChild(wrapper);
-        sectionState.set(section, { el: wrapper, initialized: false });
-
-        showOnly(section);
-
-        await initSectionOnce(section, cfg, wrapper);
-
-        const st = sectionState.get(section);
-        if (st) st.initialized = true;
-    }
-
-    function showOnly(activeSection) {
-        for (const [section, { el }] of sectionState.entries()) {
-            el.hidden = section !== activeSection;
-        }
-        activateToolbar(activeSection);
-    }
-
-    async function initSectionOnce(section, cfg, wrapperEl) {
-        const st = sectionState.get(section);
-        if (!st || st.initialized) return;
-
-        if (cfg.content.includes("map.html")) await initializeMap?.();
-
-        if (cfg.content.includes("homepage.html")) {
-            await initializeHomepageFilters?.(wrapperEl);
-        }
-
-        if (cfg.content.includes("profile.html")) {
-            await loadProfileOverviewWrapper(wrapperEl);
-        }
-    }
-
-    async function loadProfileOverviewWrapper(wrapper) {
-        if (!loadProfileOverview) return;
-        await loadProfileOverview(wrapper);
-        wrapper.dataset.sectionView = "profile";
-    }
-
-    function getVisibleSectionKey(mainEl) {
-        const visible = mainEl.querySelector('[data-section-view]:not([hidden])');
-        return visible?.dataset?.sectionView || null;
-    }
 
     window.rebuildSectionState = () => {
         sectionState.clear();
@@ -221,7 +235,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!el?.hasAttribute?.("data-section-view")) return;
             const section = el.dataset.sectionView;
             if (!section) return;
-            sectionState.set(section, { el, initialized: true });
+            sectionState.set(section, {el, initialized: true});
         });
 
         currentSection = getVisibleSectionKey(main) || null;

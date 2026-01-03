@@ -1,114 +1,13 @@
 @layer components {
 
-    .view-all-saved-container {
-        @apply w-full overflow-hidden;
-        background: linear-gradient(120deg, rgba(247,248,249,0.95) 0%, rgba(230,236,245,0.93) 100%);
-    }
-
-    .view-all-saved-track {
-        @apply flex flex-col gap-3 overflow-y-auto w-full h-full scroll-smooth p-4;
-        -webkit-overflow-scrolling: touch;
-        position: relative;
-    }
 
 
-
-    .keyboard-overlay {
-        @apply fixed left-0 right-0 transition-transform duration-300 ease-out;
-        background: rgba(0, 0, 0, 0.06);
-        backdrop-filter: blur(2px);
-        top: 70px;
-        bottom: 0;
-        z-index: 999;
-        display: none;
-        pointer-events: none;
-    }
-
-    .keyboard-overlay.overlay-visible {
+    #view-all-saved-carousel {
+        min-height: 200px;
+        height: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
         display: block;
-        pointer-events: auto;
-        transform: translateY(0) !important;
-    }
-    #view-all-saved-keyboard {
-        @apply fixed bottom-0 left-0 right-0 transition-transform duration-300 ease-out;
-        background: rgba(209,213,219,0.95);
-        z-index: 1000;
-        display: none;
-        pointer-events: none;
-    }
-
-    #view-all-saved-keyboard.keyboard-visible {
-        display: block;
-        pointer-events: auto;
-        transform: translateY(0) !important;
-    }
-
-    .keyboard-container {
-        @apply w-full px-1 py-2;
-    }
-
-    .keyboard-row {
-        @apply flex mb-[11px];
-        gap: 6px;
-    }
-
-    .keyboard-row-first {
-        @apply px-[3px];
-    }
-
-    .keyboard-row-second {
-        @apply px-[17px];
-    }
-
-    .keyboard-row-third {
-        @apply px-[3px];
-    }
-
-    .keyboard-row-fourth {
-        @apply px-[3px];
-    }
-
-    /* Keyboard Keys */
-    .kb-key, .kb-shift, .kb-backspace, .kb-numbers, .kb-emoji, .kb-space, .kb-close {
-        @apply transition-all duration-75 active:scale-95 font-normal;
-        -webkit-user-select: none;
-        user-select: none;
-    }
-
-    .kb-key {
-        @apply flex-1 h-[42px] bg-white rounded-[5px] text-[23px];
-        box-shadow: 0 1px 0 rgba(0,0,0,0.3);
-    }
-
-    .kb-key:active {
-        @apply bg-[#d1d5db];
-    }
-
-    .kb-shift, .kb-backspace, .kb-numbers, .kb-emoji {
-        @apply w-[42px] h-[42px] bg-[#acb3bb] rounded-[5px] flex items-center justify-center text-[17px];
-        box-shadow: 0 1px 0 rgba(0,0,0,0.3);
-    }
-
-    .kb-shift:active, .kb-backspace:active, .kb-numbers:active, .kb-emoji:active {
-        @apply bg-white;
-    }
-
-    .kb-space {
-        @apply flex-1 h-[42px] bg-white rounded-[5px] text-[16px];
-        box-shadow: 0 1px 0 rgba(0,0,0,0.3);
-    }
-
-    .kb-space:active {
-        @apply bg-[#d1d5db];
-    }
-
-    .kb-close {
-        @apply w-[68px] h-[42px] bg-[#0a84ff] rounded-[5px] text-white text-[16px] font-semibold;
-        box-shadow: 0 1px 0 rgba(0,0,0,0.3);
-    }
-
-    .kb-close:active {
-        @apply bg-[#0056b3];
     }
 
 }

@@ -1,4 +1,4 @@
-<template id="classic-spot-card-template">
+<template id="classic-spot-card-template" data-template="true">
     <article data-slot="spot" role="listitem" data-spot-id="" data-saved="true" data-category="food">
         <div data-slot="image">
             <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
@@ -6,18 +6,19 @@
         <div data-slot="info">
             <h3 data-slot="title" data-field="title">Nome spot</h3>
             <p data-slot="meta">
-                <span data-slot="meta-item">
-                    <img src="../../assets/icons/homepage/Place Marker.svg" data-slot="icon" alt="Posizione">
-                    <span data-slot="distance" data-field="distance">0 m</span>
-                </span>
+                        <span data-slot="meta-item">
+                            <img src="../../assets/icons/homepage/Place Marker.svg" data-slot="icon" alt="Posizione">
+                            <span data-slot="distance" data-field="distance">0 m</span>
+                        </span>
                 <span data-slot="separator">•</span>
                 <span data-slot="meta-item">
-                    <span data-slot="category" data-field="category">Cibo</span>
-                </span>
+                            <span data-slot="category" data-field="category">Cibo</span>
+                        </span>
             </p>
         </div>
         <div data-slot="right-column">
-            <button type="button" data-slot="bookmark" aria-label="Rimuovi dai salvati" data-bookmark-button data-bookmark-type="saved">
+            <button type="button" data-slot="bookmark" aria-label="Rimuovi dai salvati" data-bookmark-button
+                    data-bookmark-type="saved">
                 <img src="../../assets/icons/homepage/Bookmark.svg" data-slot="bookmark-icon" alt="Bookmark">
             </button>
             <div data-slot="rating-container">
