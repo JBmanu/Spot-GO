@@ -100,32 +100,60 @@
 
     <!--Type missions bar-->
     <div class="mx-4 my-0">
-        <!-- contenitore esterno -->
-        <div class="glass-strong rounded-2xl shadow px-2 py-2">
-            <!-- contenitore interno -->
-            <div class="flex justify-between">
+        <div id="tab-container" class="relative glass-strong rounded-2xl shadow px-2 py-2">
+            <!-- INDICATORE ANIMATO -->
+            <div id="indicator" class="absolute top-2 left-2 h-[44px] w-1/3
+             glass-soft rounded-xl transition-all duration-300 ease-out"></div>
 
-                <!-- Daily -->
-                <div class="mission-type-btn">
-                    <img src="/src/assets/icons/daily.svg" class="w-5 h-5" alt=""/>
-                    <span class="font-medium">Daily</span>
-                </div>
+            <!-- BOTTONI -->
+            <div class="relative z-10 flex">
+                <button class="tab-btn flex-1 flex items-center justify-center gap-2 py-2" data-index="0">
+                    <img src="../assets/icons/goals/giornalieri.svg" class="w-5 h-5" alt=""/>
+                    <span class="font-medium">Giornalieri</span>
+                </button>
 
-                <!-- Theme -->
-                <div class="mission-type-btn">
-                    <img src="/src/assets/icons/theme.svg" class="w-5 h-5" alt=""/>
-                    <span class="font-medium">Theme</span>
-                </div>
+                <button class="tab-btn flex-1 flex items-center justify-center gap-2 py-2" data-index="1">
+                    <img src="../assets/icons/goals/aTema.svg" class="w-5 h-5" alt=""/>
+                    <span class="font-medium">A tema</span>
+                </button>
 
-                <!-- Level -->
-                <div class="mission-type-btn">
-                    <img src="/src/assets/icons/level.svg" class="w-5 h-5"/>
-                    <span class="font-medium">Level</span>
-                </div>
-
+                <button class="tab-btn flex-1 flex items-center justify-center gap-2 py-2" data-index="2">
+                    <img src="../assets/icons/goals/level.svg" class="w-5 h-5" alt=""/>
+                    <span class="font-medium">Livello</span>
+                </button>
             </div>
         </div>
     </div>
+
+
+
+<!--    <div class="mx-4 my-0">-->
+<!--        &lt;!&ndash; contenitore esterno &ndash;&gt;-->
+<!--        <div class="glass-strong rounded-2xl shadow px-2 py-2">-->
+<!--            &lt;!&ndash; contenitore interno &ndash;&gt;-->
+<!--            <div class="flex justify-between">-->
+
+<!--                &lt;!&ndash; Daily &ndash;&gt;-->
+<!--                <button class="mission-type-btn">-->
+<!--                    <img src="../assets/icons/goals/giornalieri.svg" class="w-5 h-5" alt=""/>-->
+<!--                    <span class="font-medium">Giornalieri</span>-->
+<!--                </button>-->
+
+<!--                &lt;!&ndash; Theme &ndash;&gt;-->
+<!--                <button class="mission-type-btn">-->
+<!--                    <img src="../assets/icons/goals/aTema.svg" class="w-5 h-5" alt=""/>-->
+<!--                    <span class="font-medium">A tema</span>-->
+<!--                </button>-->
+
+<!--                &lt;!&ndash; Level &ndash;&gt;-->
+<!--                <button class="mission-type-btn">-->
+<!--                    <img src="../assets/icons/goals/level.svg" class="w-5 h-5" alt=""/>-->
+<!--                    <span class="font-medium">Livello</span>-->
+<!--                </button>-->
+
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
 
     <!-- Missions -->
