@@ -6,7 +6,8 @@
 @layer components {
 
     .mission-type-btn {
-        @apply bg-white flex items-center gap-1 px-3 py-2 rounded-xl
+        /*@apply flex-1 flex items-center justify-center gap-2 py-2*/
+        @apply flex items-center gap-1 px-3 py-2 rounded-xl
         text-gray-700 cursor-pointer hover:text-blue-500 transition;
     }
 
