@@ -8,13 +8,15 @@
 
 @import "./common/utils.css";
 
+@import "./common/base.css";
+
+@import "./common/glass.css";
+
 @import "./profile/profile-overview.css";
 
 @import "./homepage/homepage.css";
 
 @import "./community.css";
-
-@import "./homepage/homepage.css";
 
 @import "../base/carousels/carousel-horizontal.css";
 

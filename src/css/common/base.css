@@ -1,0 +1,29 @@
+@layer base {
+    :root {
+        --color-text_color: #1E1E1E;
+
+        --glass-blur-strong: 46px;
+        --glass-blur-medium: 26px;
+        --glass-blur-soft: 22px;
+        --glass-blur-light: 18px;
+
+        --glass-sat-strong: 195%;
+        --glass-sat-medium: 150%;
+        --glass-sat-soft: 135%;
+        --glass-sat-light: 120%;
+
+        --glass-contrast: 105%;
+
+        --glass-sheet-strong: rgba(255, 255, 255, 0.22);
+        --glass-sheet-medium: rgba(255, 255, 255, 0.16);
+        --glass-sheet-soft: rgba(255, 255, 255, 0.10);
+        --glass-sheet-light: rgba(255, 255, 255, 0.06);
+
+        --glass-border-strong: rgba(255, 255, 255, 0.60);
+        --glass-border-soft: rgba(255, 255, 255, 0.34);
+    }
+
+    body {
+        font-family: "Montserrat", sans-serif;
+    }
+}
