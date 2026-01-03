@@ -350,3 +350,9 @@ function initializeDetailHandlers(overlayEl) {
 
     setupToolbarNavigation();
 }
+
+export async function openSpotDetailById(spotId) {
+    if (!spotId) return;
+    await loadSpotDetail(String(spotId).trim());
+}
+

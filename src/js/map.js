@@ -5,7 +5,8 @@ let getSpots,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
     initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard,
-    openDetailHandler, openNewSpotPage;
+    openSpotDetailById, openNewSpotPage;
+
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -26,9 +27,9 @@ Promise.all([
         createBottomSheetWithStandardFilters = module.createBottomSheetWithStandardFilters;
         createNearbySpotCard = module.createNearbySpotCard;
     }),
-    import("./pages/spotDetail.js").then(module => {
+    import("./pages/spotDetail.js").then((module) => {
         initializeSpotClickHandlers = module.initializeSpotClickHandlers;
-        openDetailHandler = module.openDetailHandler;
+        openSpotDetailById = module.openSpotDetailById;
     }),
     import("./pages/newSpot.js").then(module => {
         openNewSpotPage = module.openNewSpotPage;
@@ -102,7 +103,9 @@ async function loadSpotsDependentObjects() {
     await loadSpots();
     await loadMarkers();
     await loadNearbySpotsList();
-    initializeSpotClickHandlers();
+    const mapWrapper = document.querySelector('[data-section-view="map"]');
+    initializeSpotClickHandlers(mapWrapper || document.getElementById("main"));
+
 }
 
 function initializeCategoryFilters() {
@@ -143,7 +146,7 @@ function initializeNewSpotButton() {
 async function loadSearchBar() {
     currentSearchText = "";
 
-    const { searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl } =
+    const {searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl} =
         await createSearchBarWithKeyboardAndFilters({
             placeholder: "Cerca Spot",
             onValueChanged: (inputText) => {
@@ -154,12 +157,13 @@ async function loadSearchBar() {
             onFiltersApplied: (filtersToApply) => {
                 advancedFilters = filtersToApply;
                 loadSpotsDependentObjects();
-            }});
+            }
+        });
 
     // Aggiunta dei componenti
     const mainSection = document.getElementById("map-main-section");
     if (!mainSection) return;
-    
+
     mainSection.insertBefore(searchBarEl, mainSection.children[1]);
     mainSection.appendChild(overlayEl);
     mainSection.appendChild(keyboardEl);
@@ -204,8 +208,8 @@ async function loadMap() {
         }),
         zIndexOffset: 100
     })
-    .addTo(map)
-    .bindPopup(`<b>La tua posizione</b>`);
+        .addTo(map)
+        .bindPopup(`<b>La tua posizione</b>`);
 
     // setTileServer(MAP_TILE_SERVERS.ESRI_LIGHT_GRAY);
 }
@@ -231,7 +235,7 @@ async function loadMarkers() {
                 </button>
             </div>
         `;
-        
+
         const marker = L.marker(markerPosition, {
             icon: L.divIcon({
                 html: `<img src="../assets/icons/map/${iconName}" class="marker-pop-up">`,
@@ -240,18 +244,29 @@ async function loadMarkers() {
                 iconAnchor: [32, 64]
             })
         })
-        .addTo(map)
-        .bindPopup(popupHtml);
+            .addTo(map)
+            .bindPopup(popupHtml);
 
         // Pulsante per visualizzare i dettagli
         marker.on("popupopen", (e) => {
-            L.DomEvent.disableClickPropagation(e.popup.getElement());
             const popupEl = e.popup.getElement();
             if (!popupEl) return;
 
-            popupEl
-                .querySelector("[data-open-detail]")
-                ?.addEventListener("click", openDetailHandler);
+            L.DomEvent.disableClickPropagation(popupEl);
+
+            popupEl.querySelector("[data-open-detail]")?.addEventListener(
+                "click",
+                (ev) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+
+                    const id = ev.currentTarget.getAttribute("data-spot-id");
+                    if (!id) return;
+
+                    openSpotDetailById?.(id);
+                },
+                {once: true}
+            );
         });
 
         spotMarkers.push(marker);
@@ -302,4 +317,4 @@ window.reloadProfile = async function () {
     await initializeMap();
 };
 
-export { initializeMap }
+export {initializeMap}
