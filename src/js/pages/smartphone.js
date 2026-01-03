@@ -1,12 +1,16 @@
-import {PATHS} from "../paths.js";
-import {activateToolbar} from "../common/back.js";
+import { PATHS } from "../paths.js";
+import {
+    activateToolbar,
+    resetHeaderBaseForSection,
+    closeOverlayAndReveal,
+} from "../common/back.js";
 
 const SECTION_CONFIG = {
-    homepage: {title: "Spot & Go", content: PATHS.html.homepage},
-    map: {title: "Mappa", content: PATHS.html.map},
-    community: {title: "Community", content: PATHS.html.community},
-    goals: {title: "Missioni", content: PATHS.html.goals},
-    profile: {title: "Il mio Profilo", content: PATHS.html.profile},
+    homepage: { title: "Spot & Go", content: PATHS.html.homepage },
+    map: { title: "Mappa", content: PATHS.html.map },
+    community: { title: "Community", content: PATHS.html.community },
+    goals: { title: "Missioni", content: PATHS.html.goals },
+    profile: { title: "Il mio Profilo", content: PATHS.html.profile },
 };
 
 let loadProfileOverview, initializeHomepageFilters, initializeMap;
@@ -15,8 +19,7 @@ Promise.all([
     import("./profile.js").then((m) => (loadProfileOverview = m.loadProfileOverview)),
     import("./homepage.js").then((m) => (initializeHomepageFilters = m.initializeHomepageFilters)),
     import("../map.js").then((m) => (initializeMap = m.initializeMap)),
-]).catch(() => {
-});
+]).catch(() => {});
 
 async function loadHeader() {
     const response = await fetch(PATHS.html.header);
@@ -31,7 +34,9 @@ async function loadHeader() {
     if (!newHeader) return;
 
     header.innerHTML = newHeader.innerHTML;
-    Array.from(newHeader.attributes).forEach((attr) => header.setAttribute(attr.name, attr.value));
+    Array.from(newHeader.attributes).forEach((attr) =>
+        header.setAttribute(attr.name, attr.value)
+    );
 }
 
 async function loadToolbar() {
@@ -47,15 +52,9 @@ async function loadToolbar() {
     if (!newToolbar) return;
 
     toolbar.innerHTML = newToolbar.innerHTML;
-    Array.from(newToolbar.attributes).forEach((attr) => toolbar.setAttribute(attr.name, attr.value));
-}
-
-function closeAnyOverlay(main) {
-    if (!main) return;
-
-    main.querySelectorAll("[data-overlay-view]").forEach((el) => el.remove());
-
-    main.querySelectorAll("[data-section-view]").forEach((el) => (el.hidden = false));
+    Array.from(newToolbar.attributes).forEach((attr) =>
+        toolbar.setAttribute(attr.name, attr.value)
+    );
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -65,12 +64,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const main = document.getElementById("main");
     const toolbar = document.querySelector(".app-toolbar");
     const titleEl = document.getElementById("header-title");
-    const logoTextEl = document.getElementById("header-logo-text");
 
     if (!main || !toolbar) return;
 
     const sectionState = new Map();
-
     let currentSection = null;
     let isNavigating = false;
 
@@ -82,10 +79,43 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         e.preventDefault();
 
-        const next = btn.dataset.section;
-        if (!next || next === currentSection) return;
+        const next = (btn.dataset.section || "").trim();
+        if (!next) return;
+
+        const overlay = main.querySelector("[data-overlay-view]");
+        if (overlay) closeOverlayAndReveal({ overlay });
+
+        currentSection = getVisibleSectionKey(main) || currentSection;
+
+        if (next === currentSection) return;
 
         await navigateTo(next);
+    });
+
+    document.addEventListener("section:revealed", async (e) => {
+        const shown = e?.detail?.section;
+        if (!shown) return;
+
+        currentSection = shown;
+
+        if (shown === "homepage") {
+            try {
+                const mod = await import("./homepage.js");
+                const homeWrapper = main.querySelector('[data-section-view="homepage"]');
+                await mod.rehydrateHomepageUI?.(homeWrapper || document);
+            } catch (_) {}
+        }
+
+        if (shown === "map") {
+            try { await initializeMap?.(); } catch (_) {}
+        }
+
+        if (shown === "profile") {
+            try {
+                const profileWrapper = main.querySelector('[data-section-view="profile"]');
+                if (profileWrapper) await loadProfileOverview?.(profileWrapper);
+            } catch (_) {}
+        }
     });
 
     await navigateTo("homepage");
@@ -98,7 +128,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             const cfg = SECTION_CONFIG[section];
             if (!cfg) return;
 
-            closeAnyOverlay(main);
+            const overlay = main.querySelector("[data-overlay-view]");
+            if (overlay) closeOverlayAndReveal({ overlay });
 
             updateHeader(section, cfg);
 
@@ -111,20 +142,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    window.navigateToSection = navigateTo;
+
     function updateHeader(section, cfg) {
-        if (!titleEl || !logoTextEl) return;
+        resetHeaderBaseForSection(section);
 
-        const headerLeftLogo = document.querySelector(".header-left-logo");
         const isHome = section === "homepage";
-
-        logoTextEl.style.display = isHome ? "" : "none";
-        titleEl.classList.toggle("hidden", isHome);
-
-        if (!isHome) titleEl.textContent = cfg.title;
-
-        if (headerLeftLogo?.querySelector("#header-back-button")) {
-            headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
-        }
+        if (!isHome && titleEl) titleEl.textContent = cfg.title;
     }
 
     async function mountSection(section, cfg) {
@@ -148,44 +172,58 @@ document.addEventListener("DOMContentLoaded", async () => {
         wrapper.innerHTML = html;
 
         main.appendChild(wrapper);
-        sectionState.set(section, {el: wrapper, initialized: false});
+        sectionState.set(section, { el: wrapper, initialized: false });
 
         showOnly(section);
 
-        await initSectionOnce(section, cfg);
+        await initSectionOnce(section, cfg, wrapper);
 
         const st = sectionState.get(section);
         if (st) st.initialized = true;
     }
 
     function showOnly(activeSection) {
-        for (const [section, {el}] of sectionState.entries()) {
+        for (const [section, { el }] of sectionState.entries()) {
             el.hidden = section !== activeSection;
         }
-
         activateToolbar(activeSection);
     }
 
-    async function initSectionOnce(section, cfg) {
+    async function initSectionOnce(section, cfg, wrapperEl) {
         const st = sectionState.get(section);
         if (!st || st.initialized) return;
 
         if (cfg.content.includes("map.html")) await initializeMap?.();
-        if (cfg.content.includes("profile.html")) await loadProfileOverviewWrapper(st.el);
-        if (cfg.content.includes("homepage.html")) await initializeHomepageFilters?.();
+
+        if (cfg.content.includes("homepage.html")) {
+            await initializeHomepageFilters?.(wrapperEl);
+        }
+
+        if (cfg.content.includes("profile.html")) {
+            await loadProfileOverviewWrapper(wrapperEl);
+        }
     }
 
     async function loadProfileOverviewWrapper(wrapper) {
+        if (!loadProfileOverview) return;
         await loadProfileOverview(wrapper);
-        wrapper.setAttribute("data-section-view", "profile");
+        wrapper.dataset.sectionView = "profile";
+    }
+
+    function getVisibleSectionKey(mainEl) {
+        const visible = mainEl.querySelector('[data-section-view]:not([hidden])');
+        return visible?.dataset?.sectionView || null;
     }
 
     window.rebuildSectionState = () => {
         sectionState.clear();
-        main.querySelectorAll('[data-section-view]').forEach(el => {
+        Array.from(main.children).forEach((el) => {
+            if (!el?.hasAttribute?.("data-section-view")) return;
             const section = el.dataset.sectionView;
-            sectionState.set(section, {el, initialized: true});
+            if (!section) return;
+            sectionState.set(section, { el, initialized: true });
         });
-        currentSection = Array.from(sectionState.keys()).find(section => !sectionState.get(section).el.hidden) || null;
+
+        currentSection = getVisibleSectionKey(main) || null;
     };
 });

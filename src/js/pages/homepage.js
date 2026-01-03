@@ -7,11 +7,12 @@ import {populateTopratedSpots} from "./populateTopratedCards.js";
 import {initFitText} from "../common/fitText.js";
 import {loadHomepageSections} from "../common/homepageSectionsLoader.js";
 import {
-    setupCategoryFilter, resetCategoryFilter, filterSpotsByCategory, getActiveCategories,
+    setupCategoryFilter,
+    resetCategoryFilter,
+    filterSpotsByCategory,
+    getActiveCategories,
 } from "../common/categoryFilter.js";
 import {loadViewAllSaved} from "./viewAllSaved.js";
-
-const HOST_ID = "main";
 
 const HOME = {
     categoriesId: "home-categories-container",
@@ -19,21 +20,27 @@ const HOME = {
     nearbySectionId: "home-nearby-section",
     nearbyCarouselRootId: "home-nearby-container",
     topratedRootId: "home-toprated-carousel",
+
     savedCardSelector: ".spot-card-saved",
     nearbyCardSelector: ".spot-card-nearby",
     topratedCardSelector: ".spot-card-toprated",
 };
-
-const $ = (id) => document.getElementById(id);
-const nearbyRoot = () => $(HOME.nearbyCarouselRootId) || $(HOME.nearbySectionId);
 
 let homeBuiltOnce = false;
 let categoryFilterAttached = false;
 let spotHandlersAttached = false;
 let bookmarkChangedListenerAttached = false;
 
-function ensureSeeAllSavedButtonBound() {
-    const btn = document.getElementById("home-saved-see-all");
+const $in = (root, id) => root?.querySelector(`#${CSS.escape(id)}`) || null;
+
+const getHomepageWrapper = () =>
+    document.querySelector('[data-section-view="homepage"]') || null;
+
+const nearbyRoot = (hostEl) =>
+    $in(hostEl, HOME.nearbyCarouselRootId) || $in(hostEl, HOME.nearbySectionId);
+
+function ensureSeeAllSavedButtonBound(hostEl) {
+    const btn = hostEl?.querySelector("#home-saved-see-all");
     if (!btn) return;
 
     if (btn.dataset.bound === "true") return;
@@ -41,6 +48,7 @@ function ensureSeeAllSavedButtonBound() {
 
     btn.addEventListener("click", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         loadViewAllSaved("homepage").catch(() => {
         });
     });
@@ -54,10 +62,10 @@ function ensureBookmarkChangedListener() {
         const {spotId, isSaved} = e.detail || {};
         if (!spotId) return;
 
-        const hostEl = $(HOST_ID);
-        if (!hostEl) return;
+        const main = document.getElementById("main");
+        if (!main) return;
 
-        const buttons = hostEl.querySelectorAll("[data-bookmark-button]");
+        const buttons = main.querySelectorAll("[data-bookmark-button]");
         buttons.forEach((btn) => {
             const card = btn.closest('[role="listitem"]');
             if (!card) return;
@@ -69,10 +77,13 @@ function ensureBookmarkChangedListener() {
             initializeBookmarks(card);
 
             if (!isSaved) {
-                const savedContainer = document.getElementById("home-saved-container");
+                const savedContainer =
+                    main.querySelector('[data-section-view="homepage"] #home-saved-container') ||
+                    main.querySelector("#home-saved-container");
+
                 if (savedContainer && savedContainer.contains(card)) {
                     card.remove();
-                    initializeHorizontalCarousel(savedContainer, {cardSelector: ".spot-card-saved"});
+                    initializeHorizontalCarousel(savedContainer, {cardSelector: HOME.savedCardSelector});
                 }
             }
         });
@@ -80,7 +91,7 @@ function ensureBookmarkChangedListener() {
 }
 
 async function buildHomeOnce(hostEl) {
-    const categoryContainer = $(HOME.categoriesId);
+    const categoryContainer = $in(hostEl, HOME.categoriesId);
     if (!categoryContainer) return;
 
     resetCategoryFilter(categoryContainer);
@@ -91,16 +102,18 @@ async function buildHomeOnce(hostEl) {
 
             initFitText(".spot-card--saved .spot-card-title", `#${HOME.savedRootId}`, 2, 10.5);
 
-            const root = $(HOME.savedRootId);
+            const root = $in(hostEl, HOME.savedRootId);
             if (root) initializeHorizontalCarousel(root, {cardSelector: HOME.savedCardSelector});
 
             filterSpotsByCategory(getActiveCategories(), hostEl);
+
+            ensureSeeAllSavedButtonBound(hostEl);
         },
 
         onNearbyLoaded: async () => {
             await populateNearbySpots({containerId: HOME.nearbyCarouselRootId});
 
-            const root = $(HOME.nearbyCarouselRootId);
+            const root = $in(hostEl, HOME.nearbyCarouselRootId);
             if (root) initializeHorizontalCarousel(root, {cardSelector: HOME.nearbyCardSelector});
 
             filterSpotsByCategory(getActiveCategories(), root || hostEl);
@@ -109,7 +122,7 @@ async function buildHomeOnce(hostEl) {
         onTopRatedLoaded: async () => {
             await populateTopratedSpots({containerId: HOME.topratedRootId, limit: 10});
 
-            const root = $(HOME.topratedRootId);
+            const root = $in(hostEl, HOME.topratedRootId);
             if (root) initializeVerticalCarousel(root, {cardSelector: HOME.topratedCardSelector});
 
             filterSpotsByCategory(getActiveCategories(), hostEl);
@@ -118,14 +131,15 @@ async function buildHomeOnce(hostEl) {
 
     if (!categoryFilterAttached) {
         setupCategoryFilter(categoryContainer, {
-            scopeEl: hostEl, onChange: () => {
-                const savedRoot = $(HOME.savedRootId);
+            scopeEl: hostEl,
+            onChange: () => {
+                const savedRoot = $in(hostEl, HOME.savedRootId);
                 if (savedRoot) initializeHorizontalCarousel(savedRoot, {cardSelector: HOME.savedCardSelector});
 
-                const nearbyEl = nearbyRoot();
+                const nearbyEl = nearbyRoot(hostEl);
                 if (nearbyEl) initializeHorizontalCarousel(nearbyEl, {cardSelector: HOME.nearbyCardSelector});
 
-                const topratedRoot = $(HOME.topratedRootId);
+                const topratedRoot = $in(hostEl, HOME.topratedRootId);
                 if (topratedRoot) initializeVerticalCarousel(topratedRoot, {cardSelector: HOME.topratedCardSelector});
             },
         });
@@ -141,26 +155,24 @@ async function buildHomeOnce(hostEl) {
     await syncBookmarksUI(hostEl);
 
     ensureBookmarkChangedListener();
-
     filterSpotsByCategory(getActiveCategories(), hostEl);
-
-    ensureSeeAllSavedButtonBound();
+    ensureSeeAllSavedButtonBound(hostEl);
 
     homeBuiltOnce = true;
 }
 
-export async function initializeHomepageFilters() {
-    const hostEl = $(HOST_ID);
+export async function initializeHomepageFilters(rootEl) {
+    const hostEl = rootEl || getHomepageWrapper();
     if (!hostEl) return;
 
     if (homeBuiltOnce) {
         initializeBookmarks(hostEl);
         await syncBookmarksUI(hostEl);
+
         filterSpotsByCategory(getActiveCategories(), hostEl);
-
-        ensureSeeAllSavedButtonBound();
-
+        ensureSeeAllSavedButtonBound(hostEl);
         ensureBookmarkChangedListener();
+        initializeSpotClickHandlers(hostEl);
 
         return;
     }
@@ -168,6 +180,6 @@ export async function initializeHomepageFilters() {
     await buildHomeOnce(hostEl);
 }
 
-export async function rehydrateHomepageUI() {
-    await initializeHomepageFilters();
+export async function rehydrateHomepageUI(rootEl) {
+    await initializeHomepageFilters(rootEl);
 }

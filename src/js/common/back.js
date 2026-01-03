@@ -1,41 +1,35 @@
-function showOnlySectionView(main, returnViewKey) {
-    const views = Array.from(main.querySelectorAll('[data-section-view]'));
-    let target = views.find(v => String(v.getAttribute('data-section-view')) === String(returnViewKey)) || null;
-    if (!target && returnViewKey) {
-        target = main.querySelector(`#${CSS.escape(String(returnViewKey))}`);
-        if (target && !target.hasAttribute('data-section-view')) target = null;
-    }
-    if (!target && returnViewKey === "profile") {
-        target = main.querySelector("#profile-overview-container");
-        if (target) target.setAttribute("data-section-view", "profile");
-    }
-    if (!target && views.length > 0) {
-        target = views[0];
-    }
-    views.forEach(v => v.hidden = v !== target);
-    if (target && !views.includes(target)) {
-        views.forEach((v) => (v.hidden = true));
-        target.hidden = false;
-    }
+export function showOnlySectionView(main, viewKey) {
+    if (!main) return null;
+
+    const views = Array.from(main.children).filter(
+        (el) => el && el.nodeType === 1 && el.hasAttribute("data-section-view")
+    );
+
+    if (!views.length) return null;
+
+    const key = viewKey != null ? String(viewKey) : "";
+    let target = key ? views.find((v) => String(v.dataset.sectionView) === key) : null;
+
+    if (!target) target = views[0];
+
+    views.forEach((v) => (v.hidden = v !== target));
+    return String(target.dataset.sectionView || null);
 }
 
-function resetHeaderForSection(sectionKey) {
-    const headerLeftLogo = document.querySelector('.header-left-logo');
-    const headerLogoText = document.getElementById('header-logo-text');
-    const headerTitle = document.getElementById('header-title');
-    if (sectionKey === 'homepage') {
-        if (headerLeftLogo) headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
-        if (headerLogoText) headerLogoText.style.display = '';
-        if (headerTitle) headerTitle.classList.add('hidden');
-    } else if (sectionKey === 'profile') {
-        if (headerLeftLogo) headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
-        if (headerLogoText) headerLogoText.style.display = '';
-        if (headerTitle) headerTitle.classList.add('hidden');
-    } else {
-        if (headerLeftLogo) headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
-        if (headerLogoText) headerLogoText.style.display = '';
-        if (headerTitle) headerTitle.classList.add('hidden');
+export function resetHeaderBaseForSection(sectionKey) {
+    const headerLeftLogo = document.querySelector(".header-left-logo");
+    const headerLogoText = document.getElementById("header-logo-text");
+    const headerTitle = document.getElementById("header-title");
+
+    if (headerLeftLogo?.querySelector("#header-back-button")) {
+        headerLeftLogo.innerHTML =
+            `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
     }
+
+    const isHome = String(sectionKey) === "homepage";
+
+    if (headerLogoText) headerLogoText.style.display = isHome ? "" : "none";
+    if (headerTitle) headerTitle.classList.toggle("hidden", isHome);
 }
 
 export function activateToolbar(activeSection = null) {
@@ -52,24 +46,47 @@ export function activateToolbar(activeSection = null) {
     }
 }
 
-export function closeOverlay(overlay) {
-    if (!overlay) return;
-    overlay.hidden = true;
-    const main = document.getElementById('main');
-    if (main) {
-        const returnViewKey = overlay.dataset?.returnView || 'homepage';
-        showOnlySectionView(main, returnViewKey);
-        resetHeaderForSection(returnViewKey);
-        activateToolbar(returnViewKey);
+export function closeOverlayAndReveal({overlay, returnViewKey} = {}) {
+    const main = document.getElementById("main");
+    if (!main) return null;
+
+    const ov = overlay || main.querySelector('[data-overlay-view]');
+    if (!ov) return null;
+
+    const returnKey = returnViewKey || ov.dataset.returnView || null;
+
+    try {
+        ov.remove();
+    } catch (_) {
+        if (ov.parentNode) ov.parentNode.removeChild(ov);
     }
+
+    const shown = showOnlySectionView(main, returnKey) || "homepage";
+
+    resetHeaderBaseForSection(shown);
+    activateToolbar(shown);
+
+    main.classList.remove("spot-detail-enter", "spot-detail-exit");
+    main.removeAttribute("data-category");
+
+    document.dispatchEvent(
+        new CustomEvent("section:revealed", {detail: {section: shown}})
+    );
+
+    return shown;
+}
+
+export function closeOverlay(overlay) {
+    return closeOverlayAndReveal({overlay});
 }
 
 export function goBack({fallback} = {}) {
-    const overlay = document.querySelector('[data-overlay-view]:not([hidden])');
+    const overlay = document.querySelector('[data-overlay-view]');
     if (overlay) {
-        closeOverlay(overlay);
+        closeOverlayAndReveal({overlay});
         return;
     }
+
     try {
         if (window.history.length > 1) {
             window.history.back();
@@ -77,19 +94,22 @@ export function goBack({fallback} = {}) {
         }
     } catch (_) {
     }
-    if (typeof fallback === 'function') {
+
+    if (typeof fallback === "function") {
         fallback();
         return;
     }
-    window.location.href = '/';
+
+    window.location.href = "/";
 }
 
 export function setupBackButton({fallback} = {}) {
-    const buttons = document.querySelectorAll('[data-back]');
-    buttons.forEach(btn => {
-        if (btn.dataset.bound === 'true') return;
-        btn.dataset.bound = 'true';
-        btn.addEventListener('click', e => {
+    const buttons = document.querySelectorAll("[data-back]");
+    buttons.forEach((btn) => {
+        if (btn.dataset.bound === "true") return;
+        btn.dataset.bound = "true";
+
+        btn.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
             goBack({fallback});
