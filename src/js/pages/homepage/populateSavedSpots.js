@@ -1,101 +1,78 @@
 import {getFirstUser, getSavedSpots, getSpots} from "../../query.js";
-import {fillSpotCard} from "./populateSpotCards.js";
+import {generateSpotCardList} from "./generateSpotCardList.js";
 import {fitText} from "../../common/fitText.js";
+import {initializeBookmarkButtonAttributes} from "../../common/spotCardHelpers.js";
 
-function ensureSavedBookmarkDataset(shellEl) {
-    const btn = shellEl.querySelector("[data-bookmark-button]");
-    if (!btn) return;
-
-    btn.dataset.saved = "true";
-    btn.setAttribute("data-bookmark-type", "saved");
-}
-
-function clearRenderedShells(container, templateSelector) {
-    const template = container.querySelector(templateSelector);
-    Array.from(container.children).forEach((child) => {
-        if (child === template) return;
-        child.remove();
-    });
-}
-
+/**
+ * Recupera i dati degli spot salvati dall'utente corrente.
+ * @returns {Promise<Array>} Un array di oggetti spot salvati.
+ */
 export async function getSavedSpotsData() {
     const user = await getFirstUser();
     if (!user) return [];
 
     const relations = await getSavedSpots(user.id);
-    const ids = (relations || []).map((r) => r.idLuogo).filter(Boolean);
-    if (!ids.length) return [];
+    if (!relations.length) return [];
 
     const allSpots = await getSpots();
-    const spotById = new Map((allSpots || []).map((s) => [s.id, s]));
-
-    return ids.map((id) => spotById.get(id)).filter(Boolean);
+    const neededIds = new Set(relations.map(r => String(r.idLuogo)).filter(Boolean));
+    return allSpots.filter(s => neededIds.has(String(s.id)));
 }
 
-export function createSavedSpotShellFromTemplate(templateShell, spot) {
-    if (!templateShell || !spot) return null;
-
-    const shell = templateShell.cloneNode(true);
-    shell.removeAttribute("data-template");
-    shell.removeAttribute("aria-hidden");
-    shell.hidden = false;
-
-    shell.setAttribute("role", "listitem");
-    if (spot?.id) shell.setAttribute("data-spot-id", String(spot.id));
-
-    const cardEl = shell.querySelector('[data-category="card"]');
-    if (!cardEl) return null;
-
-    fillSpotCard(cardEl, spot, {wrapperEl: shell, setCategoryText: false});
-    ensureSavedBookmarkDataset(shell);
-
-    return shell;
+/**
+ * Applica il fitText ai titoli delle card salvate dopo il popolamento.
+ * @param {string} containerId - L'ID del contenitore.
+ */
+function postPopulateSaved(containerId) {
+    fitText(
+        '.spot-card-saved [data-category="title"]',
+        "#" + containerId,
+        2,
+        10.5
+    );
 }
 
+/**
+ * Popola il contenitore degli spot salvati con le card corrispondenti.
+ * @param {Object} options - Opzioni di configurazione.
+ * @param {string} options.containerId - ID del contenitore.
+ * @param {string} options.emptyStateId - ID dell'elemento per lo stato vuoto.
+ * @param {string} options.templateSelector - Selettore del template.
+ * @returns {Promise<void>}
+ */
 export async function populateSavedSpots({
                                              containerId = "home-saved-container",
                                              emptyStateId = "saved-empty-state",
                                              templateSelector = '[data-template="saved-card"]',
                                          } = {}) {
     const container = document.getElementById(containerId);
-    if (!container) return;
+    if (!container) {
+        console.warn(`Container with ID "${containerId}" not found.`);
+        return;
+    }
 
     const emptyState = document.getElementById(emptyStateId);
 
-    let templateShell = container.querySelector(templateSelector);
-    if (!templateShell) {
-        templateShell = container.parentElement?.querySelector(templateSelector);
-    }
-    if (!templateShell) {
-        templateShell = document.querySelector(`#${containerId} ~ ${templateSelector}`);
-    }
-    if (!templateShell) {
-        console.warn("Template saved-card non trovato vicino a", `#${containerId}`);
-        return;
-    }
-    templateShell.hidden = true;
-    templateShell.setAttribute("aria-hidden", "true");
-    try {
+    const getSpotsFunction = async () => {
         const spots = await getSavedSpotsData();
-
-        clearRenderedShells(container, templateSelector);
 
         if (!spots.length) {
             if (emptyState) emptyState.classList.remove("hidden");
-            return;
+            return [];
         }
+
         if (emptyState) emptyState.classList.add("hidden");
-        spots.forEach((spot) => {
-            const shellEl = createSavedSpotShellFromTemplate(templateShell, spot);
-            if (shellEl) container.appendChild(shellEl);
-        });
-        fitText(
-            '.spot-card-saved [data-category="title"]',
-            "#" + containerId,
-            2,
-            10.5
-        );
-    } catch (err) {
-        console.error("Errore populateSavedSpots:", err);
-    }
+        return spots;
+    };
+
+    await generateSpotCardList({
+        containerId,
+        templateSelector,
+        getSpotsFunction,
+        useWrapper: true,
+        setCategoryText: false,
+        bookmarkInit: (card) => initializeBookmarkButtonAttributes(card, {saved: "true", type: "saved"}),
+    });
+
+    postPopulateSaved(containerId);
 }

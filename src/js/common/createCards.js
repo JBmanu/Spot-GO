@@ -1,32 +1,30 @@
 import { getCategoryNameIt } from "../query.js";
+import { setText, setImage, pickRating, formatRatingAsText } from "./spotCardHelpers.js";
 
+/**
+ * Crea una card classica per uno spot utilizzando un template HTML.
+ * @param {Object} spot - L'oggetto spot con i dati.
+ * @param {string} distance - La distanza formattata da mostrare.
+ * @returns {HTMLElement|null} L'elemento card creato o null se il template non esiste.
+ */
 export async function createClassicSpotCard(spot, distance) {
     const template = document.getElementById("classic-spot-card-template");
     if (!template) return null;
 
     const card = template.content.firstElementChild.cloneNode(true);
 
-    const image = card.querySelector('[data-field="image"]');
-    if (image) {
-        image.src = "../" + spot.immagine.slice(1);
-        image.alt = `Foto di ${spot.nome}`;
-    }
+    setImage(card.querySelector('[data-field="image"]'), "../" + spot.immagine.slice(1), `Foto di ${spot.nome}`);
 
-    const title = card.querySelector('[data-field="title"]');
-    if (title) title.textContent = spot.nome;
+    setText(card.querySelector('[data-field="title"]'), spot.nome);
 
-    const distanceEl = card.querySelector('[data-field="distance"]');
-    if (distanceEl) distanceEl.textContent = distance;
+    setText(card.querySelector('[data-field="distance"]'), distance);
 
     const categoryEl = card.querySelector('[data-field="category"]');
     if (categoryEl) {
         categoryEl.textContent = await getCategoryNameIt(spot.idCategoria);
     }
 
-    const ratingEl = card.querySelector('[data-field="rating"]');
-    if (ratingEl && spot.valutazione) {
-        ratingEl.textContent = spot.valutazione;
-    }
+    setText(card.querySelector('[data-field="rating"]'), formatRatingAsText(pickRating(spot)));
 
     card.dataset.spotId = spot.id ?? "";
     card.dataset.category = spot.idCategoria;

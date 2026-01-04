@@ -1,29 +1,13 @@
 import { getSpots } from "../../query.js";
-import { fillSpotCard } from "./populateSpotCards.js";
 import { distanceFromUserToSpot, formatDistance } from "../../common.js";
-import { normalizeCategoryName } from "../../common/categoryFilter.js";
+import { generateSpotCardList } from "./generateSpotCardList.js";
+import { pickRating, formatRatingAsText } from "../../common/spotCardHelpers.js";
 
-function toNumberOrNull(v) {
-    if (v === undefined || v === null) return null;
-    const n = Number(String(v).replace(",", "."));
-    return Number.isFinite(n) ? n : null;
-}
-
-function getRatingValue(spot) {
-    return (
-        toNumberOrNull(spot?.rating) ??
-        toNumberOrNull(spot?.valutazione) ??
-        toNumberOrNull(spot?.stelle) ??
-        toNumberOrNull(spot?.mediaVoti) ??
-        null
-    );
-}
-
-function setText(el, value) {
-    if (!el) return;
-    el.textContent = value == null ? "" : String(value);
-}
-
+/**
+ * Normalizza un oggetto spot grezzo per garantire campi coerenti.
+ * @param {Object} raw - L'oggetto spot grezzo.
+ * @returns {Object|null} L'oggetto spot normalizzato o null se invalido.
+ */
 function normalizeSpot(raw) {
     if (!raw) return null;
 
@@ -39,107 +23,57 @@ function normalizeSpot(raw) {
     };
 }
 
-function toRatingText(v) {
-    const n = toNumberOrNull(v);
-    if (n == null) return "";
-    return (Math.round(n * 10) / 10).toFixed(1);
+/**
+ * Setup personalizzato per le card top-rated, impostando l'aria-label per la valutazione.
+ * @param {HTMLElement} card - L'elemento card.
+ * @param {Object} spot - L'oggetto spot.
+ */
+function customTopratedSetup(card, spot) {
+    const ratingText = formatRatingAsText(pickRating(spot));
+    const ratingEl = card.querySelector('[data-slot="rating-value"]');
+
+    if (ratingEl) {
+        if (ratingText !== "") ratingEl.setAttribute("aria-label", `${ratingText} stelle`);
+        else ratingEl.removeAttribute("aria-label");
+    }
 }
 
-function ensureBookmarkDataset(cardEl) {
-    const btn = cardEl.querySelector("[data-bookmark-button]");
-    if (!btn) return;
-
-    if (typeof btn.dataset.saved === "undefined") btn.dataset.saved = "false";
-    if (!btn.hasAttribute("data-bookmark-type")) btn.setAttribute("data-bookmark-type", "generic");
-}
-
-function getSpotCategoryRaw(spot) {
-    return spot?.category ?? spot?.idCategoria ?? spot?.categoria ?? spot?.categoryId ?? "";
-}
-
-function clearRenderedCards(container, templateSelector) {
-    const template = container.querySelector(templateSelector);
-
-    Array.from(container.children).forEach((child) => {
-        if (template && child === template) return;
-        if (child.classList?.contains("carousel-vertical-track")) return;
-        child.remove();
-    });
-}
-
+/**
+ * Popola il contenitore degli spot top-rated con le card ordinate per valutazione.
+ * @param {Object} options - Opzioni di configurazione.
+ * @param {string} options.containerId - ID del contenitore.
+ * @param {string} options.templateSelector - Selettore del template.
+ * @param {number} options.limit - Numero massimo di spot.
+ * @returns {Promise<void>}
+ */
 export async function populateTopratedSpots({
     containerId = "home-toprated-carousel",
     templateSelector = '[data-template="toprated-item"]',
     limit = 10,
 } = {}) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+    const getSpotsFunction = async () => {
+        const all = await getSpots();
+        const scored = (all || [])
+            .map(normalizeSpot)
+            .filter(Boolean)
+            .map((s) => ({ spot: s, rating: pickRating(s) }))
+            .filter((x) => x.spot && x.spot.id);
 
-    const templateCard =
-        container.querySelector(templateSelector) || document.querySelector(templateSelector);
+        scored.sort((a, b) => (b.rating ?? -Infinity) - (a.rating ?? -Infinity));
+        return scored.slice(0, limit).map((x) => x.spot);
+    };
 
-    if (!templateCard) {
-        console.warn("Template toprated-item non trovato:", templateSelector);
-        return;
-    }
-
-    templateCard.hidden = true;
-    templateCard.setAttribute("aria-hidden", "true");
-
-    const all = await getSpots();
-
-    const scored = (all || [])
-        .map(normalizeSpot)
-        .filter(Boolean)
-        .map((s) => ({ spot: s, rating: getRatingValue(s) }))
-        .filter((x) => x.spot && x.spot.id);
-
-    scored.sort((a, b) => (b.rating ?? -Infinity) - (a.rating ?? -Infinity));
-
-    const top = scored.slice(0, limit).map((x) => x.spot);
-
-    clearRenderedCards(container, templateSelector);
-
-    if (!top.length) return;
-
-    for (const spot of top) {
-        const card = templateCard.cloneNode(true);
-
-        card.removeAttribute("data-template");
-        card.removeAttribute("aria-hidden");
-        card.hidden = false;
-
-        if (!card.hasAttribute("role")) card.setAttribute("role", "listitem");
-        if (spot?.id != null) card.setAttribute("data-spot-id", String(spot.id));
-
-        fillSpotCard(card, spot, {
-            wrapperEl: null,
-            setCategoryText: false,
-            hideIfMissingId: true,
-        });
-
-        if (card.style.display === "none") continue;
-
-        const rawCat = getSpotCategoryRaw(spot);
-        const normalizedCat = normalizeCategoryName(String(rawCat));
-        if (normalizedCat) card.setAttribute("data-category", normalizedCat);
-
-        const ratingText = toRatingText(getRatingValue(spot));
-        const ratingEl = card.querySelector('[data-slot="rating-value"]');
-        setText(ratingEl, ratingText);
-
-        if (ratingEl) {
-            if (ratingText !== "") ratingEl.setAttribute("aria-label", `${ratingText} stelle`);
-            else ratingEl.removeAttribute("aria-label");
-        }
-
-        setText(
-            card.querySelector('[data-field="distance"]'),
-            formatDistance(distanceFromUserToSpot(spot))
-        );
-
-        ensureBookmarkDataset(card);
-
-        container.appendChild(card);
-    }
+    await generateSpotCardList({
+        containerId,
+        templateSelector,
+        getSpotsFunction,
+        limit,
+        useWrapper: false,
+        setCategoryText: false,
+        additionalFields: [
+            { selector: '[data-slot="rating-value"]', valueFunction: (spot) => formatRatingAsText(pickRating(spot)) },
+            { selector: '[data-field="distance"]', valueFunction: (spot) => formatDistance(distanceFromUserToSpot(spot)) },
+        ],
+        customCardSetup: customTopratedSetup,
+    });
 }
