@@ -1,9 +1,9 @@
-import {PATHS} from "../paths.js";
+import {PATHS} from "./paths.js";
 import {
     activateToolbar,
     resetHeaderBaseForSection,
     closeOverlayAndReveal,
-} from "../common/back.js";
+} from "./common/back.js";
 
 const SECTION_CONFIG = {
     homepage: {title: "Spot & Go", content: PATHS.html.homepage},
@@ -15,10 +15,10 @@ const SECTION_CONFIG = {
 
 let loadProfileOverview, initializeHomepageFilters, initializeMap;
 
-Promise.allSettled([
-    import("./profile.js").then((m) => (loadProfileOverview = m.loadProfileOverview)),
-    import("./homepage.js").then((m) => (initializeHomepageFilters = m.initializeHomepageFilters)),
-    import("../map.js").then((m) => (initializeMap = m.initializeMap)),
+const modulesLoaded = Promise.allSettled([
+    import("./pages/profile.js").then((m) => (loadProfileOverview = m.loadProfileOverview)),
+    import("./pages/homepage.js").then((m) => (initializeHomepageFilters = m.initializeHomepageFilters)),
+    import("./map.js").then((m) => (initializeMap = m.initializeMap)),
 ]);
 
 async function replaceNodeFromHtml({url, targetSelector, sourceSelector}) {
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (shown === "homepage") {
             try {
-                const mod = await import("./homepage.js");
+                const mod = await import("./pages/homepage.js");
                 const homeWrapper = main.querySelector('[data-section-view="homepage"]');
                 await mod.rehydrateHomepageUI?.(homeWrapper || document);
             } catch (_) {
@@ -227,6 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
+    await modulesLoaded;
     await navigateTo("homepage");
 
     window.rebuildSectionState = () => {
