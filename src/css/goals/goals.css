@@ -1,0 +1,17 @@
+﻿/* per dare priorità la meno alla più:
+    base(overrie di tag),
+    components,
+    utilities */
+
+@layer components {
+
+    .mission-type-btn {
+        @apply flex items-center gap-1 px-3 py-2 rounded-xl
+        text-gray-700 cursor-pointer transition;
+    }
+
+    .mission-type-btn-element {
+        @apply transition-all duration-200 ease-in-out
+    }
+
+}

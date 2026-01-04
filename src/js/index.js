@@ -13,12 +13,13 @@ const SECTION_CONFIG = {
     profile: {title: "Il mio Profilo", content: PATHS.html.profile},
 };
 
-let loadProfileOverview, initializeHomepageFilters, initializeMap;
+let loadProfileOverview, initializeHomepageFilters, initializeMap, initializeGoals;
 
 const modulesLoaded = Promise.allSettled([
     import("./pages/profile.js").then((m) => (loadProfileOverview = m.loadProfileOverview)),
     import("./pages/homepage/homepage.js").then((m) => (initializeHomepageFilters = m.setupHomepageFilters)),
     import("./map.js").then((m) => (initializeMap = m.initializeMap)),
+    import("./goals/goals.js").then(m => initializeGoals = m.initializeGoals),
 ]);
 
 async function replaceNodeFromHtml({url, targetSelector, sourceSelector}) {
@@ -159,6 +160,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+        if (section === "goals") {
+            try {
+                await initializeGoals?.();
+            } catch (_) {
+            }
+            return;
+        }
+
         if (section === "homepage") {
             try {
                 await initializeHomepageFilters?.(wrapperEl);
@@ -214,6 +223,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (shown === "map") {
             try {
                 await initializeMap?.();
+            } catch (_) {
+            }
+        }
+        if (shown === "goals") {
+            try {
+                await initializeGoals?.();
             } catch (_) {
             }
         }
