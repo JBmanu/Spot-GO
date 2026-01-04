@@ -17,7 +17,7 @@ let loadProfileOverview, initializeHomepageFilters, initializeMap;
 
 const modulesLoaded = Promise.allSettled([
     import("./pages/profile.js").then((m) => (loadProfileOverview = m.loadProfileOverview)),
-    import("./pages/homepage.js").then((m) => (initializeHomepageFilters = m.initializeHomepageFilters)),
+    import("./pages/homepage/homepage.js").then((m) => (initializeHomepageFilters = m.setupHomepageFilters)),
     import("./map.js").then((m) => (initializeMap = m.initializeMap)),
 ]);
 
@@ -204,9 +204,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (shown === "homepage") {
             try {
-                const mod = await import("./pages/homepage.js");
+                const mod = await import("./pages/homepage/homepage.js");
                 const homeWrapper = main.querySelector('[data-section-view="homepage"]');
-                await mod.rehydrateHomepageUI?.(homeWrapper || document);
+                await mod.restoreHomepageUI?.(homeWrapper || document);
             } catch (_) {
             }
         }
