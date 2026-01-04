@@ -25,7 +25,12 @@ function getMain() {
 function getActiveSectionKey(main) {
     if (!main) return "homepage";
     const visible = main.querySelector('[data-section-view]:not([hidden])');
-    return (visible?.dataset.sectionView || "homepage").trim();
+    if (visible) return (visible?.dataset.sectionView || "homepage").trim();
+
+    const overlay = main.querySelector('[data-overlay-view]');
+    if (overlay) return overlay.dataset.overlayView;
+
+    return "homepage";
 }
 
 function getSectionWrapper(main, sectionKey) {
@@ -98,7 +103,6 @@ async function loadSpotDetail(spotId) {
     try {
         const spotData = await getSpotById(spotId);
         if (!spotData) {
-            console.error("Spot non trovato:", spotId);
             return;
         }
 
@@ -124,6 +128,8 @@ async function loadSpotDetail(spotId) {
 
         main.querySelectorAll("[data-section-view]").forEach((el) => (el.hidden = true));
 
+        main.querySelectorAll("[data-overlay-view]").forEach((el) => (el.hidden = true));
+
         main.appendChild(overlay);
 
         main.classList.add("spot-detail-enter");
@@ -144,7 +150,6 @@ async function loadSpotDetail(spotId) {
         } catch (_) {
         }
     } catch (err) {
-        console.error("Errore loadSpotDetail:", err);
     }
 }
 
@@ -192,7 +197,6 @@ function setupHeaderBookmark(spotData) {
             await toggleBookmarkForSpot(spotData.id);
             await refreshHeaderBookmarkVisual(headerBookmarkButton, spotData.id);
         } catch (err) {
-            console.error("Errore toggle bookmark header:", err);
         }
     };
 
@@ -207,7 +211,6 @@ function setupHeaderBookmark(spotData) {
             headerBookmarkButton.dataset.saved = isSaved ? "true" : "false";
             updateBookmarkVisual(headerBookmarkButton, isSaved);
         } catch (err) {
-            console.error("Errore header bookmark change handler:", err);
         }
     };
 
@@ -355,4 +358,3 @@ export async function openSpotDetailById(spotId) {
     if (!spotId) return;
     await loadSpotDetail(String(spotId).trim());
 }
-

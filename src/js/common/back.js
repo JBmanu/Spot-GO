@@ -61,6 +61,12 @@ export function closeOverlayAndReveal({overlay, returnViewKey} = {}) {
         if (ov.parentNode) ov.parentNode.removeChild(ov);
     }
 
+    if (returnKey && main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
+        const returnOverlay = main.querySelector(`[data-overlay-view="${returnKey}"]`);
+        returnOverlay.hidden = false;
+        return returnKey;
+    }
+
     const shown = showOnlySectionView(main, returnKey) || "homepage";
 
     resetHeaderBaseForSection(shown);
