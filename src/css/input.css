@@ -40,4 +40,4 @@
 
 @import "./map/new-spot.css";
 
-@import "../base/keyboard/keyboard.css";
+@import "./common-components/search-bar/keyboard.css";

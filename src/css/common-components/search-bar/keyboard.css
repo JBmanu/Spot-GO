@@ -1,13 +1,23 @@
 @layer components {
 
     .keyboard-overlay {
-        @apply absolute left-0 right-0 top-0 bottom-0 transition-transform duration-300 ease-out;
+        @apply absolute left-0 right-0 bottom-0 transition-transform duration-300 ease-out;
         background: rgba(0, 0, 0, 0.06);
         backdrop-filter: blur(4px);
-        z-index: 999;
+        z-index: -1;
         display: none;
         pointer-events: none;
     }
+
+    .keyboard-overlay-view-all {
+        @apply absolute top-0 left-0 right-0 -bottom-10 transition-transform duration-300 ease-out;
+        background: rgba(0, 0, 0, 0.06);
+        backdrop-filter: blur(4px);
+        z-index: -1;
+        display: none;
+        pointer-events: none;
+    }
+
 
     .keyboard-overlay.overlay-visible {
         display: block;
@@ -15,8 +25,14 @@
         transform: translateY(0) !important;
     }
 
+    .keyboard-overlay-view-all.overlay-visible {
+        display: block;
+        pointer-events: auto;
+        transform: translateY(0) !important;
+    }
+
     .keyboard {
-        @apply fixed bottom-0 left-0 right-0 transition-transform duration-300 ease-out;
+        @apply sticky bottom-0 left-0 right-0 transition-transform duration-300 ease-out;
         background: rgba(209, 213, 219, 0.95);
         z-index: 1000;
         display: none;

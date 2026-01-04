@@ -3,25 +3,20 @@ import {initializeSpotClickHandlers} from "./spotDetail.js";
 import {getFirstUser, getSavedSpots, getSpots, getCategoryNameIt} from "../query.js";
 import {distanceFromUserToSpot, formatDistance} from "../common.js";
 import {goBack, setupBackButton, closeOverlay} from "../common/back.js";
-import {Keyboard} from "../common/keyboard.js";
-import {ensureSearchBarTemplateLoaded, insertSearchBar} from "../common/search-bar.js";
 import {initializeVerticalCarousel} from "../common/carousels.js";
+import {createSearchBarWithKeyboard} from "../createComponent.js";
 
 const OVERLAY_ID = "view-all-saved";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
-
-const SEARCH_IDS = {
-    inputId: "view-all-saved-search-input",
-    filterBtnId: "view-all-saved-filter-btn",
-};
 
 const state = {
     htmlCache: null,
     overlay: null,
     initialized: false,
     popHandler: null,
-    keyboardLoaded: false,
     classicCardTplLoaded: false,
+    keyboardEl: null,
+    overlayEl: null,
 };
 
 function getMain() {
@@ -48,6 +43,14 @@ async function fetchOverlayHtml() {
     return state.htmlCache;
 }
 
+function resolveReturnViewKey(main) {
+    const activeBtn = document.querySelector(".app-toolbar button[aria-current='page']");
+    if (activeBtn) return activeBtn.dataset.section || null;
+
+    const activeView = main.querySelector("[data-section-view]:not([hidden])");
+    return activeView?.getAttribute("data-section-view") || activeView?.id || null;
+}
+
 function showViewAllSavedHeader() {
     const logo = document.querySelector(".header-left-logo");
     const logoText = document.getElementById("header-logo-text");
@@ -65,6 +68,32 @@ function showViewAllSavedHeader() {
         title.textContent = "I tuoi Spot Salvati";
         title.classList.remove("hidden");
     }
+}
+
+function hideAllSectionViews(main) {
+    main.querySelectorAll("[data-section-view]").forEach((el) => (el.hidden = true));
+}
+
+function mountOverlay(main, {html, returnViewKey}) {
+    hideAllSectionViews(main);
+
+    const existing = main.querySelector(OVERLAY_SELECTOR);
+    if (existing) {
+        existing.hidden = false;
+        if (returnViewKey) existing.dataset.returnView = String(returnViewKey);
+        state.overlay = existing;
+        return existing;
+    }
+
+    const overlay = document.createElement("div");
+    overlay.dataset.overlayView = OVERLAY_ID;
+    if (returnViewKey) overlay.dataset.returnView = String(returnViewKey);
+    overlay.innerHTML = html;
+    overlay.style.position = "relative";
+
+    main.appendChild(overlay);
+    state.overlay = overlay;
+    return overlay;
 }
 
 function pushHistoryState(returnViewKey) {
@@ -110,31 +139,6 @@ function attachPopHandler() {
     };
 
     window.addEventListener("popstate", state.popHandler);
-}
-
-function hideAllSectionViews(main) {
-    main.querySelectorAll("[data-section-view]").forEach((el) => (el.hidden = true));
-}
-
-function mountOverlay(main, {html, returnViewKey}) {
-    hideAllSectionViews(main);
-
-    const existing = main.querySelector(OVERLAY_SELECTOR);
-    if (existing) {
-        existing.hidden = false;
-        if (returnViewKey) existing.dataset.returnView = String(returnViewKey);
-        state.overlay = existing;
-        return existing;
-    }
-
-    const overlay = document.createElement("div");
-    overlay.dataset.overlayView = OVERLAY_ID;
-    if (returnViewKey) overlay.dataset.returnView = String(returnViewKey);
-    overlay.innerHTML = html;
-
-    main.appendChild(overlay);
-    state.overlay = overlay;
-    return overlay;
 }
 
 function renderEmptySavedMessage(container) {
@@ -237,53 +241,6 @@ async function ensureClassicSpotCardTemplateLoaded() {
     return true;
 }
 
-async function loadKeyboardHtmlOnce() {
-    if (state.keyboardLoaded) return null;
-
-    const res = await fetch("../base/keyboard/keyboard.html");
-    if (!res.ok) return null;
-
-    const keyboardHtml = await res.text();
-    const temp = document.createElement("div");
-    temp.innerHTML = keyboardHtml;
-
-    const overlay = temp.querySelector("#keyboard-overlay");
-    const keyboard = temp.querySelector("#keyboard");
-
-    if (!overlay || !keyboard) return null;
-
-    state.keyboardLoaded = true;
-    return {overlay, keyboard};
-}
-
-async function setupViewAllSavedKeyboard(root) {
-    const input = root.querySelector(`#${SEARCH_IDS.inputId}`);
-    if (!input) return;
-
-    if (root.querySelector("#keyboard-overlay") || root.querySelector("#keyboard")) return;
-
-    const nodes = await loadKeyboardHtmlOnce();
-    if (!nodes) return;
-
-    const {overlay, keyboard} = nodes;
-
-    const searchBar = root.querySelector(".search-bar");
-    if (searchBar) {
-        searchBar.insertAdjacentElement("afterend", overlay);
-        overlay.insertAdjacentElement("afterend", keyboard);
-    } else {
-        root.appendChild(overlay);
-        root.appendChild(keyboard);
-    }
-
-    new Keyboard({
-        input,
-        keyboard,
-        overlay,
-        onInput: (query) => filterSpotCards(root, query),
-    });
-}
-
 async function populateViewAllSavedSpots({preserveDom = false} = {}) {
     const okTpl = await ensureClassicSpotCardTemplateLoaded();
     if (!okTpl) return;
@@ -354,20 +311,23 @@ async function closeViewAllSavedAndRestore() {
     const overlay = main.querySelector(OVERLAY_SELECTOR);
     if (overlay) closeOverlay(overlay);
 
+    if (state.keyboardEl && main.contains(state.keyboardEl)) {
+        main.removeChild(state.keyboardEl);
+    }
+    if (state.overlayEl && overlay && overlay.contains(state.overlayEl)) {
+        overlay.removeChild(state.overlayEl);
+    }
+    state.keyboardEl = null;
+    state.overlayEl = null;
+
     clearHistoryState();
-}
-
-function resolveReturnViewKey(main) {
-    const activeBtn = document.querySelector(".app-toolbar button[aria-current='page']");
-    if (activeBtn) return activeBtn.dataset.section || null;
-
-    const activeView = main.querySelector("[data-section-view]:not([hidden])");
-    return activeView?.getAttribute("data-section-view") || activeView?.id || null;
 }
 
 export async function loadViewAllSaved(returnViewKey = null) {
     const main = getMain();
     if (!main) return;
+
+    main.style.position = "relative";
 
     returnViewKey = returnViewKey || resolveReturnViewKey(main);
 
@@ -408,8 +368,22 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
     const overlay = mountOverlay(main, {html, returnViewKey});
 
-    await ensureSearchBarTemplateLoaded();
-    insertSearchBar("#search-bar-placeholder", SEARCH_IDS);
+    const placeholder = overlay.querySelector("#search-bar-placeholder");
+    if (placeholder) {
+        const {
+            searchBarEl,
+            keyboardEl,
+            overlayEl
+        } = await createSearchBarWithKeyboard("Cerca...", (value) => filterSpotCards(overlay, value));
+        placeholder.replaceWith(searchBarEl);
+        main.appendChild(keyboardEl);
+        overlay.appendChild(overlayEl);
+        state.keyboardEl = keyboardEl;
+        state.overlayEl = overlayEl;
+
+        state.overlayEl.classList.remove("keyboard-overlay");
+        state.overlayEl.classList.add("keyboard-overlay-view-all");
+    }
 
     pushHistoryState(returnViewKey);
 
@@ -421,7 +395,6 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
     if (!state.initialized) {
         initializeSpotClickHandlers();
-        await setupViewAllSavedKeyboard(overlay);
         initializeVerticalCarousel(overlay.querySelector("#view-all-saved-list"), {cardSelector: '[data-slot="spot"]'});
         const track = overlay.querySelector("#view-all-saved-list .carousel-vertical-track");
         if (track) {

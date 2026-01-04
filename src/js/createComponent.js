@@ -57,6 +57,10 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
         onValueChanged(e.target.value, e);
     });
 
+    searchInput.addEventListener("click", () => {
+        searchInput.focus();
+    });
+
     // =========================
     // FOCUS / BLUR
     // =========================
@@ -66,6 +70,11 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
 
         keyboard.style.transform = "translateY(0)";
         overlay.style.transform = "translateY(0)";
+
+        const searchBarRect = searchBarEl.getBoundingClientRect();
+        const overlayRect = overlay.closest('[data-overlay-view]').getBoundingClientRect();
+        const topOffset = searchBarRect.bottom - overlayRect.top;
+        overlay.style.top = topOffset + 'px';
 
         if (track && window.innerWidth <= 1024) {
             track.style.transform = "translateY(-320px)";
@@ -126,6 +135,9 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
     });
 
     keyboard.addEventListener("mousedown", (e) => e.preventDefault());
+
+    keyboard.classList.add("keyboard");
+    overlay.classList.add("keyboard-overlay");
 
     return {
         searchBarEl,
