@@ -7,8 +7,21 @@ export async function loadCommunityData() {
 async function loadFriends() {
     const container = document.getElementById("community-friends-container");
     container.innerHTML = "";
-    var friends = await getFriends("scmccT6uz6cRjYRRVgmz");
+    var friends = await getFriends("AMNSHSNGXdZ0xm4XRWBS");
     console.log(friends);
+
+    friends = [
+        {
+            id: "id-utente-firebase",
+            email: "mail@mail.com",
+            username: "username"
+        },
+        {
+            id: "id-utente2-firebase",
+            email: "pluto@mail.com",
+            username: "plut"
+        }
+    ];
 
     if (friends.length === 0) {
         container.innerHTML = '<p>Nessun amico trovato</p>';
@@ -49,6 +62,8 @@ function makeFriendCard(data) {
     actionsContainer.className = "card-actions-container";
 
     const messageButton = document.createElement("button");
+    messageButton.setAttribute("type", "button");
+    messageButton.setAttribute("class", "comm-button-action-icon");
     messageButton.setAttribute("alt", "Send message");
     messageButton.setAttribute("aria-label", "Send message friend");
     const messageIcon = document.createElement("img");
@@ -57,6 +72,8 @@ function makeFriendCard(data) {
     messageButton.appendChild(messageIcon);
 
     const removeButton = document.createElement("button");
+    removeButton.setAttribute("type", "button");
+    removeButton.setAttribute("class", "comm-button-action-icon");
     removeButton.setAttribute("alt", "Remove friend");
     removeButton.setAttribute("aria-label", "Remove friend");
     const removeIcon = document.createElement("img");

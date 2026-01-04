@@ -1,8 +1,12 @@
 @layer components {
     .community-friend-card {
         @apply flex justify-between rounded-2xl border bg-main_paper p-2;
-        border-color: var(--color-border_color);
         min-width: 0;
+        border-radius: var(--radius-2xl);
+        background: rgba(255, 255, 255, 0.468);
+        border: 1.5px solid var(--hp-border-color);
+        border-bottom: 4px solid rgba(var(--hp-cat-nature), 0.40);
+        box-shadow: 0 4px 24px 0 rgba(15, 23, 42, 0.10), 0 1.5px 3px 0 rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.18);
     }
 
     .community-section-header {
@@ -20,4 +24,33 @@
     .friend-card-data {
         @apply flex flex-col justify-between ml-4;
     }
+
+    .comm-button-action-icon {
+        height: calc(var(--spacing) * 12);
+        width: calc(var(--spacing) * 12);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        --tw-border-style: none;
+        border-style: none;
+        background-image: none;
+        padding: calc(var(--spacing) * 0);
+    }
+
+    .comm-button-action-icon>img {
+        transition-property: opacity;
+        transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+        transition-duration: var(--tw-duration, var(--default-transition-duration));
+        --tw-duration: 200ms;
+        transition-duration: 200ms;
+    }
+
+    .comm-button-action-icon:hover>img {
+        opacity: 0.6;
+    }
+
+    .comm-button-action-icon:active>img {
+        @apply scale-[0.95];
+    }
+
 }
