@@ -15,6 +15,10 @@
         height: 352px;
     }
 
+    .carousel-vertical[data-size="xl"] {
+        height: 700px;
+    }
+
     .carousel-vertical-track {
         @apply h-full flex flex-col gap-4 p-2 overflow-y-auto scroll-smooth;
         touch-action: pan-y;

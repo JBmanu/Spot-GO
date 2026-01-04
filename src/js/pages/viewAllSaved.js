@@ -1,4 +1,3 @@
-import {initializeVerticalCarousel} from "../common/carousels.js";
 import {initializeBookmarks, syncAllBookmarks} from "../common/bookmark.js";
 import {initializeSpotClickHandlers} from "./spotDetail.js";
 import {getFirstUser, getSavedSpots, getSpots, getCategoryNameIt} from "../query.js";
@@ -6,6 +5,7 @@ import {distanceFromUserToSpot, formatDistance} from "../common.js";
 import {goBack, setupBackButton, closeOverlay} from "../common/back.js";
 import {Keyboard} from "../common/keyboard.js";
 import {ensureSearchBarTemplateLoaded, insertSearchBar} from "../common/search-bar.js";
+import {initializeVerticalCarousel} from "../common/carousels.js";
 
 const OVERLAY_ID = "view-all-saved";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -294,27 +294,29 @@ async function populateViewAllSavedSpots({preserveDom = false} = {}) {
     const root = getOverlay();
     if (!root) return;
 
-    const savedContainer = root.querySelector("#view-all-saved-carousel");
+    const savedContainer = root.querySelector("#view-all-saved-list");
     if (!savedContainer) return;
 
-    savedContainer.querySelectorAll("[data-empty-saved]").forEach((el) => el.remove());
+    const track = savedContainer.querySelector(".carousel-vertical-track") || savedContainer;
+
+    track.querySelectorAll("[data-empty-saved]").forEach((el) => el.remove());
 
     const relations = (await getSavedSpots(currentUser.id)) || [];
     if (relations.length === 0) {
-        savedContainer.querySelectorAll('[data-slot="spot"]').forEach((el) => el.remove());
-        renderEmptySavedMessage(savedContainer);
+        track.querySelectorAll('[data-slot="spot"]').forEach((el) => el.remove());
+        renderEmptySavedMessage(track);
         return;
     }
 
     const existingCards = new Map(
-        Array.from(savedContainer.querySelectorAll('[data-slot="spot"][data-spot-id]')).map((el) => [
+        Array.from(track.querySelectorAll('[data-slot="spot"][data-spot-id]')).map((el) => [
             String(el.getAttribute("data-spot-id")),
             el,
         ])
     );
 
     if (!preserveDom) {
-        savedContainer.querySelectorAll('[data-slot="spot"]').forEach((el) => el.remove());
+        track.querySelectorAll('[data-slot="spot"]').forEach((el) => el.remove());
         existingCards.clear();
     }
 
@@ -336,7 +338,7 @@ async function populateViewAllSavedSpots({preserveDom = false} = {}) {
 
         if (!cardNode) {
             cardNode = renderSpotCard(template, spot, categoryCache);
-            savedContainer.appendChild(cardNode);
+            track.appendChild(cardNode);
         }
 
         existingCards.delete(id);
@@ -418,11 +420,14 @@ export async function loadViewAllSaved(returnViewKey = null) {
     showViewAllSavedHeader();
 
     if (!state.initialized) {
-        const carouselEl = overlay.querySelector("#view-all-saved-carousel");
-        if (carouselEl) initializeVerticalCarousel(carouselEl, {cardSelector: '[data-slot="spot"]'});
-
         initializeSpotClickHandlers();
         await setupViewAllSavedKeyboard(overlay);
+        initializeVerticalCarousel(overlay.querySelector("#view-all-saved-list"), {cardSelector: '[data-slot="spot"]'});
+        const track = overlay.querySelector("#view-all-saved-list .carousel-vertical-track");
+        if (track) {
+            track.style.gap = "0";
+            track.style.padding = "0";
+        }
 
         state.initialized = true;
     }
