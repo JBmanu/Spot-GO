@@ -1,6 +1,6 @@
-import {getFirstUser, getSavedSpots, getSpots} from "../query.js";
-import {fillSpotCard} from "../common/populateSpotCards.js";
-import {fitText} from "../common/fitText.js";
+import {getFirstUser, getSavedSpots, getSpots} from "../../query.js";
+import {fillSpotCard} from "./populateSpotCards.js";
+import {fitText} from "../../common/fitText.js";
 
 function ensureSavedBookmarkDataset(shellEl) {
     const btn = shellEl.querySelector("[data-bookmark-button]");

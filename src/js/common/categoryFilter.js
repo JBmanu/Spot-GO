@@ -58,8 +58,6 @@ export function filterSpotsByCategory(categories = [], scopeEl = document) {
     const normalizedCats = categories.map(normalizeCategoryName);
     const cards = scopeEl.querySelectorAll('[role="listitem"][data-spot-id]');
     cards.forEach((card) => {
-        if (card.closest('[data-template="nearby-card"]')) return;
-
         if (card.hidden) return;
         const wrapper = getSpotWrapper(card);
         const spotId = (card.getAttribute("data-spot-id") || "").trim();

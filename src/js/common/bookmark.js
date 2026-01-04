@@ -1,6 +1,6 @@
 import {getFirstUser, getSavedSpots} from "../query.js";
 import {showConfirmModal} from "../ui/confirmModal.js";
-import {populateSavedSpots} from "../pages/populateSavedSpots.js";
+import {populateSavedSpots} from "../pages/homepage/populateSavedSpots.js";
 import {
     collection,
     getDocs,

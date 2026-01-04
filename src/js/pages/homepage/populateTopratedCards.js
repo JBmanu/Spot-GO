@@ -1,7 +1,7 @@
-import { getSpots } from "../query.js";
-import { fillSpotCard } from "../common/populateSpotCards.js";
-import { distanceFromUserToSpot, formatDistance } from "../common.js";
-import { normalizeCategoryName } from "../common/categoryFilter.js";
+import { getSpots } from "../../query.js";
+import { fillSpotCard } from "./populateSpotCards.js";
+import { distanceFromUserToSpot, formatDistance } from "../../common.js";
+import { normalizeCategoryName } from "../../common/categoryFilter.js";
 
 function toNumberOrNull(v) {
     if (v === undefined || v === null) return null;

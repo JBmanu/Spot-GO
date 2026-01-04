@@ -1,9 +1,9 @@
 import {initializeHorizontalCarousel, initializeVerticalCarousel} from "../../common/carousels.js";
 import {initializeBookmarks, syncBookmarksUI} from "../../common/bookmark.js";
 import {initializeSpotClickHandlers} from "../spotDetail.js";
-import {populateSavedSpots} from "../populateSavedSpots.js";
-import {populateNearbySpots} from "../populateNearbySpots.js";
-import {populateTopratedSpots} from "../populateTopratedCards.js";
+import {populateSavedSpots} from "./populateSavedSpots.js";
+import {populateNearbySpots} from "./populateNearbySpots.js";
+import {populateTopratedSpots} from "./populateTopratedCards.js";
 import {initFitText} from "../../common/fitText.js";
 import {setupHomeSections} from "./homepage-sections-loader.js";
 import {

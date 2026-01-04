@@ -1,15 +1,22 @@
-import { getCategoryNameIt } from "../query.js";
-import { normalizeCategoryName } from "./categoryFilter.js";
+import {getCategoryNameIt} from "../../query.js";
+import {normalizeCategoryName} from "../../common/categoryFilter.js";
 
-function normalizeCat(cat) {
-    return String(cat || "").trim().toLowerCase();
-}
-
-export function fillSpotCard(cardEl, spot, {
-    wrapperEl = null,
-    setCategoryText = true,
-    hideIfMissingId = true,
-} = {}) {
+/**
+ * Riempie un elemento card con i dati di uno spot.
+ * @param {HTMLElement} cardEl - L'elemento card da riempire.
+ * @param {Object} spot - L'oggetto spot con i dati.
+ * @param {Object} options - Opzioni aggiuntive.
+ * @param {HTMLElement} options.wrapperEl - L'elemento wrapper opzionale.
+ * @param {boolean} options.setCategoryText - Se impostare il testo della categoria.
+ * @param {boolean} options.hideIfMissingId - Se nascondere se manca l'ID.
+ */
+export function fillSpotCard(cardEl,
+                             spot,
+                             {
+                                 wrapperEl = null,
+                                 setCategoryText = true,
+                                 hideIfMissingId = true,
+                             } = {}) {
     if (!cardEl) return;
     if (!spot) {
         cardEl.style.display = "none";
@@ -33,8 +40,7 @@ export function fillSpotCard(cardEl, spot, {
         imageEl.src = spot.immagine || "";
         imageEl.alt = spot.nome || "Foto spot";
     }
-    const cat = normalizeCat(spot.idCategoria);
-    const normalizedCat = normalizeCategoryName(cat);
+    const normalizedCat = normalizeCategoryName(spot.idCategoria);
     if (normalizedCat) {
         cardEl.setAttribute("data-category", normalizedCat);
         if (wrapperEl) wrapperEl.setAttribute("data-category", normalizedCat);
@@ -51,19 +57,5 @@ export function fillSpotCard(cardEl, spot, {
                 categoryEl.textContent = spot.idCategoria;
             });
         }
-    }
-}
-
-export function fillSpotSlots(containerEl, spots, {
-    cardSelector = '[role="listitem"][data-spot-id]',
-    getWrapper = null,
-} = {}) {
-    if (!containerEl) return;
-    const cards = containerEl.querySelectorAll(cardSelector);
-    for (let i = 0; i < cards.length; i++) {
-        const card = cards[i];
-        const spot = spots?.[i];
-        const wrapperEl = getWrapper ? getWrapper(card) : null;
-        fillSpotCard(card, spot, { wrapperEl });
     }
 }
