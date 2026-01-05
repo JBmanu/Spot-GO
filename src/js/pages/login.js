@@ -56,12 +56,13 @@ function switchToTab(tab) {
         }
     });
 
+    // Move the slider
     const slider = document.querySelector('.auth-slider');
     if (slider) {
         if (tab === 'login') {
-            slider.style.left = '0.25rem';
+            slider.style.left = '0';
         } else {
-            slider.style.left = 'calc(50% + 0.25rem)';
+            slider.style.left = '50%';
         }
     }
 
