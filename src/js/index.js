@@ -11,6 +11,7 @@ const SECTION_CONFIG = {
     community: {title: "Community", content: PATHS.html.community},
     goals: {title: "Missioni", content: PATHS.html.goals},
     profile: {title: "Il mio Profilo", content: PATHS.html.profile},
+    login: {title: "Accedi", content: PATHS.html.login},
 };
 
 let loadProfileOverview, initializeHomepageFilters, initializeMap, initializeGoals;
@@ -106,6 +107,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const isHome = section === "homepage";
         if (titleEl) titleEl.textContent = isHome ? "Spot & Go" : cfg.title;
+
+        const logoutBtn = document.getElementById('logout-button');
+        const isAuthenticated = !!localStorage.getItem('currentUser');
+        const isProfile = section === "profile";
+        if (logoutBtn) {
+            logoutBtn.style.display = (isProfile && isAuthenticated) ? 'block' : 'none';
+        }
     }
 
     async function mountSection(section, cfg) {
@@ -183,6 +191,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             } catch (_) {
             }
         }
+
+        if (section === "login") {
+            try {
+                const { initAuthPage } = await import("./pages/login.js");
+                await initAuthPage();
+            } catch (_) {
+            }
+        }
     }
 
     toolbar.addEventListener("click", async (e) => {
@@ -243,7 +259,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     await modulesLoaded;
-    await navigateTo("homepage");
+
+    const currentUser = localStorage.getItem('currentUser');
+    const isAuthenticated = !!currentUser;
+
+    const loginBtn = document.getElementById('login-button');
+    if (loginBtn) loginBtn.style.display = isAuthenticated ? 'none' : 'block';
+
+    if (isAuthenticated) {
+        await navigateTo("homepage");
+    } else {
+        await navigateTo("login");
+    }
 
     window.rebuildSectionState = () => {
         sectionState.clear();
@@ -255,5 +282,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         currentSection = getVisibleSectionKey(main) || null;
+    };
+
+    window.handleLogout = function() {
+        localStorage.removeItem('currentUser');
+        const loginBtn = document.getElementById('login-button');
+        if (loginBtn) loginBtn.style.display = 'block';
+        window.navigateToSection('login');
     };
 });

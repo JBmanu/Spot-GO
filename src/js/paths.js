@@ -1,5 +1,3 @@
-// js/paths.js
-
 export const PATHS = {
     html: {
         homepage: "./html/homepage.html",
@@ -7,6 +5,7 @@ export const PATHS = {
         community: "./html/community.html",
         goals: "./html/goals.html",
         profile: "./html/profile.html",
+        login: "./html/login-registrazione/login.html",
 
         header: "../html/common-pages/header.html",
         toolbar: "../html/common-pages/toolbar.html",
