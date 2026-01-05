@@ -1,16 +1,7 @@
-import {getFirstUser, getSavedSpots} from "../query.js";
+import {getCurrentUser, getSavedSpots, addSavedSpot, removeSavedSpot} from "../json-data-handler.js";
 import {showConfirmModal} from "../ui/confirmModal.js";
-import {populateSavedSpots} from "../pages/homepage/populateSavedSpots.js";
-import {
-    collection,
-    getDocs,
-    query,
-    where,
-    deleteDoc,
-    setDoc,
-    doc,
-} from "firebase/firestore";
-import {db} from "../firebase.js";
+import {populateSavedSpots} from "../pages/homepage/populate-saved-spots.js";
+
 
 const BOOKMARK_ICONS = {
     filled: "../assets/icons/homepage/Bookmark.svg",
@@ -57,9 +48,9 @@ export function initializeBookmarks(root = document) {
 
 export async function syncBookmarksUI(scope = document) {
     try {
-        const currentUser = await getFirstUser();
+        const currentUser = await getCurrentUser();
         if (!currentUser) return;
-        const savedSpotIds = await getSavedSpotIds(currentUser.id);
+        const savedSpotIds = await getSavedSpotIds(currentUser.username);
         scope.querySelectorAll(SELECTORS.bookmarkButton).forEach((button) => {
             const card = button.closest(SELECTORS.bookmarkCard);
             if (!card) return;
@@ -87,15 +78,15 @@ export function updateBookmarkVisual(button, isSaved) {
 
 export async function toggleBookmarkForSpot(spotId) {
     try {
-        const currentUser = await getFirstUser();
+        const currentUser = await getCurrentUser();
         if (!currentUser) {
             console.error(MESSAGES.userNotFound);
             return;
         }
-        const savedSpotIds = await getSavedSpotIds(currentUser.id);
+        const savedSpotIds = await getSavedSpotIds(currentUser.username);
         const isSaved = savedSpotIds.has(spotId);
         if (!isSaved) {
-            await addBookmark(currentUser.id, spotId);
+            await addBookmark(currentUser.username, spotId);
             updateIconsForSpot(spotId, true);
             emitBookmarkChanged(spotId, true);
             await updateSavedSection({preserveScroll: true});
@@ -106,7 +97,7 @@ export async function toggleBookmarkForSpot(spotId) {
             MESSAGES.removeConfirmMessage("questo spot")
         );
         if (!confirmed) return;
-        await removeBookmark(currentUser.id, spotId);
+        await removeBookmark(currentUser.username, spotId);
         updateIconsForSpot(spotId, false);
         emitBookmarkChanged(spotId, false);
         await updateSavedSection({preserveScroll: true});
@@ -119,12 +110,12 @@ async function handleBookmarkClick(button, card) {
     if (!isProcessingAllowed(button)) return;
     setProcessing(button, true);
     try {
-        const currentUser = await getFirstUser();
+        const currentUser = await getCurrentUser();
         if (!currentUser) {
             console.error(MESSAGES.userNotFound);
             return;
         }
-        const userId = currentUser.id;
+        const username = currentUser.username;
         const spotId = getSpotIdFromCard(card);
         const spotTitle = getSpotTitle(card);
         if (!spotId) return;
@@ -136,37 +127,37 @@ async function handleBookmarkClick(button, card) {
                 MESSAGES.removeConfirmMessage(spotTitle)
             );
             if (!confirmed) return;
-            await removeBookmarkFlow(userId, spotId, {removeCard: true, card});
+            await removeBookmarkFlow(username, spotId, {removeCard: true, card});
             return;
         }
         if (!isSaved) {
-            await addBookmarkFlow(userId, spotId);
+            await addBookmarkFlow(username, spotId);
         } else {
             const confirmed = await showConfirmModal(
                 MESSAGES.removeConfirmTitle,
                 MESSAGES.removeConfirmMessage(spotTitle)
             );
             if (!confirmed) return;
-            await removeBookmarkFlow(userId, spotId);
+            await removeBookmarkFlow(username, spotId);
         }
     } finally {
         setProcessing(button, false);
     }
 }
 
-async function addBookmarkFlow(userId, spotId) {
-    await addBookmark(userId, spotId);
+async function addBookmarkFlow(username, spotId) {
+    await addBookmark(username, spotId);
     updateIconsForSpot(spotId, true);
     emitBookmarkChanged(spotId, true);
     await updateSavedSection({preserveScroll: true});
 }
 
 async function removeBookmarkFlow(
-    userId,
+    username,
     spotId,
     {removeCard = false, card = null} = {}
 ) {
-    await removeBookmark(userId, spotId);
+    await removeBookmark(username, spotId);
     updateIconsForSpot(spotId, false);
     emitBookmarkChanged(spotId, false);
     if (removeCard && card) {
@@ -260,34 +251,12 @@ function getSpotTitle(card) {
     );
 }
 
-export async function addBookmark(idUtente, idLuogo) {
-    try {
-        const docRef = doc(db, "LuogoSalvato", `${idUtente}_${idLuogo}`);
-        await setDoc(docRef, {
-            idUtente,
-            idLuogo,
-            dataSalvataggio: new Date(),
-        });
-    } catch (error) {
-        console.error("Errore nel salvataggio del bookmark:", error);
-    }
+export async function addBookmark(username, spotId) {
+    await addSavedSpot(username, spotId);
 }
 
-export async function removeBookmark(idUtente, idLuogo) {
-    try {
-        const lukRef = collection(db, "LuogoSalvato");
-        const q = query(
-            lukRef,
-            where("idUtente", "==", idUtente),
-            where("idLuogo", "==", idLuogo)
-        );
-        const querySnapshot = await getDocs(q);
-        for (const docSnap of querySnapshot.docs) {
-            await deleteDoc(docSnap.ref);
-        }
-    } catch (error) {
-        console.error("Errore nella rimozione del bookmark:", error);
-    }
+export async function removeBookmark(username, spotId) {
+    await removeSavedSpot(username, spotId);
 }
 
 export async function syncAllBookmarks(scope = document) {

@@ -1,4 +1,3 @@
-import { getCategoryNameIt } from "./query.js";
 import { initializeBottomSheet } from "./ui/bottomSheet.js";
 import { initializeBottomSheetFilters } from "./common/bottomSheetFilters.js";
 import { initializeStarRating } from "./common/starRating.js";

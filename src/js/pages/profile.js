@@ -1,4 +1,4 @@
-import {getFirstUser, getReviews, getCreatedSpots, getVisitedSpots, getSavedSpots} from "../query.js";
+import {getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots} from "../json-data-handler.js";
 
 let loadViewAllSaved;
 
@@ -22,8 +22,10 @@ async function loadProfileOverview(wrapper) {
 async function initializeProfileData(overviewContainer) {
     await __profileDepsReady;
 
-    const user = await getFirstUser();
-    if (!user) return;
+    const currentUserStr = localStorage.getItem('currentUser');
+    if (!currentUserStr) return;
+
+    const user = JSON.parse(currentUserStr);
 
     const profileData = {
         name: user.username || "",
@@ -34,9 +36,7 @@ async function initializeProfileData(overviewContainer) {
 
     updateProfileUI(profileData);
 
-    if (user.id != null) {
-        await updateUserCounters(user.id);
-    }
+    await updateUserCounters(user.username);
 
     const savedSpotsButton = overviewContainer.querySelector("#profile-saved-spots-button");
     if (savedSpotsButton) {
@@ -58,32 +58,7 @@ async function initializeProfileData(overviewContainer) {
     } else {
         console.error("savedSpotsButton not found");
     }
-}
 
-async function updateUserCounters(userId) {
-    await __profileDepsReady;
-
-    const writtenReviews = document.getElementById("written-reviews");
-    const createdSpots = document.getElementById("created-spots");
-    const visitedSpots = document.getElementById("visited-spots");
-    const savedSpots = document.getElementById("saved-spots");
-
-    const [reviews, created, visited, saved] = await Promise.all([
-        getReviews?.(userId),
-        getCreatedSpots?.(userId),
-        getVisitedSpots?.(userId),
-        getSavedSpots?.(userId),
-    ]);
-
-    const r = Array.isArray(reviews) ? reviews : [];
-    const c = Array.isArray(created) ? created : [];
-    const v = Array.isArray(visited) ? visited : [];
-    const s = Array.isArray(saved) ? saved : [];
-
-    if (writtenReviews) writtenReviews.textContent = String(r.length);
-    if (createdSpots) createdSpots.textContent = String(c.length);
-    if (visitedSpots) visitedSpots.textContent = String(v.length);
-    if (savedSpots) savedSpots.textContent = String(s.length);
 }
 
 function updateProfileUI(data) {
@@ -96,6 +71,34 @@ function updateProfileUI(data) {
     if (usernameEl) usernameEl.textContent = data.username;
     if (emailEl) emailEl.textContent = data.email;
     if (avatarEl) avatarEl.textContent = data.avatar;
+}
+
+async function updateUserCounters(username) {
+    try {
+        const [saved, reviews, visited, created] = await Promise.all([
+            getSavedSpots(username),
+            getReviews(username),
+            getVisitedSpots(username),
+            getCreatedSpots(username)
+        ]);
+
+        const savedCount = saved.length;
+        const reviewsCount = reviews.length;
+        const visitedCount = visited.length;
+        const createdCount = created.length;
+
+        const savedEl = document.getElementById("saved-spots");
+        const reviewsEl = document.getElementById("written-reviews");
+        const visitedEl = document.getElementById("visited-spots");
+        const createdEl = document.getElementById("created-spots");
+
+        if (savedEl) savedEl.textContent = savedCount;
+        if (reviewsEl) reviewsEl.textContent = reviewsCount;
+        if (visitedEl) visitedEl.textContent = visitedCount;
+        if (createdEl) createdEl.textContent = createdCount;
+    } catch (error) {
+        console.error("Errore nell'aggiornamento dei contatori:", error);
+    }
 }
 
 window.reloadProfile = async function () {

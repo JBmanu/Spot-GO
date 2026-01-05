@@ -1,4 +1,4 @@
-import {getCategoryNameIt} from "../../query.js";
+import {getCategoryNameIt} from "../../json-data-handler.js";
 import {normalizeCategoryName} from "../../common/categoryFilter.js";
 import {setText, setImage, initializeBookmarkButtonAttributes} from "../../common/spotCardHelpers.js";
 

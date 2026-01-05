@@ -1,11 +1,8 @@
-import { getCategoryNameIt } from "../query.js";
+import { getCategoryNameIt } from "../json-data-handler.js";
 import { setText, setImage, pickRating, formatRatingAsText } from "./spotCardHelpers.js";
 
 /**
  * Crea una card classica per uno spot utilizzando un template HTML.
- * @param {Object} spot - L'oggetto spot con i dati.
- * @param {string} distance - La distanza formattata da mostrare.
- * @returns {HTMLElement|null} L'elemento card creato o null se il template non esiste.
  */
 export async function createClassicSpotCard(spot, distance) {
     const template = document.getElementById("classic-spot-card-template");

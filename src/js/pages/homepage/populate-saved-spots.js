@@ -1,5 +1,5 @@
-import {getFirstUser, getSavedSpots, getSpots} from "../../query.js";
-import {generateSpotCardList} from "./generateSpotCardList.js";
+import {getCurrentUser, getSavedSpots, getSpots} from "../../json-data-handler.js";
+import {generateSpotCardList} from "./generate-spot-card-list.js";
 import {fitText} from "../../common/fitText.js";
 import {initializeBookmarkButtonAttributes} from "../../common/spotCardHelpers.js";
 
@@ -8,10 +8,10 @@ import {initializeBookmarkButtonAttributes} from "../../common/spotCardHelpers.j
  * @returns {Promise<Array>} Un array di oggetti spot salvati.
  */
 export async function getSavedSpotsData() {
-    const user = await getFirstUser();
+    const user = await getCurrentUser();
     if (!user) return [];
 
-    const relations = await getSavedSpots(user.id);
+    const relations = await getSavedSpots(user.username);
     if (!relations.length) return [];
 
     const allSpots = await getSpots();
@@ -52,6 +52,11 @@ export async function populateSavedSpots({
     }
 
     const emptyState = document.getElementById(emptyStateId);
+
+    const template = container.querySelector(templateSelector);
+    Array.from(container.children).forEach(child => {
+        if (child !== template) child.remove();
+    });
 
     const getSpotsFunction = async () => {
         const spots = await getSavedSpotsData();

@@ -1,6 +1,6 @@
 import {initializeBookmarks, syncAllBookmarks} from "../common/bookmark.js";
 import {initializeSpotClickHandlers} from "./spotDetail.js";
-import {getFirstUser, getSavedSpots, getSpots, getCategoryNameIt} from "../query.js";
+import {getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt} from "../json-data-handler.js";
 import {distanceFromUserToSpot, formatDistance} from "../common.js";
 import {goBack, setupBackButton, closeOverlay} from "../common/back.js";
 import {initializeVerticalCarousel} from "../common/carousels.js";
@@ -245,7 +245,7 @@ async function populateViewAllSavedSpots({preserveDom = false} = {}) {
     const okTpl = await ensureClassicSpotCardTemplateLoaded();
     if (!okTpl) return;
 
-    const currentUser = await getFirstUser();
+    const currentUser = await getCurrentUser();
     if (!currentUser) return;
 
     const root = getOverlay();
@@ -258,7 +258,7 @@ async function populateViewAllSavedSpots({preserveDom = false} = {}) {
 
     track.querySelectorAll("[data-empty-saved]").forEach((el) => el.remove());
 
-    const relations = (await getSavedSpots(currentUser.id)) || [];
+    const relations = (await getSavedSpots(currentUser.username)) || [];
     if (relations.length === 0) {
         track.querySelectorAll('[data-slot="spot"]').forEach((el) => el.remove());
         renderEmptySavedMessage(track);

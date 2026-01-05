@@ -1,6 +1,6 @@
-import {getSpots} from "../../query.js";
+import { getSpots } from "../../json-data-handler.js";
 import {distanceFromUserToSpot, formatDistance} from "../../common.js";
-import {generateSpotCardList} from "./generateSpotCardList.js";
+import {generateSpotCardList} from "./generate-spot-card-list.js";
 import {formatRatingAsText, pickRating} from "../../common/spotCardHelpers.js";
 
 /**

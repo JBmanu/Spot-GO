@@ -7,10 +7,10 @@ import {
 
 import {
     getCategoryNameIt,
+    getCurrentUser,
     getSavedSpots,
-    getFirstUser,
     getSpotById,
-} from "../query.js";
+} from "../json-data-handler.js";
 
 import {closeOverlayAndReveal} from "../common/back.js";
 
@@ -221,10 +221,10 @@ function setupHeaderBookmark(spotData) {
 }
 
 async function refreshHeaderBookmarkVisual(btn, spotId) {
-    const user = await getFirstUser();
+    const user = await getCurrentUser();
     if (!user) return;
 
-    const saved = await getSavedSpots(user.id);
+    const saved = await getSavedSpots(user.username);
     const savedIds = (saved || []).map((s) => s.idLuogo);
 
     const isSaved = savedIds.includes(spotId);
