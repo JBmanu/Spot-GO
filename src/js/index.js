@@ -114,6 +114,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (logoutBtn) {
             logoutBtn.style.display = (isProfile && isAuthenticated) ? 'block' : 'none';
         }
+
+        // Hide/show header and toolbar based on section
+        const header = document.querySelector('.app-header');
+        const toolbar = document.querySelector('.app-toolbar');
+        if (section === 'login') {
+            if (header) header.style.display = 'none';
+            if (toolbar) toolbar.style.display = 'none';
+        } else {
+            if (header) header.style.display = '';
+            if (toolbar) toolbar.style.display = '';
+        }
     }
 
     async function mountSection(section, cfg) {
