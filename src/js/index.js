@@ -297,8 +297,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.handleLogout = function() {
         localStorage.removeItem('currentUser');
-        const loginBtn = document.getElementById('login-button');
-        if (loginBtn) loginBtn.style.display = 'block';
-        window.navigateToSection('login');
+        window.location.reload();
     };
 });

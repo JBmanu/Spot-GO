@@ -27,11 +27,18 @@ async function initializeProfileData(overviewContainer) {
 
     const user = JSON.parse(currentUserStr);
 
+    const avatarMap = {
+        "Luana M": "Luana.svg",
+        "Julio Manuel B": "Manuel.svg",
+        "Alessandro R": "Ale.svg",
+        "Teo V": "Teo.svg"
+    };
+
     const profileData = {
         name: user.username || "",
         username: user.username ? "@" + user.username : "",
         email: user.email || "",
-        avatar: (user.username || "?")[0].toUpperCase(),
+        avatarSrc: `../assets/icons/login-signup/${avatarMap[user.username] || 'default.svg'}`,
     };
 
     updateProfileUI(profileData);
@@ -70,7 +77,7 @@ function updateProfileUI(data) {
     if (nameEl) nameEl.textContent = data.name;
     if (usernameEl) usernameEl.textContent = data.username;
     if (emailEl) emailEl.textContent = data.email;
-    if (avatarEl) avatarEl.textContent = data.avatar;
+    if (avatarEl) avatarEl.src = data.avatarSrc;
 }
 
 async function updateUserCounters(username) {
