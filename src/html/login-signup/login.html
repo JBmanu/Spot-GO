@@ -1,94 +1,124 @@
-<section class="auth-screen h-[940px] flex flex-col items-center glass-light overflow-hidden pt-16 pb-16" data-page="auth">
+<section class="auth-screen glass-light" data-page="auth">
     <!-- Logo + Title -->
-    <div class="auth-header text-center mb-8">
-        <div class="auth-logo mb-0" aria-hidden="true">
-            <img src="assets/images/LogoNoText.svg" alt="Spot & Go Logo" class="w-26 h-26 text-primary_color mx-auto">
+    <div class="auth-header">
+        <div class="auth-logo" aria-hidden="true">
+            <img src="assets/images/LogoNoText.svg" alt="Spot & Go Logo">
         </div>
 
         <h1 class="auth-title">
-            <img src="assets/images/LogoOnlyText.svg" alt="Spot & Go" class="w-auto h-11">
+            <img src="assets/images/LogoOnlyText.svg" alt="Spot & Go">
         </h1>
     </div>
 
     <!-- Switch Accedi / Registrati -->
-    <div class="auth-switch flex w-full max-w-sm mb-6 glass-light rounded-lg p-1 relative" role="tablist" aria-label="Accesso o registrazione">
-        <button class="auth-switch-btn relative z-10 is-active flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors text-gray-700" type="button" role="tab" aria-selected="true" data-auth-tab="login">
+    <div class="auth-switch glass-light" role="tablist" aria-label="Accesso o registrazione">
+        <button class="auth-switch-btn is-active" type="button" role="tab" aria-selected="true" data-auth-tab="login">
             Accedi
         </button>
-        <button class="auth-switch-btn relative z-10 flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors text-gray-700" type="button" role="tab" aria-selected="false" data-auth-tab="register">
+        <button class="auth-switch-btn" type="button" role="tab" aria-selected="false" data-auth-tab="register">
             Registrati
         </button>
-        <div class="auth-slider absolute bottom-0 left-0 w-[50%] h-full bg-gradient-to-br from-white/90 to-white/50 rounded-lg shadow-2xl shadow-white/70 border-4 border-white/40 transition-all duration-300 ease-in-out"></div>
+        <div class="auth-slider glass-strong"></div>
     </div>
 
     <!-- Form -->
-    <form class="auth-form w-full max-w-sm" data-auth-form="login" autocomplete="on">
-        <label class="auth-field relative mb-6 block">
-      <span class="auth-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
-        <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5">
-      </span>
-            <input class="auth-input w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary_color focus:border-transparent" type="email" name="email" placeholder="Email" inputmode="email" autocomplete="email" required />
-        </label>
+    <form class="auth-form glass-light" data-auth-form="login" autocomplete="on">
+        <div class="form-container">
+            <div class="inputs-group-login">
+                <label class="auth-field">
+          <span class="auth-icon z-20" aria-hidden="true">
+            <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5">
+          </span>
+                    <input class="auth-input glass-medium" type="email" name="email" placeholder="Email" inputmode="email" autocomplete="email" required/>
+                </label>
 
-        <label class="auth-field relative mb-6 block">
-      <span class="auth-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
-        <img src="assets/icons/login-signup/Lock.svg" alt="" class="w-5.5 h-5.5">
-      </span>
-            <input class="auth-input w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary_color focus:border-transparent" type="password" name="password" placeholder="Password" autocomplete="current-password" required />
-        </label>
-
-        <button class="auth-primary-btn w-full bg-primary_color text-white py-3 rounded-lg font-medium hover:bg-opacity-90 transition" type="submit">Accedi</button>
-
-        <button class="auth-link text-primary_color text-sm hover:underline mt-6" type="button" data-action="forgot-password">
-            Password dimenticata?
-        </button>
-
-        <!-- Divider -->
-        <div class="relative my-6">
-            <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t border-gray-300"></div>
+                <label class="auth-field">
+          <span class="auth-icon z-20" aria-hidden="true">
+            <img src="assets/icons/login-signup/Lock.svg" alt="" class="w-5.5 h-5.5 z-20">
+          </span>
+                    <input class="auth-input glass-medium" type="password" name="password" placeholder="Password" autocomplete="current-password" required/>
+                </label>
             </div>
-            <div class="relative flex justify-center text-sm">
-                <span class="px-2 bg-main_paper text-gray-500">oppure</span>
-            </div>
-        </div>
 
-        <!-- Social Login Buttons -->
-        <div class="flex gap-4 mt-6">
-            <button class="flex-1 flex items-center justify-center py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition" type="button">
-                <img src="assets/icons/login-signup/Google.svg" alt="Google" class="w-5 h-5 mr-2">
-                Google
-            </button>
-            <button class="flex-1 flex items-center justify-center py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition" type="button">
-                <img src="assets/icons/login-signup/Apple.svg" alt="Apple" class="w-5 h-5 mr-2">
-                Apple
-            </button>
+            <div class="button-group">
+                <button class="auth-primary-btn" type="submit">Accedi</button>
+
+                <button class="auth-link" type="button" data-action="forgot-password">Password dimenticata?</button>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider">
+                <div class="divider-line">
+                    <div class="divider-border"></div>
+                </div>
+                <div class="divider-text">
+                    <span class="divider-span">oppure</span>
+                </div>
+            </div>
+
+            <!-- Social Login Buttons -->
+            <div class="social-container">
+                <button class="social-btn glass-light" type="button">
+                    <img src="assets/icons/login-signup/Google.svg" alt="Google" class="social-icon">
+                    Google
+                </button>
+                <button class="social-btn glass-light" type="button">
+                    <img src="assets/icons/login-signup/Apple.svg" alt="Apple" class="social-icon">
+                    Apple
+                </button>
+            </div>
         </div>
     </form>
 
     <!-- Form registrazione -->
-    <form class="auth-form w-full max-w-sm" data-auth-form="register" autocomplete="on" style="display: none;">
-        <label class="auth-field relative mb-4 block">
-      <span class="auth-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
-        <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5">
-      </span>
-            <input class="auth-input w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary_color focus:border-transparent" type="email" name="email" placeholder="Email" inputmode="email" autocomplete="email" required />
-        </label>
+    <form class="auth-form glass-light" data-auth-form="register" autocomplete="on" style="display: none;">
+        <div class="form-container">
+            <div class="inputs-group-register">
+                <label class="auth-field">
+          <span class="auth-icon z-20" aria-hidden="true">
+            <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5 z-20">
+          </span>
+                    <input class="auth-input glass-light" type="email" name="email" placeholder="Email" inputmode="email" autocomplete="email" required/>
+                </label>
 
-        <label class="auth-field relative mb-4 block">
-      <span class="auth-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
-        <img src="assets/icons/login-signup/Lock.svg" alt="" class="w-5.5 h-5.5">
-      </span>
-            <input class="auth-input w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary_color focus:border-transparent" type="password" name="password" placeholder="Password" autocomplete="new-password" required />
-        </label>
+                <label class="auth-field">
+          <span class="auth-icon z-20" aria-hidden="true">
+            <img src="assets/icons/login-signup/Lock.svg" alt="" class="w-5.5 h-5.5 z-20">
+          </span>
+                    <input class="auth-input glass-medium" type="password" name="password" placeholder="Password" autocomplete="new-password" required/>
+                </label>
 
-        <label class="auth-field relative mb-4 block">
-      <span class="auth-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
-        <img src="assets/icons/login-signup/Lock.svg" alt="" class="w-5.5 h-5.5">
-      </span>
-            <input class="auth-input w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary_color focus:border-transparent" type="password" name="confirmPassword" placeholder="Conferma Password" autocomplete="new-password" required />
-        </label>
+                <label class="auth-field">
+          <span class="auth-icon z-20" aria-hidden="true">
+            <img src="assets/icons/login-signup/Face With Peeking Eye.svg" alt="" class="w-5.5 h-5.5 z-20">
+          </span>
+                    <input class="auth-input glass-medium" type="password" name="confirmPassword" placeholder="Conferma Password" autocomplete="new-password" required/>
+                </label>
+            </div>
 
-        <button class="auth-primary-btn w-full bg-primary_color text-white py-3 rounded-lg font-medium hover:bg-opacity-90 transition" type="submit">Registrati</button>
+            <button class="auth-primary-btn" type="submit">Registrati</button>
+
+            <!-- Divider -->
+            <div class="divider">
+                <div class="divider-line">
+                    <div class="divider-border"></div>
+                </div>
+                <div class="divider-text">
+                    <span class="divider-span">oppure</span>
+                </div>
+            </div>
+
+            <!-- Social Login Buttons -->
+            <div class="social-container">
+                <button class="social-btn glass-light" type="button">
+                    <img src="assets/icons/login-signup/Google.svg" alt="Google" class="social-icon">
+                    Google
+                </button>
+                <button class="social-btn glass-light" type="button">
+                    <img src="assets/icons/login-signup/Apple.svg" alt="Apple" class="social-icon">
+                    Apple
+                </button>
+            </div>
+        </div>
     </form>
 </section>

@@ -1,0 +1,107 @@
+.auth-screen {
+  @apply h-[940px] flex flex-col items-center overflow-hidden pt-16 pb-16;
+}
+
+.auth-header {
+  @apply text-center mb-8;
+}
+
+.auth-logo {
+  @apply mb-0;
+}
+
+.auth-logo img {
+  @apply w-26 h-26 text-primary_color mx-auto;
+}
+
+.auth-title {
+  @apply w-auto h-11;
+}
+
+.auth-title img {
+  @apply w-auto h-11;
+}
+
+.auth-switch {
+  @apply flex w-full max-w-sm mb-6 rounded-lg p-1 relative;
+}
+
+.auth-switch-btn {
+  @apply relative z-10 flex-1 py-3 px-4 rounded-md text-base font-normal transition-colors text-gray-500;
+}
+
+.auth-slider {
+  @apply absolute bottom-0 left-0 w-[50%] h-full transition-all duration-300 ease-in-out;
+}
+
+.auth-form {
+  @apply w-full max-w-sm h-[500px] rounded-lg p-4;
+}
+
+.auth-field {
+  @apply relative block;
+}
+
+.auth-icon {
+  @apply absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400;
+}
+
+.auth-input {
+  @apply w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary_color focus:border-transparent;
+}
+
+.auth-primary-btn {
+  @apply w-full bg-primary_color text-white py-3 rounded-lg font-medium hover:brightness-90 transition;
+}
+
+.auth-link {
+  @apply text-primary_color text-sm hover:underline;
+}
+
+.form-container {
+  @apply flex flex-col justify-around h-full;
+}
+
+.inputs-group-login {
+  @apply flex flex-col gap-6;
+}
+
+.inputs-group-register {
+  @apply flex flex-col gap-4;
+}
+
+.button-group {
+  @apply flex flex-col items-end gap-3;
+}
+
+.divider {
+  @apply relative;
+}
+
+.divider-line {
+  @apply absolute inset-0 flex items-center;
+}
+
+.divider-border {
+  @apply w-full border-t border-gray-300;
+}
+
+.divider-text {
+  @apply relative flex justify-center text-sm;
+}
+
+.divider-span {
+  @apply px-2 bg-white text-gray-500 rounded-2xl;
+}
+
+.social-container {
+  @apply flex gap-4;
+}
+
+.social-btn {
+  @apply flex-1 flex items-center justify-center py-3 rounded-lg transition;
+}
+
+.social-icon {
+  @apply w-5 h-5 mr-2;
+}

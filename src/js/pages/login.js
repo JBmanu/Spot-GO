@@ -48,15 +48,16 @@ function switchToTab(tab) {
         if (btn.dataset.authTab === tab) {
             btn.classList.add('is-active');
             btn.classList.add('text-black');
+            btn.style.fontWeight = 'bold';
             btn.setAttribute('aria-selected', 'true');
         } else {
             btn.classList.remove('is-active');
             btn.classList.remove('text-black');
+            btn.style.fontWeight = 'normal';
             btn.setAttribute('aria-selected', 'false');
         }
     });
 
-    // Move the slider
     const slider = document.querySelector('.auth-slider');
     if (slider) {
         if (tab === 'login') {
