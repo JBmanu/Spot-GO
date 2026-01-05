@@ -134,3 +134,198 @@
 .social-icon {
   @apply w-5 h-5 mr-2;
 }
+
+/* Modal Styles */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg p-4 max-w-md w-full max-h-[80vh] overflow-y-auto;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Google Account Picker Styles */
+.g-account-picker {
+  @apply text-center;
+}
+
+.gap-header {
+  @apply relative mb-4;
+}
+
+.gap-close {
+  @apply absolute top-2 right-2 text-gray-500 text-xl font-bold hover:text-gray-700;
+}
+
+.gap-brand {
+  @apply flex w-12 h-12 rounded-full items-center justify-center mb-2;
+}
+
+.gap-g {
+  @apply w-8 h-8;
+}
+
+.gap-title-wrap {
+  @apply mb-2;
+}
+
+.gap-title {
+  @apply text-xl font-semibold text-gray-800;
+}
+
+.gap-subtitle {
+  @apply text-sm text-gray-600;
+}
+
+.gap-app {
+  @apply font-semibold;
+}
+
+.gap-card {
+  @apply bg-white rounded-lg p-4 mb-4 shadow-lg;
+}
+
+.gap-list {
+  @apply list-none p-0 m-0;
+}
+
+.gap-item {
+  @apply mb-2;
+}
+
+.gap-account {
+  @apply w-full flex items-center p-3 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 transition;
+}
+
+.gap-avatar {
+  @apply w-10 h-10 rounded-full mr-3 object-cover;
+}
+
+.gap-account-text {
+  @apply flex-1 text-left;
+}
+
+.gap-name {
+  @apply block text-sm font-medium text-gray-800;
+}
+
+.gap-email {
+  @apply block text-xs text-gray-500;
+}
+
+.gap-chevron {
+  @apply text-gray-400;
+}
+
+.gap-divider {
+  @apply border-t border-gray-200 my-2;
+}
+
+.gap-row {
+  @apply w-full flex items-center p-3 text-left text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition;
+}
+
+.gap-icon {
+  @apply w-5 h-5 mr-3 text-gray-500;
+}
+
+.gap-row-text {
+  @apply flex-1;
+}
+
+.gap-footer {
+  @apply text-xs text-gray-500 mb-4;
+}
+
+.gap-footnote {
+  @apply leading-relaxed;
+}
+
+.gap-bottom {
+  @apply flex justify-center space-x-2 text-xs text-gray-500;
+}
+
+.gap-link {
+  @apply hover:underline;
+}
+
+.gap-dot {
+  @apply text-gray-400;
+}
+
+/* Apple Account Picker Styles */
+.aip-account-picker {
+  @apply text-center;
+}
+
+.aip-header {
+  @apply relative mb-4;
+}
+
+.aip-close {
+  @apply absolute top-2 right-2 text-gray-500 text-xl font-bold hover:text-gray-700;
+}
+
+.aip-brand {
+  @apply flex w-12 h-12 rounded-full items-center justify-center mb-2;
+}
+
+.aip-logo {
+  @apply w-8 h-8;
+}
+
+.aip-title-wrap {
+  @apply mb-2;
+}
+
+.aip-title {
+  @apply text-xl font-semibold text-gray-800;
+}
+
+.aip-subtitle {
+  @apply text-sm text-gray-600;
+}
+
+.aip-app {
+  @apply font-semibold;
+}
+
+.aip-card {
+  @apply bg-white rounded-lg p-4 mb-4 shadow-lg;
+}
+
+.aip-list {
+  @apply list-none p-0 m-0;
+}
+
+.aip-item {
+  @apply mb-2;
+}
+
+.aip-account {
+  @apply w-full flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition;
+}
+
+.aip-avatar {
+  @apply w-10 h-10 rounded-full mr-3 object-cover;
+}
+
+.aip-account-text {
+  @apply flex-1 text-left;
+}
+
+.aip-name {
+  @apply block text-sm font-medium text-gray-800;
+}
+
+.aip-email {
+  @apply block text-xs text-gray-500;
+}
+
+.aip-different {
+  @apply w-full mt-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition;
+}

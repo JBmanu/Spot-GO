@@ -68,6 +68,84 @@ export async function initAuthPage() {
     checkLogin();
     checkRegister();
 
+    // Modal for Google account picker
+    const googleBtn = document.querySelector('.social-container .social-btn:first-child');
+    const googleModal = document.getElementById('google-modal');
+    const closeBtnGoogle = document.querySelector('.gap-close');
+    const accountBtnsGoogle = document.querySelectorAll('.gap-account');
+
+    if (googleBtn) {
+        googleBtn.addEventListener('click', () => {
+            googleModal.classList.remove('hidden');
+        });
+    }
+
+    if (closeBtnGoogle) {
+        closeBtnGoogle.addEventListener('click', () => {
+            googleModal.classList.add('hidden');
+        });
+    }
+
+    googleModal.addEventListener('click', (e) => {
+        if (e.target === googleModal) {
+            googleModal.classList.add('hidden');
+        }
+    });
+
+    accountBtnsGoogle.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const name = btn.querySelector('.gap-name').textContent;
+            const email = btn.querySelector('.gap-email').textContent;
+            const simulatedUser = {
+                email,
+                username: name,
+                livello: 1
+            };
+            localStorage.setItem('currentUser', JSON.stringify(simulatedUser));
+            googleModal.classList.add('hidden');
+            window.navigateToSection('homepage');
+        });
+    });
+
+    // Modal for Apple account picker
+    const appleBtn = document.querySelector('.social-container .social-btn:last-child');
+    const appleModal = document.getElementById('apple-modal');
+    const closeBtnApple = document.querySelector('.aip-close');
+    const accountBtnsApple = document.querySelectorAll('.aip-account');
+
+    if (appleBtn) {
+        appleBtn.addEventListener('click', () => {
+            appleModal.classList.remove('hidden');
+        });
+    }
+
+    if (closeBtnApple) {
+        closeBtnApple.addEventListener('click', () => {
+            appleModal.classList.add('hidden');
+        });
+    }
+
+    appleModal.addEventListener('click', (e) => {
+        if (e.target === appleModal) {
+            appleModal.classList.add('hidden');
+        }
+    });
+
+    accountBtnsApple.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const name = btn.querySelector('.aip-name').textContent;
+            const email = btn.querySelector('.aip-email').textContent;
+            const simulatedUser = {
+                email,
+                username: name,
+                livello: 1
+            };
+            localStorage.setItem('currentUser', JSON.stringify(simulatedUser));
+            appleModal.classList.add('hidden');
+            window.navigateToSection('homepage');
+        });
+    });
+
     window.togglePasswordVisibility = function(event, element) {
         event.preventDefault();
         event.stopPropagation();

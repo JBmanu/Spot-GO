@@ -100,8 +100,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    window.navigateToSection = navigateTo;
-
     function updateHeader(section, cfg) {
         resetHeaderBaseForSection(section);
 
@@ -158,6 +156,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const st = sectionState.get(section);
         if (st) st.initialized = true;
     }
+
+    window.navigateToSection = navigateTo;
 
     function showOnly(activeSection) {
         for (const [section, {el}] of sectionState.entries()) {
