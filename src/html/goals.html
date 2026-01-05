@@ -4,37 +4,59 @@
     <div class="mx-4 my-6">
         <!-- Titolo principale -->
         <div class="flex items-center gap-2 mb-4">
-            <img src="/src/assets/icons/mission.svg" class="w-6 h-6" alt="Mission Icon"/>
-            <h1 class="text-xl font-bold text-gray-800">Le tua missione in corso</h1>
+            <img src="../assets/icons/goals/Sheets.svg" class="icon" alt="Mission Icon"/>
+            <h1 class="text-xl font-bold text-gray-800">Le tue missione in corso</h1>
         </div>
 
         <!-- Contenitore principale -->
-        <div class="bg-white rounded-2xl shadow px-6 py-5 space-y-6">
+        <div class="glass-strong rounded-2xl shadow px-6 py-5 space-y-6">
 
             <!-- ================= TOP ================= -->
             <div class="flex justify-between items-center">
                 <!-- sinistra -->
-                <div class="flex items-center gap-2 text-gray-600">
-                    <img src="/src/assets/icons/mission.svg" class="w-5 h-5"/>
-                    <span class="text-sm font-medium">Type mission</span>
-                </div>
+                <button class="glass-medium p-2 rounded-xl flex items-center gap-1 text-gray-600 cursor-pointer">
+                    <img src="../assets/icons/goals/Location.svg" class="icon-mini" alt=""/>
+                    <span class="text-sm font-medium">Via torquato tasso 113</span>
+                </button>
 
                 <!-- destra -->
                 <span class="text-sm font-semibold text-green-600">+250 XP</span>
             </div>
 
             <!-- ================= CENTER ================= -->
-            <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-gray-800">
-                        Luogo luogoso
-                    </h2>
-                    <span class="text-sm text-gray-500">4 / 5</span>
+            <div class="glass-medium p-2 rounded-xl flex justify-between items-center cursor-pointer">
+                <!-- Sinistra: Pin + titolo + distanza -->
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-2">
+                        <img src="../assets/icons/homepage/Fast%20Food.svg" class="w-5 h-5"/>
+                        <h2 class="text-lg font-semibold text-gray-800 truncate">
+                            Luogo luogoso
+                        </h2>
+                    </div>
+                    <!-- Distanza -->
+                    <div class="flex items-center gap-1 mt-1 text-gray-600 text-sm">
+                        <img src="../assets/icons/goals/Map Pin.svg" class="w-4 h-4"/>
+                        <span class="font-medium">10 m</span>
+                    </div>
                 </div>
 
-                <p class="text-sm text-gray-600">
-                    Completa tutte le missioni del luogo luogoso per ottenere ricompense esclusive!
-                </p>
+                <!-- Destra: Progresso missioni -->
+                <div class="flex items-center justify-center">
+                    <!-- Cerchio di progresso -->
+                    <div class="relative w-10 h-10">
+                        <svg class="w-10 h-10">
+                            <!-- Cerchio sfondo -->
+                            <circle cx="20" cy="20" r="18" stroke="#E5E7EB" stroke-width="4" fill="none"/>
+                            <!-- Cerchio progresso -->
+                            <circle cx="20" cy="20" r="18" stroke="#34D399" stroke-width="4" fill="none"
+                                    stroke-dasharray="113.097" stroke-dashoffset="22.619"
+                                    transform="rotate(-90 20 20)"/>
+                        </svg>
+                        <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-800">
+                                4/5
+                            </span>
+                    </div>
+                </div>
             </div>
 
             <!-- ================= BOTTOM ================= -->
@@ -67,33 +89,6 @@
                     </div>
                 </div>
 
-                <!-- Mission Item -->
-                <div class="bg-gray-50 rounded-xl px-4 py-3 flex justify-between items-center">
-
-                    <!-- Left -->
-                    <div class="space-y-1">
-                        <h3 class="text-sm font-semibold text-gray-800">
-                            Scrivi una recensione
-                        </h3>
-                        <p class="text-xs text-gray-600">
-                            Non è cosi difficile usare la tastiera, dai!
-                        </p>
-
-                        <!-- reward -->
-                        <div class="flex items-center gap-1 text-xs text-gray-700">
-                            <img src="/src/assets/icons/reward.svg" class="w-4 h-4"/>
-                            <span>+30 XP</span>
-                        </div>
-                    </div>
-
-                    <!-- Right -->
-                    <div class="flex items-center justify-center">
-                        <div class="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                            ☐
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -109,17 +104,17 @@
             <div class="relative z-10 flex justify-between min-h-13">
                 <!-- Daily -->
                 <button class="mission-type-btn" data-index="0">
-                    <img src="../assets/icons/goals/Sun.svg" class="mission-type-btn-element" alt=""/>
+                    <img src="../assets/icons/goals/missionTypes/Sun.svg" class="mission-type-btn-element" alt=""/>
                     <span class="mission-type-btn-element font-medium">Giornalieri</span>
                 </button>
                 <!-- Theme -->
                 <button class="mission-type-btn" data-index="1">
-                    <img src="../assets/icons/goals/Tag.svg" class="mission-type-btn-element" alt=""/>
+                    <img src="../assets/icons/goals/missionTypes/Tag.svg" class="mission-type-btn-element" alt=""/>
                     <span class="mission-type-btn-element">A tema</span>
                 </button>
                 <!-- Level -->
                 <button class="mission-type-btn" data-index="2">
-                    <img src="../assets/icons/goals/Star.svg" class="mission-type-btn-element" alt=""/>
+                    <img src="../assets/icons/goals/missionTypes/Trophy.svg" class="mission-type-btn-element" alt=""/>
                     <span class="mission-type-btn-element">Livello</span>
                 </button>
             </div>
