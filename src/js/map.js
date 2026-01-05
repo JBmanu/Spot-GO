@@ -53,9 +53,8 @@ let advancedFilters = null;
 let map;
 // Layer corrente della mappa (stile selezionato)
 let currentTileLayer;
-// Lista dei marker attualmente attivi sulla mappa
-let spotMarkers = [];
 let searchBarLoaded = false;
+let spotMarkersMap = new Map(); // spotId -> marker
 
 // Mappa categoria -> icona marker
 const categoryToMarkerMap = {
@@ -218,12 +217,24 @@ async function loadMap() {
 }
 
 async function loadMarkers() {
-    // Rimozione di tutti i marker degli spot precedenti
-    spotMarkers.forEach(marker => map.removeLayer(marker));
-    spotMarkers = [];
+    // Set degli ID attuali
+    const currentSpotIds = new Set(spots.map(s => s.id));
+
+    //Rimozione dei marker non più presenti
+    for (const [spotId, marker] of spotMarkersMap.entries()) {
+        if (!currentSpotIds.has(spotId)) {
+            map.removeLayer(marker);
+            spotMarkersMap.delete(spotId);
+        }
+    }
+
+    let newSpotMarkers = [];
 
     // Creazione dei marker Leaflet
     spots.forEach(luogo => {
+        // Se esiste già, non facciamo nulla
+        if (spotMarkersMap.has(luogo.id)) return;
+
         // Converto coord1 e coord2 in array [lat, lng]
         const markerPosition = [luogo.posizione.coord1, luogo.posizione.coord2];
         const iconName = categoryToMarkerMap[luogo.idCategoria] || "MarkerBase.svg";
@@ -247,8 +258,8 @@ async function loadMarkers() {
                 iconAnchor: [32, 64]
             })
         })
-            .addTo(map)
-            .bindPopup(popupHtml);
+        .addTo(map)
+        .bindPopup(popupHtml);
 
         // Pulsante per visualizzare i dettagli
         marker.on("popupopen", (e) => {
@@ -272,13 +283,14 @@ async function loadMarkers() {
             );
         });
 
-        spotMarkers.push(marker);
+        spotMarkersMap.set(luogo.id, marker);
+        newSpotMarkers.push(marker);
     });
 
-    const interval = 500;
+    const interval = 250;
 
     // Comparsa dei marker uno ad uno
-    spotMarkers.forEach((marker, index) => {
+    newSpotMarkers.forEach((marker, index) => {
         const iconElem = marker.getElement().querySelector('img.marker-pop-up');
         if (iconElem) {
             setTimeout(() => {
