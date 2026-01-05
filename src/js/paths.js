@@ -5,7 +5,7 @@ export const PATHS = {
         community: "./html/community.html",
         goals: "./html/goals.html",
         profile: "./html/profile.html",
-        login: "./html/login-registrazione/login.html",
+        login: "./html/login-signup/login.html",
 
         header: "../html/common-pages/header.html",
         toolbar: "../html/common-pages/toolbar.html",
