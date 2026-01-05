@@ -35,6 +35,22 @@ export async function initAuthPage() {
     if (forgotPasswordBtn) {
         forgotPasswordBtn.addEventListener('click', handleForgotPassword);
     }
+
+    // Aggiungi la funzione globale per il toggle della password
+    window.togglePasswordVisibility = function(element) {
+        const label = element.closest('.auth-field');
+        const input = label.querySelector('input');
+        const img = element.querySelector('img');
+        if (input.type === 'password') {
+            input.type = 'text';
+            img.src = 'assets/icons/login-signup/Visible.svg';
+            img.alt = 'Nascondi password';
+        } else {
+            input.type = 'password';
+            img.src = 'assets/icons/login-signup/Invisible.svg';
+            img.alt = 'Mostra password';
+        }
+    };
 }
 
 /**

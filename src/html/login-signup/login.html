@@ -26,7 +26,7 @@
     <!-- Form -->
     <form class="auth-form glass-light" data-auth-form="login" autocomplete="on">
         <div class="form-container">
-            <h2 class="auth-form-title">È bello rivederti !</h2>
+            <h2 class="auth-form-title">È bello rivederti</h2>
 
             <div class="inputs-group-login">
                 <label class="auth-field">
@@ -41,6 +41,9 @@
             <img src="assets/icons/login-signup/Lock.svg" alt="" class="w-5.5 h-5.5 z-20">
           </span>
                     <input class="auth-input glass-medium" type="password" name="password" placeholder="Password" autocomplete="current-password" required/>
+                    <span class="auth-icon-right z-20" onclick="togglePasswordVisibility(this)" aria-label="Mostra/nascondi password">
+                        <img src="assets/icons/login-signup/Invisible.svg" alt="" class="w-5.5 h-5.5">
+                    </span>
                 </label>
             </div>
 
@@ -52,12 +55,9 @@
 
             <!-- Divider -->
             <div class="divider">
-                <div class="divider-line">
-                    <div class="divider-border"></div>
-                </div>
-                <div class="divider-text">
-                    <span class="divider-span">Accedi velocemente con</span>
-                </div>
+                <div class="divider-line"></div>
+                <div class="divider-text">Accedi velocemente con</div>
+                <div class="divider-line"></div>
             </div>
 
             <!-- Social Login Buttons -->
@@ -106,12 +106,9 @@
 
             <!-- Divider -->
             <div class="divider">
-                <div class="divider-line">
-                    <div class="divider-border"></div>
-                </div>
-                <div class="divider-text">
-                    <span class="divider-span">Registrati velocemente con</span>
-                </div>
+                <div class="divider-line"></div>
+                <div class="divider-text">Registrati velocemente con</div>
+                <div class="divider-line"></div>
             </div>
 
             <!-- Social Login Buttons -->

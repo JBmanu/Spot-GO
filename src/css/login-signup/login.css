@@ -54,6 +54,10 @@
   @apply absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400;
 }
 
+.auth-icon-right {
+  @apply absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer;
+}
+
 .auth-input {
   @apply w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary_color focus:border-transparent;
 }
@@ -71,7 +75,7 @@
 }
 
 .inputs-group-login {
-  @apply flex flex-col gap-6;
+  @apply flex flex-col gap-6 h-[152px];
 }
 
 .inputs-group-register {
@@ -83,19 +87,15 @@
 }
 
 .divider {
-  @apply relative;
+  @apply flex items-center w-full;
 }
 
 .divider-line {
-  @apply absolute inset-0 flex items-center;
-}
-
-.divider-border {
-  @apply w-full border-t border-gray-300;
+  @apply flex-1 border-t border-gray-300;
 }
 
 .divider-text {
-  @apply relative flex justify-center text-sm;
+  @apply px-2 text-sm text-gray-500;
 }
 
 .divider-span {
