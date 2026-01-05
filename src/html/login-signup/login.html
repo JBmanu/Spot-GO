@@ -31,9 +31,9 @@
 
             <div class="inputs-group-login">
                 <label class="auth-field">
-          <span class="auth-icon z-20" aria-hidden="true">
-            <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5">
-          </span>
+                    <span class="auth-icon z-20" aria-hidden="true">
+                        <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5">
+                    </span>
                     <input class="auth-input glass-medium" type="email" name="email" placeholder="Email"
                            inputmode="email" autocomplete="email" required/>
                 </label>
@@ -88,7 +88,7 @@
                                                                            alt="Handshake"
                                                                            class="inline w-6 h-6 ml-1 mb-2"></h2>
 
-            <div class="inputs-group-register">
+            <div class="inputs-group-login">
                 <label class="auth-field">
           <span class="auth-icon z-20" aria-hidden="true">
             <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5 z-20">
@@ -103,18 +103,19 @@
           </span>
                     <input class="auth-input glass-medium" type="password" name="password" placeholder="Password"
                            autocomplete="new-password" required/>
-                </label>
-
-                <label class="auth-field">
-          <span class="auth-icon z-20" aria-hidden="true">
-            <img src="assets/icons/login-signup/Face With Peeking Eye.svg" alt="" class="w-5.5 h-5.5 z-20">
-          </span>
-                    <input class="auth-input" type="password" name="confirmPassword" placeholder="Conferma Password"
-                           autocomplete="new-password" required/>
+                    <span class="auth-icon-right z-20" onmousedown="togglePasswordVisibility(event, this)" tabindex="-1"
+                          aria-label="Mostra/nascondi password">
+                        <img src="assets/icons/login-signup/Invisible.svg" alt="" class="w-5.5 h-5.5">
+                    </span>
                 </label>
             </div>
 
-            <button class="auth-primary-btn" type="submit">Registrati</button>
+            <div class="button-group">
+                <button class="auth-primary-btn" type="submit">Registrati</button>
+
+                <button class="auth-link-login-to-signup" type="button" data-action="switch-to-login">Hai già un account?
+                    <span class="font-bold underline">Accedi</span></button>
+            </div>
 
             <!-- Divider -->
             <div class="divider">

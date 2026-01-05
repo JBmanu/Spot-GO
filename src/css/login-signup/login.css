@@ -88,27 +88,27 @@
 }
 
 .auth-link-login-to-signup {
-  @apply text-primary_color text-sm -mt-1 self-start;
+  @apply text-primary_color text-sm mt-1 self-start;
 }
 
 .form-container {
-  @apply flex flex-col justify-around h-full;
+  @apply flex flex-col h-full;
 }
 
 .inputs-group-login {
-  @apply flex flex-col gap-6 h-[142px] -mt-5;
+  @apply flex flex-col gap-6 h-[142px] mt-5 mb-4;
 }
 
 .inputs-group-register {
-  @apply flex flex-col gap-4;
+  @apply flex flex-col gap-4 -mt-5;
 }
 
 .button-group {
-  @apply flex flex-col items-end gap-3;
+  @apply flex flex-col items-end gap-3 h-20 mt-7 mb-12;
 }
 
 .divider {
-  @apply flex items-center w-full;
+  @apply flex items-center w-full mb-4;
 }
 
 .divider-line {
@@ -124,7 +124,7 @@
 }
 
 .social-container {
-  @apply flex gap-4;
+  @apply flex gap-4 mt-4;
 }
 
 .social-btn {
