@@ -65,7 +65,9 @@ export async function initAuthPage() {
     checkLogin();
     checkRegister();
 
-    window.togglePasswordVisibility = function(element) {
+    window.togglePasswordVisibility = function(event, element) {
+        event.preventDefault();
+        event.stopPropagation();
         const label = element.closest('.auth-field');
         const input = label.querySelector('input');
         const img = element.querySelector('img');

@@ -26,22 +26,26 @@
     <!-- Form -->
     <form class="auth-form glass-light" data-auth-form="login" autocomplete="on">
         <div class="form-container">
-            <h2 class="auth-form-title">È bello rivederti <img src="assets/icons/login-signup/Sunflower.svg" alt="Girasole" class="inline w-6 h-6 ml-1 mb-2"></h2>
+            <h2 class="auth-form-title">È bello rivederti <img src="assets/icons/login-signup/Sunflower.svg"
+                                                               alt="Girasole" class="inline w-6 h-6 ml-1 mb-2"></h2>
 
             <div class="inputs-group-login">
                 <label class="auth-field">
           <span class="auth-icon z-20" aria-hidden="true">
             <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5">
           </span>
-                    <input class="auth-input glass-medium" type="email" name="email" placeholder="Email" inputmode="email" autocomplete="email" required/>
+                    <input class="auth-input glass-medium" type="email" name="email" placeholder="Email"
+                           inputmode="email" autocomplete="email" required/>
                 </label>
 
                 <label class="auth-field">
           <span class="auth-icon z-20" aria-hidden="true">
             <img src="assets/icons/login-signup/Lock.svg" alt="" class="w-5.5 h-5.5 z-20">
           </span>
-                    <input class="auth-input glass-medium" type="password" name="password" placeholder="Password" autocomplete="current-password" required/>
-                    <span class="auth-icon-right z-20" onclick="togglePasswordVisibility(this)" aria-label="Mostra/nascondi password">
+                    <input class="auth-input glass-medium" type="password" name="password" placeholder="Password"
+                           autocomplete="current-password" required/>
+                    <span class="auth-icon-right z-20" onmousedown="togglePasswordVisibility(event, this)" tabindex="-1"
+                          aria-label="Mostra/nascondi password">
                         <img src="assets/icons/login-signup/Invisible.svg" alt="" class="w-5.5 h-5.5">
                     </span>
                 </label>
@@ -52,7 +56,8 @@
             <div class="button-group">
                 <button class="auth-primary-btn" type="submit">Accedi</button>
 
-                <button class="auth-link-login-to-signup" type="button" data-action="switch-to-register">Non hai un account? Registrati</button>
+                <button class="auth-link-login-to-signup" type="button" data-action="switch-to-register">Non hai un
+                    account? <span class="font-bold underline">Registrati</span></button>
             </div>
 
             <!-- Divider -->
@@ -64,11 +69,11 @@
 
             <!-- Social Login Buttons -->
             <div class="social-container">
-                <button class="social-btn glass-light" type="button">
+                <button class="social-btn glass-strong" type="button">
                     <img src="assets/icons/login-signup/Google.svg" alt="Google" class="social-icon">
                     Google
                 </button>
-                <button class="social-btn glass-light" type="button">
+                <button class="social-btn glass-strong" type="button">
                     <img src="assets/icons/login-signup/Apple.svg" alt="Apple" class="social-icon">
                     Apple
                 </button>
@@ -79,28 +84,33 @@
     <!-- Form registrazione -->
     <form class="auth-form glass-light" data-auth-form="register" autocomplete="on" style="display: none;">
         <div class="form-container">
-            <h2 class="auth-form-title">Ogni scoperta comincia da qui <img src="assets/icons/login-signup/Handshake.svg" alt="Handshake" class="inline w-6 h-6 ml-1 mb-2"></h2>
+            <h2 class="auth-form-title">Ogni scoperta comincia da qui <img src="assets/icons/login-signup/Handshake.svg"
+                                                                           alt="Handshake"
+                                                                           class="inline w-6 h-6 ml-1 mb-2"></h2>
 
             <div class="inputs-group-register">
                 <label class="auth-field">
           <span class="auth-icon z-20" aria-hidden="true">
             <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5 z-20">
           </span>
-                    <input class="auth-input glass-light" type="email" name="email" placeholder="Email" inputmode="email" autocomplete="email" required/>
+                    <input class="auth-input glass-light" type="email" name="email" placeholder="Email"
+                           inputmode="email" autocomplete="email" required/>
                 </label>
 
                 <label class="auth-field">
           <span class="auth-icon z-20" aria-hidden="true">
             <img src="assets/icons/login-signup/Lock.svg" alt="" class="w-5.5 h-5.5 z-20">
           </span>
-                    <input class="auth-input glass-medium" type="password" name="password" placeholder="Password" autocomplete="new-password" required/>
+                    <input class="auth-input glass-medium" type="password" name="password" placeholder="Password"
+                           autocomplete="new-password" required/>
                 </label>
 
                 <label class="auth-field">
           <span class="auth-icon z-20" aria-hidden="true">
             <img src="assets/icons/login-signup/Face With Peeking Eye.svg" alt="" class="w-5.5 h-5.5 z-20">
           </span>
-                    <input class="auth-input glass-medium" type="password" name="confirmPassword" placeholder="Conferma Password" autocomplete="new-password" required/>
+                    <input class="auth-input" type="password" name="confirmPassword" placeholder="Conferma Password"
+                           autocomplete="new-password" required/>
                 </label>
             </div>
 
@@ -115,11 +125,11 @@
 
             <!-- Social Login Buttons -->
             <div class="social-container">
-                <button class="social-btn glass-light" type="button">
+                <button class="social-btn glass-strong" type="button">
                     <img src="assets/icons/login-signup/Google.svg" alt="Google" class="social-icon">
                     Google
                 </button>
-                <button class="social-btn glass-light" type="button">
+                <button class="social-btn glass-strong" type="button">
                     <img src="assets/icons/login-signup/Apple.svg" alt="Apple" class="social-icon">
                     Apple
                 </button>
