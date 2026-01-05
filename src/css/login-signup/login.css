@@ -19,7 +19,15 @@
 }
 
 .auth-title img {
-  @apply w-auto h-11;
+  @apply w-auto h-11 mx-auto;
+}
+
+.auth-subtitle {
+  @apply text-center text-sm text-gray-600 mt-2;
+}
+
+.auth-form-title {
+  @apply text-center text-lg font-semibold mb-1 text-text_color;
 }
 
 .auth-switch {

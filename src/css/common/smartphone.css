@@ -192,4 +192,5 @@
 html,
 body {
     @apply h-full;
+    font-family: "Montserrat", sans-serif;
 }
