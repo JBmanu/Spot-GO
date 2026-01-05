@@ -27,7 +27,7 @@
 }
 
 .auth-form-title {
-  @apply text-center text-lg font-semibold mb-1 text-text_color;
+  @apply text-center text-lg font-semibold mb-1 text-gray-500;
 }
 
 .auth-switch {
@@ -66,8 +66,16 @@
   @apply w-full bg-primary_color text-white py-3 rounded-lg font-medium hover:brightness-90 transition;
 }
 
+.auth-primary-btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
 .auth-link {
-  @apply text-primary_color text-sm hover:underline;
+  @apply text-primary_color text-sm hover:underline -mt-4 self-end;
+}
+
+.auth-link-login-to-signup {
+  @apply text-primary_color text-sm hover:underline -mt-1 self-start;
 }
 
 .form-container {
@@ -75,7 +83,7 @@
 }
 
 .inputs-group-login {
-  @apply flex flex-col gap-6 h-[152px];
+  @apply flex flex-col gap-6 h-[142px] -mt-5;
 }
 
 .inputs-group-register {
@@ -95,7 +103,7 @@
 }
 
 .divider-text {
-  @apply px-2 text-sm text-gray-500;
+  @apply px-2 text-sm text-text_color;
 }
 
 .divider-span {

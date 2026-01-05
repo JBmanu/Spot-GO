@@ -22,8 +22,6 @@ export async function initAuthPage() {
         });
     });
 
-    switchToTab('login');
-
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
     }
@@ -36,7 +34,37 @@ export async function initAuthPage() {
         forgotPasswordBtn.addEventListener('click', handleForgotPassword);
     }
 
-    // Aggiungi la funzione globale per il toggle della password
+    const switchToRegisterBtn = document.querySelector('[data-action="switch-to-register"]');
+    if (switchToRegisterBtn) {
+        switchToRegisterBtn.addEventListener('click', () => switchToTab('register'));
+    }
+
+    const loginEmail = loginForm.querySelector('input[name="email"]');
+    const loginPassword = loginForm.querySelector('input[name="password"]');
+    const loginBtn = loginForm.querySelector('button[type="submit"]');
+
+    const registerEmail = registerForm.querySelector('input[name="email"]');
+    const registerPassword = registerForm.querySelector('input[name="password"]');
+    const registerConfirm = registerForm.querySelector('input[name="confirmPassword"]');
+    const registerBtn = registerForm.querySelector('button[type="submit"]');
+
+    function checkLogin() {
+        loginBtn.disabled = !(loginEmail.value.trim() && loginPassword.value.trim());
+    }
+
+    function checkRegister() {
+        registerBtn.disabled = !(registerEmail.value.trim() && registerPassword.value.trim() && registerConfirm.value.trim());
+    }
+
+    loginEmail.addEventListener('input', checkLogin);
+    loginPassword.addEventListener('input', checkLogin);
+    registerEmail.addEventListener('input', checkRegister);
+    registerPassword.addEventListener('input', checkRegister);
+    registerConfirm.addEventListener('input', checkRegister);
+
+    checkLogin();
+    checkRegister();
+
     window.togglePasswordVisibility = function(element) {
         const label = element.closest('.auth-field');
         const input = label.querySelector('input');
