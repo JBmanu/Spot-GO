@@ -27,15 +27,11 @@
         --cat-nature: 28 124 84;
         --cat-mystery: 91 43 130;
 
-        --color-background_phone: #000000;
-        --color-main_paper: #F7F8F9;
-
-        --color-primary_color: #1C7C54;
         --color-secondary_color: #F4B41A;
         --color-accent_color: #E36414;
 
-        --color-text_color: #1E1E1E;
-        --color-border_color: #c1c1c1;
+
+
     }
 
 
@@ -57,4 +53,15 @@
     body {
         font-family: "Montserrat", sans-serif;
     }
+}
+
+@theme {
+
+    --color-background_phone: #111111;
+
+    --color-primary_color: #1C7C54;
+
+    --color-main_paper: #F7F8F9;
+    --color-text_color: #1E1E1E;
+    --color-border_color: #c1c1c1;
 }

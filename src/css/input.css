@@ -4,8 +4,6 @@
 
 @import "./common/smartphone.css";
 
-@import "./theme.css";
-
 @import "./common/utils.css";
 
 @import "./common/base.css";
@@ -42,6 +40,6 @@
 
 @import "./goals/goals.css";
 
-@import "./login.css";
+@import "./login-signup/login.css";
 
 @import "./common-components/search-bar/keyboard.css";
