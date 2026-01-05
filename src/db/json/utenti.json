@@ -2,8 +2,7 @@
   {
     "email": "paperino@example.com",
     "username": "paperino",
-    "password": "hashed_password",
+    "password": "password",
     "livello": 1
   }
 ]
-
