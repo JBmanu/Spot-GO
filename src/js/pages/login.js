@@ -47,12 +47,23 @@ function switchToTab(tab) {
     switchButtons.forEach(btn => {
         if (btn.dataset.authTab === tab) {
             btn.classList.add('is-active');
+            btn.classList.add('text-black');
             btn.setAttribute('aria-selected', 'true');
         } else {
             btn.classList.remove('is-active');
+            btn.classList.remove('text-black');
             btn.setAttribute('aria-selected', 'false');
         }
     });
+
+    const slider = document.querySelector('.auth-slider');
+    if (slider) {
+        if (tab === 'login') {
+            slider.style.left = '0.25rem';
+        } else {
+            slider.style.left = 'calc(50% + 0.25rem)';
+        }
+    }
 
     forms.forEach(form => {
         if (form.dataset.authForm === tab) {

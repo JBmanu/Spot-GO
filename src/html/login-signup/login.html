@@ -1,6 +1,6 @@
-<section class="auth-screen h-[940px] flex flex-col items-center justify-center bg-main_paper overflow-hidden pt-16" data-page="auth">
+<section class="auth-screen h-[940px] flex flex-col items-center glass-light overflow-hidden pt-16 pb-16" data-page="auth">
     <!-- Logo + Title -->
-    <div class="auth-header text-center mb-4">
+    <div class="auth-header text-center mb-8">
         <div class="auth-logo mb-0" aria-hidden="true">
             <img src="assets/images/LogoNoText.svg" alt="Spot & Go Logo" class="w-26 h-26 text-primary_color mx-auto">
         </div>
@@ -11,25 +11,26 @@
     </div>
 
     <!-- Switch Accedi / Registrati -->
-    <div class="auth-switch flex w-full max-w-sm mb-2 bg-gray-100 rounded-lg p-1" role="tablist" aria-label="Accesso o registrazione">
-        <button class="auth-switch-btn is-active flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-700 bg-white shadow" type="button" role="tab" aria-selected="true" data-auth-tab="login">
+    <div class="auth-switch flex w-full max-w-sm mb-6 glass-light rounded-lg p-1 relative" role="tablist" aria-label="Accesso o registrazione">
+        <button class="auth-switch-btn relative z-10 is-active flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-700" type="button" role="tab" aria-selected="true" data-auth-tab="login">
             Accedi
         </button>
-        <button class="auth-switch-btn flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-700" type="button" role="tab" aria-selected="false" data-auth-tab="register">
+        <button class="auth-switch-btn relative z-10 flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-700" type="button" role="tab" aria-selected="false" data-auth-tab="register">
             Registrati
         </button>
+        <div class="auth-slider absolute bottom-1 left-1 w-[calc(50%-0.25rem)] h-[calc(100%-0.5rem)] bg-white rounded-md shadow transition-all duration-300"></div>
     </div>
 
     <!-- Form -->
     <form class="auth-form w-full max-w-sm" data-auth-form="login" autocomplete="on">
-        <label class="auth-field relative mb-4 block">
+        <label class="auth-field relative mb-6 block">
       <span class="auth-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
         <img src="assets/icons/login-signup/Email.svg" alt="" class="w-5.5 h-5.5">
       </span>
             <input class="auth-input w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary_color focus:border-transparent" type="email" name="email" placeholder="Email" inputmode="email" autocomplete="email" required />
         </label>
 
-        <label class="auth-field relative mb-4 block">
+        <label class="auth-field relative mb-6 block">
       <span class="auth-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
         <img src="assets/icons/login-signup/Lock.svg" alt="" class="w-5.5 h-5.5">
       </span>
@@ -38,12 +39,12 @@
 
         <button class="auth-primary-btn w-full bg-primary_color text-white py-3 rounded-lg font-medium hover:bg-opacity-90 transition" type="submit">Accedi</button>
 
-        <button class="auth-link text-primary_color text-sm hover:underline mt-4" type="button" data-action="forgot-password">
+        <button class="auth-link text-primary_color text-sm hover:underline mt-6" type="button" data-action="forgot-password">
             Password dimenticata?
         </button>
 
         <!-- Divider -->
-        <div class="relative my-4">
+        <div class="relative my-6">
             <div class="absolute inset-0 flex items-center">
                 <div class="w-full border-t border-gray-300"></div>
             </div>
@@ -53,7 +54,7 @@
         </div>
 
         <!-- Social Login Buttons -->
-        <div class="flex gap-4 mt-4">
+        <div class="flex gap-4 mt-6">
             <button class="flex-1 flex items-center justify-center py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition" type="button">
                 <img src="assets/icons/login-signup/Google.svg" alt="Google" class="w-5 h-5 mr-2">
                 Google
