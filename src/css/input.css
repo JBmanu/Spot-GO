@@ -24,11 +24,7 @@
 
 @import "../base/carousels/carousel-vertical.css";
 
-@import "../base/simil-homepage-toprated/simil-toprated.css";
-
-@import "../base/simil-homepage-nearby/simil-nearby.css";
-
-@import "../base/simil-homepage-saved/simil-saved.css";
+@import "./pages/spot-cards.css";
 
 @import "./common/bottom-sheet.css";
 
