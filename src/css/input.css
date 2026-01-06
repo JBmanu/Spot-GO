@@ -40,6 +40,6 @@
 
 @import "./goals/goals.css";
 
-@import "./login-signup/login.css";
+@import "./pages/login.css";
 
 @import "./common-components/search-bar/keyboard.css";
