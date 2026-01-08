@@ -1,0 +1,65 @@
+@layer base {
+    :root {
+        --color-text_color: #1E1E1E;
+
+        --glass-blur-strong: 46px;
+        --glass-blur-medium: 26px;
+        --glass-blur-soft: 22px;
+        --glass-blur-light: 18px;
+
+        --glass-sat-strong: 195%;
+        --glass-sat-medium: 150%;
+        --glass-sat-soft: 135%;
+        --glass-sat-light: 120%;
+
+        --glass-contrast: 105%;
+
+        --glass-sheet-strong: rgba(255, 255, 255, 0.22);
+        --glass-sheet-medium: rgba(255, 255, 255, 0.16);
+        --glass-sheet-soft: rgba(255, 255, 255, 0.10);
+        --glass-sheet-light: rgba(255, 255, 255, 0.06);
+
+        --glass-border-strong: rgba(255, 255, 255, 0.60);
+        --glass-border-soft: rgba(255, 255, 255, 0.34);
+
+        --cat-food: 227 100 20;
+        --cat-culture: 201 162 106;
+        --cat-nature: 28 124 84;
+        --cat-mystery: 91 43 130;
+
+        --color-secondary_color: #F4B41A;
+        --color-accent_color: #E36414;
+
+
+
+    }
+
+
+    /* Background gradient */
+    --profile-defined-gradient: linear-gradient(
+            135deg,
+            rgba(255, 145, 175, 0.14) 0%,
+            rgba(255, 195, 125, 0.11) 40%,
+            rgba(102, 217, 178, 0.10) 70%,
+            rgba(163, 196, 255, 0.12) 100%
+    );
+
+    /* Overlay wash */
+    --profile-overlay-wash: linear-gradient(
+            rgba(255, 255, 255, 0.06),
+            rgba(255, 255, 255, 0.04)
+    );
+
+
+}
+
+@theme {
+
+    --color-background_phone: #111111;
+
+    --color-primary_color: #1C7C54;
+
+    --color-main_paper: #F7F8F9;
+    --color-text_color: #1E1E1E;
+    --color-border_color: #c1c1c1;
+}

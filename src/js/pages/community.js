@@ -1,4 +1,4 @@
-import {getFriends} from "../query";
+import {getFriends} from "../json-data-handler";
 
 export async function loadCommunityData() {
     await loadFriends();

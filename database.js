@@ -13,7 +13,7 @@ dotenv.config({ path: path.resolve('src/.env') });
 // Carica da file JSON
 const luoghi = JSON.parse(readFileSync(path.resolve('src/db/json/luoghi.json'), 'utf-8'));
 const utenti = JSON.parse(readFileSync(path.resolve('src/db/json/utenti.json'), 'utf-8'));
-const relazioniUtentiLuoghi = JSON.parse(readFileSync(path.resolve('src/db/json/relazioni_utenti_luoghi.json'), 'utf-8'));
+const relazioniUtentiLuoghi = JSON.parse(readFileSync(path.resolve('src/db/json/relazioni_utenti.json'), 'utf-8'));
 
 const firebaseConfig = {
     apiKey: process.env.VITE_FIREBASE_API_KEY,

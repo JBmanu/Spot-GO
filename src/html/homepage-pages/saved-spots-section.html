@@ -1,4 +1,4 @@
-<section class="home-section px-3">
+<section class="home-section w-full max-w-none ml-2">
     <header class="flex flex-row items-center justify-between relative z-1">
         <h2 class="home-section-title">I tuoi preferiti</h2>
 
@@ -12,60 +12,30 @@
         </button>
     </header>
 
-    <div class="saved-swipe" aria-label="Elenco preferiti">
-        <div
-                id="home-saved-container"
-                class="saved-swipe-track"
-                role="list"
-                aria-label="Elenco preferiti"
-        >
-            <!-- Template -->
-            <div
-                    class="saved-spot-shell"
-                    data-spot-wrapper
-                    role="presentation"
-                    data-template="saved-card"
-                    hidden
-            >
+    <div
+            id="home-saved-container"
+            class="js-carousel-horizontal"
+            role="list"
+            aria-label="Elenco preferiti"
+    >
+        <!-- altre cards inserite via JS -->
+    </div>
 
-            <div class="saved-spot-pedestal" aria-hidden="true"></div>
-
-                <article
-                        class="spot-card spot-card--saved"
-                        role="listitem"
-                        data-spot-id=""
-                >
-                    <div class="spot-card-media">
-                        <img
-                                src=""
-                                alt=""
-                                class="spot-card-image"
-                                data-field="image"
-                        />
-
-                        <button
-                                type="button"
-                                class="spot-card-bookmark"
-                                aria-label="Rimuovi dai salvati"
-                                data-bookmark-button
-                                data-bookmark-type="saved"
-                        >
-                            <img
-                                    src="../../assets/icons/homepage/Bookmark.svg"
-                                    alt="Bookmark"
-                                    class="bookmark-icon"
-                            />
-                        </button>
-                    </div>
-
-                    <div class="spot-card-body">
-                        <h3 class="spot-card-title" data-field="title"></h3>
-                    </div>
-                </article>
+    <!-- Template fuori dal container, come richiesto dal carosello generico -->
+    <div class="spot-card-saved" role="listitem" data-spot-wrapper data-template="saved-card" hidden>
+        <div data-category="pedestal" aria-hidden="true"></div>
+        <article data-category="card" data-spot-id="" role="listitem">
+            <div data-category="media">
+                <img src="" alt="" data-category="image" data-field="image"/>
+                <button type="button" data-category="bookmark" aria-label="Rimuovi dai salvati" data-bookmark-button
+                        data-bookmark-type="saved">
+                    <img src="../../assets/icons/homepage/Bookmark.svg" alt="Bookmark" data-category="bookmark-icon"/>
+                </button>
             </div>
-
-            <!-- altre cards -->
-        </div>
+            <div data-category="body">
+                <h3 data-category="title" data-field="title"></h3>
+            </div>
+        </article>
     </div>
 
     <div id="saved-empty-state" class="empty-state-banner hidden">

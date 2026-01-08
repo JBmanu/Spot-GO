@@ -1,0 +1,119 @@
+@layer components {
+
+    .keyboard-overlay {
+        @apply absolute left-0 right-0 bottom-0 transition-transform duration-300 ease-out;
+        background: rgba(0, 0, 0, 0.06);
+        backdrop-filter: blur(4px);
+        z-index: -1;
+        display: none;
+        pointer-events: none;
+    }
+
+    .keyboard-overlay-view-all {
+        @apply absolute top-0 left-0 right-0 -bottom-10 transition-transform duration-300 ease-out;
+        background: rgba(0, 0, 0, 0.06);
+        backdrop-filter: blur(4px);
+        z-index: -1;
+        display: none;
+        pointer-events: none;
+    }
+
+
+    .keyboard-overlay.overlay-visible {
+        display: block;
+        pointer-events: auto;
+        transform: translateY(0) !important;
+    }
+
+    .keyboard-overlay-view-all.overlay-visible {
+        display: block;
+        pointer-events: auto;
+        transform: translateY(0) !important;
+    }
+
+    .keyboard {
+        @apply sticky bottom-0 left-0 right-0 transition-transform duration-300 ease-out;
+        background: rgba(209, 213, 219, 0.95);
+        z-index: 1000;
+        display: none;
+        pointer-events: none;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+        box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    }
+
+    .keyboard.keyboard-visible {
+        display: block;
+        pointer-events: auto;
+        transform: translateY(0) !important;
+    }
+
+    .keyboard-container {
+        @apply w-full px-1 py-2;
+    }
+
+    .keyboard-row {
+        @apply flex mb-[11px];
+        gap: 6px;
+    }
+
+    .keyboard-row-first {
+        @apply px-[3px];
+    }
+
+    .keyboard-row-second {
+        @apply px-[17px];
+    }
+
+    .keyboard-row-third {
+        @apply px-[3px];
+    }
+
+    .keyboard-row-fourth {
+        @apply px-[3px];
+    }
+
+    /* Keyboard Keys */
+    .kb-key, .kb-shift, .kb-backspace, .kb-numbers, .kb-emoji, .kb-space, .kb-close {
+        @apply transition-all duration-75 active:scale-95 font-normal;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    .kb-key {
+        @apply flex-1 h-[42px] bg-white rounded-[5px] text-[23px];
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .kb-key:active {
+        @apply bg-[#d1d5db];
+    }
+
+    .kb-shift, .kb-backspace, .kb-numbers, .kb-emoji {
+        @apply w-[42px] h-[42px] bg-[#acb3bb] rounded-[5px] flex items-center justify-center text-[17px];
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .kb-shift:active, .kb-backspace:active, .kb-numbers:active, .kb-emoji:active {
+        @apply bg-white;
+    }
+
+    .kb-space {
+        @apply flex-1 h-[42px] bg-white rounded-[5px] text-[16px];
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .kb-space:active {
+        @apply bg-[#d1d5db];
+    }
+
+    .kb-close {
+        @apply w-[68px] h-[42px] bg-[#0a84ff] rounded-[5px] text-white text-[16px] font-semibold;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .kb-close:active {
+        @apply bg-[#0056b3];
+    }
+
+}

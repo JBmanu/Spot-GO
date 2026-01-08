@@ -58,7 +58,6 @@ export function filterSpotsByCategory(categories = [], scopeEl = document) {
     const normalizedCats = categories.map(normalizeCategoryName);
     const cards = scopeEl.querySelectorAll('[role="listitem"][data-spot-id]');
     cards.forEach((card) => {
-        if (card.closest("[data-template]")) return;
         if (card.hidden) return;
         const wrapper = getSpotWrapper(card);
         const spotId = (card.getAttribute("data-spot-id") || "").trim();
@@ -76,7 +75,7 @@ export function filterSpotsByCategory(categories = [], scopeEl = document) {
     });
 }
 
-export function setupCategoryFilter(containerEl, { scopeEl = document, onChange } = {}) {
+export function setupCategoryFilter(containerEl, {scopeEl = document, onChange} = {}) {
     if (!containerEl) return;
     if (containerEl.dataset.categoryFilterInitialized === "true") return;
     containerEl.dataset.categoryFilterInitialized = "true";

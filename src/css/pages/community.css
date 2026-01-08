@@ -1,0 +1,23 @@
+@layer components {
+    .community-friend-card {
+        @apply flex justify-between rounded-2xl border bg-main_paper p-3;
+        border-color: var(--color-border_color);
+        min-width: 0;
+    }
+
+    .community-section-header {
+        @apply text-2xl font-semibold;
+    }
+
+    .card-actions-container {
+        @apply flex justify-center items-center gap-[22px];
+    }
+
+    .friend-avatar {
+        @apply grid place-items-center w-16 h-16 rounded-full border border-border_color text-xl font-bold;
+    }
+
+    .friend-card-data {
+        @apply flex flex-col justify-between ml-4;
+    }
+}

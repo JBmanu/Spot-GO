@@ -1,0 +1,267 @@
+@layer components {
+
+   .bottom-sheet-filters-container {
+        display: flex;
+        flex-direction: column;
+        /* background-color: var(); */
+        max-width: 640px;
+        margin: 0 auto;
+        height: auto;
+        max-height: 90vh;
+        overflow: hidden;
+        /* font-family: var(); */
+    }
+
+    /* --- HEADER --- */
+   .filters-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 6px;
+    }
+
+   .filters-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        /* color: var(); */
+    }
+
+   .filters-reset-btn {
+        background: none;
+        border: none;
+        /* color: var(); */
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+    /* --- CONTENT AREA --- */
+   .filters-scroll-area {
+        padding-bottom: 50px;
+        overflow-y: auto;
+    }
+
+   .filter-section {
+        padding: 16px 0;
+        border-top: 1px solid; /* var() ; */
+    }
+
+   .filter-section-label {
+        margin: 0 0 12px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--vp-c-text-1);
+    }
+
+   .filter-row-between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .filter-flex-start {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    /* --- TOGGLE SWITCH --- */
+   .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+        margin-left: 14px;
+    }
+
+   .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+   .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: white; /* var(--vp-c-bg-alt); */
+        border: 2px solid black;/* var(--vp-c-divider); */
+        transition:.3s;
+        border-radius: 24px;
+    }
+
+   .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 16px; width: 16px;
+        left: 2px; bottom: 2px;
+        background-color: black; /* var(--vp-c-text-1); */
+        transition:.3s;
+        border-radius: 50%;
+    }
+
+    input:checked +.toggle-slider { 
+        background-color: skyblue; /* var(--vp-c-brand-1); */
+        border-color: black; /* var(--vp-c-brand-1); */
+    }
+
+    input:checked +.toggle-slider:before {
+        transform: translateX(20px);
+        background-color: black;
+    }
+
+    /* --- DATETIME PILLS --- */
+   .filter-datetime-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--vp-c-text-2);
+    }
+
+   .input-pill {
+        background: var(--vp-c-bg-alt);
+        border: 1px solid var(--vp-c-divider);
+        padding: 4px 12px;
+        border-radius: 12px;
+        color: var(--vp-c-text-1);
+    }
+
+    /* --- SLIDER --- */
+   .distance-range {
+        width: 100%;
+        accent-color: var(--vp-c-brand-1);
+        margin-top: 8px;
+    }
+
+   .distance-value { font-weight: 600; font-size: 14px; }
+
+    /* --- STAR RATING --- */
+   .star-rating {
+        display: flex;
+        gap: 4px;
+        font-size: 24px;
+        color: var(--vp-c-divider);
+    }
+   .star { cursor: pointer; transition: color 0.2s; }
+   .star:hover,.star.active { color: #FFD700; }
+
+    /* --- CHIPS --- */
+   .chips-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+   .filter-chip {
+        padding: 8px 16px;
+        border: 1px solid var(--vp-c-divider);
+        border-radius: 20px;
+        background: var(--vp-c-bg-soft);
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+   .filter-chip.active {
+        background: var(--vp-c-brand-soft);
+        border-color: var(--vp-c-brand-1);
+        color: var(--vp-c-brand-1);
+    }
+
+    /* --- FOOTER AZIONI --- */
+   .filters-footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        display: flex;
+        gap: 12px;
+        padding-bottom: 16px;
+        background: var(--vp-c-bg);
+        border-top: 1px solid var(--vp-c-divider);
+        box-sizing: border-box;
+    }
+
+   .btn-action {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+   .btn-cancel {
+        background: var(--vp-c-bg-alt);
+        border: 1px solid var(--vp-c-divider);
+        color: var(--vp-c-text-1);
+    }
+
+   .btn-apply {
+        background: var(--vp-c-brand-1);
+        border: none;
+        color: white;
+    }
+
+   .btn-action:active { opacity: 0.8; }
+
+    .input-pill {
+        appearance: none;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .input-date,
+    .input-time {
+        min-height: 32px;
+    }
+
+    .input-date::-webkit-calendar-picker-indicator,
+    .input-time::-webkit-calendar-picker-indicator {
+        opacity: 0.6;
+        cursor: pointer;
+    }
+
+    .chips-multi .filter-chip {
+        user-select: none;
+    }
+
+    .chips-multi .filter-chip.active {
+        box-shadow: 0 0 0 1px var(--vp-c-brand-1) inset;
+    }
+
+    /* From [spot-details.css/.mission-banner]*/
+    .filter-button-footer {
+        @apply w-full max-w-[180px] px-4 py-3 rounded-2xl text-xs font-black uppercase text-center flex items-center justify-center;
+        font-family: "Montserrat", sans-serif;
+        letter-spacing: 0.05em;
+        color: rgba(17, 24, 39, 0.82);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(17, 24, 39, 0.82);
+        box-shadow:
+                0 14px 36px rgba(0,0,0,0.05),
+                inset 0 1px 0 rgba(255,255,255,0.7);
+        backdrop-filter: blur(14px) saturate(155%);
+        -webkit-backdrop-filter: blur(14px) saturate(155%);
+        transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .filter-button-status {
+        @apply w-full max-w-[110px] px-4 py-3 rounded-2xl font-black uppercase text-center flex items-center justify-center;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.5rem;;
+        letter-spacing: 0.05em;
+        color: rgba(17, 24, 39, 0.82);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(17, 24, 39, 0.82);
+        box-shadow:
+                0 14px 36px rgba(0,0,0,0.05),
+                inset 0 1px 0 rgba(255,255,255,0.7);
+        backdrop-filter: blur(14px) saturate(155%);
+        -webkit-backdrop-filter: blur(14px) saturate(155%);
+        transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+}

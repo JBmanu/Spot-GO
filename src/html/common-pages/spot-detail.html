@@ -1,83 +1,67 @@
-<!-- Schermata di visualizzazione completa dello Spot -->
 <div class="spot-detail-wrapper">
+
     <div class="spot-detail-container px-2">
-        <!-- Titolo (sopra la foto) -->
+
         <div class="spot-detail-title-container">
             <div class="spot-detail-title-section">
                 <h1 id="spot-detail-title" class="spot-detail-title">Nome dello spot</h1>
             </div>
-            <div class="spot-detail-rating">
+
+
+            <div class="spot-detail-rating glass-light">
                 <span id="spot-detail-rating-value">4.5</span>
                 <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
             </div>
         </div>
 
-        <!-- Badge Missioni con background bianco -->
-        <div class="spot-missions-banner-wrapper">
-            <div class="spot-detail-missions-banner">
-                <div class="missions-banner-content">
-                    <img src="../../assets/icons/homepage/Medal.svg" alt="Missioni" class="missions-icon"/>
-                    <span class="missions-text">Missioni: <span id="spot-missions-completed">0</span> di <span id="spot-missions-total">0</span> completate</span>
-                </div>
-                <button type="button" id="spot-missions-toggle" class="missions-toggle-button"
-                        aria-label="Mostra/nascondi missioni da fare">
-                    <img src="../../assets/icons/profile/Forward.svg" alt="" class="toggle-arrow"/>
-                </button>
-            </div>
+
+        <div class="spot-detail-missions-banner glass">
+            <img src="../../assets/icons/homepage/Medal.svg" alt="Missioni" class="missions-icon"/>
+            <span class="missions-text">Missioni: <span id="spot-missions-completed">0</span> di <span
+                    id="spot-missions-total">0</span> completate</span>
         </div>
 
 
-        <button
-                type="button"
-                id="spot-detail-bookmark-button"
-                class="spot-detail-bookmark-button"
-                aria-label="Aggiungi ai salvati"
-                style="display: none;">
-            <img src="../../assets/icons/homepage/BookmarkEmpty.svg" class="bookmark-icon" alt="Bookmark">
-        </button>
-
-
-
-        <!-- Header con Foto -->
         <div class="spot-detail-header">
             <div class="spot-detail-image-container">
                 <img id="spot-detail-main-image" src="" alt="Foto principale dello spot" class="spot-detail-image"/>
             </div>
         </div>
 
-        <!-- Descrizione dello Spot (sotto la foto) -->
-        <div class="spot-detail-description-compact">
-            <p id="spot-detail-description" class="spot-detail-description">
+
+        <div class="spot-detail-description-compact glass-strong">
+            <p id="spot-detail-description" class="spot-detail-description glass-strong">
                 Descrizione dello spot
             </p>
         </div>
 
-        <!-- Missioni da fare (espandibile) -->
+
         <div id="spot-missions-details" class="spot-missions-details" style="display: none;">
             <div id="spot-missions-list" class="missions-list">
                 <div class="mission-item">
-                    <span class="mission-banner completed"
+
+                    <span class="mission-banner glass completed"
                           data-mission-id="mission-1">Scatta una foto al tramonto</span>
                 </div>
                 <div class="mission-item">
-                    <span class="mission-banner" data-mission-id="mission-2">Visita durante il weekend</span>
+                    <span class="mission-banner glass" data-mission-id="mission-2">Visita durante il weekend</span>
                 </div>
                 <div class="mission-item">
-                    <span class="mission-banner" data-mission-id="mission-3">Condividi sui social</span>
+                    <span class="mission-banner glass" data-mission-id="mission-3">Condividi sui social</span>
                 </div>
                 <div id="spot-missions-hidden" class="missions-hidden" style="display: none;">
                     <div class="mission-item">
-                        <span class="mission-banner" data-mission-id="mission-4">Porta un amico</span>
+                        <span class="mission-banner glass" data-mission-id="mission-4">Porta un amico</span>
                     </div>
                     <div class="mission-item">
-                        <span class="mission-banner" data-mission-id="mission-5">Lascia una recensione</span>
+                        <span class="mission-banner glass" data-mission-id="mission-5">Lascia una recensione</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Informazioni Dettagliate -->
-        <div class="spot-detail-info-detailed">
+
+        <div class="spot-detail-info-detailed glass-strong">
             <div class="info-row">
                 <img src="../../assets/icons/homepage/Detail/Clock.svg" alt="Orario" class="info-icon"/>
                 <div class="info-content">
@@ -107,29 +91,33 @@
             </div>
         </div>
 
-        <!-- Bottoni Recensioni (Scrivi e Vedi tutte) -->
-        <div class="spot-reviews-header">
-            <div class="spot-reviews-header-actions">
-                <button type="button" class="spot-add-review-button" aria-label="Scrivi una recensione">
+
+        <div class="spot-reviews">
+
+            <span class="glass-strong p-1.5 rounded-2xl">
+                <button type="button" class="spot-add-review-button glass-light" aria-label="Scrivi una recensione">
                     Scrivi una recensione
                 </button>
-                <button type="button" class="spot-view-all-reviews-button" aria-label="Vedi tutte le recensioni">
-                    Vedi tutte
-                </button>
-            </div>
+            </span>
+
+            <button type="button" class="spot-view-all-reviews-button" aria-label="Vedi tutte le recensioni">
+                Vedi tutte
+            </button>
+
         </div>
 
-        <!-- Carosello Recensioni -->
+
         <div class="spot-reviews-carousel-container">
-            <!-- Wrapper per lo scroll delle recensioni -->
             <div class="spot-reviews-carousel-wrapper">
                 <div class="spot-reviews-carousel-track">
-                    <!-- Recensione 1 -->
+
                     <div class="spot-review-carousel-item">
-                        <div class="spot-review-item">
-                            <div class="spot-review-header">
+
+                        <div class="spot-review-item glass-light">
+                            <div class="spot-review-header ">
                                 <span class="spot-review-author">Marco R.</span>
-                                <div class="spot-review-rating">
+
+                                <div class="spot-review-rating glass-strong">
                                     <span>5</span>
                                     <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
                                 </div>
@@ -140,12 +128,12 @@
                         </div>
                     </div>
 
-                    <!-- Recensione 2 -->
+
                     <div class="spot-review-carousel-item">
-                        <div class="spot-review-item">
+                        <div class="spot-review-item glass-medium">
                             <div class="spot-review-header">
                                 <span class="spot-review-author">Giulia M.</span>
-                                <div class="spot-review-rating">
+                                <div class="spot-review-rating glass-light">
                                     <span>4</span>
                                     <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
                                 </div>
@@ -155,12 +143,12 @@
                         </div>
                     </div>
 
-                    <!-- Recensione 3 -->
+
                     <div class="spot-review-carousel-item">
-                        <div class="spot-review-item">
+                        <div class="spot-review-item glass-medium">
                             <div class="spot-review-header">
                                 <span class="spot-review-author">Luca B.</span>
-                                <div class="spot-review-rating">
+                                <div class="spot-review-rating glass-light">
                                     <span>5</span>
                                     <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
                                 </div>
@@ -170,12 +158,12 @@
                         </div>
                     </div>
 
-                    <!-- Recensione 4 -->
+
                     <div class="spot-review-carousel-item">
-                        <div class="spot-review-item">
+                        <div class="spot-review-item glass-medium">
                             <div class="spot-review-header">
                                 <span class="spot-review-author">Sara P.</span>
-                                <div class="spot-review-rating">
+                                <div class="spot-review-rating glass-light">
                                     <span>4</span>
                                     <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
                                 </div>
@@ -184,21 +172,23 @@
                                 segnaletica, ma tutto sommato è un ottimo posto per passare qualche ora rilassanti.</p>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Azioni (Visitato e Attiva missioni) - In fondo alla pagina -->
-    <div class="spot-detail-actions">
-        <button type="button" id="spot-detail-visit-button" class="spot-detail-action-button spot-detail-visit-button">
+
+    <div class="spot-detail-actions glass-strong">
+        <button type="button" id="spot-detail-visit-button"
+                class="spot-detail-action-button glass spot-detail-visit-button">
             <img src="../../assets/icons/profile/Thumbs%20Up%20Down.svg" alt="Segna come visitato" class="icon-mini">
             Visitato
         </button>
-        <button type="button" id="spot-detail-share-button" class="spot-detail-action-button spot-detail-share-button">
+        <button type="button" id="spot-detail-share-button"
+                class="spot-detail-action-button glass spot-detail-share-button">
             <img src="../../assets/icons/homepage/Detail/Goal.svg" alt="Attiva missioni" class="icon-mini">
             Attiva missioni
         </button>
     </div>
 </div>
-

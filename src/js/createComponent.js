@@ -1,7 +1,8 @@
-import { getCategoryNameIt } from "./query.js";
 import { initializeBottomSheet } from "./ui/bottomSheet.js";
+import { initializeBottomSheetFilters } from "./common/bottomSheetFilters.js";
+import { initializeStarRating } from "./common/starRating.js";
 
-async function loadComponentAsDocument(path) {
+export async function loadComponentAsDocument(path) {
     try {
         const response = await fetch(path);
         if (!response.ok) return;
@@ -23,9 +24,9 @@ async function loadComponentAsDocument(path) {
  * @returns {Promise<{ searchBarEl: HTMLElement, keyboardOverlayEl: HTMLElement }>}
  */
 export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
-    const searchDoc = await loadComponentAsDocument("../html/common-components/search-bar.html");
-    const keyboardDoc = await loadComponentAsDocument("../html/common-components/keyboard.html");
-    const overlayDoc = await loadComponentAsDocument("../html/common-components/keyboard-overlay.html");
+    const searchDoc = await loadComponentAsDocument("../html/common-components/search-bar/search-bar.html");
+    const keyboardDoc = await loadComponentAsDocument("../html/common-components/search-bar/keyboard.html");
+    const overlayDoc = await loadComponentAsDocument("../html/common-components/search-bar/keyboard-overlay.html");
 
     // Root elements
     const searchBarEl = searchDoc.body.firstElementChild;
@@ -55,6 +56,10 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
         onValueChanged(e.target.value, e);
     });
 
+    searchInput.addEventListener("click", () => {
+        searchInput.focus();
+    });
+
     // =========================
     // FOCUS / BLUR
     // =========================
@@ -64,6 +69,11 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
 
         keyboard.style.transform = "translateY(0)";
         overlay.style.transform = "translateY(0)";
+
+        const searchBarRect = searchBarEl.getBoundingClientRect();
+        const overlayRect = overlay.closest('[data-overlay-view]').getBoundingClientRect();
+        const topOffset = searchBarRect.bottom - overlayRect.top;
+        overlay.style.top = topOffset + 'px';
 
         if (track && window.innerWidth <= 1024) {
             track.style.transform = "translateY(-320px)";
@@ -125,6 +135,9 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
 
     keyboard.addEventListener("mousedown", (e) => e.preventDefault());
 
+    keyboard.classList.add("keyboard");
+    overlay.classList.add("keyboard-overlay");
+
     return {
         searchBarEl,
         keyboardEl,
@@ -133,8 +146,8 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
 }
 
 export async function createBottomSheetWithOverlay(openButtonEl) {
-    const bottomSheetDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet.html");
-    const overlayDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-overlay.html");
+    const bottomSheetDoc = await loadComponentAsDocument("../html/common-components/search-bar/bottom-sheet.html");
+    const overlayDoc = await loadComponentAsDocument("../html/common-components/search-bar/bottom-sheet-overlay.html");
 
     const bottomSheetEl = bottomSheetDoc.body.firstElementChild;
     const bottomSheetOverlayEl = overlayDoc.body.firstElementChild;
@@ -152,7 +165,8 @@ export async function createBottomSheetWithOverlay(openButtonEl) {
     };
 }
 
-export async function createSearchBarWithKeyboardAndFilters(placeholder, onValueChanged, bottomSheetContentCreator) {
+export async function createSearchBarWithKeyboardAndFilters(
+    { placeholder, onValueChanged, bottomSheetContentCreator, onFiltersApplied }) {
     const { searchBarEl, keyboardEl, overlayEl } =
         await createSearchBarWithKeyboard(placeholder, onValueChanged);
     
@@ -162,7 +176,9 @@ export async function createSearchBarWithKeyboardAndFilters(placeholder, onValue
         await createBottomSheetWithOverlay(filterButton);
 
     // Aggiunta del contenuto del bottom-sheet dinamicamente
-    const bottomSheetContent = await bottomSheetContentCreator();
+    const bottomSheetContent =
+        await bottomSheetContentCreator(bottomSheetEl, bottomSheetOverlayEl, filterButton, onFiltersApplied);
+    
     bottomSheetEl.querySelector('.filter-content').appendChild(bottomSheetContent);
 
     return {
@@ -174,8 +190,8 @@ export async function createSearchBarWithKeyboardAndFilters(placeholder, onValue
     }
 }
 
-export async function createBottomSheetStandardFilters() {
-    const filtersDoc = await loadComponentAsDocument("../html/common-components/bottom-sheet-filters.html");
+export async function createBottomSheetWithStandardFilters(bottomSheetEl, overlayEl, buttonEl, onFiltersApplied) {
+    const filtersDoc = await loadComponentAsDocument("../html/common-components/search-bar/bottom-sheet-filters.html");
 
     const filtersEl = filtersDoc.body.firstElementChild;
 
@@ -184,53 +200,27 @@ export async function createBottomSheetStandardFilters() {
         return filtersEl;
     }
 
+    await initializeBottomSheetFilters({
+        filtersEl: filtersEl,
+        bottomSheetEl : bottomSheetEl,
+        overlayEl: overlayEl,
+        buttonEl: buttonEl,
+        onFiltersApplied: onFiltersApplied});
+
     return filtersEl;
 }
 
-/**
- * Crea una card "spot vicino".
- *
- * @param {Object} spot - Oggetto spot dal DB.
- * @param {string} distance - Distanza formattata (es. "350 m").
- * @returns {Promise<HTMLElement>} Elemento DOM pronto per essere aggiunto alla pagina.
- */
-export async function createNearbySpotCard(spot, distance) {
-    const doc = await loadComponentAsDocument("../html/common-components/nearby-spot-card.html");
+export async function createStarRating() {
+    const starRatingDoc = await loadComponentAsDocument("../html/common-components/star-rating/star-rating.html");
 
-    if (!doc) return null;
+    const starRatingEl = starRatingDoc.body.firstElementChild;
 
-    const card = doc.body.firstElementChild;
-
-    // Nome
-    const title = card.querySelector('[data-field="title"]');
-    if (title) title.textContent = spot.nome;
-
-    // Immagine
-    const image = card.querySelector('[data-field="image"]');
-    if (image) {
-        image.src = spot.immagine;
-        image.alt = `Foto di ${spot.nome}`;
+    if (!starRatingEl) {
+        console.warn("StarRating: elementi mancanti");
+        return starRatingEl;
     }
 
-    // Distanza
-    const distanceEl = card.querySelector('[data-field="distance"]');
-    if (distanceEl) distanceEl.textContent = distance;
+    initializeStarRating(starRatingEl);
 
-    // Categoria
-    const categoryEl = card.querySelector('[data-field="category"]');
-    if (categoryEl) {
-        categoryEl.textContent = await getCategoryNameIt(spot.idCategoria);
-    }
-
-    // Dataset
-    card.dataset.spotId = spot.id ?? "";
-    card.dataset.category = spot.idCategoria;
-    card.dataset.saved = "true";
-
-    // Eventi (?)
-    card.addEventListener("click", () => {
-        console.log("Apri dettaglio spot:", spot.nome);
-    });
-
-    return card;
+    return starRatingEl;
 }

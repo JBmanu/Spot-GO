@@ -1,0 +1,6 @@
+@layer components {
+
+    .new-spot-map {
+        @apply w-full h-[240px];
+    }
+}

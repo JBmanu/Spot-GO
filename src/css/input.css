@@ -4,33 +4,44 @@
 
 @import "./common/smartphone.css";
 
-@import "./theme.css";
-
 @import "./common/utils.css";
+
+@import "./common/base.css";
+
+@import "./common/glass.css";
 
 @import "./profile/profile-overview.css";
 
 @import "./homepage/homepage.css";
 
 @import "./community/community.css";
-@import "./common/carousel.css";
 
 @import "./homepage/homepage.css";
 
-@import "./homepage/saved-spots.css";
-
-@import "../strutture-pronte/carousels/carousel-horizontal.css";
-
-@import "./homepage/toprated-spots.css";
+@import "../base/carousels/carousel-horizontal.css";
 
 @import "./common/spot-detail.css";
 
-@import "./homepage/view-all-saved.css";
-
 @import "./map/map.css";
 
-@import "../strutture-pronte/simil-homepage-toprated/simil-toprated.css";
+@import "../base/carousels/carousel-vertical.css";
 
-@import "../strutture-pronte/simil-homepage-nearby/simil-nearby.css";
+@import "../base/simil-homepage-toprated/simil-toprated.css";
+
+@import "../base/simil-homepage-nearby/simil-nearby.css";
+
+@import "../base/simil-homepage-saved/simil-saved.css";
 
 @import "./common/bottom-sheet.css";
+
+@import "./common/bottom-sheet-filters.css";
+
+@import "../base/classic-spot-card/classic-spot.css";
+
+@import "./map/new-spot.css";
+
+@import "./goals/goals.css";
+
+@import "./login-signup/login.css";
+
+@import "./common-components/search-bar/keyboard.css";

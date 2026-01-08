@@ -1,263 +1,419 @@
-import { initializeCarousel } from "../ui/carousel.js";
-import { initializeBookmarks, syncAllBookmarks } from "../ui/bookmark.js";
-import { initializeSpotClickHandlers } from "../pages/spotDetail.js";
-import { getFirstUser, getSavedSpots, getSpots, getCategoryNameIt } from "../query.js";
+import {initializeBookmarks, syncAllBookmarks} from "../common/bookmark.js";
+import {initializeSpotClickHandlers} from "./spotDetail.js";
+import {getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt} from "../json-data-handler.js";
+import {distanceFromUserToSpot, formatDistance} from "../common.js";
+import {goBack, setupBackButton, closeOverlay} from "../common/back.js";
+import {initializeVerticalCarousel} from "../common/carousels.js";
+import {createSearchBarWithKeyboard} from "../createComponent.js";
 
-export async function loadViewAllSaved(fromPage = "homepage") {
-    try {
-        const response = await fetch("../html/homepage-pages/view-all/view-all-saved.html");
-        if (!response.ok) return;
-        const main = document.getElementById("main");
-        const headerLeftLogo = document.querySelector(".header-left-logo");
-        const headerLogoText = document.getElementById("header-logo-text");
-        const headerTitle = document.getElementById("header-title");
-        if (!main) return;
-        main.innerHTML = await response.text();
-        requestAnimationFrame(() => {
-            main.classList.add("view-all-saved-enter");
-        });
-        if (headerLeftLogo) {
-            headerLeftLogo.innerHTML = `
-        <button type="button" id="header-back-button" aria-label="Torna indietro" class="flex items-center justify-center w-10 h-10">
-          <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
-        </button>
-      `;
-        }
-        if (headerLogoText) headerLogoText.style.display = "none";
-        if (headerTitle) {
-            headerTitle.textContent = "I tuoi Spot Salvati";
-            headerTitle.classList.remove("hidden");
-        }
-        deactivateAllToolbarButtons();
-        initializeCarousel(".vertical-carousel-track");
-        initializeBookmarks();
-        await populateViewAllSavedSpots();
-        initializeSpotClickHandlers();
-        initializeBookmarks();
-        await syncAllBookmarks();
-        const backButton = document.getElementById("header-back-button");
-        if (backButton) {
-            backButton.addEventListener("click", async () => {
-                main.classList.remove("view-all-saved-enter");
-                main.classList.add("view-all-saved-exit");
-                await new Promise((resolve) => setTimeout(resolve, 300));
-                main.classList.remove("view-all-saved-exit");
-                if (fromPage === "profile") {
-                    await goToProfile();
-                } else {
-                    await goToHomepage();
-                }
-            });
-        }
-        initializeViewAllSavedSearch();
-    } catch (err) {
-        console.error("Errore nel caricamento view-all-saved:", err);
+const OVERLAY_ID = "view-all-saved";
+const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
+
+const state = {
+    htmlCache: null,
+    overlay: null,
+    initialized: false,
+    popHandler: null,
+    classicCardTplLoaded: false,
+    keyboardEl: null,
+    overlayEl: null,
+};
+
+function getMain() {
+    return document.getElementById("main");
+}
+
+function getOverlay() {
+    const main = getMain();
+    if (!main) return null;
+
+    if (state.overlay && !main.contains(state.overlay)) state.overlay = null;
+    state.overlay = state.overlay || main.querySelector(OVERLAY_SELECTOR) || null;
+
+    return state.overlay;
+}
+
+async function fetchOverlayHtml() {
+    if (state.htmlCache) return state.htmlCache;
+
+    const res = await fetch("../html/homepage-pages/view-all/view-all-saved.html");
+    if (!res.ok) return null;
+
+    state.htmlCache = await res.text();
+    return state.htmlCache;
+}
+
+function resolveReturnViewKey(main) {
+    const activeBtn = document.querySelector(".app-toolbar button[aria-current='page']");
+    if (activeBtn) return activeBtn.dataset.section || null;
+
+    const activeView = main.querySelector("[data-section-view]:not([hidden])");
+    return activeView?.getAttribute("data-section-view") || activeView?.id || null;
+}
+
+function showViewAllSavedHeader() {
+    const logo = document.querySelector(".header-left-logo");
+    const logoText = document.getElementById("header-logo-text");
+    const title = document.getElementById("header-title");
+
+    if (logo) {
+        logo.innerHTML = `
+            <button type="button" id="header-back-button" data-back aria-label="Torna indietro"
+                class="flex items-center justify-center w-10 h-10">
+                <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
+            </button>`;
+    }
+    if (logoText) logoText.style.display = "none";
+    if (title) {
+        title.textContent = "I tuoi Spot Salvati";
+        title.classList.remove("hidden");
     }
 }
 
-function deactivateAllToolbarButtons() {
-    const toolbar = document.querySelector(".app-toolbar");
-    if (!toolbar) return;
-    toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
-        btn.classList.remove("active");
-        const text = btn.querySelector("span");
-        const icon = btn.querySelector("[data-role='icon']");
-        if (text) {
-            text.classList.remove("font-bold");
-            text.classList.add("font-normal");
-        }
-        if (icon) {
-            icon.classList.remove("scale-125");
-        }
-    });
+function hideAllSectionViews(main) {
+    main.querySelectorAll("[data-section-view]").forEach((el) => (el.hidden = true));
 }
 
-async function populateViewAllSavedSpots() {
+function mountOverlay(main, {html, returnViewKey}) {
+    hideAllSectionViews(main);
+
+    const existing = main.querySelector(OVERLAY_SELECTOR);
+    if (existing) {
+        existing.hidden = false;
+        if (returnViewKey) existing.dataset.returnView = String(returnViewKey);
+        state.overlay = existing;
+        return existing;
+    }
+
+    const overlay = document.createElement("div");
+    overlay.dataset.overlayView = OVERLAY_ID;
+    if (returnViewKey) overlay.dataset.returnView = String(returnViewKey);
+    overlay.innerHTML = html;
+    overlay.style.position = "relative";
+
+    main.appendChild(overlay);
+    state.overlay = overlay;
+    return overlay;
+}
+
+function pushHistoryState(returnViewKey) {
     try {
-        const currentUser = await getFirstUser();
-        if (!currentUser) return;
-        const savedSpotRelations = await getSavedSpots(currentUser.id);
-        const savedContainer = document.getElementById("view-all-saved-container");
-        if (!savedContainer) return;
-        if (!savedSpotRelations || savedSpotRelations.length === 0) {
-            savedContainer.innerHTML =
-                '<p class="text-center text-text_color/60 py-8">Nessuno spot salvato</p>';
+        const curr = history.state || {};
+        if (curr.overlay !== OVERLAY_ID) {
+            history.pushState(
+                {...curr, overlay: OVERLAY_ID, returnView: returnViewKey || null},
+                "",
+                location.href
+            );
+        } else {
+            history.replaceState(
+                {...curr, returnView: returnViewKey || curr.returnView || null},
+                "",
+                location.href
+            );
+        }
+    } catch (_) {
+    }
+}
+
+function clearHistoryState() {
+    try {
+        const curr = history.state || {};
+        if (curr.overlay === OVERLAY_ID) {
+            const next = {...curr};
+            delete next.overlay;
+            delete next.returnView;
+            history.replaceState(next, "", location.href);
+        }
+    } catch (_) {
+    }
+}
+
+function attachPopHandler() {
+    if (state.popHandler) window.removeEventListener("popstate", state.popHandler);
+
+    state.popHandler = () => {
+        const overlay = getOverlay();
+        if (!overlay || overlay.hidden) return;
+        goBack();
+    };
+
+    window.addEventListener("popstate", state.popHandler);
+}
+
+function renderEmptySavedMessage(container) {
+    const p = document.createElement("p");
+    p.dataset.emptySaved = "true";
+    p.className = "text-center text-text_color/60 py-8";
+    p.textContent = "Nessuno spot salvato";
+    container.appendChild(p);
+}
+
+function filterSpotCards(root, query) {
+    const searchQuery = String(query || "").toLowerCase().trim();
+    const cards = root.querySelectorAll('[data-slot="spot"]');
+
+    cards.forEach((card) => {
+        const spotId = (card.getAttribute("data-spot-id") || "").trim();
+        if (!spotId) {
+            card.style.display = "none";
+            card.style.zIndex = "998";
             return;
         }
-        const allSpots = await getSpots();
-        const neededIds = savedSpotRelations.map((r) => r.idLuogo);
-        const allCards = Array.from(savedContainer.querySelectorAll('[role="listitem"]'));
-        if (allCards.length === 0) return;
-        const accounted = new Set();
-        allCards.forEach((card) => {
-            const spotId = card.getAttribute("data-spot-id") || "";
-            if (spotId && neededIds.includes(spotId)) {
-                accounted.add(spotId);
-            } else if (spotId && !neededIds.includes(spotId)) {
-                card.setAttribute("data-spot-id", "");
-                const titleEl = card.querySelector('[data-field="title"]');
-                if (titleEl) titleEl.textContent = "";
-                const imageEl = card.querySelector('[data-field="image"]');
-                if (imageEl) imageEl.src = "";
-                const distanceEl = card.querySelector('[data-field="distance"]');
-                if (distanceEl) distanceEl.textContent = "";
-                const categoryEl = card.querySelector('[data-field="category"]');
-                if (categoryEl) categoryEl.textContent = "";
-                const ratingEl = card.querySelector('[data-field="rating"]');
-                if (ratingEl) ratingEl.textContent = "";
-            }
-        });
-        let placeholderCards = allCards.filter((c) => !c.getAttribute("data-spot-id"));
-        for (const idLuogo of neededIds) {
-            if (accounted.has(idLuogo)) continue;
-            const spot = allSpots.find((s) => s.id === idLuogo);
-            if (!spot) continue;
-            let cardToFill = placeholderCards.shift();
-            if (!cardToFill) {
-                const templateCard = allCards[0];
-                if (!templateCard) continue;
-                cardToFill = templateCard.cloneNode(true);
-                savedContainer.appendChild(cardToFill);
-                allCards.push(cardToFill);
-            }
-            cardToFill.setAttribute("data-spot-id", spot.id);
-            const titleEl = cardToFill.querySelector('[data-field="title"]');
-            if (titleEl) titleEl.textContent = spot.nome || "Spot";
-            const imageEl = cardToFill.querySelector('[data-field="image"]');
-            if (imageEl) {
-                imageEl.src = spot.immagine || "";
-                imageEl.alt = spot.nome || "Foto spot";
-            }
-            const distanceEl = cardToFill.querySelector('[data-field="distance"]');
-            if (distanceEl)
-                distanceEl.textContent = spot.distanza ? `${spot.distanza} m` : "0 m";
-            const categoryEl = cardToFill.querySelector('[data-field="category"]');
-            if (categoryEl && spot.idCategoria) {
-                categoryEl.textContent = await getCategoryNameIt(spot.idCategoria);
-            }
-            const ratingEl = cardToFill.querySelector('[data-field="rating"]');
-            if (ratingEl) ratingEl.textContent = spot.rating || "0";
-            cardToFill.setAttribute(
-                "data-category",
-                (spot.idCategoria || "unknown").toLowerCase()
-            );
-            cardToFill.style.display = "";
-            accounted.add(spot.id);
-        }
-        placeholderCards.forEach((pc) => (pc.style.display = "none"));
-    } catch (error) {
-        console.error("Errore nel popolare gli spot salvati view-all:", error);
-    }
-}
 
-function initializeViewAllSavedSearch() {
-    const searchInput = document.getElementById("view-all-saved-search");
-    const keyboard = document.getElementById("view-all-saved-keyboard");
-    const overlay = document.getElementById("view-all-saved-keyboard-overlay");
-    if (!searchInput || !keyboard || !overlay) return;
-    const track = document.querySelector(".view-all-saved-track");
-    searchInput.addEventListener("focus", () => {
-        keyboard.classList.add("keyboard-visible");
-        overlay.classList.add("overlay-visible");
-        keyboard.style.transform = "translateY(0)";
-        overlay.style.transform = "translateY(0)";
-        if (track && window.innerWidth <= 1024) {
-            track.style.transform = "translateY(-320px)";
-            track.style.transition =
-                "transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-        }
-    });
-    searchInput.addEventListener("blur", () => {
-        keyboard.classList.remove("keyboard-visible");
-        overlay.classList.remove("overlay-visible");
-        keyboard.style.transform = "translateY(100%)";
-        overlay.style.transform = "translateY(100%)";
-        searchInput.value = "";
-        const spotCards = document.querySelectorAll(".view-all-saved-card");
-        spotCards.forEach((card) => {
-            const spotId = card.getAttribute("data-spot-id");
-            card.style.display = spotId && spotId.trim() !== "" ? "" : "none";
+        const titleEl = card.querySelector('[data-field="title"]');
+        const title = (titleEl?.textContent || "").toLowerCase();
+
+        if (!searchQuery) {
+            card.style.display = "";
             card.style.zIndex = "998";
-        });
-        if (track) {
-            track.style.transform = "translateY(0)";
-            track.style.transition =
-                "transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+            return;
         }
-    });
-    const keyButtons = keyboard.querySelectorAll(".kb-key, .kb-space, .kb-backspace");
-    const closeBtn = keyboard.querySelector(".kb-close");
-    keyButtons.forEach((button) => {
-        button.addEventListener("click", (e) => {
-            e.preventDefault();
-            const key = button.dataset.key;
-            if (key === "backspace") searchInput.value = searchInput.value.slice(0, -1);
-            else if (key === " ") searchInput.value += " ";
-            else searchInput.value += key.toLowerCase();
-            searchInput.focus();
-            searchInput.dispatchEvent(new Event("input", { bubbles: true }));
-        });
-    });
-    if (closeBtn) closeBtn.addEventListener("click", (e) => (e.preventDefault(), searchInput.blur()));
-    overlay.addEventListener("click", (e) => (e.preventDefault(), searchInput.blur()));
-    keyboard.addEventListener("mousedown", (e) => e.preventDefault());
-    searchInput.addEventListener("input", () => {
-        const searchQuery = searchInput.value.toLowerCase().trim();
-        const spotCards = document.querySelectorAll(".view-all-saved-card");
-        spotCards.forEach((card) => {
-            const spotId = card.getAttribute("data-spot-id");
-            if (!spotId || spotId.trim() === "") {
-                card.style.display = "none";
-                card.style.zIndex = "998";
-                return;
-            }
-            const title = card.querySelector(".view-all-saved-title");
-            const titleText = title ? title.textContent.toLowerCase() : "";
-            if (searchQuery === "") {
-                card.style.display = "";
-                card.style.zIndex = "998";
-            } else {
-                const matches = titleText.includes(searchQuery);
-                card.style.display = matches ? "" : "none";
-                card.style.zIndex = matches ? "1001" : "998";
-            }
-        });
+
+        const matches = title.includes(searchQuery);
+        card.style.display = matches ? "" : "none";
+        card.style.zIndex = matches ? "1001" : "998";
     });
 }
 
-async function goToHomepage() {
-    const main = document.getElementById("main");
-    const headerLeftLogo = document.querySelector(".header-left-logo");
-    const headerLogoText = document.getElementById("header-logo-text");
-    const headerTitle = document.getElementById("header-title");
-    if (headerLeftLogo) {
-        headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
+function renderSpotCard(template, spot, categoryCache) {
+    const cardNode = template.content.firstElementChild.cloneNode(true);
+
+    cardNode.setAttribute("data-spot-id", spot.id);
+    cardNode.setAttribute("data-category", String(spot.idCategoria || "unknown").toLowerCase());
+
+    const titleEl = cardNode.querySelector('[data-field="title"]');
+    if (titleEl) titleEl.textContent = spot.nome || "Spot";
+
+    const imageEl = cardNode.querySelector('[data-field="image"]');
+    if (imageEl) {
+        imageEl.src = spot.immagine || "";
+        imageEl.alt = spot.nome || "Foto spot";
     }
-    if (headerLogoText) headerLogoText.style.display = "";
-    if (headerTitle) headerTitle.classList.add("hidden");
-    const response = await fetch("../html/homepage.html");
-    if (!response.ok) return;
-    main.innerHTML = await response.text();
-    const { initializeHomepageFilters } = await import("./homepage.js");
-    await initializeHomepageFilters();
+
+    const categoryEl = cardNode.querySelector('[data-field="category"]');
+    if (categoryEl && spot.idCategoria) {
+        const key = String(spot.idCategoria);
+
+        categoryEl.textContent = categoryCache.get(key) || "";
+
+        if (!categoryCache.has(key)) {
+            categoryCache.set(key, "");
+            getCategoryNameIt(spot.idCategoria).then((name) => {
+                categoryCache.set(key, name || "");
+                categoryEl.textContent = name || "";
+            });
+        }
+    }
+
+    const distanceEl = cardNode.querySelector('[data-field="distance"]');
+    if (distanceEl) distanceEl.textContent = formatDistance(distanceFromUserToSpot(spot));
+
+    const ratingEl = cardNode.querySelector('[data-field="rating"]');
+    if (ratingEl) {
+        const rating = spot?.rating ?? spot?.valutazione ?? spot?.stelle ?? spot?.mediaVoti ?? null;
+        const n = Number(String(rating ?? "").replace(",", "."));
+        ratingEl.textContent = Number.isFinite(n) ? (Math.round(n * 10) / 10).toFixed(1) : "-";
+    }
+
+    return cardNode;
 }
 
-async function goToProfile() {
-    const main = document.getElementById("main");
-    const headerLeftLogo = document.querySelector(".header-left-logo");
-    const headerLogoText = document.getElementById("header-logo-text");
-    const headerTitle = document.getElementById("header-title");
-    if (headerLeftLogo) {
-        headerLeftLogo.innerHTML = `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
+async function ensureClassicSpotCardTemplateLoaded() {
+    if (state.classicCardTplLoaded) return true;
+    if (document.getElementById("classic-spot-card-template")) {
+        state.classicCardTplLoaded = true;
+        return true;
     }
-    if (headerLogoText) headerLogoText.style.display = "none";
-    if (headerTitle) {
-        headerTitle.classList.remove("hidden");
-        headerTitle.textContent = "Il mio profilo";
+
+    const res = await fetch("../base/classic-spot-card/classic-spot.html");
+    if (!res.ok) return false;
+
+    const html = await res.text();
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+
+    const tpl = temp.querySelector("template#classic-spot-card-template");
+    if (!tpl) return false;
+
+    document.body.appendChild(tpl);
+    state.classicCardTplLoaded = true;
+    return true;
+}
+
+async function populateViewAllSavedSpots({preserveDom = false} = {}) {
+    const okTpl = await ensureClassicSpotCardTemplateLoaded();
+    if (!okTpl) return;
+
+    const currentUser = await getCurrentUser();
+    if (!currentUser) return;
+
+    const root = getOverlay();
+    if (!root) return;
+
+    const savedContainer = root.querySelector("#view-all-saved-list");
+    if (!savedContainer) return;
+
+    const track = savedContainer.querySelector(".carousel-vertical-track") || savedContainer;
+
+    track.querySelectorAll("[data-empty-saved]").forEach((el) => el.remove());
+
+    const relations = (await getSavedSpots(currentUser.username)) || [];
+    if (relations.length === 0) {
+        track.querySelectorAll('[data-slot="spot"]').forEach((el) => el.remove());
+        renderEmptySavedMessage(track);
+        return;
     }
-    const response = await fetch("../html/profile.html");
-    if (!response.ok) return;
-    main.innerHTML = await response.text();
-    const { loadProfileOverview } = await import("./profile.js");
-    await loadProfileOverview();
+
+    const existingCards = new Map(
+        Array.from(track.querySelectorAll('[data-slot="spot"][data-spot-id]')).map((el) => [
+            String(el.getAttribute("data-spot-id")),
+            el,
+        ])
+    );
+
+    if (!preserveDom) {
+        track.querySelectorAll('[data-slot="spot"]').forEach((el) => el.remove());
+        existingCards.clear();
+    }
+
+    const allSpots = (await getSpots()) || [];
+    const neededIds = new Set(relations.map((r) => String(r.idLuogo)).filter(Boolean));
+
+    const spotsToShow = allSpots
+        .filter((s) => neededIds.has(String(s.id)))
+        .sort((a, b) => distanceFromUserToSpot(a) - distanceFromUserToSpot(b));
+
+    const template = document.getElementById("classic-spot-card-template");
+    if (!template?.content?.firstElementChild) return;
+
+    const categoryCache = new Map();
+
+    for (const spot of spotsToShow) {
+        const id = String(spot.id);
+        let cardNode = existingCards.get(id);
+
+        if (!cardNode) {
+            cardNode = renderSpotCard(template, spot, categoryCache);
+            track.appendChild(cardNode);
+        }
+
+        existingCards.delete(id);
+    }
+
+    for (const [, leftover] of existingCards) leftover.remove();
+}
+
+async function closeViewAllSavedAndRestore() {
+    const main = getMain();
+    if (!main) return;
+
+    const overlay = main.querySelector(OVERLAY_SELECTOR);
+    if (overlay) closeOverlay(overlay);
+
+    if (state.keyboardEl && main.contains(state.keyboardEl)) {
+        main.removeChild(state.keyboardEl);
+    }
+    if (state.overlayEl && overlay && overlay.contains(state.overlayEl)) {
+        overlay.removeChild(state.overlayEl);
+    }
+    state.keyboardEl = null;
+    state.overlayEl = null;
+
+    clearHistoryState();
+}
+
+export async function loadViewAllSaved(returnViewKey = null) {
+    const main = getMain();
+    if (!main) return;
+
+    main.style.position = "relative";
+
+    returnViewKey = returnViewKey || resolveReturnViewKey(main);
+
+    if (state.overlay && !main.contains(state.overlay)) {
+        state.overlay = null;
+        state.initialized = false;
+    }
+
+    if (state.overlay && state.initialized) {
+        state.overlay.hidden = false;
+        if (returnViewKey) state.overlay.dataset.returnView = String(returnViewKey);
+
+        hideAllSectionViews(main);
+        pushHistoryState(returnViewKey);
+
+        main.classList.remove("view-all-saved-enter");
+        void main.offsetWidth;
+        main.classList.add("view-all-saved-enter");
+
+        showViewAllSavedHeader();
+
+        setupBackButton({
+            fallback: async () => {
+                await closeViewAllSavedAndRestore();
+            },
+        });
+
+        attachPopHandler();
+
+        await populateViewAllSavedSpots({preserveDom: true});
+        initializeBookmarks();
+        await syncAllBookmarks();
+        return;
+    }
+
+    const html = await fetchOverlayHtml();
+    if (!html) return;
+
+    const overlay = mountOverlay(main, {html, returnViewKey});
+
+    const placeholder = overlay.querySelector("#search-bar-placeholder");
+    if (placeholder) {
+        const {
+            searchBarEl,
+            keyboardEl,
+            overlayEl
+        } = await createSearchBarWithKeyboard("Cerca...", (value) => filterSpotCards(overlay, value));
+        placeholder.replaceWith(searchBarEl);
+        main.appendChild(keyboardEl);
+        overlay.appendChild(overlayEl);
+        state.keyboardEl = keyboardEl;
+        state.overlayEl = overlayEl;
+
+        state.overlayEl.classList.remove("keyboard-overlay");
+        state.overlayEl.classList.add("keyboard-overlay-view-all");
+    }
+
+    pushHistoryState(returnViewKey);
+
+    main.classList.remove("view-all-saved-enter");
+    void main.offsetWidth;
+    main.classList.add("view-all-saved-enter");
+
+    showViewAllSavedHeader();
+
+    if (!state.initialized) {
+        initializeSpotClickHandlers();
+        initializeVerticalCarousel(overlay.querySelector("#view-all-saved-list"), {cardSelector: '[data-slot="spot"]'});
+        const track = overlay.querySelector("#view-all-saved-list .carousel-vertical-track");
+        if (track) {
+            track.style.gap = "0";
+            track.style.padding = "0";
+        }
+
+        state.initialized = true;
+    }
+
+    await populateViewAllSavedSpots({preserveDom: true});
+    initializeBookmarks();
+    await syncAllBookmarks();
+
+    setupBackButton({
+        fallback: async () => {
+            await closeViewAllSavedAndRestore();
+        },
+    });
+
+    attachPopHandler();
 }
