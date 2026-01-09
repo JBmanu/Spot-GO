@@ -7,33 +7,66 @@ export async function loadCommunityData() {
 async function loadFriends() {
     const container = document.getElementById("community-friends-container");
     container.innerHTML = "";
-    var friends = await getFriends("AMNSHSNGXdZ0xm4XRWBS");
+    var friends = [] //await getFriends("AMNSHSNGXdZ0xm4XRWBS");
     console.log(friends);
 
-    friends = [
-        {
-            id: "id-utente-firebase",
-            email: "mail@mail.com",
-            username: "username"
-        },
-        {
-            id: "id-utente2-firebase",
-            email: "pluto@mail.com",
-            username: "plut"
-        }
-    ];
+    for (let index = 0; index < 18; index++) {
+        friends.push(
+            {
+                id: "id-utente-firebase",
+                email: "mail@mail.com",
+                username: "user " + index
+            }
+        );
+    }
 
     if (friends.length === 0) {
         container.innerHTML = '<p>Nessun amico trovato</p>';
         return;
+    } else {
+        const friendsVisible = 5;
+        const [friendsOne, friendsTwo] = splitArray(friends, friendsVisible);
+        appendHtmlChild(friendsOne, container);
+
+        const hiddenDiv = document.createElement('div');
+        hiddenDiv.id = 'hidden-friends';
+        hiddenDiv.classList.add('hide-other');
+        appendHtmlChild(friendsTwo, hiddenDiv);
+        container.appendChild(hiddenDiv); 
+
+        // Add button to show/hide all other friends in list
+        const header = document.querySelector('#community-friends-section header');
+        const button = document.createElement('button');
+        button.id = 'show-all-friends-button';
+        button.classList.add('vedi-tutti-button');
+        button.textContent = 'Mostra tutti';
+        button.addEventListener('click', toggleExpandFriends);
+        header.appendChild(button);
     }
-    friends.forEach(element => {
-        console.log(element);
+}
+
+function appendHtmlChild(items, container) {
+    items.forEach(element => {
         const friendCard = makeFriendCard(element);
         container.appendChild(friendCard);
     });
 }
 
+function splitArray(arr = [], firstSize = 0) {
+    const first = arr.slice(0, firstSize);
+    const second = arr.slice(firstSize);
+    return [first, second];
+}
+
+function toggleExpandFriends() {
+    const hiddenList = document.querySelector('#hidden-friends');
+    hiddenList.classList.toggle('hide-other')
+}
+
+/**
+ * Generate HTML friend list item given friend data.
+ * Returns an article child.
+ */
 function makeFriendCard(data) {
     const article = document.createElement("article");
     article.className = "community-friend-card";

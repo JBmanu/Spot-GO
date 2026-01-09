@@ -3,6 +3,7 @@
         @apply flex justify-between rounded-2xl border bg-main_paper p-2;
         min-width: 0;
         border-radius: var(--radius-2xl);
+        margin: calc(var(--spacing) * 3);
         background: rgba(255, 255, 255, 0.468);
         border: 1.5px solid var(--hp-border-color);
         border-bottom: 4px solid rgba(var(--hp-cat-nature), 0.40);
@@ -10,7 +11,7 @@
     }
 
     .community-section-header {
-        @apply text-2xl font-semibold;
+        @apply px-3 text-2xl font-semibold;
     }
 
     .card-actions-container {
@@ -19,6 +20,7 @@
 
     .friend-avatar {
         @apply grid place-items-center w-16 h-16 rounded-full border border-border_color text-xl font-bold;
+        background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.18));
     }
 
     .friend-card-data {
@@ -53,4 +55,25 @@
         @apply scale-[0.95];
     }
 
+    #suggested-section-header {
+        font-style: italic;
+    }
+
+    #community-friends-section header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #hidden-friends {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+
+    #hidden-friends:not(.hide-other) {
+        max-height: fit-content;  /* Valore alto > altezza max amici */
+        opacity: 1;
+    }
 }
