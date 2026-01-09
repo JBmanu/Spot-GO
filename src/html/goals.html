@@ -2,44 +2,27 @@
 
     <!--Current missions-->
     <div class="mx-4 my-6">
+
         <!-- Titolo principale -->
         <div class="flex items-center gap-2 mb-4">
             <img src="../assets/icons/goals/Sheets.svg" class="icon" alt="Mission Icon"/>
             <h1 class="text-xl font-bold text-gray-800">Le tue missione in corso</h1>
         </div>
 
+
         <!-- Contenitore principale -->
-        <div class="glass-strong rounded-2xl shadow px-6 py-5 space-y-6">
+        <div class="flex flex-col gap-2">
 
-            <!-- ================= TOP ================= -->
-            <div class="flex justify-between items-center">
-                <!-- sinistra -->
-                <button class="glass-medium p-2 rounded-xl flex items-center gap-1 text-gray-600 cursor-pointer">
-                    <img src="../assets/icons/goals/Location.svg" class="icon-mini" alt=""/>
-                    <span class="text-sm font-medium">Via torquato tasso 113</span>
-                </button>
-
-                <!-- destra -->
-                <span class="text-sm font-semibold text-green-600">+250 XP</span>
-            </div>
-
-            <!-- ================= CENTER ================= -->
+            <!-- ================= SPOTS MISSIONS ================= -->
             <div class="glass-medium p-2 rounded-xl flex justify-between items-center cursor-pointer">
-                <!-- Sinistra: Pin + titolo + distanza -->
-                <div class="flex flex-col">
-                    <div class="flex items-center gap-2">
-                        <img src="../assets/icons/homepage/Fast%20Food.svg" class="w-5 h-5"/>
-                        <h2 class="text-lg font-semibold text-gray-800 truncate">
-                            Luogo luogoso
-                        </h2>
-                    </div>
-                    <!-- Distanza -->
-                    <div class="flex items-center gap-1 mt-1 text-gray-600 text-sm">
-                        <img src="../assets/icons/goals/Map Pin.svg" class="w-4 h-4"/>
-                        <span class="font-medium">10 m</span>
-                    </div>
-                </div>
 
+                <!-- Icona + Luogo -->
+                <div class="flex items-center gap-2">
+                    <img src="../assets/icons/homepage/Fast%20Food.svg" class="icon-mini" alt=""/>
+                    <h2 class="text-lg font-semibold text-gray-800 truncate">
+                        Luogo luogoso
+                    </h2>
+                </div>
                 <!-- Destra: Progresso missioni -->
                 <div class="flex items-center justify-center">
                     <!-- Cerchio di progresso -->
@@ -59,38 +42,102 @@
                 </div>
             </div>
 
-            <!-- ================= BOTTOM ================= -->
-            <div class="space-y-4">
 
-                <!-- Mission Item -->
-                <div class="bg-gray-50 rounded-xl px-4 py-3 flex justify-between items-center">
+            <!-- ================= SPOT MISSIONS ================= -->
+            <div class="glass-medium p-2 rounded-xl flex flex-col gap-2">
+                <!-- Spot info -->
+                <div class="flex justify-between items-center cursor-pointer">
 
-                    <!-- Left -->
-                    <div class="space-y-1">
-                        <h3 class="text-sm font-semibold text-gray-800">
-                            Scatta la foto
-                        </h3>
-                        <p class="text-xs text-gray-600">
-                            Usa quella fotocamera del cellulare, ora!
-                        </p>
-
-                        <!-- reward -->
-                        <div class="flex items-center gap-1 text-xs text-gray-700">
-                            <img src="/src/assets/icons/reward.svg" class="w-4 h-4"/>
-                            <span>+50 XP</span>
-                        </div>
+                    <!-- Icona + Luogo -->
+                    <div class="flex items-center gap-2">
+                        <img src="../assets/icons/homepage/Fast%20Food.svg" class="icon" alt=""/>
+                        <h2 class="text-lg font-semibold text-gray-800 truncate">
+                            Luogo luogoso
+                        </h2>
                     </div>
 
-                    <!-- Right -->
-                    <div class="flex items-center justify-center">
-                        <div class="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                            ✓
+                    <!-- Mission progress -->
+                    <div class="flex items-center justify-center gap-2">
+                        <!-- Experience -->
+                        <span class="text-sm font-semibold text-green-600">+250 XP</span>
+                        <!-- Cerchio di progresso -->
+                        <div class="relative w-10 h-10">
+                            <svg class="w-10 h-10">
+                                <!-- Cerchio sfondo -->
+                                <circle cx="20" cy="20" r="18" stroke="#E5E7EB" stroke-width="4" fill="none"/>
+                                <!-- Cerchio progresso -->
+                                <circle cx="20" cy="20" r="18" stroke="#34D399" stroke-width="4" fill="none"
+                                        stroke-dasharray="113.097" stroke-dashoffset="22.619"
+                                        transform="rotate(-90 20 20)"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-800">
+                                4/5
+                            </span>
                         </div>
                     </div>
                 </div>
+                <!-- Missions -->
+                <div class="flex flex-col gap-2">
+                    <!-- Mission -->
+                    <div class="glass-light rounded-xl px-4 py-3 flex justify-between items-center">
 
+                        <!-- Left -->
+                        <div class="flex flex-col gap-1">
+                            <!-- Title -->
+                            <div class="flex items-center gap-1">
+                                <img src="../assets/icons/goals/Camera.svg" class="icon-notification" alt=""/>
+                                <span class="font-semibold text-gray-800"> Scatta la foto </span>
+                            </div>
+                            <!-- Description -->
+                            <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
+                            <!-- Reward -->
+                            <div class="flex items-center gap-1 text-xs text-gray-700">
+                                <img src="../assets/icons/goals/FlashOn.svg" class="icon-minimini" alt=""/>
+                                <span>+50 XP</span>
+                            </div>
+                        </div>
+
+                        <!-- Right -->
+                        <div class="w-8 h-8 rounded-full border border-gray-300"></div>
+                    </div>
+                    <!-- Mission -->
+                    <div class="bg-gray-50 rounded-xl px-4 py-3 flex justify-between items-center">
+
+                        <!-- Left -->
+                        <div class="space-y-1">
+                            <h3 class="text-sm font-semibold text-gray-800">
+                                Scatta la foto
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                Usa quella fotocamera del cellulare, ora!
+                            </p>
+
+                            <!-- reward -->
+                            <div class="flex items-center gap-1 text-xs text-gray-700">
+                                <img src="/src/assets/icons/reward.svg" class="w-4 h-4"/>
+                                <span>+50 XP</span>
+                            </div>
+                        </div>
+
+                        <!-- Right -->
+                        <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg
+                                    class="w-5 h-5 text-white"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                <path d="M6 10l3 3 6-6"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
+
     </div>
 
     <!--  MISSIONS TYPE BAR -->
