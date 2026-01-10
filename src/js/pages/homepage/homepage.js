@@ -67,7 +67,7 @@ function attachBookmarkChangeListener() {
 
                 if (savedContainer && savedContainer.contains(card)) {
                     card.remove();
-                    initializeHorizontalCarousel(savedContainer, {cardSelector: HOME_ELEMENTS.savedCardSelector});
+                    initializeHorizontalCarousel(savedContainer, {cardSelector: "[data-spot-wrapper]"});
                 }
             }
         });
@@ -89,7 +89,7 @@ async function buildHomepageOnce(homepageRoot) {
             await populateSavedSpots({containerId: HOME_ELEMENTS.savedRootId});
             initFitText(".spot-card--saved .spot-card-title", `#${HOME_ELEMENTS.savedRootId}`, 2, 10.5);
             const root = $findElementById(homepageRoot, HOME_ELEMENTS.savedRootId);
-            if (root) initializeHorizontalCarousel(root, {cardSelector: HOME_ELEMENTS.savedCardSelector});
+            if (root) initializeHorizontalCarousel(root, {cardSelector: "[data-spot-wrapper]"});
             filterSpotsByCategory(getActiveCategories(), homepageRoot);
             ensureSeeAllSavedButtonBound(homepageRoot);
         },
@@ -139,7 +139,7 @@ async function buildHomepageOnce(homepageRoot) {
  */
 function updateCarouselsAfterFilterChange(homepageRoot) {
     const savedRoot = $findElementById(homepageRoot, HOME_ELEMENTS.savedRootId);
-    if (savedRoot) initializeHorizontalCarousel(savedRoot, {cardSelector: HOME_ELEMENTS.savedCardSelector});
+    if (savedRoot) initializeHorizontalCarousel(savedRoot, {cardSelector: "[data-spot-wrapper]"});
     const nearbyEl = getNearbyCarouselRoot(homepageRoot);
     if (nearbyEl) initializeHorizontalCarousel(nearbyEl, {cardSelector: HOME_ELEMENTS.nearbyCardSelector});
     const topratedRoot = $findElementById(homepageRoot, HOME_ELEMENTS.topratedRootId);

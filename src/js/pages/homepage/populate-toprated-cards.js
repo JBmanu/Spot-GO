@@ -16,7 +16,8 @@ function normalizeSpot(raw) {
     return {
         ...raw,
         id,
-        title: raw?.title ?? raw?.nome ?? raw?.name ?? "",
+        title: raw?.title ?? raw?.nome ?? raw?.name ?? "Spot",
+        rating: raw?.rating ?? raw?.valutazione ?? raw?.stelle ?? raw?.mediaVoti ?? 0,
         category: raw?.category ?? raw?.idCategoria ?? raw?.categoria ?? raw?.categoryId ?? null,
         image: raw?.image ?? raw?.immagine ?? raw?.foto ?? raw?.img ?? "",
         valutazione: raw?.valutazione ?? raw?.rating ?? raw?.stelle ?? raw?.mediaVoti ?? null,
@@ -30,7 +31,7 @@ function normalizeSpot(raw) {
  */
 function customTopratedSetup(card, spot) {
     const ratingText = formatRatingAsText(pickRating(spot));
-    const ratingEl = card.querySelector('[data-slot="rating-value"]');
+    const ratingEl = card.querySelector('[data-field="rating"]');
 
     if (ratingEl) {
         if (ratingText !== "") ratingEl.setAttribute("aria-label", `${ratingText} stelle`);
@@ -48,9 +49,20 @@ function customTopratedSetup(card, spot) {
  */
 export async function populateTopratedSpots({
     containerId = "home-toprated-carousel",
-    templateSelector = '[data-template="toprated-item"]',
+    templateSelector = '[data-template="toprated-card-template"]',
     limit = 10,
 } = {}) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.warn(`Container with ID "${containerId}" not found.`);
+        return;
+    }
+
+    const template = document.querySelector(templateSelector);
+    Array.from(container.children).forEach(child => {
+        if (child !== template) child.remove();
+    });
+
     const getSpotsFunction = async () => {
         const all = await getSpots();
         const scored = (all || [])
@@ -71,8 +83,10 @@ export async function populateTopratedSpots({
         useWrapper: false,
         setCategoryText: false,
         additionalFields: [
-            { selector: '[data-slot="rating-value"]', valueFunction: (spot) => formatRatingAsText(pickRating(spot)) },
-            { selector: '[data-field="distance"]', valueFunction: (spot) => formatDistance(distanceFromUserToSpot(spot)) },
+            { selector: '[data-field="title"]', valueFunction: (spot) => spot.title || spot.nome || "Spot", type: 'text' },
+            { selector: '[data-field="image"]', valueFunction: (spot) => "../" + (spot.image || spot.immagine || "").replace(/^\/+/, ""), type: 'image' },
+            { selector: '[data-field="rating"]', valueFunction: (spot) => formatRatingAsText(spot.rating ?? spot.valutazione ?? spot.stelle ?? spot.mediaVoti), type: 'text' },
+            { selector: '[data-field="distance"]', valueFunction: (spot) => formatDistance(distanceFromUserToSpot(spot)), type: 'text' },
         ],
         customCardSetup: customTopratedSetup,
     });

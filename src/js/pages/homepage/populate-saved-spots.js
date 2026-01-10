@@ -16,7 +16,8 @@ export async function getSavedSpotsData() {
 
     const allSpots = await getSpots();
     const neededIds = new Set(relations.map(r => String(r.idLuogo)).filter(Boolean));
-    return allSpots.filter(s => neededIds.has(String(s.id)));
+    const spots = allSpots.filter(s => neededIds.has(String(s.id)));
+    return spots;
 }
 
 /**
@@ -43,7 +44,7 @@ function postPopulateSaved(containerId) {
 export async function populateSavedSpots({
                                              containerId = "home-saved-container",
                                              emptyStateId = "saved-empty-state",
-                                             templateSelector = '[data-template="saved-card"]',
+                                             templateSelector = 'template[data-template="saved-card-template"]',
                                          } = {}) {
     const container = document.getElementById(containerId);
     if (!container) {
@@ -53,7 +54,7 @@ export async function populateSavedSpots({
 
     const emptyState = document.getElementById(emptyStateId);
 
-    const template = container.querySelector(templateSelector);
+    const template = document.querySelector(templateSelector);
     Array.from(container.children).forEach(child => {
         if (child !== template) child.remove();
     });
@@ -74,8 +75,12 @@ export async function populateSavedSpots({
         containerId,
         templateSelector,
         getSpotsFunction,
-        useWrapper: true,
+        useWrapper: false,
         setCategoryText: false,
+        additionalFields: [
+            { selector: '[data-field="title"]', valueFunction: (spot) => spot.nome || "Spot", type: 'text' },
+            { selector: '[data-field="image"]', valueFunction: (spot) => "../" + spot.immagine.slice(1), type: 'image' },
+        ],
         bookmarkInit: (card) => initializeBookmarkButtonAttributes(card, {saved: "true", type: "saved"}),
     });
 
