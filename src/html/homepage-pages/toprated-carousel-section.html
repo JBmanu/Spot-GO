@@ -19,29 +19,29 @@
             aria-label="Lista scelti dalla community"
             data-size="md"
     >
-        <!-- Template -->
-        <article
-                class="spot-card-toprated"
-                data-spot-wrapper
-                role="listitem"
-                data-template="toprated-item"
-                data-spot-id=""
-                data-saved="false"
-                data-category="food"
-                hidden
-        >
-            <div data-slot="image">
-                <img
-                        src=""
-                        alt="Foto spot"
-                        data-field="image"
-                />
+    </div>
+</section>
+
+<!-- Template -->
+<template data-template="toprated-card-template">
+    <section
+            class="general-card spot-card-toprated"
+            data-context="spot-card-toprated"
+            data-spot-wrapper
+            role="listitem"
+            data-spot-id=""
+    >
+        <div data-slot="pedestal"></div>
+
+        <article class="glass-strong" data-slot="card">
+            <div data-slot="media">
+                <img src="" alt="Foto spot" data-slot="image" data-field="image"/>
 
                 <div data-slot="distance">
                     <img
                             src="../../assets/icons/homepage/Place%20Marker.svg"
                             alt="distanza"
-                            class="icon-mini"
+                            data-slot="pin-icon"
                     />
                     <span data-slot="distance-text" data-field="distance"></span>
                 </div>
@@ -65,17 +65,16 @@
             <button
                     type="button"
                     data-slot="bookmark"
-                    aria-label="Aggiungi ai salvati"
                     data-bookmark-button
                     data-bookmark-type="toprated"
+                    aria-label="Aggiungi ai salvati"
             >
                 <img
                         src="../../assets/icons/homepage/BookmarkEmpty.svg"
-                        class="bookmark-icon"
                         alt="Bookmark"
+                        data-slot="bookmark-icon"
                 />
             </button>
         </article>
-
-    </div>
-</section>
+    </section>
+</template>
