@@ -1,32 +1,64 @@
 <template id="classic-spot-card-template" data-template="true">
-    <article data-slot="spot" role="listitem" data-spot-id="" data-saved="true" data-category="food">
-        <div data-slot="image">
-            <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
-        </div>
-        <div data-slot="info">
-            <h3 data-slot="title" data-field="title">Nome spot</h3>
-            <p data-slot="meta">
-                        <span data-slot="meta-item">
-                            <img src="../../assets/icons/homepage/Place Marker.svg" data-slot="icon" alt="Posizione">
-                            <span data-slot="distance" data-field="distance">0 m</span>
-                        </span>
-                <span data-slot="separator">•</span>
-                <span data-slot="meta-item">
-                            <span data-slot="category" data-field="category">Cibo</span>
-                        </span>
-            </p>
-        </div>
-        <div data-slot="right-column">
-            <button type="button" data-slot="bookmark" aria-label="Rimuovi dai salvati" data-bookmark-button
-                    data-bookmark-type="saved">
-                <img src="../../assets/icons/homepage/Bookmark.svg" data-slot="bookmark-icon" alt="Bookmark">
-            </button>
-            <div data-slot="rating-container">
-                <div data-slot="badge">
-                    <span data-slot="rating" data-field="rating">4.5</span>
-                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" data-slot="star"/>
+    <section
+            class="general-card spot-card-classic"
+            role="listitem"
+            data-spot-id=""
+            data-saved="true"
+            data-category="">
+        <div data-slot="pedestal"></div>
+
+        <article class="glass-strong" data-slot="card">
+            <div data-slot="media">
+                <img src="" alt="Foto spot" data-slot="image" data-field="image" />
+            </div>
+
+            <div data-slot="info">
+                <h3 data-slot="title" data-field="title"></h3>
+
+                <div data-slot="meta" aria-label="Distanza e categoria">
+          <span data-slot="meta-item">
+            <img
+                    src="../../assets/icons/homepage/Place Marker.svg"
+                    data-slot="pin-icon"
+                    alt="Posizione"
+            />
+            <span data-slot="meta-text" data-kind="distance" data-field="distance"></span>
+          </span>
+
+                    <span data-slot="separator" aria-hidden="true">•</span>
+
+                    <span data-slot="meta-item">
+            <span data-slot="meta-text" data-kind="category" data-field="category"></span>
+          </span>
                 </div>
             </div>
-        </div>
-    </article>
+
+            <div data-slot="right-column">
+                <button
+                        type="button"
+                        data-slot="bookmark"
+                        aria-label="Rimuovi dai salvati"
+                        data-bookmark-button
+                        data-bookmark-type="saved"
+                >
+                    <img
+                            src="../../assets/icons/homepage/Bookmark.svg"
+                            data-slot="bookmark-icon"
+                            alt="Bookmark"
+                    />
+                </button>
+
+                <div data-slot="rating-container">
+                    <div data-slot="rating-pill" aria-label="Valutazione">
+                        <span data-slot="rating-value" data-field="rating"></span>
+                        <img
+                                src="../../assets/icons/homepage/Star.svg"
+                                alt="stella"
+                                data-slot="rating-star"
+                        />
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
 </template>
