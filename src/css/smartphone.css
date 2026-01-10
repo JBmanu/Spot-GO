@@ -71,7 +71,7 @@
     }
 
     .app-header > * {
-        @apply relative z-[2];
+        @apply relative z-2;
     }
 
     .app-header-left {
