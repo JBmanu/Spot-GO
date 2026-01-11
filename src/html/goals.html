@@ -5,7 +5,7 @@
 
         <!-- Titolo principale -->
         <div class="flex items-center gap-2 mb-4">
-            <img src="../assets/icons/goals/Map.svg" class="icon" alt="Mission Icon"/>
+            <img src="../assets/icons/toolbar/Goal.svg" class="icon" alt="Mission Icon"/>
             <h1 class="text-xl font-bold text-gray-800">Le tue missione in corso</h1>
         </div>
 
@@ -197,49 +197,144 @@
         </div>
     </div>
 
+    <!-- ================= MISSIONS ================= -->
+    <!-- CONTENITORE ESTERNO -->
+    <div class="relative w-full max-w-md overflow-hidden">
+        <!-- TRACK SCORRIMENTO -->
+        <!--             class="flex transition-all duration-700 ease-[cubic-bezier(.17,.67,.38,1.21)]"-->
+        <div id="slider"
+             class="flex transition-all duration-500 ease-[cubic-bezier(.25,.8,.25,1)]"
+             style="transform: translateX(0%);">
 
-    <!-- Missions -->
-    <div class="px-4 py-4 space-y-4">
-
-        <!-- ================= Elemento 1 ================= -->
-        <div class="bg-white rounded-2xl shadow px-5 py-4 flex justify-between items-center">
-
-            <!-- Lato sinistro -->
-            <div class="space-y-1">
-                <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
-                <p class="text-xs text-gray-600">Complete daily activities</p>
-                <div class="flex items-center gap-1 text-xs text-gray-700">
-                    <img src="/src/assets/icons/reward.svg" class="w-4 h-4" alt="Reward Icon"/>
-                    <span>+50 XP</span>
+            <!-- CARD 1 -->
+            <div class="w-full flex-shrink-0 p-4">
+                <!-- Container -->
+                <div class="flex flex-col gap-2">
+                    <!-- ================= Elemento 1 ================= -->
+                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                        <!-- Lato sinistro -->
+                        <div class="space-y-1">
+                            <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
+                            <p class="text-xs text-gray-600">Complete daily activities</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-700">
+                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
+                                <span>+50 XP</span>
+                            </div>
+                        </div>
+                        <!-- Lato destro -->
+                        <div class="flex items-center justify-center">
+                            <span class="text-lg font-medium text-gray-500">1 / 7</span>
+                        </div>
+                    </div>
+                    <!-- ================= Elemento 2 ================= -->
+                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                        <!-- Lato sinistro -->
+                        <div class="space-y-1">
+                            <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
+                            <p class="text-xs text-gray-600">Open the app at least once</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-700">
+                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
+                                <span>+30 XP</span>
+                            </div>
+                        </div>
+                        <!-- Lato destro -->
+                        <div class="flex items-center justify-center">
+                            <span class="text-lg font-medium text-gray-500">✓</span>
+                        </div>
+                    </div>
                 </div>
+<!--                <div class="m-4 p-6 rounded-2xl bg-white shadow-xl border border-gray-200">-->
+<!--                    <h2 class="text-xl font-semibold">Contenitore 1</h2>-->
+<!--                    <p class="mt-2 text-gray-600">Testo di esempio</p>-->
+<!--                </div>-->
             </div>
 
-            <!-- Lato destro -->
-            <div class="flex items-center justify-center">
-                <span class="text-sm font-medium text-gray-500">1 / 7</span>
-            </div>
-
-        </div>
-
-        <!-- ================= Elemento 2 ================= -->
-        <div class="bg-white rounded-2xl shadow px-5 py-4 flex justify-between items-center">
-
-            <!-- Lato sinistro -->
-            <div class="space-y-1">
-                <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
-                <p class="text-xs text-gray-600">Open the app at least once</p>
-                <div class="flex items-center gap-1 text-xs text-gray-700">
-                    <img src="/src/assets/icons/reward.svg" class="w-4 h-4" alt="Reward Icon"/>
-                    <span>+30 XP</span>
+            <!-- CARD 2 -->
+            <div class="w-full flex-shrink-0 p-4">
+                <!-- Container -->
+                <div class="flex flex-col gap-2">
+                    <!-- ================= Elemento 1 ================= -->
+                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                        <!-- Lato sinistro -->
+                        <div class="space-y-1">
+                            <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
+                            <p class="text-xs text-gray-600">Complete daily activities</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-700">
+                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
+                                <span>+50 XP</span>
+                            </div>
+                        </div>
+                        <!-- Lato destro -->
+                        <div class="flex items-center justify-center">
+                            <span class="text-lg font-medium text-gray-500">1 / 7</span>
+                        </div>
+                    </div>
+                    <!-- ================= Elemento 2 ================= -->
+                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                        <!-- Lato sinistro -->
+                        <div class="space-y-1">
+                            <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
+                            <p class="text-xs text-gray-600">Open the app at least once</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-700">
+                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
+                                <span>+30 XP</span>
+                            </div>
+                        </div>
+                        <!-- Lato destro -->
+                        <div class="flex items-center justify-center">
+                            <span class="text-lg font-medium text-gray-500">✓</span>
+                        </div>
+                    </div>
                 </div>
+<!--                <div class="m-4 p-6 rounded-2xl bg-white shadow-xl border border-gray-200">-->
+<!--                    <h2 class="text-xl font-semibold">Contenitore 2</h2>-->
+<!--                    <p class="mt-2 text-gray-600">Testo di esempio</p>-->
+<!--                </div>-->
             </div>
 
-            <!-- Lato destro -->
-            <div class="flex items-center justify-center">
-                <span class="text-sm font-medium text-gray-500">✓</span>
+            <!-- CARD 3 -->
+            <div class="w-full flex-shrink-0 p-4">
+                <!-- Container -->
+                <div class="flex flex-col gap-2">
+                    <!-- ================= Elemento 1 ================= -->
+                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                        <!-- Lato sinistro -->
+                        <div class="space-y-1">
+                            <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
+                            <p class="text-xs text-gray-600">Complete daily activities</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-700">
+                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
+                                <span>+50 XP</span>
+                            </div>
+                        </div>
+                        <!-- Lato destro -->
+                        <div class="flex items-center justify-center">
+                            <span class="text-lg font-medium text-gray-500">1 / 7</span>
+                        </div>
+                    </div>
+                    <!-- ================= Elemento 2 ================= -->
+                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                        <!-- Lato sinistro -->
+                        <div class="space-y-1">
+                            <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
+                            <p class="text-xs text-gray-600">Open the app at least once</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-700">
+                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
+                                <span>+30 XP</span>
+                            </div>
+                        </div>
+                        <!-- Lato destro -->
+                        <div class="flex items-center justify-center">
+                            <span class="text-lg font-medium text-gray-500">✓</span>
+                        </div>
+                    </div>
+                </div>
+<!--                <div class="m-4 p-6 rounded-2xl bg-white shadow-xl border border-gray-200">-->
+<!--                    <h2 class="text-xl font-semibold">Contenitore 3</h2>-->
+<!--                    <p class="mt-2 text-gray-600">Testo di esempio</p>-->
+<!--                </div>-->
             </div>
         </div>
-
     </div>
 
 
