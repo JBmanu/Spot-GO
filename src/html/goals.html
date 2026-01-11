@@ -14,40 +14,40 @@
         <div class="flex flex-col gap-2">
 
             <!-- ================= SPOT ================= -->
-            <div class="glass-medium p-2 rounded-xl flex justify-between items-center cursor-pointer">
-                <!-- Sinistra: Luogo + Tipo -->
-                <div class="flex flex-col">
-                    <!-- Title -->
-                    <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>
-                    <div class="flex items-center gap-1">
-                        <img src="../assets/icons/homepage/Fast%20Food.svg" class="w-4 h-4" alt=""/>
-                        <span class="text-xs text-gray-700">Cibo</span>
-                    </div>
-                </div>
-                <!-- Destra: Progresso missioni -->
-                <div class="flex items-center justify-center gap-2">
-                    <!-- Experience -->
-                    <span class="text-sm font-semibold text-green-600">+250 XP</span>
-                    <!-- Cerchio di progresso -->
-                    <div class="relative w-10 h-10">
-                        <svg class="w-10 h-10">
-                            <!-- Cerchio sfondo -->
-                            <circle cx="20" cy="20" r="18" stroke="#E5E7EB" stroke-width="4" fill="none"/>
-                            <!-- Cerchio progresso -->
-                            <circle cx="20" cy="20" r="18" stroke="#34D399" stroke-width="4" fill="none"
-                                    stroke-dasharray="113.097" stroke-dashoffset="22.619"
-                                    transform="rotate(-90 20 20)"/>
-                        </svg>
-                        <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-800">
-                                4/5
-                            </span>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="glass-medium p-2 rounded-xl flex justify-between items-center cursor-pointer">-->
+<!--                &lt;!&ndash; Sinistra: Luogo + Tipo &ndash;&gt;-->
+<!--                <div class="flex flex-col">-->
+<!--                    &lt;!&ndash; Title &ndash;&gt;-->
+<!--                    <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>-->
+<!--                    <div class="flex items-center gap-1">-->
+<!--                        <img src="../assets/icons/homepage/Fast%20Food.svg" class="w-4 h-4" alt=""/>-->
+<!--                        <span class="text-xs text-gray-700">Cibo</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; Destra: Progresso missioni &ndash;&gt;-->
+<!--                <div class="flex items-center justify-center gap-2">-->
+<!--                    &lt;!&ndash; Experience &ndash;&gt;-->
+<!--                    <span class="text-sm font-semibold text-green-600">+250 XP</span>-->
+<!--                    &lt;!&ndash; Cerchio di progresso &ndash;&gt;-->
+<!--                    <div class="relative w-10 h-10">-->
+<!--                        <svg class="w-10 h-10">-->
+<!--                            &lt;!&ndash; Cerchio sfondo &ndash;&gt;-->
+<!--                            <circle cx="20" cy="20" r="18" stroke="#E5E7EB" stroke-width="4" fill="none"/>-->
+<!--                            &lt;!&ndash; Cerchio progresso &ndash;&gt;-->
+<!--                            <circle cx="20" cy="20" r="18" stroke="#34D399" stroke-width="4" fill="none"-->
+<!--                                    stroke-dasharray="113.097" stroke-dashoffset="22.619"-->
+<!--                                    transform="rotate(-90 20 20)"/>-->
+<!--                        </svg>-->
+<!--                        <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-800">-->
+<!--                                4/5-->
+<!--                            </span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
 
-            <!-- ================= SPOT MISSIONS ================= -->
-            <div class="spot-card glass-medium p-2 rounded-xl flex flex-col gap-2">
+            <!-- ================= SPOT ================= -->
+            <div class="spot-card glass-medium px-3 py-2 rounded-xl flex flex-col">
                 <!-- Spot info -->
                 <div class="spot-header flex justify-between items-center cursor-pointer">
                     <!-- Icona + Luogo -->
@@ -60,8 +60,6 @@
                     </div>
                     <!-- Mission progress -->
                     <div class="flex items-center justify-center gap-2">
-                        <!-- Experience -->
-                        <span class="text-sm font-semibold text-green-600">+250 XP</span>
                         <!-- Cerchio di progresso -->
                         <div class="relative w-10 h-10">
                             <svg class="w-10 h-10">
@@ -76,11 +74,20 @@
                                 4/5
                             </span>
                         </div>
+                        <!-- Arrow -->
+                        <svg class="w-5 h-5 text-gray-500 arrow transition-transform duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
+                             fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m6 9 6 6 6-6"/>
+                        </svg>
+                        <!-- Arrow -->
+<!--                        <span class="text-sm font-semibold text-green-600">+250 XP</span>-->
                     </div>
                 </div>
                 <!-- Missions -->
-<!--                <div class="flex flex-col gap-2">-->
-                <div class="flex flex-col gap-2 missions hidden max-h-0 overflow-hidden transition-all duration-300">
+                <div class="flex flex-col gap-2 missions overflow-hidden max-h-0 opacity-0 scale-95 blur-sm
+                            transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
+                            will-change-transform will-change-opacity will-change-filter">
                     <!-- Mission -->
                     <div class="glass-light rounded-xl px-2 py-2 flex justify-between items-center">
                         <!-- Left -->
@@ -92,7 +99,7 @@
                         </div>
                         <!-- Reward -->
                         <div class="flex items-center">
-<!--                            <img src="../assets/icons/goals/FlashOn.svg" class="w-8 h-8" alt=""/>-->
+                            <!--                            <img src="../assets/icons/goals/FlashOn.svg" class="w-8 h-8" alt=""/>-->
                             <span class="font-semibold text-green-600">+50 XP</span>
                         </div>
                     </div>
