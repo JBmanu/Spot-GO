@@ -5,7 +5,7 @@
 
         <!-- Titolo principale -->
         <div class="flex items-center gap-2 mb-4">
-            <img src="../assets/icons/goals/Sheets.svg" class="icon" alt="Mission Icon"/>
+            <img src="../assets/icons/goals/Map.svg" class="icon" alt="Mission Icon"/>
             <h1 class="text-xl font-bold text-gray-800">Le tue missione in corso</h1>
         </div>
 
@@ -13,18 +13,21 @@
         <!-- Contenitore principale -->
         <div class="flex flex-col gap-2">
 
-            <!-- ================= SPOTS MISSIONS ================= -->
+            <!-- ================= SPOT ================= -->
             <div class="glass-medium p-2 rounded-xl flex justify-between items-center cursor-pointer">
-
-                <!-- Icona + Luogo -->
-                <div class="flex items-center gap-2">
-                    <img src="../assets/icons/homepage/Fast%20Food.svg" class="icon-mini" alt=""/>
-                    <h2 class="text-lg font-semibold text-gray-800 truncate">
-                        Luogo luogoso
-                    </h2>
+                <!-- Sinistra: Luogo + Tipo -->
+                <div class="flex flex-col">
+                    <!-- Title -->
+                    <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>
+                    <div class="flex items-center gap-1">
+                        <img src="../assets/icons/homepage/Fast%20Food.svg" class="w-4 h-4" alt=""/>
+                        <span class="text-xs text-gray-700">Cibo</span>
+                    </div>
                 </div>
                 <!-- Destra: Progresso missioni -->
-                <div class="flex items-center justify-center">
+                <div class="flex items-center justify-center gap-2">
+                    <!-- Experience -->
+                    <span class="text-sm font-semibold text-green-600">+250 XP</span>
                     <!-- Cerchio di progresso -->
                     <div class="relative w-10 h-10">
                         <svg class="w-10 h-10">
@@ -44,18 +47,17 @@
 
 
             <!-- ================= SPOT MISSIONS ================= -->
-            <div class="glass-medium p-2 rounded-xl flex flex-col gap-2">
+            <div class="spot-card glass-medium p-2 rounded-xl flex flex-col gap-2">
                 <!-- Spot info -->
-                <div class="flex justify-between items-center cursor-pointer">
-
+                <div class="spot-header flex justify-between items-center cursor-pointer">
                     <!-- Icona + Luogo -->
-                    <div class="flex items-center gap-2">
-                        <img src="../assets/icons/homepage/Fast%20Food.svg" class="icon" alt=""/>
-                        <h2 class="text-lg font-semibold text-gray-800 truncate">
-                            Luogo luogoso
-                        </h2>
+                    <div class="flex flex-col">
+                        <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>
+                        <div class="flex items-center gap-1">
+                            <img src="../assets/icons/homepage/Fast%20Food.svg" class="w-4 h-4" alt=""/>
+                            <span class="text-xs text-gray-700">Cibo</span>
+                        </div>
                     </div>
-
                     <!-- Mission progress -->
                     <div class="flex items-center justify-center gap-2">
                         <!-- Experience -->
@@ -77,60 +79,39 @@
                     </div>
                 </div>
                 <!-- Missions -->
-                <div class="flex flex-col gap-2">
+<!--                <div class="flex flex-col gap-2">-->
+                <div class="flex flex-col gap-2 missions hidden max-h-0 overflow-hidden transition-all duration-300">
                     <!-- Mission -->
-                    <div class="glass-light rounded-xl px-4 py-3 flex justify-between items-center">
-
+                    <div class="glass-light rounded-xl px-2 py-2 flex justify-between items-center">
                         <!-- Left -->
                         <div class="flex flex-col gap-1">
                             <!-- Title -->
-                            <div class="flex items-center gap-1">
-                                <img src="../assets/icons/goals/Camera.svg" class="icon-notification" alt=""/>
-                                <span class="font-semibold text-gray-800"> Scatta la foto </span>
-                            </div>
+                            <h3 class="font-semibold text-gray-800"> Scatta la foto </h3>
                             <!-- Description -->
                             <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
-                            <!-- Reward -->
-                            <div class="flex items-center gap-1 text-xs text-gray-700">
-                                <img src="../assets/icons/goals/FlashOn.svg" class="icon-minimini" alt=""/>
-                                <span>+50 XP</span>
-                            </div>
                         </div>
-
-                        <!-- Right -->
-                        <div class="w-8 h-8 rounded-full border border-gray-300"></div>
+                        <!-- Reward -->
+                        <div class="flex items-center">
+<!--                            <img src="../assets/icons/goals/FlashOn.svg" class="w-8 h-8" alt=""/>-->
+                            <span class="font-semibold text-green-600">+50 XP</span>
+                        </div>
                     </div>
                     <!-- Mission -->
-                    <div class="bg-gray-50 rounded-xl px-4 py-3 flex justify-between items-center">
-
-                        <!-- Left -->
-                        <div class="space-y-1">
-                            <h3 class="text-sm font-semibold text-gray-800">
-                                Scatta la foto
-                            </h3>
-                            <p class="text-xs text-gray-600">
-                                Usa quella fotocamera del cellulare, ora!
-                            </p>
-
-                            <!-- reward -->
-                            <div class="flex items-center gap-1 text-xs text-gray-700">
-                                <img src="/src/assets/icons/reward.svg" class="w-4 h-4"/>
-                                <span>+50 XP</span>
-                            </div>
+                    <div class="glass-light rounded-xl px-2 py-2 flex justify-between items-center">
+                        <!-- Overlay COMPLETATO -->
+                        <div class="absolute inset-0 z-20 flex items-center justify-center bg-white/60 backdrop-blur-sm rounded-xl">
+                            <span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>
                         </div>
-
-                        <!-- Right -->
-                        <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-                            <svg
-                                    class="w-5 h-5 text-white"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                <path d="M6 10l3 3 6-6"/>
-                            </svg>
+                        <!-- Left -->
+                        <div class="flex flex-col gap-1">
+                            <!-- Title -->
+                            <h3 class="font-semibold text-gray-800"> Scatta la foto </h3>
+                            <!-- Description -->
+                            <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
+                        </div>
+                        <!-- Reward -->
+                        <div class="flex items-center">
+                            <span class="font-semibold text-green-600">+50 XP</span>
                         </div>
                     </div>
                 </div>
