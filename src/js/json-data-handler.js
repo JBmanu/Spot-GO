@@ -1,6 +1,6 @@
-import {collection, getDocs, query, where, limit, getDoc} from "firebase/firestore";
-import {db} from "./firebase.js";
-import {distanceFromUserToSpot} from "./common.js";
+import { collection, getDocs, query, where, limit, getDoc } from "firebase/firestore";
+import { db } from "./firebase.js";
+import { distanceFromUserToSpot } from "./common.js";
 
 let categorieCache = null;
 let spotsCache = null;
@@ -108,7 +108,7 @@ export async function getSavedSpots(username) {
             const spots = await loadSpotsFromJSON();
             return savedIds.map(id => {
                 const spot = spots.find(sp => sp.nome === id);
-                return spot ? {id: spot.nome, idLuogo: spot.nome, idUtente: username} : null;
+                return spot ? { id: spot.nome, idLuogo: spot.nome, idUtente: username } : null;
             }).filter(Boolean);
         } catch (e) {
             console.error("Errore parsing localStorage saved spots:", e);
@@ -123,7 +123,7 @@ export async function getSavedSpots(username) {
     const saved = userRel.salvati || [];
     return saved.map(s => {
         const spot = spots.find(sp => sp.nome === s.nome && sp.idCategoria === s.categoria);
-        return spot ? {id: spot.nome, idLuogo: spot.nome, idUtente: username} : null;
+        return spot ? { id: spot.nome, idLuogo: spot.nome, idUtente: username } : null;
     }).filter(Boolean);
 }
 
@@ -136,7 +136,7 @@ export async function getVisitedSpots(username) {
     const visited = userRel.visitati || [];
     return visited.map(v => {
         const spot = spots.find(sp => sp.nome === v.nome && sp.idCategoria === v.categoria);
-        return spot ? {id: spot.nome, idLuogo: spot.nome, idUtente: username, data: v.data} : null;
+        return spot ? { id: spot.nome, idLuogo: spot.nome, idUtente: username, data: v.data } : null;
     }).filter(Boolean);
 }
 
@@ -153,13 +153,13 @@ export async function getFriends(userId) {
                 var friends = [];
                 friendIds.map(friendRef =>
                     getDoc(friendRef).then(doc => {
-                            var friendData = {
-                                id: doc.id,
-                                email: doc.data().email || "",
-                                username: doc.data().username || "Utente"
-                            };
-                            friends.push(friendData);
-                        }
+                        var friendData = {
+                            id: doc.id,
+                            email: doc.data().email || "",
+                            username: doc.data().username || "Utente"
+                        };
+                        friends.push(friendData);
+                    }
                     ))
                 return friends;
             }
@@ -253,7 +253,7 @@ export async function loadSpotsFromJSON() {
     try {
         const response = await fetch('/db/json/luoghi.json');
         const spots = await response.json();
-        spotsCache = spots.map(spot => ({...spot, id: spot.nome}));
+        spotsCache = spots.map(spot => ({ ...spot, id: spot.nome }));
         return spotsCache;
     } catch (error) {
         console.error("Errore nel caricamento luoghi:", error);
@@ -290,7 +290,7 @@ export async function addSavedSpot(username, spotId) {
     const relazioni = await loadRelazioniFromJSON();
     let userRel = relazioni.find(r => r.username === username);
     if (!userRel) {
-        userRel = {username, salvati: [], visitati: [], creati: [], recensioni: []};
+        userRel = { username, salvati: [], visitati: [], creati: [], recensioni: [] };
         relazioni.push(userRel);
     }
     if (!userRel.salvati) userRel.salvati = [];
@@ -302,7 +302,7 @@ export async function addSavedSpot(username, spotId) {
     const categoria = spot.idCategoria;
     const existing = userRel.salvati.find(s => s.nome === spotId && s.categoria === categoria);
     if (!existing) {
-        userRel.salvati.push({nome: spotId, categoria});
+        userRel.salvati.push({ nome: spotId, categoria });
         relazioniCache = relazioni;
         localStorage.setItem('relazioni_utenti', JSON.stringify(relazioni));
     }
@@ -347,4 +347,8 @@ export async function removeSavedSpot(username, spotId) {
         } catch (e) {
         }
     }
+}
+
+export function pickRating(spot) {
+    return spot?.rating ?? spot?.valutazione ?? spot?.stelle ?? spot?.mediaVoti ?? null;
 }
