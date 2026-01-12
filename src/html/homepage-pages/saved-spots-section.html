@@ -2,22 +2,13 @@
     <header class="flex flex-row items-center justify-between relative z-1">
         <h2 class="home-section-title">I tuoi preferiti</h2>
 
-        <button
-                type="button"
-                id="home-saved-see-all"
-                class="vedi-tutti-button"
-                aria-label="Apri lista degli spot salvati"
-        >
+        <button type="button" id="home-saved-see-all" class="vedi-tutti-button"
+            aria-label="Apri lista degli spot salvati">
             Vedi tutti
         </button>
     </header>
 
-    <div
-            id="home-saved-container"
-            class="js-carousel-horizontal"
-            role="list"
-            aria-label="Elenco preferiti"
-    >
+    <div id="home-saved-container" data-carousel-type="horizontal" data-template="saved-card-template">
         <!-- altre cards inserite via JS -->
     </div>
 
@@ -28,41 +19,3 @@
         </p>
     </div>
 </section>
-
-<!-- Template -->
-<template data-template="saved-card-template">
-    <section
-            class="general-card spot-card-saved"
-            data-context="spot-card-saved"
-            data-spot-wrapper
-            role="listitem"
-            data-spot-id=""
-    >
-        <div data-slot="pedestal"></div>
-
-        <article data-slot="card">
-            <div data-slot="media">
-                <img src="" alt="" data-slot="image" data-field="image" />
-
-                <button
-                        type="button"
-                        data-slot="bookmark"
-                        data-action="bookmark-toggle"
-                        data-bookmark-button
-                        data-bookmark-type="saved"
-                        aria-label="Aggiungi ai salvati"
-                >
-                    <img
-                            src="../../assets/icons/homepage/Bookmark.svg"
-                            alt="Bookmark"
-                            data-slot="bookmark-icon"
-                    />
-                </button>
-            </div>
-
-            <div class="glass-medium" data-slot="body">
-                <h3 data-slot="title" data-field="title"></h3>
-            </div>
-        </article>
-    </section>
-</template>

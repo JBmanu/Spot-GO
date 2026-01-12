@@ -1,86 +1,15 @@
-<section class="home-section w-full max-w-none ml-2" data-template="carousel-horizontal">
+<section class="home-section w-full max-w-none ml-2">
     <header class="flex flex-row items-center justify-between">
         <h2 class="home-section-title">A pochi passi</h2>
 
-        <button
-                type="button"
-                id="home-nearby-see-all"
-                class="vedi-tutti-button"
-                data-slot="cta"
-                aria-label="Scopri gli spots vicini"
-        >
+        <button type="button" id="home-nearby-see-all" class="vedi-tutti-button" data-slot="cta"
+            aria-label="Scopri gli spots vicini">
             Apri Mappa
         </button>
     </header>
 
-    <div
-            id="home-nearby-container"
-            class="js-carousel-horizontal"
-            data-slot="container-horizontal"
-            role="list"
-            aria-label="Lista spots vicino a te"
-    >
+    <div id="home-nearby-container" data-carousel-type="horizontal" data-template="nearby-card-template"
+        data-limit="10">
+
     </div>
 </section>
-
-<!-- Template -->
-<template data-template="nearby-card-template">
-    <section
-            class="general-card spot-card-nearby"
-            data-context="spot-card-nearby"
-            data-spot-wrapper
-            role="listitem"
-            data-spot-id=""
-    >
-        <div data-slot="pedestal"></div>
-
-        <article class="glass-strong" data-slot="card">
-            <div data-slot="media">
-                <img src="" alt="" data-slot="image" data-field="image"/>
-
-                <button
-                        type="button"
-                        data-slot="bookmark"
-                        data-action="bookmark-toggle"
-                        data-bookmark-button
-                        data-bookmark-type="nearby"
-                        aria-label="Aggiungi ai salvati"
-                >
-                    <img
-                            src="../../assets/icons/homepage/Bookmark.svg"
-                            alt="Bookmark"
-                            data-slot="bookmark-icon"
-                    />
-                </button>
-            </div>
-
-            <div class="glass-medium" data-slot="body">
-                <h3 data-slot="title" data-field="title"></h3>
-
-                <div data-slot="meta">
-                    <p data-slot="meta-line">
-                     <span data-slot="meta-item">
-                    <img
-                            src="../../assets/icons/homepage/Place%20Marker.svg"
-                            alt="Posizione"
-                            data-slot="pin-icon"
-                    />
-                      <span data-slot="meta-text" data-field="distance"></span>
-                      <span class="opacity-45">•</span>
-                      <span data-slot="meta-text" data-field="category"></span>
-                    </span>
-                    </p>
-
-                    <div class="glass-medium" data-slot="rating-pill">
-                        <span data-slot="rating-value" data-field="rating"></span>
-                        <img
-                                src="../../assets/icons/homepage/Star.svg"
-                                alt="stella"
-                                data-slot="rating-star"
-                        />
-                    </div>
-                </div>
-            </div>
-        </article>
-    </section>
-</template>
