@@ -16,7 +16,7 @@ async function loadFriends() {
             }
         );
     }
-    showsItemsInContainer(friends, "friends");
+    showsItemsInContainer(friends, "friends", makeFriendCard);
 }
 
 async function loadSuggested() {
@@ -30,14 +30,14 @@ async function loadSuggested() {
             }
         );
     }
-    showsItemsInContainer(suggested, "suggested");
+    showsItemsInContainer(suggested, "suggested", makeSuggestedCard);
 }
 
 /**
  * Generate item list providing containerId, array of items 
  * and itemIdName (is used to identify html nodes about this items).
  */
-async function showsItemsInContainer(items, itemIdName) {
+async function showsItemsInContainer(items, itemIdName, cardBuilder) {
     const containerId = `community-${itemIdName}-container`;
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -48,12 +48,12 @@ async function showsItemsInContainer(items, itemIdName) {
     } else {
         const itemsVisible = 5;
         const [partOne, partTwo] = splitArray(items, itemsVisible);
-        appendHtmlChild(partOne, container);
+        appendHtmlChild(partOne, container, cardBuilder);
 
         const hiddenDiv = document.createElement('div');
         hiddenDiv.classList.add('hidden-items');
         hiddenDiv.classList.add('hidden');
-        appendHtmlChild(partTwo, hiddenDiv);
+        appendHtmlChild(partTwo, hiddenDiv, cardBuilder);
         container.appendChild(hiddenDiv); 
 
         // Add button to show/hide all other items in list
@@ -68,9 +68,9 @@ async function showsItemsInContainer(items, itemIdName) {
     }
 }
 
-function appendHtmlChild(items, container) {
-    items.forEach(element => {
-        const friendCard = makeFriendCard(element);
+function appendHtmlChild(datas, container, cardMaker) {
+    datas.forEach(itemData => {
+        const friendCard = cardMaker(itemData);
         container.appendChild(friendCard);
     });
 }
@@ -93,16 +93,7 @@ function removeFriend(userId) {
     console.log("Removed friend");
 }
 
-/**
- * Generate HTML friend list item given friend data.
- * Returns an article child.
- */
-function makeFriendCard(data) {
-    const article = document.createElement("article");
-    article.className = "community-card";
-    article.setAttribute("role", "listitem");
-    article.setAttribute("data-user-id", data.id);
-
+function makeCardInfo(data) {
     const friendAvatar = document.createElement("div");
     friendAvatar.className = "user-avatar";
     friendAvatar.textContent = data.username.substring(0, 2);
@@ -121,38 +112,76 @@ function makeFriendCard(data) {
     friendCardData.appendChild(friendName);
     friendCardData.appendChild(friendUsername);
 
+    const flexContainer = document.createElement("div");
+    flexContainer.className = "flex flex-row justify-between items-center";
+    flexContainer.appendChild(friendAvatar);
+    flexContainer.appendChild(friendCardData);
+    return flexContainer;
+}
+
+function makeFriendActionContainer(userId) {
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
     const messageButton = document.createElement("button");
     messageButton.setAttribute("type", "button");
     messageButton.setAttribute("class", "comm-button-action-icon");
-    messageButton.setAttribute("alt", "Send message");
-    messageButton.setAttribute("aria-label", "Send message friend");
+    messageButton.setAttribute("alt", "Invia messaggio");
+    messageButton.setAttribute("aria-label", "Invia messaggio");
     const messageIcon = document.createElement("img");
     messageIcon.src = "assets/icons/community/message.svg";
-    messageIcon.alt = "Message Icon";
     messageButton.appendChild(messageIcon);
 
     const removeButton = document.createElement("button");
     removeButton.setAttribute("type", "button");
     removeButton.setAttribute("class", "comm-button-action-icon");
-    removeButton.setAttribute("alt", "Remove friend");
-    removeButton.setAttribute("aria-label", "Remove friend");
+    removeButton.setAttribute("alt", "Rimuovi amico");
+    removeButton.setAttribute("aria-label", "Rimuovi amico");
     const removeIcon = document.createElement("img");
     removeIcon.src = "assets/icons/community/delete.svg";
-    removeIcon.alt = "Remove friend";
     removeButton.appendChild(removeIcon);
-    removeButton.addEventListener('click', () => removeFriend(data.id));
+    removeButton.addEventListener('click', () => removeFriend(userId));
 
     actionsContainer.appendChild(messageButton);
     actionsContainer.appendChild(removeButton);
+    return actionsContainer;
+}
 
-    const flexContainer = document.createElement("div");
-    flexContainer.className = "flex flex-row justify-between items-center";
-    flexContainer.appendChild(friendAvatar);
-    flexContainer.appendChild(friendCardData);
+/**
+ * Generate HTML friend list item given friend data.
+ * Returns an article child.
+ */
+function makeFriendCard(data) {
+    const article = document.createElement("article");
+    article.className = "community-card";
+    article.setAttribute("role", "listitem");
+    article.setAttribute("data-user-id", data.id);
+    article.appendChild(makeCardInfo(data));
+    article.appendChild(makeFriendActionContainer(data.id));
+    return article;
+}
 
-    article.appendChild(flexContainer);
+function makeSuggestedCard(data) {
+     const article = document.createElement("article");
+    article.className = "community-card";
+    article.setAttribute("role", "listitem");
+    article.setAttribute("data-user-id", data.id);
+
+    const actionsContainer = document.createElement("div");
+    actionsContainer.className = "card-actions-container";
+
+    const addButton = document.createElement("button");
+    addButton.setAttribute("type", "button");
+    addButton.setAttribute("class", "comm-button-action-icon");
+    addButton.setAttribute("alt", "Aggiungi amico");
+    addButton.setAttribute("aria-label", "Aggiungi amico");
+    const addIcon = document.createElement("img");
+    addIcon.src = "assets/icons/community/delete.svg";
+    addButton.appendChild(addIcon);
+    addButton.addEventListener('click', () => removeFriend(data.id));
+
+    actionsContainer.appendChild(addButton);
+
+    article.appendChild(makeCardInfo(data));
     article.appendChild(actionsContainer);
 
     return article;
