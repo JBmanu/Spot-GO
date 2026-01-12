@@ -3,7 +3,57 @@
     components,
     utilities */
 
+/* gls = goals */
+/* ctn = container */
+
 @layer components {
+    /* CONTAINERS */
+    .vertical-ctn,
+    .vertical-ctn-g2 {
+        @apply flex flex-col
+    }
+
+    .vertical-ctn-g1 {
+        @apply gap-1
+    }
+
+    .vertical-ctn-g2 {
+        @apply gap-2
+    }
+
+    .horizontal-ctn {
+
+    }
+
+
+    /* SPOT */
+    .spot-card {
+        @apply shadow rounded-xl flex flex-col
+    }
+
+    .spot-header {
+        @apply flex justify-between items-center cursor-pointer px-3 py-2
+    }
+
+    .spot-arrow {
+        @apply w-5 h-5 text-gray-500 transition-transform duration-500
+        ease-[cubic-bezier(0.25,0.8,0.25,1)]
+    }
+
+    .missions-spot {
+        /*sono classi suggerite da chat(ma non vanno): will-change-opacity will-change-filter*/
+        @apply overflow-hidden max-h-0 opacity-0 scale-95 blur-sm px-3
+        transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
+        will-change-transform
+    }
+
+    .missions-spot.open {
+        @apply max-h-[1000px] opacity-100 scale-100 blur-none py-2
+    }
+
+    .spot-mission {
+
+    }
 
     .mission-type-btn {
         @apply flex items-center gap-1 px-3 py-2 rounded-xl
