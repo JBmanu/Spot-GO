@@ -76,8 +76,6 @@
     .community-section header {
         @apply mt-2 px-3 text-2xl font-semibold;
         position: sticky;
-        background: rgba(255, 255, 255, 0.6);
-        /* linear-gradient(110deg, #fff2ef 0%, #FEFEFE 20%, #ffefb5 80%, #ffefb5 90%, #fff9d2 100%); */
         top: 0;
         z-index: 10;
         padding-top: 1rem;

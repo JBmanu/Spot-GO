@@ -1,4 +1,5 @@
 import {getFriends} from "../json-data-handler";
+import {showConfirmModal} from "../ui/confirmModal.js";
 
 export async function loadCommunityData() {
     await loadFriends();
@@ -10,7 +11,7 @@ async function loadFriends() {
      for (let index = 0; index < 18; index++) {
         friends.push(
             {
-                id: "id-utente-firebase",
+                id: "id-utente"+index,
                 email: "mail@mail.com",
                 username: "user " + index
             }
@@ -21,10 +22,10 @@ async function loadFriends() {
 
 async function loadSuggested() {
     var suggested = [] //await getSuggestedFriends("AMNSHSNGXdZ0xm4XRWBS");
-     for (let index = 0; index < 18; index++) {
+     for (let index = 0; index < 5; index++) {
         suggested.push(
             {
-                id: "id-utente-firebase",
+                id: "id-utente"+index,
                 email: "suggested@mail.com",
                 username: "suggested " + index
             }
@@ -63,7 +64,7 @@ async function showsItemsInContainer(items, itemIdName, cardBuilder) {
         button.id = `show-all-${itemIdName}-button`;
         button.classList.add('vedi-tutti-button');
         button.textContent = 'Mostra tutti';
-        button.addEventListener('click', () => toggleExpand(containerId));
+        button.addEventListener('click', () => toggleExpand(containerId, button));
         header.appendChild(button);
     }
 }
@@ -81,16 +82,25 @@ function splitArray(arr = [], firstSize = 0) {
     return [first, second];
 }
 
-function toggleExpand(containerId) {
+function toggleExpand(containerId, button) {
     const query = `#${containerId} .hidden-items`;
     const hiddenList = document.querySelector(query);
     hiddenList.classList.toggle('hidden')
-    //TODO: change show-all-friends-button label
+    const btnLabel = hiddenList.classList.contains('hidden') ? "Mostra tutti" : "Nascondi";
+    button.textContent = btnLabel;
 }
 
-function removeFriend(userId) {
+async function removeFriend(userId, name) {
     //TODO remove friend from firebase
-    console.log("Removed friend");
+    const descr = "Non sarai più amico di " + name + ", ma potrai sempre riallacciare i rapporti.";
+    const res = await showConfirmModal(`Vuoi rimuovere ${name} come amico?`, descr);
+    if (res) {
+        console.log(`Remove ${userId} user as friend`);
+    }
+}
+
+function addFriend(userId) {
+    console.log(`Add ${userId} to friends`);
 }
 
 function makeCardInfo(data) {
@@ -119,7 +129,7 @@ function makeCardInfo(data) {
     return flexContainer;
 }
 
-function makeFriendActionContainer(userId) {
+function makeFriendActionContainer(data) {
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
     const messageButton = document.createElement("button");
@@ -139,7 +149,7 @@ function makeFriendActionContainer(userId) {
     const removeIcon = document.createElement("img");
     removeIcon.src = "assets/icons/community/delete.svg";
     removeButton.appendChild(removeIcon);
-    removeButton.addEventListener('click', () => removeFriend(userId));
+    removeButton.addEventListener('click', () => removeFriend(data.id, data.username));
 
     actionsContainer.appendChild(messageButton);
     actionsContainer.appendChild(removeButton);
@@ -156,7 +166,7 @@ function makeFriendCard(data) {
     article.setAttribute("role", "listitem");
     article.setAttribute("data-user-id", data.id);
     article.appendChild(makeCardInfo(data));
-    article.appendChild(makeFriendActionContainer(data.id));
+    article.appendChild(makeFriendActionContainer(data));
     return article;
 }
 
@@ -175,9 +185,9 @@ function makeSuggestedCard(data) {
     addButton.setAttribute("alt", "Aggiungi amico");
     addButton.setAttribute("aria-label", "Aggiungi amico");
     const addIcon = document.createElement("img");
-    addIcon.src = "assets/icons/community/delete.svg";
+    addIcon.src = "assets/icons/community/add_user.svg";
     addButton.appendChild(addIcon);
-    addButton.addEventListener('click', () => removeFriend(data.id));
+    addButton.addEventListener('click', () => addFriend(data.id));
 
     actionsContainer.appendChild(addButton);
 
