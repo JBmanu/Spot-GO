@@ -32,9 +32,8 @@ export function populateSingleSpotCard(cardEl, spot, {
     }
 
     cardEl.style.display = "";
-    cardEl.setAttribute("data-spot-id", id);
-    setText(cardEl.querySelector('[data-field="title"]'), spot.nome || "Spot");
-    setImage(cardEl.querySelector('[data-field="image"]'), "../" + spot.immagine.slice(1), spot.nome || "Foto spot");
+    cardEl.setAttribute("data-spot-id", String(spot.id));
+    if (wrapperEl) wrapperEl.setAttribute("data-spot-id", String(spot.id));
 
     const normalizedCat = normalizeCategoryName(spot.idCategoria);
     if (normalizedCat) {
@@ -68,7 +67,7 @@ export function populateSingleSpotCard(cardEl, spot, {
  * @param {number} [options.limit=10] - Numero massimo di spot da visualizzare.
  * @param {boolean} [options.useWrapper=false] - Se true, usa un wrapper attorno alla card.
  * @param {boolean} [options.setCategoryText=true] - Se true, imposta il testo della categoria nella card.
- * @param {Array} [options.additionalFields=[]] - Array di oggetti {selector, valueFunction} per campi extra.
+ * @param {Array} [options.additionalFields=[]] - Array di oggetti {selector, valueFunction, type} per campi extra. Type può essere 'text' o 'image'.
  * @param {Function} [options.bookmarkInit=initializeBookmarkButtonAttributes] - Funzione per inizializzare i bookmark.
  * @param {string} [options.trackClass] - Classe CSS del track del carosello da preservare durante la pulizia.
  * @param {Function} [options.customCardSetup] - Funzione di callback per setup aggiuntivo della card.
@@ -124,10 +123,7 @@ export async function generateSpotCardList({
         const appendTarget = container.querySelector('.carousel-horizontal_track') || container;
 
         for (const spot of list) {
-            const element = templateElement.cloneNode(true);
-            element.removeAttribute("data-template");
-            element.removeAttribute("aria-hidden");
-            element.hidden = false;
+            const element = templateElement.content.cloneNode(true).firstElementChild;
 
             let card, wrapperEl;
             if (useWrapper) {
@@ -149,7 +145,13 @@ export async function generateSpotCardList({
             if (card.style.display === "none") continue;
 
             for (const field of additionalFields) {
-                setText(card.querySelector(field.selector), field.valueFunction(spot));
+                const el = card.querySelector(field.selector);
+                if (!el) continue; // Se il campo non esiste, salta
+                if (field.type === 'image') {
+                    setImage(el, field.valueFunction(spot), spot.nome || "Foto spot");
+                } else {
+                    setText(el, field.valueFunction(spot));
+                }
             }
 
             if (bookmarkInit) bookmarkInit(card);

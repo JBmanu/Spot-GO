@@ -2,7 +2,7 @@
 
 @import "leaflet/dist/leaflet.css";
 
-@import "./common/smartphone.css";
+@import "./smartphone.css";
 
 @import "./common/utils.css";
 
@@ -12,11 +12,9 @@
 
 @import "./profile/profile-overview.css";
 
-@import "./homepage/homepage.css";
+@import "./pages/homepage.css";
 
 @import "./pages/community.css";
-
-@import "./homepage/homepage.css";
 
 @import "../base/carousels/carousel-horizontal.css";
 
@@ -26,22 +24,16 @@
 
 @import "../base/carousels/carousel-vertical.css";
 
-@import "../base/simil-homepage-toprated/simil-toprated.css";
-
-@import "../base/simil-homepage-nearby/simil-nearby.css";
-
-@import "../base/simil-homepage-saved/simil-saved.css";
+@import "./pages/spot-cards.css";
 
 @import "./common/bottom-sheet.css";
 
 @import "./common/bottom-sheet-filters.css";
 
-@import "../base/classic-spot-card/classic-spot.css";
-
 @import "./map/new-spot.css";
 
 @import "./goals/goals.css";
 
-@import "./login-signup/login.css";
+@import "./pages/login.css";
 
 @import "./common-components/search-bar/keyboard.css";

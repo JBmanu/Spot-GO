@@ -67,25 +67,6 @@ async function initializeProfileData(overviewContainer) {
     }
 }
 
-async function updateUserCounters(userId) {
-    const writtenReviews = document.getElementById("written-reviews");
-    const createdSpots = document.getElementById("created-spots");
-    const visitedSpots = document.getElementById("visited-spots");
-    const savedSpots = document.getElementById("saved-spots");
-
-    const [reviews, created, visited, saved] = await Promise.all([
-        getReviews(userId),
-        getCreatedSpots(userId),
-        getVisitedSpots(userId),
-        getSavedSpots(userId)
-    ]);
-    
-    if (writtenReviews) writtenReviews.textContent = reviews.length;
-    if (createdSpots) createdSpots.textContent = created.length;
-    if (visitedSpots) visitedSpots.textContent = visited.length;
-    if (savedSpots) savedSpots.textContent = saved.length;
-}
-
 function updateProfileUI(data) {
     const nameEl = document.getElementById("profile-name");
     const usernameEl = document.getElementById("profile-username");
