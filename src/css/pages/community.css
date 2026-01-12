@@ -1,23 +1,86 @@
 @layer components {
-    .community-friend-card {
-        @apply flex justify-between rounded-2xl border bg-main_paper p-3;
-        border-color: var(--color-border_color);
+    .community-card {
+        @apply flex justify-between rounded-2xl border bg-main_paper p-2;
         min-width: 0;
-    }
-
-    .community-section-header {
-        @apply text-2xl font-semibold;
+        border-radius: var(--radius-2xl);
+        margin: calc(var(--spacing) * 3);
+        background: rgba(255, 255, 255, 0.468);
+        border: 1.5px solid var(--hp-border-color);
+        border-bottom: 4px solid rgba(var(--hp-cat-nature), 0.40);
+        box-shadow: 0 4px 24px 0 rgba(15, 23, 42, 0.10), 0 1.5px 3px 0 rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.18);
     }
 
     .card-actions-container {
         @apply flex justify-center items-center gap-[22px];
     }
 
-    .friend-avatar {
+    .user-avatar {
         @apply grid place-items-center w-16 h-16 rounded-full border border-border_color text-xl font-bold;
+        background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.18));
     }
 
-    .friend-card-data {
+    .user-card-data {
         @apply flex flex-col justify-between ml-4;
+    }
+
+    .comm-button-action-icon {
+        height: calc(var(--spacing) * 12);
+        width: calc(var(--spacing) * 12);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        --tw-border-style: none;
+        border-style: none;
+        background-image: none;
+        padding: calc(var(--spacing) * 0);
+    }
+
+    .comm-button-action-icon>img {
+        transition-property: opacity;
+        transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+        transition-duration: var(--tw-duration, var(--default-transition-duration));
+        --tw-duration: 200ms;
+        transition-duration: 200ms;
+    }
+
+    .comm-button-action-icon:hover>img {
+        opacity: 0.6;
+    }
+
+    .comm-button-action-icon:active>img {
+        @apply scale-[0.95];
+    }
+
+    #community-suggested-section header h2 {
+        font-style: italic;
+    }
+
+    .community-section header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #hidden-items {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+
+    #hidden-items:not(.hidden) {
+        max-height: fit-content;
+        opacity: 1;
+    }
+
+    .community-section header {
+        @apply mt-2 px-3 text-2xl font-semibold;
+        position: sticky;
+        background: rgba(255, 255, 255, 0.6);
+        /* linear-gradient(110deg, #fff2ef 0%, #FEFEFE 20%, #ffefb5 80%, #ffefb5 90%, #fff9d2 100%); */
+        top: 0;
+        z-index: 10;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
     }
 }
