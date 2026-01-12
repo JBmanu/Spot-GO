@@ -16,13 +16,11 @@
 
 @import "./pages/community.css";
 
-@import "../base/carousels/carousel-horizontal.css";
+@import "../base/carousels/carousels.css";
 
 @import "./common/spot-detail.css";
 
 @import "./map/map.css";
-
-@import "../base/carousels/carousel-vertical.css";
 
 @import "./pages/spot-cards.css";
 
