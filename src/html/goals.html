@@ -201,13 +201,19 @@
     <!-- CONTENITORE ESTERNO -->
     <div class="relative w-full max-w-md overflow-hidden">
         <!-- TRACK SCORRIMENTO -->
-        <!--             class="flex transition-all duration-700 ease-[cubic-bezier(.17,.67,.38,1.21)]"-->
+        <!-- + BOUNCE -->
+        <!-- class="flex transition-all duration-700 ease-[cubic-bezier(.17,.67,.38,1.21)]" -->
+        <!-- + SMOOTH -->
+        <!-- class="flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]" -->
+        <!-- + VELOCE -->
+        <!-- class="flex transition-all duration-500 ease-[cubic-bezier(.25,.8,.25,1)]"-->
+
         <div id="slider"
-             class="flex transition-all duration-500 ease-[cubic-bezier(.25,.8,.25,1)]"
+             class="flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]"
              style="transform: translateX(0%);">
 
             <!-- CARD 1 -->
-            <div class="w-full flex-shrink-0 p-4">
+            <div class="slide shrink-0 w-full p-4">
                 <!-- Container -->
                 <div class="flex flex-col gap-2">
                     <!-- ================= Elemento 1 ================= -->
@@ -250,7 +256,7 @@
             </div>
 
             <!-- CARD 2 -->
-            <div class="w-full flex-shrink-0 p-4">
+            <div class="slide shrink-0 w-full p-4">
                 <!-- Container -->
                 <div class="flex flex-col gap-2">
                     <!-- ================= Elemento 1 ================= -->
@@ -293,7 +299,7 @@
             </div>
 
             <!-- CARD 3 -->
-            <div class="w-full flex-shrink-0 p-4">
+            <div class="slide shrink-0 w-full p-4">
                 <!-- Container -->
                 <div class="flex flex-col gap-2">
                     <!-- ================= Elemento 1 ================= -->
