@@ -4,19 +4,19 @@
 
         <div class="spot-detail-title-container">
             <div class="spot-detail-title-section">
-                <h1 id="spot-detail-title" class="spot-detail-title">Nome dello spot</h1>
+                <h1 data-field="title" class="spot-detail-title">Nome dello spot</h1>
+                <div data-field="category" class="spot-detail-category-label opacity-70 text-xs mt-1"></div>
             </div>
 
-
             <div class="spot-detail-rating glass-light">
-                <span id="spot-detail-rating-value">4.5</span>
-                <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                <span data-field="rating">4.5</span>
+                <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star" />
             </div>
         </div>
 
 
-        <div class="spot-detail-missions-banner glass">
-            <img src="../../assets/icons/homepage/Medal.svg" alt="Missioni" class="missions-icon"/>
+        <div id="spot-missions-toggle" class="spot-detail-missions-banner glass">
+            <img src="../../assets/icons/homepage/Medal.svg" alt="Missioni" class="missions-icon" />
             <span class="missions-text">Missioni: <span id="spot-missions-completed">0</span> di <span
                     id="spot-missions-total">0</span> completate</span>
         </div>
@@ -24,13 +24,13 @@
 
         <div class="spot-detail-header">
             <div class="spot-detail-image-container">
-                <img id="spot-detail-main-image" src="" alt="Foto principale dello spot" class="spot-detail-image"/>
+                <img data-field="image" src="" alt="Foto principale dello spot" class="spot-detail-image" />
             </div>
         </div>
 
 
         <div class="spot-detail-description-compact glass-strong">
-            <p id="spot-detail-description" class="spot-detail-description glass-strong">
+            <p data-field="description" class="spot-detail-description glass-strong">
                 Descrizione dello spot
             </p>
         </div>
@@ -40,8 +40,8 @@
             <div id="spot-missions-list" class="missions-list">
                 <div class="mission-item">
 
-                    <span class="mission-banner glass completed"
-                          data-mission-id="mission-1">Scatta una foto al tramonto</span>
+                    <span class="mission-banner glass completed" data-mission-id="mission-1">Scatta una foto al
+                        tramonto</span>
                 </div>
                 <div class="mission-item">
                     <span class="mission-banner glass" data-mission-id="mission-2">Visita durante il weekend</span>
@@ -63,30 +63,31 @@
 
         <div class="spot-detail-info-detailed glass-strong">
             <div class="info-row">
-                <img src="../../assets/icons/homepage/Detail/Clock.svg" alt="Orario" class="info-icon"/>
+                <img src="../../assets/icons/homepage/Detail/Clock.svg" alt="Orario" class="info-icon" />
                 <div class="info-content">
                     <span class="info-label">Orario</span>
-                    <span id="spot-detail-hours" class="info-value">9:00 - 18:00</span>
+                    <span data-field="hours" class="info-value">9:00 - 18:00</span>
                 </div>
             </div>
             <div class="info-row">
-                <img src="../../assets/icons/homepage/Detail/Location.svg" alt="Indirizzo" class="info-icon"/>
+                <img src="../../assets/icons/homepage/Detail/Location.svg" alt="Indirizzo" class="info-icon" />
                 <div class="info-content">
                     <div class="info-label-with-distance">
                         <span class="info-label">Indirizzo</span>
                         <span class="info-distance-label">
-                        <img src="../../assets/icons/homepage/Place%20Marker.svg" class="icon-mini" alt="Distanza"/>
-                        <span id="spot-detail-distance" class="spot-distance">0 m</span>
-                    </span>
+                            <img src="../../assets/icons/homepage/Place%20Marker.svg" class="icon-mini"
+                                alt="Distanza" />
+                            <span data-field="distance" class="spot-distance">0 m</span>
+                        </span>
                     </div>
-                    <span id="spot-detail-address" class="info-value">Via Roma, 123 - Milano</span>
+                    <span data-field="address" class="info-value">Via Roma, 123 - Milano</span>
                 </div>
             </div>
             <div class="info-row">
-                <img src="../../assets/icons/profile/Lock.svg" alt="Costo" class="info-icon"/>
+                <img src="../../assets/icons/profile/Lock.svg" alt="Costo" class="info-icon" />
                 <div class="info-content">
                     <span class="info-label">Costo</span>
-                    <span id="spot-detail-cost" class="info-value">Gratuito</span>
+                    <span data-field="cost" class="info-value">Gratuito</span>
                 </div>
             </div>
         </div>
@@ -119,7 +120,7 @@
 
                                 <div class="spot-review-rating glass-strong">
                                     <span>5</span>
-                                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star" />
                                 </div>
                             </div>
                             <p class="spot-review-text">Posto incredibile! L'atmosfera è magica, soprattutto al
@@ -135,7 +136,7 @@
                                 <span class="spot-review-author">Giulia M.</span>
                                 <div class="spot-review-rating glass-light">
                                     <span>4</span>
-                                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star" />
                                 </div>
                             </div>
                             <p class="spot-review-text">Bellissimo! Un po' affollato nei weekend, ma vale davvero la
@@ -150,7 +151,7 @@
                                 <span class="spot-review-author">Luca B.</span>
                                 <div class="spot-review-rating glass-light">
                                     <span>5</span>
-                                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star" />
                                 </div>
                             </div>
                             <p class="spot-review-text">Scoperta fantastica! Non lo conoscevo e sono rimasto
@@ -165,7 +166,7 @@
                                 <span class="spot-review-author">Sara P.</span>
                                 <div class="spot-review-rating glass-light">
                                     <span>4</span>
-                                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star"/>
+                                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star" />
                                 </div>
                             </div>
                             <p class="spot-review-text">Davvero carino! Ho notato che potrebbe avere una migliore
@@ -181,12 +182,12 @@
 
     <div class="spot-detail-actions glass-strong">
         <button type="button" id="spot-detail-visit-button"
-                class="spot-detail-action-button glass spot-detail-visit-button">
+            class="spot-detail-action-button glass spot-detail-visit-button">
             <img src="../../assets/icons/profile/Thumbs%20Up%20Down.svg" alt="Segna come visitato" class="icon-mini">
             Visitato
         </button>
         <button type="button" id="spot-detail-share-button"
-                class="spot-detail-action-button glass spot-detail-share-button">
+            class="spot-detail-action-button glass spot-detail-share-button">
             <img src="../../assets/icons/homepage/Detail/Goal.svg" alt="Attiva missioni" class="icon-mini">
             Attiva missioni
         </button>

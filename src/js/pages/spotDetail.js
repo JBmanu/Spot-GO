@@ -4,19 +4,22 @@ import {
     updateBookmarkVisual,
     syncBookmarksUI,
 } from "../common/bookmark.js";
-
 import {
     getCategoryNameIt,
     getCurrentUser,
     getSavedSpots,
     getSpotById,
+    pickRating,
 } from "../json-data-handler.js";
+import { formatRatingAsText } from "../common/fitText.js";
+import { closeOverlayAndReveal } from "../common/back.js";
 
-import {closeOverlayAndReveal} from "../common/back.js";
-
-let _spotData = null;
-let _headerBookmarkClickHandler = null;
-let _headerBookmarkChangeHandler = null;
+const state = {
+    spotData: null,
+    templateCache: null,
+    bookmarkClickHandler: null,
+    bookmarkChangeHandler: null
+};
 
 function getMain() {
     return document.getElementById("main");
@@ -45,91 +48,79 @@ function getDetailOverlay(main) {
 }
 
 function removeHeaderBookmarkButton() {
-    const headerBookmarkButton = document.getElementById("header-bookmark-button");
-    if (!headerBookmarkButton) return;
+    const btn = document.getElementById("header-bookmark-button");
+    if (!btn) return;
 
-    try {
-        if (_headerBookmarkClickHandler) {
-            headerBookmarkButton.removeEventListener("click", _headerBookmarkClickHandler);
-            _headerBookmarkClickHandler = null;
-        }
-        if (_headerBookmarkChangeHandler) {
-            document.removeEventListener("bookmark:changed", _headerBookmarkChangeHandler);
-            _headerBookmarkChangeHandler = null;
-        }
-    } catch (_) {
+    if (state.bookmarkClickHandler) {
+        btn.removeEventListener("click", state.bookmarkClickHandler);
+        state.bookmarkClickHandler = null;
+    }
+    if (state.bookmarkChangeHandler) {
+        document.removeEventListener("bookmark:changed", state.bookmarkChangeHandler);
+        state.bookmarkChangeHandler = null;
     }
 
-    headerBookmarkButton.style.display = "none";
-    headerBookmarkButton.removeAttribute("data-bookmark-button");
-    headerBookmarkButton.removeAttribute("data-bookmark-type");
-    headerBookmarkButton.removeAttribute("data-saved");
+    btn.style.display = "none";
+    btn.removeAttribute("data-bookmark-button");
+    btn.removeAttribute("data-saved");
+}
+
+async function exitDetailFlow(main) {
+    if (!main) return;
+    main.classList.add("spot-detail-exit");
+    await new Promise(r => setTimeout(r, 250)); // Match transition duration
+    closeDetailOverlay(main);
 }
 
 function closeDetailOverlay(main) {
     if (!main) return null;
-
     const overlay = getDetailOverlay(main);
     if (!overlay) return null;
 
-    const shown = closeOverlayAndReveal({overlay});
-
+    const shown = closeOverlayAndReveal({ overlay });
     removeHeaderBookmarkButton();
-
     return shown;
 }
 
 export function initializeSpotClickHandlers(scopeEl = document) {
     const root = scopeEl === document ? document.getElementById("main") : scopeEl;
-    if (!root) return;
-
-    if (root.dataset.spotClickBound === "true") return;
+    if (!root || root.dataset.spotClickBound === "true") return;
     root.dataset.spotClickBound = "true";
 
     root.addEventListener("click", async (e) => {
         if (e.target.closest("[data-bookmark-button]")) return;
-
         const card = e.target.closest('[role="listitem"][data-spot-id]');
         if (!card) return;
 
-        const spotId = card.getAttribute("data-spot-id");
-        if (!spotId || !spotId.trim()) return;
-
-        await loadSpotDetail(spotId.trim());
+        const spotId = (card.getAttribute("data-spot-id") || "").trim();
+        if (spotId) await loadSpotDetail(spotId);
     });
 }
 
 async function loadSpotDetail(spotId) {
     try {
         const spotData = await getSpotById(spotId);
-        if (!spotData) {
-            return;
-        }
-
-        _spotData = spotData;
+        if (!spotData) return;
+        state.spotData = spotData;
 
         const main = getMain();
         if (!main) return;
 
         const returnSection = getActiveSectionKey(main);
-
         const existing = getDetailOverlay(main);
         if (existing) existing.remove();
 
-        const res = await fetch("../html/common-pages/spot-detail.html", {cache: "no-store"});
-        if (!res.ok) return;
-
-        const html = await res.text();
-
+        if (!state.templateCache) {
+            const res = await fetch("../html/common-pages/spot-detail.html");
+            if (res.ok) state.templateCache = await res.text();
+        }
+        if (!state.templateCache) return;
         const overlay = document.createElement("div");
         overlay.dataset.overlayView = "spot-detail";
         overlay.dataset.returnView = returnSection;
-        overlay.innerHTML = html;
+        overlay.innerHTML = state.templateCache;
 
-        main.querySelectorAll("[data-section-view]").forEach((el) => (el.hidden = true));
-
-        main.querySelectorAll("[data-overlay-view]").forEach((el) => (el.hidden = true));
-
+        main.querySelectorAll("[data-section-view], [data-overlay-view]").forEach((el) => (el.hidden = true));
         main.appendChild(overlay);
 
         main.classList.add("spot-detail-enter");
@@ -139,17 +130,12 @@ async function loadSpotDetail(spotId) {
         if (wrapper) wrapper.setAttribute("data-category", spotData.idCategoria || "nature");
 
         updateDetailHeader(spotData);
-
         await populateSpotDetail(spotData, overlay);
-
         initializeDetailHandlers(overlay);
-
         initializeBookmarks(overlay);
-        try {
-            await syncBookmarksUI(overlay);
-        } catch (_) {
-        }
+        syncBookmarksUI(overlay).catch(() => { });
     } catch (err) {
+        console.error("loadSpotDetail error:", err);
     }
 }
 
@@ -160,64 +146,48 @@ function updateDetailHeader(spotData) {
 
     if (headerLeftLogo) {
         headerLeftLogo.innerHTML = `
-      <button type="button" id="header-back-button" aria-label="Torna indietro"
-        class="flex items-center justify-center w-10 h-10">
-        <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
-      </button>
-    `;
+            <button type="button" id="header-back-button" aria-label="Torna indietro"
+                class="flex items-center justify-center w-10 h-10">
+                <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
+            </button>
+        `;
     }
 
     if (headerLogoText) headerLogoText.style.display = "none";
-
     if (headerTitle) {
         headerTitle.textContent = spotData.nome || "Dettaglio Spot";
         headerTitle.classList.remove("hidden");
     }
-
     setupHeaderBookmark(spotData);
 }
 
 function setupHeaderBookmark(spotData) {
-    const headerBookmarkButton = document.getElementById("header-bookmark-button");
-    if (!headerBookmarkButton) return;
+    const btn = document.getElementById("header-bookmark-button");
+    if (!btn) return;
 
     removeHeaderBookmarkButton();
+    btn.style.display = "block";
+    btn.setAttribute("data-bookmark-button", "true");
 
-    headerBookmarkButton.style.display = "block";
-    headerBookmarkButton.setAttribute("data-bookmark-button", "true");
-    headerBookmarkButton.setAttribute("data-bookmark-type", "detail");
-
-    _headerBookmarkClickHandler = async (e) => {
+    state.bookmarkClickHandler = async (e) => {
         e.preventDefault();
         e.stopPropagation();
-
         if (!spotData?.id) return;
-
         try {
             await toggleBookmarkForSpot(spotData.id);
-            await refreshHeaderBookmarkVisual(headerBookmarkButton, spotData.id);
-        } catch (err) {
-        }
+            await refreshHeaderBookmarkVisual(btn, spotData.id);
+        } catch { }
     };
+    btn.addEventListener("click", state.bookmarkClickHandler);
 
-    headerBookmarkButton.addEventListener("click", _headerBookmarkClickHandler);
-
-    _headerBookmarkChangeHandler = (ev) => {
-        try {
-            if (!ev?.detail) return;
-            const {spotId, isSaved} = ev.detail;
-            if (String(spotId) !== String(spotData.id)) return;
-
-            headerBookmarkButton.dataset.saved = isSaved ? "true" : "false";
-            updateBookmarkVisual(headerBookmarkButton, isSaved);
-        } catch (err) {
-        }
+    state.bookmarkChangeHandler = (ev) => {
+        if (String(ev?.detail?.spotId) !== String(spotData.id)) return;
+        const isSaved = ev.detail.isSaved;
+        btn.dataset.saved = isSaved ? "true" : "false";
+        updateBookmarkVisual(btn, isSaved);
     };
-
-    document.addEventListener("bookmark:changed", _headerBookmarkChangeHandler);
-
-    refreshHeaderBookmarkVisual(headerBookmarkButton, spotData.id).catch(() => {
-    });
+    document.addEventListener("bookmark:changed", state.bookmarkChangeHandler);
+    refreshHeaderBookmarkVisual(btn, spotData.id).catch(() => { });
 }
 
 async function refreshHeaderBookmarkVisual(btn, spotId) {
@@ -225,84 +195,57 @@ async function refreshHeaderBookmarkVisual(btn, spotId) {
     if (!user) return;
 
     const saved = await getSavedSpots(user.username);
-    const savedIds = (saved || []).map((s) => s.idLuogo);
-
-    const isSaved = savedIds.includes(spotId);
+    const isSaved = (saved || []).some((s) => String(s.idLuogo) === String(spotId));
     btn.dataset.saved = isSaved ? "true" : "false";
     updateBookmarkVisual(btn, isSaved);
 }
 
 async function populateSpotDetail(spotData, scopeEl = document) {
-    const els = {
-        image: scopeEl.querySelector("#spot-detail-main-image"),
-        title: scopeEl.querySelector("#spot-detail-title"),
-        rating: scopeEl.querySelector("#spot-detail-rating-value"),
-        category: scopeEl.querySelector("#spot-detail-category"),
-        distance: scopeEl.querySelector("#spot-detail-distance"),
-        description: scopeEl.querySelector("#spot-detail-description"),
-        address: scopeEl.querySelector("#spot-detail-address"),
-        hours: scopeEl.querySelector("#spot-detail-hours"),
-        cost: scopeEl.querySelector("#spot-detail-cost"),
+    const fieldMap = {
+        title: (el) => el.textContent = spotData.nome || "Spot",
+        image: (el) => {
+            el.src = spotData.immagine || "";
+            el.alt = spotData.nome || "Foto spot";
+        },
+        rating: (el) => el.textContent = formatRatingAsText(pickRating(spotData)) || "4.5",
+        distance: (el) => el.textContent = spotData.distanza ? `${spotData.distanza} m` : "0 m",
+        category: async (el) => {
+            el.textContent = await getCategoryNameIt(spotData.idCategoria).catch(() => "");
+        },
+        description: (el) => el.textContent = spotData.descrizione || "Nessuna descrizione disponibile",
+        address: (el) => el.textContent = spotData.indirizzo || "",
+        hours: (el) => {
+            const orari = Array.isArray(spotData.orari) ? spotData.orari : [];
+            el.textContent = orari.length ? orari.map((o) => `${o.inizio} - ${o.fine}`).join(" | ") : "";
+        },
+        cost: (el) => {
+            const costo = Array.isArray(spotData.costo) ? spotData.costo : [];
+            el.textContent = costo.length
+                ? costo.map((c) => (c.prezzo === 0 ? "Gratuito" : `${c.tipo}: €${c.prezzo}`)).join(" | ")
+                : "";
+        }
     };
 
-    if (els.image) {
-        els.image.src = spotData.immagine || "";
-        els.image.alt = spotData.nome || "Foto spot";
-    }
-
-    if (els.title) els.title.textContent = spotData.nome || "Spot";
-    if (els.rating) els.rating.textContent = spotData.rating ? String(spotData.rating) : "4.5";
-    if (els.distance) els.distance.textContent = spotData.distanza ? `${spotData.distanza} m` : "0 m";
-
-    if (els.category && spotData.idCategoria) {
-        try {
-            els.category.textContent = await getCategoryNameIt(spotData.idCategoria);
-        } catch {
-            els.category.textContent = "";
+    const elements = scopeEl.querySelectorAll("[data-field]");
+    for (const el of elements) {
+        const fieldName = el.dataset.field;
+        if (fieldMap[fieldName]) {
+            await fieldMap[fieldName](el);
         }
-    }
-
-    if (els.description) els.description.textContent = spotData.descrizione || "Nessuna descrizione disponibile";
-    if (els.address) els.address.textContent = spotData.indirizzo || "";
-
-    if (els.hours) {
-        const orari = Array.isArray(spotData.orari) ? spotData.orari : [];
-        els.hours.textContent = orari.length
-            ? orari.map((o) => `${o.inizio} - ${o.fine}`).join(" | ")
-            : "";
-    }
-
-    if (els.cost) {
-        const costo = Array.isArray(spotData.costo) ? spotData.costo : [];
-        els.cost.textContent = costo.length
-            ? costo.map((c) => (c.prezzo === 0 ? "Gratuito" : `${c.tipo}: €${c.prezzo}`)).join(" | ")
-            : "";
     }
 }
 
 function setupToolbarNavigation() {
     const toolbar = document.querySelector(".app-toolbar");
-    if (!toolbar) return;
-
-    if (toolbar.dataset.detailBound === "true") return;
+    if (!toolbar || toolbar.dataset.detailBound === "true") return;
     toolbar.dataset.detailBound = "true";
 
     toolbar.addEventListener("click", async (e) => {
         const btn = e.target.closest("button[data-section]");
-        if (!btn) return;
-
-        if (btn.hasAttribute("disabled") || btn.getAttribute("aria-disabled") === "true") return;
+        if (!btn || btn.hasAttribute("disabled") || btn.getAttribute("aria-disabled") === "true") return;
 
         const main = getMain();
-        if (!main) return;
-
-        const overlay = getDetailOverlay(main);
-        if (!overlay) return;
-
-        main.classList.add("spot-detail-exit");
-        await new Promise((r) => setTimeout(r, 300));
-
-        closeDetailOverlay(main);
+        if (getDetailOverlay(main)) await exitDetailFlow(main);
     });
 }
 
@@ -312,37 +255,22 @@ function initializeDetailHandlers(overlayEl) {
         backButton.addEventListener("click", async (e) => {
             e.preventDefault();
             e.stopPropagation();
-
             const main = getMain();
             if (!main) return;
 
-            main.classList.add("spot-detail-exit");
-            await new Promise((r) => setTimeout(r, 300));
+            await exitDetailFlow(main);
 
-            const shown = closeDetailOverlay(main) || "homepage";
-
+            const shown = getActiveSectionKey(main) || "homepage";
             const scope = getSectionWrapper(main, shown) || document;
-            try {
-                await syncBookmarksUI(scope);
-            } catch (_) {
-            }
+            syncBookmarksUI(scope).catch(() => { });
             initializeBookmarks(scope);
         });
     }
 
-    const missionsToggle =
-        overlayEl?.querySelector("#spot-missions-toggle") ||
-        document.getElementById("spot-missions-toggle");
-
+    const missionsToggle = overlayEl?.querySelector("#spot-missions-toggle") || document.getElementById("spot-missions-toggle");
     if (missionsToggle) {
         missionsToggle.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const missionsDetails =
-                overlayEl?.querySelector("#spot-missions-details") ||
-                document.getElementById("spot-missions-details");
-
+            const missionsDetails = overlayEl?.querySelector("#spot-missions-details") || document.getElementById("spot-missions-details");
             if (!missionsDetails) return;
 
             const isHidden = missionsDetails.style.display === "none";
@@ -350,11 +278,9 @@ function initializeDetailHandlers(overlayEl) {
             missionsToggle.classList.toggle("expanded", isHidden);
         });
     }
-
     setupToolbarNavigation();
 }
 
 export async function openSpotDetailById(spotId) {
-    if (!spotId) return;
-    await loadSpotDetail(String(spotId).trim());
+    if (spotId) await loadSpotDetail(String(spotId).trim());
 }
