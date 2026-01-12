@@ -1,3 +1,4 @@
+import { doc } from "firebase/firestore";
 import {getFriends} from "../json-data-handler";
 import {showConfirmModal} from "../ui/confirmModal.js";
 
@@ -140,6 +141,9 @@ function makeFriendActionContainer(data) {
     const messageIcon = document.createElement("img");
     messageIcon.src = "assets/icons/community/message.svg";
     messageButton.appendChild(messageIcon);
+    messageButton.addEventListener('click', () => {
+        renderMessages(data);
+    });
 
     const removeButton = document.createElement("button");
     removeButton.setAttribute("type", "button");
@@ -195,4 +199,67 @@ function makeSuggestedCard(data) {
     article.appendChild(actionsContainer);
 
     return article;
+}
+
+/**
+ * Chat loading
+ */
+
+// Messaggi di esempio
+const messages = [
+    { sent: false, image: 'https://via.placeholder.com/200?text=Immagine+1', text: 'Guarda questa foto!' },
+    { sent: true, text: 'Bellissima! 😊' },
+    { sent: false, image: 'https://via.placeholder.com/200?text=Paesaggio', text: 'L\'ho scattata ieri al tramonto' },
+    { sent: true, image: 'https://via.placeholder.com/200?text=Risposta', text: 'Spettacolare!' },
+    { sent: false, text: 'Vuoi venire sabato?' },
+    { sent: false, image: 'https://via.placeholder.com/200?text=Immagine+1', text: 'Guarda questa foto!' },
+    { sent: true, text: 'Bellissima! 😊' },
+    { sent: false, image: 'https://via.placeholder.com/200?text=Paesaggio', text: 'L\'ho scattata ieri al tramonto' },
+    { sent: true, image: 'https://via.placeholder.com/200?text=Risposta', text: 'Spettacolare!' },
+    { sent: false, text: 'Vuoi venire sabato?' },
+    { sent: false, image: 'https://via.placeholder.com/200?text=Immagine+1', text: 'Guarda questa foto!' },
+    { sent: true, text: 'Bellissima! 😊' },
+    { sent: false, image: 'https://via.placeholder.com/200?text=Paesaggio', text: 'L\'ho scattata ieri al tramonto' },
+    { sent: true, image: 'https://via.placeholder.com/200?text=Risposta', text: 'Spettacolare!' },
+    { sent: false, text: 'Vuoi venire sabato?' }
+];
+
+function renderMessages(userData) {
+    document.getElementById('chat-container').classList.toggle('hidden-chat');
+    const chatName = document.getElementById('user-chat-name');
+    chatName.textContent = userData.username;
+    const messagesContainer = document.getElementById('messagesContainer');
+    messagesContainer.innerHTML = '';
+    messages.forEach((msg, idx) => {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${msg.sent ? 'sent' : ''}`;
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    
+    // if (msg.image) {
+    //     const img = document.createElement('img');
+    //     img.src = msg.image;
+    //     img.className = 'message-image';
+    //     bubble.appendChild(img);
+    // }
+    
+    if (msg.text) {
+        const textDiv = document.createElement('div');
+        textDiv.className = 'message-text';
+        textDiv.textContent = msg.text;
+        bubble.appendChild(textDiv);
+    }
+    
+    msgDiv.appendChild(bubble);
+    messagesContainer.appendChild(msgDiv);
+    });
+    
+    // Scorri in fondo
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Chiudi chat
+    document.getElementById('closeBtn').addEventListener('click', () => {
+        document.getElementById('chat-container').classList.add('hidden-chat');
+    });
 }
