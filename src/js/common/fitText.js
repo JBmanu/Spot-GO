@@ -49,3 +49,9 @@ export function initFitText(selector, containerSelector, maxLines = 2, minFont =
 
     observer.observe(container, { childList: true, subtree: true });
 }
+
+export function formatRatingAsText(v) {
+    const n = Number(String(v ?? "").replace(",", "."));
+    if (!Number.isFinite(n)) return "";
+    return (Math.round(n * 10) / 10).toFixed(1);
+}
