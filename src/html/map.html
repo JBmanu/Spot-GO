@@ -5,35 +5,22 @@
     <section class="map-section">
         <!-- [dynamic] Search Bar-->
         <!-- Filtri categorie -->
-        <div
-                id="map-categories-container"
-                class="home-chips-row"
-                role="group"
-                aria-label="Filtri categoria"
-        >
+        <div id="map-categories-container" class="home-chips-row" role="group" aria-label="Filtri categoria">
             <button class="home-chip" type="button" data-category="food" aria-pressed="false">
-                <img src="../assets/icons/homepage/Fast%20Food.svg"
-                     alt="Icona Cibo"
-                     class="icon-mini"/>
+                <img src="../assets/icons/homepage/Fast%20Food.svg" alt="Icona Cibo" class="icon-mini" />
 
                 Cibo
             </button>
             <button class="home-chip" type="button" data-category="culture" aria-pressed="false">
-                <img src="../assets/icons/homepage/Cathedral.svg"
-                     alt="Icona Cultura"
-                     class="icon-mini"/>
+                <img src="../assets/icons/homepage/Cathedral.svg" alt="Icona Cultura" class="icon-mini" />
 
                 Cultura
             </button>
             <button class="home-chip" type="button" data-category="nature" aria-pressed="false">
-                <img src="../assets/icons/homepage/Oak%20Tree.svg"
-                     alt="Icona Natura"
-                     class="icon-mini"/> Natura
+                <img src="../assets/icons/homepage/Oak%20Tree.svg" alt="Icona Natura" class="icon-mini" /> Natura
             </button>
             <button class="home-chip" type="button" data-category="mystery" aria-pressed="false">
-                <img src="../assets/icons/homepage/Desura.svg"
-                     alt="Icona Mistero"
-                     class="icon-mini"/> Mistero
+                <img src="../assets/icons/homepage/Desura.svg" alt="Icona Mistero" class="icon-mini" /> Mistero
             </button>
         </div>
     </section>
@@ -50,70 +37,20 @@
             <h2 class="home-section-title" data-slot="title">Spot vicini</h2>
         </header>
         <div id="map-nearby-section" class="mt-2">
-            <div
-                    id="map-nearby-carousel"
-                    class="carousel-vertical"
-                    aria-label="Carosello spot vicini (scorri su e giù)"
-                    data-size="lg">
+            <div id="map-nearby-carousel" data-carousel-type="vertical" data-template="classic-spot-card-template"
+                aria-label="Carosello spot vicini (scorri su e giù)" data-size="md">
 
                 <p id="map-nearby-empty" class="text-sm text-text_color/70 px-1 py-2 hidden">
                     Nessuno spot trovato con questi filtri.
                 </p>
 
                 <!-- cards -->
-                <div
-                        id="map-nearby-spots-container"
-                        class="carousel-vertical-track"
-                        role="list"
-                        aria-label="Lista spot vicini"
-                ></div>
+                <div id="map-nearby-spots-container" role="list" aria-label="Lista spot vicini"></div>
             </div>
         </div>
     </section>
 
-    <template id="classic-spot-card-template">
-        <article data-slot="spot" role="listitem" data-spot-id="" data-saved="false" data-category="">
 
-        <div data-slot="image">
-                <img src="" alt="Foto spot" class="spot-card-image" data-field="image"/>
-            </div>
 
-            <div data-slot="info">
-                <h3 data-slot="title" data-field="title">Nome spot</h3>
-
-                <p data-slot="meta">
-          <span data-slot="meta-item">
-            <img src="../assets/icons/homepage/Place Marker.svg" data-slot="icon" alt="Posizione">
-            <span data-slot="distance" data-field="distance">0 m</span>
-          </span>
-
-                    <span data-slot="separator">•</span>
-
-                    <span data-slot="meta-item">
-            <span data-slot="category" data-field="category">Categoria</span>
-          </span>
-                </p>
-            </div>
-
-            <div data-slot="right-column">
-                <button
-                        type="button"
-                        data-slot="bookmark"
-                        aria-label="Aggiungi ai salvati"
-                        data-bookmark-button
-                        data-bookmark-type="generic"
-                >
-                    <img src="../assets/icons/homepage/BookmarkEmpty.svg" data-slot="bookmark-icon" alt="Bookmark">
-                </button>
-
-                <div data-slot="rating-container">
-                    <div data-slot="badge">
-                        <span data-slot="rating" data-field="rating">4.5</span>
-                        <img src="../assets/icons/homepage/Star.svg" alt="stella" data-slot="star"/>
-                    </div>
-                </div>
-            </div>
-        </article>
-    </template>
 
 </section>
