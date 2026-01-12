@@ -1,16 +1,15 @@
 <section class="space-y-3 flex flex-col">
 
-  <section id="community-friends-section" class="mt-2">
+  <section id="community-friends-section" class="community-section">
     <header>
-      <h2 class="community-section-header">I tuoi amici</h2>
+      <h2>I tuoi amici</h2>
     </header>
-  
     <div id="community-friends-container" class="vertical-carousel-track" role="list">
       <!-- Friend Placeholder -->
-      <article class="community-friend-card" role="listitem" data-friend-id="">
+      <article class="community-card" role="listitem" data-user-id="">
         <div class="flex flex-row justify-between items-center">
-          <div class="friend-avatar">U</div>
-          <div class="friend-card-data">
+          <div class="user-avatar">U</div>
+          <div class="user-card-data">
             <h3 class="text-xl font-bold">User</h3>
               <p class="font-bold italic"><span>@</span>username</p>
           </div>
@@ -29,7 +28,27 @@
       <!-- End friend placeholder -->
     </div>
   </section>
-  <section id="community-suggested-section" class="mt-2">
-    <h2 class="community-section-header" id="suggested-section-header">Suggeriti</h2>
+  <section id="community-suggested-section" class="community-section">
+    <header>
+       <h2>Suggeriti</h2>
+    </header>
+    <div id="community-suggested-container" class="vertical-carousel-track" role="list">
+      <!-- Friend Placeholder -->
+      <article class="community-card" role="listitem" data-user-id="">
+        <div class="flex flex-row justify-between items-center">
+          <div class="user-avatar">U</div>
+          <div class="user-card-data">
+            <h3 class="text-xl font-bold">User</h3>
+            <p class="font-bold italic"><span>@</span>username</p>
+          </div>
+        </div>
+        <!-- Action buttons -->
+        <div class="card-actions-container">
+          <button class="comm-button-action-icon" alt="Add friend" aria-label="Add friend">
+            <img src="assets/icons/community/message.svg" alt=""/>
+          </button>
+        </div>
+        <!-- End Action buttons -->
+      </article>
   </section>
 </section>

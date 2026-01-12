@@ -61,6 +61,13 @@ function splitArray(arr = [], firstSize = 0) {
 function toggleExpandFriends() {
     const hiddenList = document.querySelector('#hidden-friends');
     hiddenList.classList.toggle('hide-other')
+    //TODO: change show-all-friends-button label
+}
+
+
+function removeFriend(userId) {
+    //TODO remove friend from firebase
+    console.log("Removed friend");
 }
 
 /**
@@ -69,16 +76,16 @@ function toggleExpandFriends() {
  */
 function makeFriendCard(data) {
     const article = document.createElement("article");
-    article.className = "community-friend-card";
+    article.className = "community-card";
     article.setAttribute("role", "listitem");
-    article.setAttribute("data-friend-id", data.id);
+    article.setAttribute("data-user-id", data.id);
 
     const friendAvatar = document.createElement("div");
-    friendAvatar.className = "friend-avatar";
+    friendAvatar.className = "user-avatar";
     friendAvatar.textContent = data.username.substring(0, 2);
 
     const friendCardData = document.createElement("div");
-    friendCardData.className = "friend-card-data";
+    friendCardData.className = "user-card-data";
 
     const friendName = document.createElement("h3");
     friendName.className = "text-xl font-bold";
@@ -113,6 +120,7 @@ function makeFriendCard(data) {
     removeIcon.src = "assets/icons/community/delete.svg";
     removeIcon.alt = "Remove friend";
     removeButton.appendChild(removeIcon);
+    removeButton.addEventListener('click', () => removeFriend(data.id));
 
     actionsContainer.appendChild(messageButton);
     actionsContainer.appendChild(removeButton);
