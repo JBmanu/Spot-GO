@@ -1,4 +1,4 @@
-import {PATHS} from "./paths.js";
+import { PATHS } from "./paths.js";
 import {
     activateToolbar,
     resetHeaderBaseForSection,
@@ -20,6 +20,7 @@ const handlers = {
     map: { init: null },
     profile: { init: null },
     goals: { init: null },
+    community: { init: null },
 };
 
 const modulesLoaded = Promise.allSettled([
@@ -27,6 +28,7 @@ const modulesLoaded = Promise.allSettled([
     import("./pages/homepage/homepage.js").then((m) => (handlers.homepage.init = m.initializeHomepage)),
     import("./map.js").then((m) => (handlers.map.init = m.initializeMap)),
     import("./goals/goals.js").then((m) => (handlers.goals.init = m.initializeGoals)),
+    import("./pages/community.js").then((m) => (handlers.community.init = m.loadCommunityData)),
 ]);
 
 async function replaceNodeFromHtml({ url, targetSelector, sourceSelector }) {

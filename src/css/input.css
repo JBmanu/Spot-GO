@@ -16,7 +16,7 @@
 
 @import "./pages/community.css";
 
-@import "../base/carousels/carousels.css";
+@import "./common/carousels.css";
 
 @import "./common/spot-detail.css";
 
