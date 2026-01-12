@@ -2,15 +2,12 @@ import {getFriends} from "../json-data-handler";
 
 export async function loadCommunityData() {
     await loadFriends();
+    await loadSuggested();
 }
 
 async function loadFriends() {
-    const container = document.getElementById("community-friends-container");
-    container.innerHTML = "";
     var friends = [] //await getFriends("AMNSHSNGXdZ0xm4XRWBS");
-    console.log(friends);
-
-    for (let index = 0; index < 18; index++) {
+     for (let index = 0; index < 18; index++) {
         friends.push(
             {
                 id: "id-utente-firebase",
@@ -19,28 +16,54 @@ async function loadFriends() {
             }
         );
     }
+    showsItemsInContainer(friends, "friends");
+}
 
-    if (friends.length === 0) {
-        container.innerHTML = '<p>Nessun amico trovato</p>';
+async function loadSuggested() {
+    var suggested = [] //await getSuggestedFriends("AMNSHSNGXdZ0xm4XRWBS");
+     for (let index = 0; index < 18; index++) {
+        suggested.push(
+            {
+                id: "id-utente-firebase",
+                email: "suggested@mail.com",
+                username: "suggested " + index
+            }
+        );
+    }
+    showsItemsInContainer(suggested, "suggested");
+}
+
+/**
+ * Generate item list providing containerId, array of items 
+ * and itemIdName (is used to identify html nodes about this items).
+ */
+async function showsItemsInContainer(items, itemIdName) {
+    const containerId = `community-${itemIdName}-container`;
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+
+    if (items.length === 0) {
+        container.innerHTML = '<p>Nessun elemento trovato</p>';
         return;
     } else {
-        const friendsVisible = 5;
-        const [friendsOne, friendsTwo] = splitArray(friends, friendsVisible);
-        appendHtmlChild(friendsOne, container);
+        const itemsVisible = 5;
+        const [partOne, partTwo] = splitArray(items, itemsVisible);
+        appendHtmlChild(partOne, container);
 
         const hiddenDiv = document.createElement('div');
-        hiddenDiv.id = 'hidden-friends';
-        hiddenDiv.classList.add('hide-other');
-        appendHtmlChild(friendsTwo, hiddenDiv);
+        hiddenDiv.classList.add('hidden-items');
+        hiddenDiv.classList.add('hidden');
+        appendHtmlChild(partTwo, hiddenDiv);
         container.appendChild(hiddenDiv); 
 
-        // Add button to show/hide all other friends in list
-        const header = document.querySelector('#community-friends-section header');
+        // Add button to show/hide all other items in list
+        const selQuery = `#community-${itemIdName}-section header`;
+        const header = document.querySelector(selQuery);
         const button = document.createElement('button');
-        button.id = 'show-all-friends-button';
+        button.id = `show-all-${itemIdName}-button`;
         button.classList.add('vedi-tutti-button');
         button.textContent = 'Mostra tutti';
-        button.addEventListener('click', toggleExpandFriends);
+        button.addEventListener('click', () => toggleExpand(containerId));
         header.appendChild(button);
     }
 }
@@ -58,12 +81,12 @@ function splitArray(arr = [], firstSize = 0) {
     return [first, second];
 }
 
-function toggleExpandFriends() {
-    const hiddenList = document.querySelector('#hidden-friends');
-    hiddenList.classList.toggle('hide-other')
+function toggleExpand(containerId) {
+    const query = `#${containerId} .hidden-items`;
+    const hiddenList = document.querySelector(query);
+    hiddenList.classList.toggle('hidden')
     //TODO: change show-all-friends-button label
 }
-
 
 function removeFriend(userId) {
     //TODO remove friend from firebase
@@ -100,7 +123,6 @@ function makeFriendCard(data) {
 
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
-
     const messageButton = document.createElement("button");
     messageButton.setAttribute("type", "button");
     messageButton.setAttribute("class", "comm-button-action-icon");

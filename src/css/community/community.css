@@ -61,14 +61,14 @@
         align-items: center;
     }
 
-    #hidden-friends {
+    #hidden-items {
         max-height: 0;
         opacity: 0;
         overflow: hidden;
         transition: max-height 0.3s ease, opacity 0.3s ease;
     }
 
-    #hidden-friends:not(.hide-other) {
+    #hidden-items:not(.hidden) {
         max-height: fit-content;
         opacity: 1;
     }
