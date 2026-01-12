@@ -1,10 +1,10 @@
-import {initializeBookmarks, syncAllBookmarks} from "../common/bookmark.js";
-import {initializeSpotClickHandlers} from "./spotDetail.js";
-import {getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt} from "../json-data-handler.js";
-import {distanceFromUserToSpot, formatDistance} from "../common.js";
-import {goBack, setupBackButton, closeOverlay} from "../common/back.js";
-import {initializeVerticalCarousel} from "../common/carousels.js";
-import {createSearchBarWithKeyboard} from "../createComponent.js";
+import { initializeBookmarks, syncAllBookmarks } from "../common/bookmark.js";
+import { initializeSpotClickHandlers } from "./spotDetail.js";
+import { getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt } from "../json-data-handler.js";
+import { distanceFromUserToSpot, formatDistance } from "../common.js";
+import { goBack, setupBackButton, closeOverlay } from "../common/back.js";
+import { initializeVerticalCarousel } from "../common/carousels.js";
+import { createSearchBarWithKeyboard } from "../createComponent.js";
 
 const OVERLAY_ID = "view-all-saved";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -74,7 +74,7 @@ function hideAllSectionViews(main) {
     main.querySelectorAll("[data-section-view]").forEach((el) => (el.hidden = true));
 }
 
-function mountOverlay(main, {html, returnViewKey}) {
+function mountOverlay(main, { html, returnViewKey }) {
     hideAllSectionViews(main);
 
     const existing = main.querySelector(OVERLAY_SELECTOR);
@@ -101,13 +101,13 @@ function pushHistoryState(returnViewKey) {
         const curr = history.state || {};
         if (curr.overlay !== OVERLAY_ID) {
             history.pushState(
-                {...curr, overlay: OVERLAY_ID, returnView: returnViewKey || null},
+                { ...curr, overlay: OVERLAY_ID, returnView: returnViewKey || null },
                 "",
                 location.href
             );
         } else {
             history.replaceState(
-                {...curr, returnView: returnViewKey || curr.returnView || null},
+                { ...curr, returnView: returnViewKey || curr.returnView || null },
                 "",
                 location.href
             );
@@ -120,7 +120,7 @@ function clearHistoryState() {
     try {
         const curr = history.state || {};
         if (curr.overlay === OVERLAY_ID) {
-            const next = {...curr};
+            const next = { ...curr };
             delete next.overlay;
             delete next.returnView;
             history.replaceState(next, "", location.href);
@@ -219,32 +219,9 @@ function renderSpotCard(template, spot, categoryCache) {
     return cardNode;
 }
 
-async function ensureClassicSpotCardTemplateLoaded() {
-    if (state.classicCardTplLoaded) return true;
-    if (document.getElementById("classic-spot-card-template")) {
-        state.classicCardTplLoaded = true;
-        return true;
-    }
 
-    const res = await fetch("../base/classic-spot-card/classic-spot.html");
-    if (!res.ok) return false;
 
-    const html = await res.text();
-    const temp = document.createElement("div");
-    temp.innerHTML = html;
-
-    const tpl = temp.querySelector("template#classic-spot-card-template");
-    if (!tpl) return false;
-
-    document.body.appendChild(tpl);
-    state.classicCardTplLoaded = true;
-    return true;
-}
-
-async function populateViewAllSavedSpots({preserveDom = false} = {}) {
-    const okTpl = await ensureClassicSpotCardTemplateLoaded();
-    if (!okTpl) return;
-
+async function populateViewAllSavedSpots({ preserveDom = false } = {}) {
     const currentUser = await getCurrentUser();
     if (!currentUser) return;
 
@@ -254,7 +231,7 @@ async function populateViewAllSavedSpots({preserveDom = false} = {}) {
     const savedContainer = root.querySelector("#view-all-saved-list");
     if (!savedContainer) return;
 
-    const track = savedContainer.querySelector(".carousel-vertical-track") || savedContainer;
+    const track = savedContainer.querySelector(".carousel-vertical_track") || savedContainer.querySelector(".carousel-vertical-track") || savedContainer;
 
     track.querySelectorAll("[data-empty-saved]").forEach((el) => el.remove());
 
@@ -284,7 +261,7 @@ async function populateViewAllSavedSpots({preserveDom = false} = {}) {
         .filter((s) => neededIds.has(String(s.id)))
         .sort((a, b) => distanceFromUserToSpot(a) - distanceFromUserToSpot(b));
 
-    const template = document.getElementById("classic-spot-card-template");
+    const template = document.querySelector('template[data-template="classic-spot-card-template"]');
     if (!template?.content?.firstElementChild) return;
 
     const categoryCache = new Map();
@@ -357,7 +334,7 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
         attachPopHandler();
 
-        await populateViewAllSavedSpots({preserveDom: true});
+        await populateViewAllSavedSpots({ preserveDom: true });
         initializeBookmarks();
         await syncAllBookmarks();
         return;
@@ -366,7 +343,7 @@ export async function loadViewAllSaved(returnViewKey = null) {
     const html = await fetchOverlayHtml();
     if (!html) return;
 
-    const overlay = mountOverlay(main, {html, returnViewKey});
+    const overlay = mountOverlay(main, { html, returnViewKey });
 
     const placeholder = overlay.querySelector("#search-bar-placeholder");
     if (placeholder) {
@@ -395,7 +372,7 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
     if (!state.initialized) {
         initializeSpotClickHandlers();
-        initializeVerticalCarousel(overlay.querySelector("#view-all-saved-list"), {cardSelector: '[data-slot="spot"]'});
+        initializeVerticalCarousel(overlay.querySelector("#view-all-saved-list"), { cardSelector: '[data-slot="spot"]' });
         const track = overlay.querySelector("#view-all-saved-list .carousel-vertical-track");
         if (track) {
             track.style.gap = "0";
@@ -405,7 +382,7 @@ export async function loadViewAllSaved(returnViewKey = null) {
         state.initialized = true;
     }
 
-    await populateViewAllSavedSpots({preserveDom: true});
+    await populateViewAllSavedSpots({ preserveDom: true });
     initializeBookmarks();
     await syncAllBookmarks();
 
