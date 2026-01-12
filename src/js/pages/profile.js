@@ -65,7 +65,6 @@ async function initializeProfileData(overviewContainer) {
     } else {
         console.error("savedSpotsButton not found");
     }
-
 }
 
 function updateProfileUI(data) {

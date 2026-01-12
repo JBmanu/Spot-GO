@@ -1,4 +1,4 @@
-import { PATHS } from "./paths.js";
+import {PATHS} from "./paths.js";
 import {
     activateToolbar,
     resetHeaderBaseForSection,
