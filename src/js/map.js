@@ -4,8 +4,8 @@ let getSpots,
     USER_PROTO_POSITION, distanceFromUserToSpot,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
-    initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard,
-    openSpotDetailById, openNewSpotPage;
+    initializeSpotClickHandlers, initializeVerticalCarousel,
+    openSpotDetailById, openNewSpotPage, generateSpotCardList;
 
 
 import L from 'leaflet';
@@ -33,8 +33,8 @@ Promise.all([
     import("./pages/newSpot.js").then(module => {
         openNewSpotPage = module.openNewSpotPage;
     }),
-    import("./common/createCards.js").then(module => {
-        createClassicSpotCard = module.createClassicSpotCard;
+    import("./pages/homepage/generate-spot-card-list.js").then(module => {
+        generateSpotCardList = module.generateSpotCardList;
     }),
     import("./common/carousels.js").then(module => {
         initializeVerticalCarousel = module.initializeVerticalCarousel;
@@ -258,8 +258,8 @@ async function loadMarkers() {
                 iconAnchor: [32, 64]
             })
         })
-        .addTo(map)
-        .bindPopup(popupHtml);
+            .addTo(map)
+            .bindPopup(popupHtml);
 
         // Pulsante per visualizzare i dettagli
         marker.on("popupopen", (e) => {
@@ -279,7 +279,7 @@ async function loadMarkers() {
 
                     openSpotDetailById?.(id);
                 },
-                {once: true}
+                { once: true }
             );
         });
 
@@ -304,17 +304,20 @@ async function loadNearbySpotsList() {
     const carouselEl = document.getElementById("map-nearby-carousel");
     if (!carouselEl) return;
 
-    const track = document.getElementById("map-nearby-spots-container");
-    if (!track) return;
+    await generateSpotCardList({
+        containerId: "map-nearby-carousel",
+        getSpotsFunction: () => spots || [],
+        useWrapper: false,
+        setCategoryText: true
+    });
 
-    track.innerHTML = "";
-    carouselEl.querySelectorAll(':scope > [data-slot="spot"]').forEach(el => el.remove()); // sicurezza
+    if (initializeVerticalCarousel) {
+        initializeVerticalCarousel(carouselEl);
+    }
 
-    for (const spot of (spots || [])) {
-        const distanceMeters = distanceFromUserToSpot(spot);
-        const formattedDistance = formatDistance(distanceMeters);
-        const card = await createClassicSpotCard(spot, formattedDistance);
-        if (card) track.appendChild(card);
+    const emptyMsg = document.getElementById("map-nearby-empty");
+    if (emptyMsg) {
+        emptyMsg.classList.toggle("hidden", spots && spots.length > 0);
     }
 }
 
@@ -332,4 +335,4 @@ window.reloadProfile = async function () {
     await initializeMap();
 };
 
-export {initializeMap}
+export { initializeMap }
