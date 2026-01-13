@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc } from "firebase/firestore";
 import { db, auth } from "./firebase.js";
 import { distanceFromUserToSpot } from "./common.js";
 
@@ -154,6 +154,42 @@ export async function getFriends(userId) {
     } catch (error) {
         console.error("Errore recupero amici:", error);
         return [];
+    }
+}
+
+/**
+ * Aggiunge un amico a un utente (reciproco).
+ */
+export async function addFriend(userId, friendEmail) {
+    if (!userId || !friendEmail) return;
+    try {
+        const userRef = doc(db, "Amico", userId);
+        const friendRef = doc(db, "Amico", friendEmail);
+
+        await setDoc(userRef, { friends: arrayUnion(friendEmail) }, { merge: true });
+        await setDoc(friendRef, { friends: arrayUnion(userId) }, { merge: true });
+
+        console.log(`Amicizia aggiunta tra ${userId} e ${friendEmail}`);
+    } catch (error) {
+        console.error("Errore aggiunta amico:", error);
+    }
+}
+
+/**
+ * Rimuove un amico da un utente (reciproco).
+ */
+export async function removeFriend(userId, friendEmail) {
+    if (!userId || !friendEmail) return;
+    try {
+        const userRef = doc(db, "Amico", userId);
+        const friendRef = doc(db, "Amico", friendEmail);
+
+        await updateDoc(userRef, { friends: arrayRemove(friendEmail) });
+        await updateDoc(friendRef, { friends: arrayRemove(userId) });
+
+        console.log(`Amicizia rimossa tra ${userId} e ${friendEmail}`);
+    } catch (error) {
+        console.error("Errore rimozione amico:", error);
     }
 }
 

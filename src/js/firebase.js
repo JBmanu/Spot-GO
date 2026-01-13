@@ -8,7 +8,8 @@ import {
     collection,
     getDocs,
     deleteDoc,
-    addDoc
+    addDoc,
+    doc
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
@@ -159,7 +160,27 @@ export async function resetAndPopulateDatabase() {
             }
         }
 
-        console.log("Database completamente rigenerato senza duplicati!");
+        // TODO: rimuovere
+        const luanaGmail = "luana@gmail.com";
+        const manuelGmail = "julio.manuel@gmail.com";
+        const alessandroGmail = "alessandro@gmail.com";
+        const teoGmail = "teo@gmail.com";
+
+        const luanaIcloud = "luana@icloud.com";
+        const manuelIcloud = "julio.manuel@icloud.com";
+        const alessandroIcloud = "alessandro@icloud.com";
+        const teoIcloud = "teo@icloud.com";
+
+        await setDoc(doc(db, "Amico", luanaGmail), { friends: [manuelGmail, alessandroGmail, teoGmail] });
+        await setDoc(doc(db, "Amico", manuelGmail), { friends: [luanaGmail, alessandroGmail, teoGmail] });
+        await setDoc(doc(db, "Amico", alessandroGmail), { friends: [luanaGmail, manuelGmail, teoGmail] });
+        await setDoc(doc(db, "Amico", teoGmail), { friends: [luanaGmail, manuelGmail, alessandroGmail] });
+
+        await setDoc(doc(db, "Amico", luanaIcloud), { friends: [manuelIcloud, alessandroIcloud, teoIcloud] });
+        await setDoc(doc(db, "Amico", manuelIcloud), { friends: [luanaIcloud, alessandroIcloud, teoIcloud] });
+        await setDoc(doc(db, "Amico", alessandroIcloud), { friends: [luanaIcloud, manuelIcloud, teoIcloud] });
+        await setDoc(doc(db, "Amico", teoIcloud), { friends: [luanaIcloud, manuelIcloud, alessandroIcloud] });
+
     } catch (error) {
         console.error("Errore durante il reset del database:", error);
     }

@@ -1,40 +1,26 @@
-import {getFriends} from "../json-data-handler";
+import { getFriends, getCurrentUser } from "../database.js";
 
 export async function loadCommunityData() {
-    await loadFriends();
-    await loadSuggested();
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    await loadFriends(user.id);
+    await loadSuggested(user.id);
 }
 
-async function loadFriends() {
-    var friends = [] //await getFriends("AMNSHSNGXdZ0xm4XRWBS");
-     for (let index = 0; index < 18; index++) {
-        friends.push(
-            {
-                id: "id-utente-firebase",
-                email: "mail@mail.com",
-                username: "user " + index
-            }
-        );
-    }
+async function loadFriends(userId) {
+    const friends = await getFriends(userId);
     showsItemsInContainer(friends, "friends", makeFriendCard);
 }
 
-async function loadSuggested() {
-    var suggested = [] //await getSuggestedFriends("AMNSHSNGXdZ0xm4XRWBS");
-     for (let index = 0; index < 18; index++) {
-        suggested.push(
-            {
-                id: "id-utente-firebase",
-                email: "suggested@mail.com",
-                username: "suggested " + index
-            }
-        );
-    }
+async function loadSuggested(userId) {
+    // getSuggestedFriends non è ancora implementato nel Cloud, usiamo array vuoto per ora
+    const suggested = [];
     showsItemsInContainer(suggested, "suggested", makeSuggestedCard);
 }
 
 /**
- * Generate item list providing containerId, array of items 
+ * Generate item list providing containerId, array of items
  * and itemIdName (is used to identify html nodes about this items).
  */
 async function showsItemsInContainer(items, itemIdName, cardBuilder) {
@@ -54,7 +40,7 @@ async function showsItemsInContainer(items, itemIdName, cardBuilder) {
         hiddenDiv.classList.add('hidden-items');
         hiddenDiv.classList.add('hidden');
         appendHtmlChild(partTwo, hiddenDiv, cardBuilder);
-        container.appendChild(hiddenDiv); 
+        container.appendChild(hiddenDiv);
 
         // Add button to show/hide all other items in list
         const selQuery = `#community-${itemIdName}-section header`;
@@ -161,7 +147,7 @@ function makeFriendCard(data) {
 }
 
 function makeSuggestedCard(data) {
-     const article = document.createElement("article");
+    const article = document.createElement("article");
     article.className = "community-card";
     article.setAttribute("role", "listitem");
     article.setAttribute("data-user-id", data.id);
