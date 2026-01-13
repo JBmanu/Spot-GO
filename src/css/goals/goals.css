@@ -7,7 +7,15 @@
 /* ctn = container */
 
 @layer components {
-    /* CONTAINERS */
+    /* ================= CONTAINERS ================= */
+    .center-ctn {
+        @apply flex items-center justify-center
+    }
+
+    .between-ctn {
+        @apply flex justify-between items-center
+    }
+
     .vertical-ctn,
     .vertical-ctn-g2 {
         @apply flex flex-col
@@ -26,13 +34,13 @@
     }
 
 
-    /* SPOT */
+    /* ================= SPOT ================= */
     .spot-card {
         @apply shadow rounded-xl flex flex-col
     }
 
     .spot-header {
-        @apply flex justify-between items-center cursor-pointer px-3 py-2
+        @apply cursor-pointer px-3 py-2
     }
 
     .spot-arrow {
@@ -52,9 +60,18 @@
     }
 
     .spot-mission {
-
+        @apply shadow rounded-xl px-2 py-2
     }
 
+    .spot-mission-complete {
+        @apply absolute inset-0 z-20 bg-white/60 backdrop-blur-sm rounded-xl
+    }
+
+    .spot-mission-complete.active {
+        @apply hidden
+    }
+
+    /* ================= MISSIONS TYPE BAR ================= */
     .mission-type-btn {
         @apply flex items-center gap-1 px-3 py-2 rounded-xl
         text-gray-700 cursor-pointer transition;

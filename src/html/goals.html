@@ -12,9 +12,9 @@
         <!-- Contenitore principale -->
         <div class="vertical-ctn-g2">
             <!-- ================= SPOT ================= -->
-            <div class="spot-card glass-medium">
+            <div class="glass-medium spot-card">
                 <!-- Spot info -->
-                <div class="spot-header">
+                <div class="between-ctn spot-header">
                     <!-- Icona + Luogo -->
                     <div class="vertical-ctn">
                         <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <!-- Mission progress -->
-                    <div class="flex items-center justify-center gap-2">
+                    <div class="center-ctn gap-2">
                         <!-- Cerchio di progresso -->
                         <div class="relative w-10 h-10">
                             <svg class="w-10 h-10">
@@ -35,7 +35,7 @@
                                         stroke-dasharray="113.097" stroke-dashoffset="22.619"
                                         transform="rotate(-90 20 20)"/>
                             </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-800">
+                            <span class="center-ctn absolute inset-0 text-sm font-semibold text-gray-800">
                                 4/5
                             </span>
                         </div>
@@ -49,7 +49,11 @@
                 <!-- Missions -->
                 <div class="vertical-ctn-g2 missions-spot">
                     <!-- Mission -->
-                    <div class="glass-light shadow rounded-xl px-2 py-2 flex justify-between items-center">
+                    <div class="between-ctn glass-light spot-mission">
+                        <!-- Complete -->
+                        <div class="center-ctn spot-mission-complete">
+                            <span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>
+                        </div>
                         <!-- Left -->
                         <div class="vertical-ctn-g1">
                             <!-- Title -->
@@ -58,15 +62,15 @@
                             <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
                         </div>
                         <!-- Reward -->
-                        <div class="flex items-center">
+                        <div class="center-ctn">
                             <span class="font-semibold text-green-600">+50 XP</span>
                             <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt=""/>
                         </div>
                     </div>
                     <!-- Mission -->
-                    <div class="glass-light shadow rounded-xl px-2 py-2 flex justify-between items-center">
-                        <!-- Overlay COMPLETATO -->
-                        <div class="absolute hidden inset-0 z-20 flex items-center justify-center bg-white/60 backdrop-blur-sm rounded-xl">
+                    <div class="between-ctn glass-light spot-mission">
+                        <!-- Complete -->
+                        <div class="center-ctn spot-mission-complete">
                             <span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>
                         </div>
                         <!-- Left -->
@@ -84,11 +88,11 @@
                 </div>
             </div>
             <!-- ================= SPOT ================= -->
-            <div class="spot-card glass-medium">
+            <div class="glass-medium spot-card">
                 <!-- Spot info -->
-                <div class="spot-header flex justify-between items-center cursor-pointer px-3 py-2">
+                <div class="between-ctn spot-header">
                     <!-- Icona + Luogo -->
-                    <div class="flex flex-col">
+                    <div class="vertical-ctn">
                         <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>
                         <div class="flex items-center gap-1">
                             <img src="../assets/icons/homepage/Fast%20Food.svg" class="w-4 h-4" alt=""/>
@@ -96,7 +100,7 @@
                         </div>
                     </div>
                     <!-- Mission progress -->
-                    <div class="flex items-center justify-center gap-2">
+                    <div class="center-ctn gap-2">
                         <!-- Cerchio di progresso -->
                         <div class="relative w-10 h-10">
                             <svg class="w-10 h-10">
@@ -107,43 +111,42 @@
                                         stroke-dasharray="113.097" stroke-dashoffset="22.619"
                                         transform="rotate(-90 20 20)"/>
                             </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-800">
+                            <span class="center-ctn absolute inset-0 text-sm font-semibold text-gray-800">
                                 4/5
                             </span>
                         </div>
                         <!-- Arrow -->
-                        <svg class="w-5 h-5 text-gray-500 arrow transition-transform duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
-                             fill="none" stroke="currentColor" stroke-width="2"
+                        <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"
                              viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m6 9 6 6 6-6"/>
                         </svg>
-                        <!-- Arrow -->
-                        <!--                        <span class="text-sm font-semibold text-green-600">+250 XP</span>-->
                     </div>
                 </div>
                 <!-- Missions -->
-                <div class="flex flex-col gap-2 missions overflow-hidden max-h-0 opacity-0 scale-95 blur-sm
-                            transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
-                            will-change-transform will-change-opacity will-change-filter px-3">
+                <div class="vertical-ctn-g2 missions-spot">
                     <!-- Mission -->
-                    <div class="glass-light rounded-xl px-2 py-2 flex justify-between items-center">
+                    <div class="between-ctn glass-light spot-mission">
+                        <!-- Complete -->
+                        <div class="center-ctn spot-mission-complete">
+                            <span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>
+                        </div>
                         <!-- Left -->
-                        <div class="flex flex-col gap-1">
+                        <div class="vertical-ctn-g1">
                             <!-- Title -->
                             <h3 class="font-semibold text-gray-800"> Scatta la foto </h3>
                             <!-- Description -->
                             <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
                         </div>
                         <!-- Reward -->
-                        <div class="flex items-center">
-                            <!--                            <img src="../assets/icons/goals/FlashOn.svg" class="w-8 h-8" alt=""/>-->
+                        <div class="center-ctn">
                             <span class="font-semibold text-green-600">+50 XP</span>
+                            <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt=""/>
                         </div>
                     </div>
                     <!-- Mission -->
-                    <div class="glass-light rounded-xl px-2 py-2 flex justify-between items-center">
-                        <!-- Overlay COMPLETATO -->
-                        <div class="absolute inset-0 z-20 flex items-center justify-center bg-white/60 backdrop-blur-sm rounded-xl">
+                    <div class="between-ctn glass-light spot-mission">
+                        <!-- Complete -->
+                        <div class="center-ctn spot-mission-complete">
                             <span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>
                         </div>
                         <!-- Left -->
