@@ -1,4 +1,4 @@
-import {collection, getDocs, query, where, limit, getDoc} from "firebase/firestore";
+import {collection, getDocs, query, where, limit, getDoc, doc} from "firebase/firestore";
 import {db} from "./firebase.js";
 import {distanceFromUserToSpot} from "./common.js";
 
@@ -141,30 +141,30 @@ export async function getVisitedSpots(username) {
 }
 
 export async function getFriends(userId) {
-    if (userId == null) {
-        return "Errore: id utente mancante!"
-    }
-    return getItems(
-        "Amico",
-        null,
-        (id, data) => {
-            if (id === userId) {
-                const friendIds = data.friends || [];
-                var friends = [];
-                friendIds.map(friendRef =>
-                    getDoc(friendRef).then(doc => {
-                            var friendData = {
-                                id: doc.id,
-                                email: doc.data().email || "",
-                                username: doc.data().username || "Utente"
-                            };
-                            friends.push(friendData);
-                        }
-                    ))
-                return friends;
-            }
+    try {
+        const docRef = doc(db, 'Amico', userId);
+        const docSnapshot = await getDoc(docRef);
+        if (docSnapshot.exists()) {
+            const snapData = docSnapshot.data();
+            const friendPromises = snapData.friends.map(async friendRef => {
+                const doc = await getDoc(friendRef)
+                return {
+                    id: doc.id,
+                    livello: doc.data().livello || "-",
+                    email: doc.data().email || "-",
+                    username: doc.data().username || "-"
+                }
+            })
+            const friends = await Promise.all(friendPromises);
+            return friends;
+        } else {
+            console.log('Documento non trovato');
+            return [];
         }
-    );
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
 }
 
 export async function getFilteredSpots(categories = [], searchText = "", filters = null) {

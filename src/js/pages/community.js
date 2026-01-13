@@ -8,16 +8,8 @@ export async function loadCommunityData() {
 }
 
 async function loadFriends() {
-    var friends = [] //await getFriends("AMNSHSNGXdZ0xm4XRWBS");
-     for (let index = 0; index < 18; index++) {
-        friends.push(
-            {
-                id: "id-utente"+index,
-                email: "mail@mail.com",
-                username: "user " + index
-            }
-        );
-    }
+    var friends = await getFriends("teo@gmail.com");
+    console.log(friends);
     showsItemsInContainer(friends, "friends", makeFriendCard);
 }
 
