@@ -7,10 +7,10 @@ export async function initializeCompletable() {
     spotMissions.forEach(btn => {
         btn.addEventListener('click', () => {
             const completableOverlay = btn.querySelector('.spot-mission-complete');
-            completableOverlay.classList.add('inactive');
+            completableOverlay.classList.toggle('inactive');
 
             // auto-hide dopo 1.8s (come iOS toast)
-            setTimeout(() => completableOverlay.classList.remove('inactive'), 1800);
+            // setTimeout(() => completableOverlay.classList.remove('inactive'), 1800);
         });
     });
 
