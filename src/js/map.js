@@ -6,7 +6,8 @@ let getSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
     initializeSpotClickHandlers, initializeVerticalCarousel,
     openSpotDetailById, openNewSpotPage, generateSpotCardList,
-    syncBookmarksUI, updateBookmarkVisual;
+    syncBookmarksUI, updateBookmarkVisual,
+    setupCategoryFilter, resetCategoryFilter, getActiveCategories;
 
 
 import L from 'leaflet';
@@ -43,6 +44,11 @@ Promise.all([
     import("./common/bookmark.js").then(module => {
         syncBookmarksUI = module.syncBookmarksUI;
         updateBookmarkVisual = module.updateBookmarkVisual;
+    }),
+    import("./common/categoryFilter.js").then(module => {
+        setupCategoryFilter = module.setupCategoryFilter;
+        resetCategoryFilter = module.resetCategoryFilter;
+        getActiveCategories = module.getActiveCategories;
     }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
@@ -115,44 +121,30 @@ async function loadSpotsDependentObjects() {
 }
 
 function initializeCategoryFilters() {
-    activeCategories = new Set();
     const categoryContainer = document.getElementById("map-categories-container");
+    if (!categoryContainer) return;
 
-    if (!categoryContainer) {
-        return;
-    }
+    resetCategoryFilter(categoryContainer);
 
-    // Gestisci i click sui filtri categoria
-    categoryContainer.addEventListener("click", (e) => {
-        const button = e.target.closest(".home-chip");
-        if (!button) return;
-
-        const category = button.dataset.category;
-        const isActive = activeCategories.has(category);
-
-        if (isActive) {
-            activeCategories.delete(category);
-            button.classList.remove("active");
-            button.setAttribute("aria-pressed", "false");
-        } else {
-            activeCategories.add(category);
-            button.classList.add("active");
-            button.setAttribute("aria-pressed", "true");
+    setupCategoryFilter(categoryContainer, {
+        onChange: () => {
+            loadSpotsDependentObjects();
         }
-
-        loadSpotsDependentObjects();
     });
 }
 
 function initializeNewSpotButton() {
     const button = document.getElementById('new-spot-button');
+    if (!button || button.dataset.bound === "true") return;
+    button.dataset.bound = "true";
     button.addEventListener('click', openNewSpotPage);
 }
 
 async function loadSearchBar() {
-    currentSearchText = "";
-
-    if (searchBarLoaded) return;
+    if (searchBarLoaded) {
+        currentSearchText = "";
+        return;
+    }
     searchBarLoaded = true;
 
     const { searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl } =
@@ -181,7 +173,8 @@ async function loadSearchBar() {
 }
 
 async function loadSpots() {
-    const categories = Array.from(activeCategories);
+    const categoryContainer = document.getElementById("map-categories-container");
+    const categories = categoryContainer ? getActiveCategories(categoryContainer) : [];
     const searchText = currentSearchText;
 
     spots = await getFilteredSpots(categories, searchText, advancedFilters);
@@ -195,7 +188,12 @@ async function loadMap() {
         return;
     }
 
-    // Inizializza la mappa
+    // Inizializza la mappa se non esiste
+    if (map) {
+        setTimeout(() => map.invalidateSize(), 0);
+        return;
+    }
+
     map = L.map(mapEl).setView(USER_PROTO_POSITION, 15);
 
     setTimeout(() => {
