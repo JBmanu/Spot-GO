@@ -1,10 +1,13 @@
 
-import {getCurrentUser, getFriends, removeFriend} from "../json-data-handler";
+import {getCurrentUser, getFriends, removeFriend} from "../database.js";
 import {showConfirmModal} from "../ui/confirmModal.js";
 
 export async function loadCommunityData() {
-    await loadFriends();
-    await loadSuggested();
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    await loadFriends(user.id);
+    await loadSuggested(user.id);
 }
 
 async function loadFriends() {
@@ -28,7 +31,7 @@ async function loadSuggested() {
 }
 
 /**
- * Generate item list providing containerId, array of items 
+ * Generate item list providing containerId, array of items
  * and itemIdName (is used to identify html nodes about this items).
  */
 async function showsItemsInContainer(items, itemIdName, cardBuilder) {
@@ -173,7 +176,7 @@ function makeFriendCard(data) {
 }
 
 function makeSuggestedCard(data) {
-     const article = document.createElement("article");
+    const article = document.createElement("article");
     article.className = "community-card";
     article.setAttribute("role", "listitem");
     article.setAttribute("data-user-id", data.id);

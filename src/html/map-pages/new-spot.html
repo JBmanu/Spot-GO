@@ -10,18 +10,18 @@
     <section class="space-y-4">
       <div>
         <label class="block font-bold mb-1">Nome dello Spot *</label>
-        <input type="text" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none" />
+        <input id="new-spot-name" type="text" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none" />
       </div>
       <div>
         <label class="block font-bold mb-1">Descrizione *</label>
-        <textarea rows="3" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"></textarea>
+        <textarea id="new-spot-desc" rows="3" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"></textarea>
       </div>
     </section>
 
     <section class="space-y-4">
       <div class="flex items-center gap-3">
         <label class="font-bold">Categoria *</label>
-        <select class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[100px]">
+        <select id="new-spot-category" class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[100px]">
           <option value="culture">Cultura</option>
           <option value="food">Cibo</option>
           <option value="nature">Natura</option>
@@ -31,17 +31,17 @@
       
       <div class="flex flex-wrap items-center gap-3">
         <label class="font-bold">Orario di apertura</label>
-        <select class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]">
+        <select id="new-spot-open-time" class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]">
           <option></option>
         </select>
-        <select class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]">
+        <select id="new-spot-close-time" class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]">
           <option></option>
         </select>
       </div>
 
       <div class="flex items-center gap-3">
         <label class="font-bold">Prezzo</label>
-        <select class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[100px]">
+        <select id="new-spot-price" class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[100px]">
           <option></option>
         </select>
       </div>
@@ -78,7 +78,7 @@
   </div>
 
   <div class="sticky bottom-4 left-0 right-0 bg-white pt-2">
-    <button class="w-full bg-white border-4 border-black text-black py-3 rounded-2xl font-black text-2xl uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+    <button id="add-spot-button" class="w-full bg-white border-4 border-black text-black py-3 rounded-2xl font-black text-2xl uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
       Aggiungi
     </button>
   </div>

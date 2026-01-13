@@ -4,15 +4,17 @@ let getSpots,
     USER_PROTO_POSITION, distanceFromUserToSpot,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
-    initializeSpotClickHandlers, initializeVerticalCarousel, createClassicSpotCard,
-    openSpotDetailById, openNewSpotPage;
+    initializeSpotClickHandlers, initializeVerticalCarousel,
+    openSpotDetailById, openNewSpotPage, generateSpotCardList,
+    syncBookmarksUI, updateBookmarkVisual,
+    setupCategoryFilter, resetCategoryFilter, getActiveCategories;
 
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 Promise.all([
-    import("./json-data-handler.js").then(module => {
+    import("./database.js").then(module => {
         getSpots = module.getSpots;
         getFilteredSpots = module.getFilteredSpots;
     }),
@@ -33,11 +35,20 @@ Promise.all([
     import("./pages/newSpot.js").then(module => {
         openNewSpotPage = module.openNewSpotPage;
     }),
-    import("./common/createCards.js").then(module => {
-        createClassicSpotCard = module.createClassicSpotCard;
+    import("./pages/homepage/generate-spot-card-list.js").then(module => {
+        generateSpotCardList = module.generateSpotCardList;
     }),
     import("./common/carousels.js").then(module => {
         initializeVerticalCarousel = module.initializeVerticalCarousel;
+    }),
+    import("./common/bookmark.js").then(module => {
+        syncBookmarksUI = module.syncBookmarksUI;
+        updateBookmarkVisual = module.updateBookmarkVisual;
+    }),
+    import("./common/categoryFilter.js").then(module => {
+        setupCategoryFilter = module.setupCategoryFilter;
+        resetCategoryFilter = module.resetCategoryFilter;
+        getActiveCategories = module.getActiveCategories;
     }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
@@ -96,6 +107,8 @@ async function initializeMap() {
     await loadSearchBar();
     await loadMap();
     await loadSpotsDependentObjects();
+
+    attachBookmarkChangeListener();
 }
 
 async function loadSpotsDependentObjects() {
@@ -108,44 +121,30 @@ async function loadSpotsDependentObjects() {
 }
 
 function initializeCategoryFilters() {
-    activeCategories = new Set();
     const categoryContainer = document.getElementById("map-categories-container");
+    if (!categoryContainer) return;
 
-    if (!categoryContainer) {
-        return;
-    }
+    resetCategoryFilter(categoryContainer);
 
-    // Gestisci i click sui filtri categoria
-    categoryContainer.addEventListener("click", (e) => {
-        const button = e.target.closest(".home-chip");
-        if (!button) return;
-
-        const category = button.dataset.category;
-        const isActive = activeCategories.has(category);
-
-        if (isActive) {
-            activeCategories.delete(category);
-            button.classList.remove("active");
-            button.setAttribute("aria-pressed", "false");
-        } else {
-            activeCategories.add(category);
-            button.classList.add("active");
-            button.setAttribute("aria-pressed", "true");
+    setupCategoryFilter(categoryContainer, {
+        onChange: () => {
+            loadSpotsDependentObjects();
         }
-
-        loadSpotsDependentObjects();
     });
 }
 
 function initializeNewSpotButton() {
     const button = document.getElementById('new-spot-button');
+    if (!button || button.dataset.bound === "true") return;
+    button.dataset.bound = "true";
     button.addEventListener('click', openNewSpotPage);
 }
 
 async function loadSearchBar() {
-    currentSearchText = "";
-
-    if (searchBarLoaded) return;
+    if (searchBarLoaded) {
+        currentSearchText = "";
+        return;
+    }
     searchBarLoaded = true;
 
     const { searchBarEl, keyboardEl, overlayEl, bottomSheetEl, bottomSheetOverlayEl } =
@@ -174,7 +173,8 @@ async function loadSearchBar() {
 }
 
 async function loadSpots() {
-    const categories = Array.from(activeCategories);
+    const categoryContainer = document.getElementById("map-categories-container");
+    const categories = categoryContainer ? getActiveCategories(categoryContainer) : [];
     const searchText = currentSearchText;
 
     spots = await getFilteredSpots(categories, searchText, advancedFilters);
@@ -188,7 +188,12 @@ async function loadMap() {
         return;
     }
 
-    // Inizializza la mappa
+    // Inizializza la mappa se non esiste
+    if (map) {
+        setTimeout(() => map.invalidateSize(), 0);
+        return;
+    }
+
     map = L.map(mapEl).setView(USER_PROTO_POSITION, 15);
 
     setTimeout(() => {
@@ -258,8 +263,8 @@ async function loadMarkers() {
                 iconAnchor: [32, 64]
             })
         })
-        .addTo(map)
-        .bindPopup(popupHtml);
+            .addTo(map)
+            .bindPopup(popupHtml);
 
         // Pulsante per visualizzare i dettagli
         marker.on("popupopen", (e) => {
@@ -279,7 +284,7 @@ async function loadMarkers() {
 
                     openSpotDetailById?.(id);
                 },
-                {once: true}
+                { once: true }
             );
         });
 
@@ -304,17 +309,25 @@ async function loadNearbySpotsList() {
     const carouselEl = document.getElementById("map-nearby-carousel");
     if (!carouselEl) return;
 
-    const track = document.getElementById("map-nearby-spots-container");
-    if (!track) return;
+    await generateSpotCardList({
+        containerId: "map-nearby-carousel",
+        getSpotsFunction: () => spots || [],
+        limit: 20,
+        useWrapper: false,
+        setCategoryText: true
+    });
 
-    track.innerHTML = "";
-    carouselEl.querySelectorAll(':scope > [data-slot="spot"]').forEach(el => el.remove()); // sicurezza
+    if (syncBookmarksUI) {
+        await syncBookmarksUI(carouselEl).catch(() => { });
+    }
 
-    for (const spot of (spots || [])) {
-        const distanceMeters = distanceFromUserToSpot(spot);
-        const formattedDistance = formatDistance(distanceMeters);
-        const card = await createClassicSpotCard(spot, formattedDistance);
-        if (card) track.appendChild(card);
+    if (initializeVerticalCarousel) {
+        initializeVerticalCarousel(carouselEl);
+    }
+
+    const emptyMsg = document.getElementById("map-nearby-empty");
+    if (emptyMsg) {
+        emptyMsg.classList.toggle("hidden", spots && spots.length > 0);
     }
 }
 
@@ -328,8 +341,23 @@ function setTileServer(server) {
     }).addTo(map);
 }
 
+function attachBookmarkChangeListener() {
+    document.addEventListener("bookmark:changed", (e) => {
+        const { spotId, isSaved } = e.detail || {};
+        if (!spotId) return;
+
+        const mapSection = document.querySelector('[data-section-view="map"]');
+        if (mapSection && updateBookmarkVisual) {
+            mapSection.querySelectorAll(`[data-spot-id="${CSS.escape(spotId)}"] [data-bookmark-button]`).forEach((btn) => {
+                btn.dataset.saved = isSaved ? "true" : "false";
+                updateBookmarkVisual(btn, isSaved);
+            });
+        }
+    });
+}
+
 window.reloadProfile = async function () {
     await initializeMap();
 };
 
-export {initializeMap}
+export { initializeMap }

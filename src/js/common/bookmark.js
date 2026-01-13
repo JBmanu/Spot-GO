@@ -1,22 +1,15 @@
-import {getCurrentUser, getSavedSpots, addSavedSpot, removeSavedSpot} from "../json-data-handler.js";
-import {showConfirmModal} from "../ui/confirmModal.js";
-import {populateSavedSpots} from "../pages/homepage/populate-saved-spots.js";
+import { getCurrentUser, getSavedSpots, addSavedSpot, removeSavedSpot } from "../database.js";
+import { showConfirmModal } from "../ui/confirmModal.js";
 
 
 const BOOKMARK_ICONS = {
-    filled: "../assets/icons/homepage/Bookmark.svg",
-    empty: "../assets/icons/homepage/BookmarkEmpty.svg",
+    filled: "assets/icons/homepage/Bookmark.svg",
+    empty: "assets/icons/homepage/BookmarkEmpty.svg",
 };
 
 const SELECTORS = {
     bookmarkButton: "[data-bookmark-button]",
-    bookmarkCard: '[role="listitem"]',
-    bookmarkIcon: ".bookmark-icon",
-    bookmarkTypeAttr: "data-bookmark-type",
     spotIdAttr: "data-spot-id",
-    titleField: '[data-field="title"]',
-    carouselSavedRoot: "#home-saved-container",
-    savedShell: ".spot-card-saved",
 };
 
 const MESSAGES = {
@@ -26,12 +19,10 @@ const MESSAGES = {
     userNotFound: "Utente non trovato",
 };
 
-const TIMING = {animationRemove: 300};
-
 document.addEventListener("click", (e) => {
     const btn = e.target.closest(SELECTORS.bookmarkButton);
     if (!btn) return;
-    const card = btn.closest(SELECTORS.bookmarkCard);
+    const card = btn.closest('[role="listitem"]');
     if (!card) return;
     e.preventDefault();
     handleBookmarkClick(btn, card).catch((err) =>
@@ -46,13 +37,21 @@ export function initializeBookmarks(root = document) {
     });
 }
 
+export function initializeBookmarkButton(card, { saved = "false" } = {}) {
+    const btn = card.querySelector(SELECTORS.bookmarkButton);
+    if (!btn) return;
+
+    btn.dataset.saved = saved;
+    updateBookmarkVisual(btn, saved === "true");
+}
+
 export async function syncBookmarksUI(scope = document) {
     try {
         const currentUser = await getCurrentUser();
         if (!currentUser) return;
         const savedSpotIds = await getSavedSpotIds(currentUser.username);
         scope.querySelectorAll(SELECTORS.bookmarkButton).forEach((button) => {
-            const card = button.closest(SELECTORS.bookmarkCard);
+            const card = button.closest('[role="listitem"]');
             if (!card) return;
             const spotId = getSpotIdFromCard(card);
             if (!spotId) return;
@@ -66,8 +65,7 @@ export async function syncBookmarksUI(scope = document) {
 }
 
 export function updateBookmarkVisual(button, isSaved) {
-    const icon =
-        button.querySelector(SELECTORS.bookmarkIcon) || button.querySelector("img");
+    const icon = button.querySelector("img");
     if (!icon) return;
     icon.src = isSaved ? BOOKMARK_ICONS.filled : BOOKMARK_ICONS.empty;
     button.setAttribute(
@@ -89,7 +87,6 @@ export async function toggleBookmarkForSpot(spotId) {
             await addBookmark(currentUser.username, spotId);
             updateIconsForSpot(spotId, true);
             emitBookmarkChanged(spotId, true);
-            await updateSavedSection({preserveScroll: true});
             return;
         }
         const confirmed = await showConfirmModal(
@@ -100,7 +97,6 @@ export async function toggleBookmarkForSpot(spotId) {
         await removeBookmark(currentUser.username, spotId);
         updateIconsForSpot(spotId, false);
         emitBookmarkChanged(spotId, false);
-        await updateSavedSection({preserveScroll: true});
     } catch (error) {
         console.error("Errore toggleBookmarkForSpot:", error);
     }
@@ -119,17 +115,9 @@ async function handleBookmarkClick(button, card) {
         const spotId = getSpotIdFromCard(card);
         const spotTitle = getSpotTitle(card);
         if (!spotId) return;
-        const bookmarkType = button.getAttribute(SELECTORS.bookmarkTypeAttr);
+
         const isSaved = button.dataset.saved === "true";
-        if (bookmarkType === "saved") {
-            const confirmed = await showConfirmModal(
-                MESSAGES.removeConfirmTitle,
-                MESSAGES.removeConfirmMessage(spotTitle)
-            );
-            if (!confirmed) return;
-            await removeBookmarkFlow(username, spotId, {removeCard: true, card});
-            return;
-        }
+
         if (!isSaved) {
             await addBookmarkFlow(username, spotId);
         } else {
@@ -149,68 +137,12 @@ async function addBookmarkFlow(username, spotId) {
     await addBookmark(username, spotId);
     updateIconsForSpot(spotId, true);
     emitBookmarkChanged(spotId, true);
-    await updateSavedSection({preserveScroll: true});
 }
 
-async function removeBookmarkFlow(
-    username,
-    spotId,
-    {removeCard = false, card = null} = {}
-) {
+async function removeBookmarkFlow(username, spotId) {
     await removeBookmark(username, spotId);
     updateIconsForSpot(spotId, false);
     emitBookmarkChanged(spotId, false);
-    if (removeCard && card) {
-        await removeCardFromView(card);
-        await maybeToggleSavedEmptyState();
-        return;
-    }
-    await updateSavedSection({preserveScroll: true});
-}
-
-function getCarouselTrack(rootEl) {
-    return (
-        rootEl.querySelector(":scope > .carousel-horizontal_track") ||
-        rootEl.querySelector(".carousel-horizontal_track") ||
-        rootEl
-    );
-}
-
-async function updateSavedSection({preserveScroll = true} = {}) {
-    try {
-        if (typeof populateSavedSpots !== "function") return;
-        const savedRoot = document.querySelector(SELECTORS.carouselSavedRoot);
-        if (!savedRoot) return;
-        const trackBefore = getCarouselTrack(savedRoot);
-        const prevScrollLeft = preserveScroll ? trackBefore.scrollLeft : 0;
-        await populateSavedSpots({containerId: "home-saved-container"});
-        await nextFrame();
-        await nextFrame();
-        const {initializeHorizontalCarousel} = await import("../common/carousels.js");
-        savedRoot.classList.add("js-carousel-horizontal");
-        initializeHorizontalCarousel(savedRoot, {cardSelector: SELECTORS.savedShell});
-        await nextFrame();
-        if (preserveScroll) {
-            const trackAfter = getCarouselTrack(savedRoot);
-            trackAfter.scrollLeft = prevScrollLeft;
-        }
-        initializeBookmarks(savedRoot);
-        await maybeToggleSavedEmptyState();
-    } catch (error) {
-        console.error("Errore aggiornamento sezione salvati:", error);
-    }
-}
-
-async function maybeToggleSavedEmptyState() {
-    const savedRoot = document.querySelector(SELECTORS.carouselSavedRoot);
-    const empty = document.getElementById("saved-empty-state");
-    if (!savedRoot || !empty) return;
-    const track = getCarouselTrack(savedRoot);
-    const count = track.querySelectorAll(
-        `${SELECTORS.savedShell}:not([data-template])`
-    ).length;
-    if (count === 0) empty.classList.remove("hidden");
-    else empty.classList.add("hidden");
 }
 
 async function getSavedSpotIds(userId) {
@@ -223,7 +155,7 @@ async function getSavedSpotIds(userId) {
 
 function updateIconsForSpot(spotId, isSaved) {
     document.querySelectorAll(SELECTORS.bookmarkButton).forEach((button) => {
-        const card = button.closest(SELECTORS.bookmarkCard);
+        const card = button.closest('[role="listitem"]');
         if (!card) return;
         const cardSpotId = getSpotIdFromCard(card);
         if (cardSpotId !== spotId) return;
@@ -235,7 +167,7 @@ function updateIconsForSpot(spotId, isSaved) {
 function emitBookmarkChanged(spotId, isSaved) {
     if (!spotId) return;
     document.dispatchEvent(
-        new CustomEvent("bookmark:changed", {detail: {spotId, isSaved}})
+        new CustomEvent("bookmark:changed", { detail: { spotId, isSaved } })
     );
 }
 
@@ -245,8 +177,7 @@ function getSpotIdFromCard(card) {
 
 function getSpotTitle(card) {
     return (
-        card.querySelector(SELECTORS.titleField)?.textContent?.trim() ||
-        card.querySelector('[data-category="title"]')?.textContent?.trim() ||
+        card.querySelector('[data-field="title"]')?.textContent?.trim() ||
         "questo spot"
     );
 }
@@ -261,7 +192,6 @@ export async function removeBookmark(username, spotId) {
 
 export async function syncAllBookmarks(scope = document) {
     await syncBookmarksUI(scope);
-    await updateSavedSection({preserveScroll: true});
 }
 
 function isProcessingAllowed(button) {
@@ -270,20 +200,4 @@ function isProcessingAllowed(button) {
 
 function setProcessing(button, isProcessing) {
     button.dataset.processing = isProcessing ? "true" : "false";
-}
-
-function removeCardFromView(card) {
-    return new Promise((resolve) => {
-        card.style.opacity = "0";
-        card.style.transform = "scale(0.95)";
-        card.style.transition = `all ${TIMING.animationRemove}ms ease-out`;
-        setTimeout(() => {
-            card.remove();
-            resolve();
-        }, TIMING.animationRemove);
-    });
-}
-
-function nextFrame() {
-    return new Promise((resolve) => requestAnimationFrame(resolve));
 }

@@ -1,0 +1,131 @@
+<!-- Template Nearby -->
+<template data-template="nearby-card-template">
+    <section class="general-card spot-card-nearby" role="listitem" data-spot-id="">
+        <div data-slot="pedestal"></div>
+
+        <article class="glass-strong" data-slot="card">
+            <div data-slot="media">
+                <img src="" alt="" data-slot="image" data-field="image" />
+
+                <button type="button" data-slot="bookmark" data-bookmark-button aria-label="Aggiungi ai salvati">
+                    <img src="../../assets/icons/homepage/Bookmark.svg" alt="Bookmark" data-slot="bookmark-icon" />
+                </button>
+            </div>
+
+            <div class="glass-medium" data-slot="body">
+                <h3 data-slot="title" data-field="title"></h3>
+
+                <div data-slot="meta">
+                    <span data-slot="meta-item">
+                        <img src="../../assets/icons/homepage/Place%20Marker.svg" alt="Posizione"
+                            data-slot="pin-icon" />
+                        <span data-slot="meta-text" data-field="distance"></span>
+                        <span class="opacity-45">•</span>
+                        <span data-slot="meta-text" data-field="category"></span>
+                    </span>
+
+                    <div class="glass-medium" data-slot="rating-pill">
+                        <span data-slot="rating-value" data-field="rating"></span>
+                        <img src="../../assets/icons/homepage/Star.svg" alt="stella" data-slot="rating-star" />
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+</template>
+
+<!-- Template Saved -->
+<template data-template="saved-card-template">
+    <section class="general-card spot-card-saved" role="listitem" data-spot-id="">
+        <div data-slot="pedestal"></div>
+
+        <article data-slot="card">
+            <div data-slot="media">
+                <img src="" alt="" data-slot="image" data-field="image" />
+
+                <button type="button" data-slot="bookmark" data-bookmark-button aria-label="Aggiungi ai salvati">
+                    <img src="../../assets/icons/homepage/Bookmark.svg" alt="Bookmark" data-slot="bookmark-icon" />
+                </button>
+            </div>
+
+            <div class="glass-medium" data-slot="body">
+                <h3 data-slot="title" data-field="title"></h3>
+            </div>
+        </article>
+    </section>
+</template>
+
+<!-- Template Top Rated -->
+<template data-template="toprated-card-template">
+    <section class="general-card spot-card-toprated" role="listitem" data-spot-id="">
+        <div data-slot="pedestal"></div>
+
+        <article class="glass-strong" data-slot="card">
+            <div data-slot="media">
+                <img src="" alt="Foto spot" data-slot="image" data-field="image" />
+
+                <div data-slot="distance">
+                    <img src="../../assets/icons/homepage/Place%20Marker.svg" alt="distanza" data-slot="pin-icon" />
+                    <span data-slot="distance-text" data-field="distance"></span>
+                </div>
+            </div>
+
+            <div data-slot="info">
+                <h3 data-slot="title" data-field="title"></h3>
+
+                <div data-slot="rating-row">
+                    <p data-slot="rating-pill">
+                        <span data-slot="rating-value" data-field="rating"></span>
+                        <img src="../../assets/icons/homepage/Star.svg" alt="stella" data-slot="rating-star" />
+                    </p>
+                </div>
+            </div>
+
+            <button type="button" data-slot="bookmark" data-bookmark-button aria-label="Aggiungi ai salvati">
+                <img src="../../assets/icons/homepage/BookmarkEmpty.svg" alt="Bookmark" data-slot="bookmark-icon" />
+            </button>
+        </article>
+    </section>
+</template>
+
+<!-- Template Classic -->
+<template data-template="classic-spot-card-template">
+    <section class="general-card spot-card-classic" role="listitem" data-spot-id="" data-saved="true" data-category="">
+        <div data-slot="pedestal"></div>
+
+        <article class="glass-strong" data-slot="card">
+            <div data-slot="media">
+                <img src="" alt="Foto spot" data-slot="image" data-field="image" />
+            </div>
+
+            <div data-slot="info">
+                <h3 data-slot="title" data-field="title"></h3>
+
+                <div data-slot="meta" aria-label="Distanza e categoria">
+                    <span data-slot="meta-item">
+                        <img src="../../assets/icons/homepage/Place%20Marker.svg" data-slot="pin-icon"
+                            alt="Posizione" />
+                        <span data-slot="meta-text" data-field="distance"></span>
+                    </span>
+                    <span class="opacity-45">•</span>
+                    <span data-slot="meta-item">
+                        <span data-slot="meta-text" data-field="category"></span>
+                    </span>
+                </div>
+            </div>
+
+            <div data-slot="right-column">
+                <button type="button" data-slot="bookmark" data-bookmark-button aria-label="Rimuovi dai salvati">
+                    <img src="../../assets/icons/homepage/Bookmark.svg" data-slot="bookmark-icon" alt="Bookmark" />
+                </button>
+
+                <div data-slot="rating-container">
+                    <div data-slot="rating-pill" aria-label="Valutazione">
+                        <span data-slot="rating-value" data-field="rating"></span>
+                        <img src="../../assets/icons/homepage/Star.svg" alt="stella" data-slot="rating-star" />
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+</template>

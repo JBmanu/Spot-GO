@@ -1,4 +1,4 @@
-import {getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots} from "../json-data-handler.js";
+import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots } from "../database.js";
 
 let loadViewAllSaved;
 
@@ -28,10 +28,10 @@ async function initializeProfileData(overviewContainer) {
     const user = JSON.parse(currentUserStr);
 
     const avatarMap = {
-        "Luana M": "Luana.svg",
-        "Julio Manuel B": "Manuel.svg",
-        "Alessandro R": "Ale.svg",
-        "Teo V": "Teo.svg"
+        "Luana": "Luana.svg",
+        "Julio Manuel": "Manuel.svg",
+        "Alessandro": "Ale.svg",
+        "Teo": "Teo.svg"
     };
 
     const profileData = {
@@ -111,4 +111,4 @@ window.reloadProfile = async function () {
     await loadProfileOverview();
 };
 
-export {loadProfileOverview};
+export { loadProfileOverview };

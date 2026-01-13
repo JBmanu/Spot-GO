@@ -4,5 +4,53 @@
     "username": "paperino",
     "password": "password",
     "livello": 1
+  },
+  {
+    "email": "luana@gmail.com",
+    "username": "Luana",
+    "password": "password",
+    "livello": 3
+  },
+  {
+    "email": "luana@icloud.com",
+    "username": "Luana",
+    "password": "password",
+    "livello": 3
+  },
+  {
+    "email": "julio.manuel@gmail.com",
+    "username": "Julio Manuel",
+    "password": "password",
+    "livello": 2
+  },
+  {
+    "email": "julio.manuel@icloud.com",
+    "username": "Julio Manuel",
+    "password": "password",
+    "livello": 2
+  },
+  {
+    "email": "alessandro@gmail.com",
+    "username": "Alessandro",
+    "password": "password",
+    "livello": 1
+  },
+  {
+    "email": "alessandro@icloud.com",
+    "username": "Alessandro",
+    "password": "password",
+    "livello": 1
+  },
+  {
+    "email": "teo@gmail.com",
+    "username": "Teo",
+    "password": "password",
+    "livello": 1
+  },
+  {
+    "email": "teo@icloud.com",
+    "username": "Teo",
+    "password": "password",
+    "livello": 1
   }
 ]
