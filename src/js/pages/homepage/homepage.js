@@ -11,8 +11,6 @@ import {
 } from "./populate-homepage-spots.js";
 import { initFitText } from "../../common/fitText.js";
 import {
-    filterSpotsByCategory,
-    getActiveCategories,
     resetCategoryFilter,
     setupCategoryFilter,
 } from "../../common/categoryFilter.js";
@@ -143,24 +141,30 @@ async function buildHomepageOnce(homepageRoot) {
         onSavedLoaded: async () => {
             await populateSavedSpots({ containerId: "home-saved-container" });
             initFitText(".spot-card-saved [data-slot='title'], .spot-card-saved .spot-card-title", "#home-saved-container", 2, 10.5);
-            filterSpotsByCategory(getActiveCategories(), homepageRoot);
             ensureSeeAllSavedButtonBound(homepageRoot);
             autoInitializeCarousels(homepageRoot);
         },
         onNearbyLoaded: async () => {
             await populateNearbySpots({ containerId: "home-nearby-container" });
-            filterSpotsByCategory(getActiveCategories(), homepageRoot);
             autoInitializeCarousels(homepageRoot);
         },
         onTopRatedLoaded: async () => {
             await populateTopratedSpots({ containerId: "home-toprated-carousel", limit: 10 });
-            filterSpotsByCategory(getActiveCategories(), homepageRoot);
             autoInitializeCarousels(homepageRoot);
         },
     });
 
     if (categoryContainer) {
-        setupCategoryFilter(categoryContainer, { scopeEl: homepageRoot, onChange: () => { } });
+        setupCategoryFilter(categoryContainer, {
+            scopeEl: homepageRoot,
+            onChange: async (activeCategories) => {
+                await populateSavedSpots({ containerId: "home-saved-container", categories: activeCategories });
+                await populateNearbySpots({ containerId: "home-nearby-container", categories: activeCategories });
+                await populateTopratedSpots({ containerId: "home-toprated-carousel", categories: activeCategories });
+
+                autoInitializeCarousels(homepageRoot);
+            }
+        });
     }
 
     initializeSpotClickHandlers(homepageRoot);
@@ -168,11 +172,28 @@ async function buildHomepageOnce(homepageRoot) {
     await syncBookmarksUI(homepageRoot).catch(() => { });
 
     attachBookmarkChangeListener();
-    filterSpotsByCategory(getActiveCategories(), homepageRoot);
     ensureSeeAllSavedButtonBound(homepageRoot);
 
     homepageRoot.dataset.homepageBuilt = "true";
     state.homepageBuilt = true;
+}
+
+export async function resetHomepageState(homepageRoot) {
+    const root = homepageRoot || document.querySelector('[data-section-view="homepage"]');
+    if (!root) return;
+
+    const categoryContainer = root.querySelector("#home-categories-container");
+    if (categoryContainer) {
+        resetCategoryFilter(categoryContainer);
+    }
+
+    await Promise.all([
+        populateSavedSpots({ containerId: "home-saved-container", categories: [] }),
+        populateNearbySpots({ containerId: "home-nearby-container", categories: [] }),
+        populateTopratedSpots({ containerId: "home-toprated-carousel", categories: [], limit: 10 })
+    ]);
+
+    autoInitializeCarousels(root);
 }
 
 export async function initializeHomepage(homepageElement) {
@@ -180,13 +201,13 @@ export async function initializeHomepage(homepageElement) {
     if (!homepageRoot) return;
 
     if (homepageRoot.dataset.homepageBuilt === "true") {
+        await resetHomepageState(homepageRoot);
+
         initializeBookmarks(homepageRoot);
         await syncBookmarksUI(homepageRoot).catch(() => { });
-        filterSpotsByCategory(getActiveCategories(), homepageRoot);
         ensureSeeAllSavedButtonBound(homepageRoot);
         attachBookmarkChangeListener();
         initializeSpotClickHandlers(homepageRoot);
-        autoInitializeCarousels(homepageRoot);
         return;
     }
 

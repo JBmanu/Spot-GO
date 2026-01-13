@@ -96,7 +96,8 @@ export async function generateSpotCardList({
         Array.from(container.children).forEach((child) => {
             if (child === templateElement) return;
 
-            if (child.classList.contains('carousel-horizontal_track') || child.classList.contains('carousel-vertical_track')) {
+            if (child.classList.contains('carousel-horizontal_track') ||
+                child.classList.contains('carousel-vertical-track')) {
                 Array.from(child.children).forEach(trackChild => {
                     if (!trackChild.dataset.template) trackChild.remove();
                 });
@@ -111,7 +112,7 @@ export async function generateSpotCardList({
         if (!list.length) return;
 
         const appendTarget = container.querySelector('.carousel-horizontal_track') ||
-            container.querySelector('.carousel-vertical_track') ||
+            container.querySelector('.carousel-vertical-track') ||
             container;
 
         const fragment = document.createDocumentFragment();
