@@ -15,7 +15,7 @@ import {
 import { formatRatingAsText } from "../common/fitText.js";
 import { closeOverlayAndReveal } from "../common/back.js";
 import { initializeHorizontalCarousel } from "../common/carousels.js";
-import { setReviewSpotId } from "./addReview.js";
+import { setReviewSpotId, openAddReviewModal } from "./addReview.js";
 
 const state = {
     spotData: null,
@@ -71,7 +71,7 @@ function removeHeaderBookmarkButton() {
 async function exitDetailFlow(main) {
     if (!main) return;
     main.classList.add("spot-detail-exit");
-    await new Promise(r => setTimeout(r, 250)); // Match transition duration
+    await new Promise(r => setTimeout(r, 250));
     closeDetailOverlay(main);
 }
 
@@ -240,9 +240,6 @@ async function populateSpotDetail(spotData, scopeEl = document) {
     await renderSpotReviews(spotData.id, scopeEl);
 }
 
-/**
- * Renderizza le recensioni dello spot usando il template.
- */
 async function renderSpotReviews(spotId, scopeEl) {
     const track = scopeEl.querySelector("#spot-reviews-track");
     if (!track) return;
@@ -338,9 +335,7 @@ function initializeDetailHandlers(overlayEl) {
                 await renderSpotReviews(state.spotData.id, overlayEl);
             });
 
-            if (window.navigateToSection) {
-                window.navigateToSection("add-review");
-            }
+            await openAddReviewModal();
         });
     }
 
