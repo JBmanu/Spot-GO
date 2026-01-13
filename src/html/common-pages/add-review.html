@@ -1,40 +1,53 @@
-<section class="add-review-section main-page-background">
-    <div class="add-review-container">
-        <header class="add-review-header">
-            <h2 class="add-review-title">Scrivi una recensione</h2>
-        </header>
+<div class="add-review-modal-overlay" id="add-review-modal">
+    <div class="add-review-modal glass-light">
+        <button type="button" class="add-review-close-btn" aria-label="Chiudi">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
 
-        <form id="add-review-form" class="add-review-form">
-            <div class="add-review-rating-selector glass-medium">
-                <span class="rating-label">La tua valutazione</span>
-                <div class="star-rating-input">
-                    <button type="button" class="star-btn" data-value="1">
-                        <img src="../../assets/icons/homepage/Star.svg" alt="1 stella" />
-                    </button>
-                    <button type="button" class="star-btn" data-value="2">
-                        <img src="../../assets/icons/homepage/Star.svg" alt="2 stelle" />
-                    </button>
-                    <button type="button" class="star-btn" data-value="3">
-                        <img src="../../assets/icons/homepage/Star.svg" alt="3 stelle" />
-                    </button>
-                    <button type="button" class="star-btn" data-value="4">
-                        <img src="../../assets/icons/homepage/Star.svg" alt="4 stelle" />
-                    </button>
-                    <button type="button" class="star-btn" data-value="5">
-                        <img src="../../assets/icons/homepage/Star.svg" alt="5 stelle" />
-                    </button>
-                </div>
+        <div>
+            <div class="add-review-container">
+                <header class="add-review-header">
+                    <h2 class="add-review-title">Scrivi una recensione</h2>
+                </header>
+
+                <form id="add-review-form" class="add-review-form">
+                    <div class="add-review-rating-selector glass-strong">
+                        <span class="rating-label">La tua valutazione</span>
+                        <div class="star-rating-input">
+                            <button type="button" class="star-btn" data-value="1">
+                                <img src="../../assets/icons/homepage/Star.svg" alt="1 stella" />
+                            </button>
+                            <button type="button" class="star-btn" data-value="2">
+                                <img src="../../assets/icons/homepage/Star.svg" alt="2 stelle" />
+                            </button>
+                            <button type="button" class="star-btn" data-value="3">
+                                <img src="../../assets/icons/homepage/Star.svg" alt="3 stelle" />
+                            </button>
+                            <button type="button" class="star-btn" data-value="4">
+                                <img src="../../assets/icons/homepage/Star.svg" alt="4 stelle" />
+                            </button>
+                            <button type="button" class="star-btn" data-value="5">
+                                <img src="../../assets/icons/homepage/Star.svg" alt="5 stelle" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="add-review-input-group">
+                        <label for="review-text" class="input-label">Commento</label>
+                        <textarea id="review-text" class="review-textarea glass-strong"
+                            placeholder="Raccontaci la tua esperienza..." required></textarea>
+                    </div>
+
+                    <footer class="add-review-footer">
+                        <p class="add-review-help-text" id="review-help-text">
+                            Seleziona una valutazione e scrivi un commento
+                        </p>
+                        <button type="submit" class="submit-review-btn glass-strong">Invia Recensione</button>
+                    </footer>
+                </form>
             </div>
-
-            <div class="add-review-input-group">
-                <label for="review-text" class="input-label">Commento</label>
-                <textarea id="review-text" class="review-textarea glass-light"
-                    placeholder="Raccontaci la tua esperienza..." required></textarea>
-            </div>
-
-            <footer class="add-review-footer">
-                <button type="submit" class="submit-review-btn glass-strong">Invia Recensione</button>
-            </footer>
-        </form>
+        </div>
     </div>
-</section>
+</div>
