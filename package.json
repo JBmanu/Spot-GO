@@ -9,7 +9,7 @@
         "docs:dev": "vitepress dev",
         "docs:build": "vitepress build",
         "docs:preview": "vitepress preview",
-        "db:push": "vite-node database.js"
+        "db:push": "DB_PUSH=true vite-node src/js/firebase.js"
     },
     "devDependencies": {
         "concurrently": "^8.2.2",
