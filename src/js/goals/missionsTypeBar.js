@@ -1,5 +1,5 @@
-﻿const CONTAINER = "tab-bar";
-const INDICATOR = "tab-indicator";
+﻿const CONTAINER = ".mission-type-bar";
+const INDICATOR = ".indicator-mission-type-bar";
 const BUTTON = ".mission-type-btn";
 
 function activeButton(buttons, activeButton) {
@@ -45,8 +45,8 @@ function updateIndicatorPosition(container, indicator, button) {
 
 
 export async function initializeMissionsBar() {
-    const container = document.getElementById(CONTAINER);
-    const indicator = document.getElementById(INDICATOR);
+    const container = document.querySelector(CONTAINER);
+    const indicator = document.querySelector(INDICATOR);
     const buttons = document.querySelectorAll(BUTTON);
 
     if (!buttons.length || !indicator || !container) return;
