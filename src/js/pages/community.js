@@ -45,6 +45,13 @@ async function showsItemsInContainer(items, itemIdName, cardBuilder) {
         // Add button to show/hide all other items in list
         const selQuery = `#community-${itemIdName}-section header`;
         const header = document.querySelector(selQuery);
+
+        // Remove existing button if it exists to avoid duplication
+        const existingButton = header.querySelector(`#show-all-${itemIdName}-button`);
+        if (existingButton) {
+            existingButton.remove();
+        }
+
         const button = document.createElement('button');
         button.id = `show-all-${itemIdName}-button`;
         button.classList.add('vedi-tutti-button');
