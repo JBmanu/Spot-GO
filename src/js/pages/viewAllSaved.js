@@ -1,6 +1,6 @@
 import { initializeBookmarks, syncAllBookmarks } from "../common/bookmark.js";
 import { initializeSpotClickHandlers } from "./spotDetail.js";
-import { getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt } from "../json-data-handler.js";
+import { getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt } from "../database.js";
 import { distanceFromUserToSpot, formatDistance } from "../common.js";
 import { goBack, setupBackButton, closeOverlay } from "../common/back.js";
 import { initializeVerticalCarousel } from "../common/carousels.js";

@@ -10,7 +10,7 @@ import {
     getSavedSpots,
     getSpotById,
     pickRating,
-} from "../json-data-handler.js";
+} from "../database.js";
 import { formatRatingAsText } from "../common/fitText.js";
 import { closeOverlayAndReveal } from "../common/back.js";
 

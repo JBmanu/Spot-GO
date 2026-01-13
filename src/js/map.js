@@ -12,7 +12,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 Promise.all([
-    import("./json-data-handler.js").then(module => {
+    import("./database.js").then(module => {
         getSpots = module.getSpots;
         getFilteredSpots = module.getFilteredSpots;
     }),

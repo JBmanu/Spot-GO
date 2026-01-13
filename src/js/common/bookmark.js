@@ -1,4 +1,4 @@
-import { getCurrentUser, getSavedSpots, addSavedSpot, removeSavedSpot } from "../json-data-handler.js";
+import { getCurrentUser, getSavedSpots, addSavedSpot, removeSavedSpot } from "../database.js";
 import { showConfirmModal } from "../ui/confirmModal.js";
 
 

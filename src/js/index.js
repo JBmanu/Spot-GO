@@ -5,6 +5,7 @@ import {
     closeOverlayAndReveal,
 } from "./common/back.js";
 import "./common/carousels.js";
+import { auth } from "./firebase.js";
 
 const SECTION_CONFIG = {
     homepage: { title: "Spot & Go", content: PATHS.html.homepage },
@@ -250,7 +251,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         await navigateTo("login");
     }
 
-    window.handleLogout = function () {
+    window.handleLogout = async function () {
+        try {
+            await auth.signOut();
+        } catch (err) {
+            console.error("Errore durante il logout Firebase:", err);
+        }
         localStorage.removeItem('currentUser');
         window.location.reload();
     };

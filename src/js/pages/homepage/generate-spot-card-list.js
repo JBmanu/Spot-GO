@@ -1,4 +1,4 @@
-import { getCategoryNameIt, pickRating } from "../../json-data-handler.js";
+import { getCategoryNameIt, pickRating } from "../../database.js";
 import { normalizeCategoryName } from "../../common/categoryFilter.js";
 import { formatRatingAsText } from "../../common/fitText.js";
 import { initializeBookmarkButton } from "../../common/bookmark.js";

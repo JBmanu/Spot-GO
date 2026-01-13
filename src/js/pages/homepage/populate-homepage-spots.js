@@ -1,4 +1,4 @@
-import { getSpots, getCurrentUser, getSavedSpots, pickRating } from "../../json-data-handler.js";
+import { getSpots, getCurrentUser, getSavedSpots, pickRating } from "../../database.js";
 import { distanceFromUserToSpot, formatDistance } from "../../common.js";
 import { generateSpotCardList } from "./generate-spot-card-list.js";
 import { formatRatingAsText } from "../../common/fitText.js";
