@@ -34,10 +34,19 @@
 
     }
 
+    /* ================= GENERICS ================= */
+    .interactive {
+        @apply rounded-xl shadow
+    }
+
+    .completable {
+
+    }
+
 
     /* ================= SPOT MISSIONS ================= */
     .spot-card {
-        @apply shadow rounded-xl flex flex-col
+        @apply flex flex-col
     }
 
     .spot-header {
@@ -61,7 +70,7 @@
     }
 
     .spot-mission {
-        @apply shadow rounded-xl px-2 py-2
+        @apply px-2 py-2
     }
 
     .spot-mission-complete {
@@ -75,15 +84,15 @@
 
     /* ================= MISSIONS TYPE BAR ================= */
     .missions-type-bar {
-        @apply relative rounded-2xl shadow px-2 py-2
+        @apply relative px-2 py-2
     }
 
     .missions-type-indicator {
-        @apply absolute left-0 rounded-xl shadow transition-all duration-300 ease-in-out
+        @apply absolute left-0 transition-all duration-300 ease-in-out
     }
 
     .mission-type-btn {
-        @apply flex items-center gap-1 px-3 py-2 rounded-xl
+        @apply flex items-center gap-1 px-3 py-2
         text-gray-700 cursor-pointer transition;
     }
 
