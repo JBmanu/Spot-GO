@@ -321,3 +321,8 @@ export async function removeSavedSpot(username, spotId) {
 export function pickRating(spot) {
     return spot?.rating ?? spot?.valutazione ?? spot?.stelle ?? spot?.mediaVoti ?? null;
 }
+
+export async function insertNewSpot(spot) {
+    const docRef = await addDoc(collection(db, "Luogo"), spot);
+    return docRef.id;
+}

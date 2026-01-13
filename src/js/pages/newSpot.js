@@ -1,11 +1,13 @@
 import { loadComponentAsDocument } from "../createComponent";
 import { USER_PROTO_POSITION } from "../common";
 import { createStarRating } from "../createComponent";
+import { insertNewSpot, getCurrentUser } from "../database";
 
 let __newSpotPageHtml = null;
 let newSpotSection;
 let map;
 let spotPositionMarker;
+let selectedSpotPosition = [0,0];
 
 async function getNewSpotPageHtml() {
     if (__newSpotPageHtml) return __newSpotPageHtml;
@@ -85,6 +87,7 @@ export async function openNewSpotPage() {
     renderHeaderForNewSpotPage();
     
     loadMap();
+    initializeAddSpotButton();
     await loadStarRating();
 
     // Bottone indietro
@@ -105,6 +108,13 @@ function closeNewSpotPage() {
 
     // Placeholder: riapertura standard mappa
     console.log("Ritorno alla mappa (placeholder)");
+}
+
+function initializeAddSpotButton() {
+    const button = document.getElementById('add-spot-button');
+    if (!button || button.dataset.bound === "true") return;
+    button.dataset.bound = "true";
+    button.addEventListener('click', addNewSpotAndClose);
 }
 
 async function loadMap() {
@@ -146,6 +156,7 @@ async function loadMap() {
       }
 
       const { lat, lng } = e.latlng;
+      selectedSpotPosition = [lat, lng];
 
       const icon = L.divIcon({
           html: '<img src="../../assets/icons/map/MarkerBase.svg" class="marker-pop-up show">',
@@ -154,7 +165,7 @@ async function loadMap() {
           iconAnchor: [32, 64],
       });
 
-      spotPositionMarker = L.marker([lat, lng], { icon, interactive: false })
+      spotPositionMarker = L.marker(selectedSpotPosition, { icon, interactive: false })
         .addTo(map);
 
       newSpotSection.querySelector('#spot-position').textContent = `${lat.toFixed(4)} : ${lng.toFixed(4)}`;
@@ -165,4 +176,61 @@ async function loadMap() {
 async function loadStarRating() {
   const starRatingEl = await createStarRating();
   newSpotSection.querySelector('.rating-container').appendChild(starRatingEl);
+}
+
+async function readNewSpotDataFromFields() {
+    const currentUser = await getCurrentUser();
+    const idCreatore = currentUser.email;
+
+    const nome = document.getElementById("new-spot-name").value.trim();
+    const descrizione = document.getElementById("new-spot-desc").value.trim();
+    const idCategoria = document.getElementById("new-spot-category").value;
+
+    const posizione = { coord1: selectedSpotPosition[0], coord2: selectedSpotPosition[1] };
+    const indirizzo = "";
+
+    const openTime = document.getElementById("new-spot-open-time").value;
+    const closeTime = document.getElementById("new-spot-close-time").value;
+
+    const orari =
+        openTime && closeTime ? [{ inizio: openTime, fine: closeTime }] : [];
+
+    const prezzoSelect = document.getElementById("new-spot-price");
+    const costo = prezzoSelect.value
+        ? [{ tipo: "Standard", prezzo: Number(prezzoSelect.value) }]
+        : [];
+
+    const immagine = "/db/img/placeholder.jpg";
+
+    const ratingStars = document.querySelectorAll(
+        ".rating-container .star.active"
+    );
+    const valutazione = ratingStars.length || null;
+
+    const recensione = document.querySelector(
+        '.filter-section textarea'
+    )?.value.trim();
+
+    if (!nome || !descrizione || !idCategoria || !posizione) {
+        throw new Error("Compila tutti i campi obbligatori");
+    }
+
+    return {
+        costo,
+        descrizione,
+        idCategoria,
+        idCreatore,
+        immagine,
+        indirizzo,
+        nome,
+        orari,
+        posizione,
+        valutazione
+    }
+}
+
+async function addNewSpotAndClose() {
+    const spot = await readNewSpotDataFromFields();
+    const spotId = await insertNewSpot(spot);
+    console.log("Inserito nuovo spot");
 }
