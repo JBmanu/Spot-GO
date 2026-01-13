@@ -129,3 +129,19 @@
         </article>
     </section>
 </template>
+
+<!-- Template Review -->
+<template data-template="review-template">
+    <div class="carousel-horizontal_item">
+        <div class="spot-review-item">
+            <div class="spot-review-header">
+                <span data-slot="author" class="spot-review-author"></span>
+                <div class="spot-review-rating">
+                    <span data-slot="rating"></span>
+                    <img src="../../assets/icons/homepage/Star.svg" alt="stella" class="rating-star" />
+                </div>
+            </div>
+            <p data-slot="text" class="spot-review-text"></p>
+        </div>
+    </div>
+</template>

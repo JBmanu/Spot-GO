@@ -6,6 +6,7 @@ export const PATHS = {
         goals: "../html/goals.html",
         profile: "../html/profile.html",
         login: "../html/login.html",
+        addReview: "../html/common-pages/add-review.html",
 
         header: "../html/common-pages/header.html",
         toolbar: "../html/common-pages/toolbar.html",

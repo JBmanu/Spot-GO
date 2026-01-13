@@ -270,42 +270,21 @@
         transform: scale(0.98);
     }
 
-    .spot-reviews-carousel-container {
-        @apply w-full;
-    }
-
-    .spot-reviews-carousel-wrapper {
-        @apply flex overflow-x-auto overflow-y-hidden w-full gap-4 py-5 px-3;
-        scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .spot-reviews-carousel-wrapper::-webkit-scrollbar {
-        display: none;
-    }
-
-    .spot-reviews-carousel-track {
-        @apply flex gap-4;
-    }
-
-    .spot-reviews-carousel-wrapper.is-dragging {
-        scroll-behavior: auto;
-        @apply cursor-grabbing;
-    }
-
     .spot-review-carousel-item {
         @apply shrink-0;
-        flex: 0 0 calc(100% - 72px);
-        scroll-snap-align: start;
+        width: 82%;
+        scroll-snap-align: center;
         scroll-snap-stop: always;
     }
 
     .spot-review-item {
-        @apply p-4 rounded-3xl h-[200px] w-[380px] flex flex-col gap-3 relative overflow-hidden;
-        border-radius: 24px;
-        border: 1px solid var(--cat-border-strong);
-        background: var(--cat-grad-hero);
+        @apply p-5 rounded-3xl min-h-[180px] w-full flex flex-col gap-4 relative overflow-hidden;
+        background: var(--glass-sheet-medium);
+        backdrop-filter: blur(var(--glass-blur-medium)) saturate(var(--glass-sat-medium));
+        border: 1px solid var(--glass-border-soft);
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.12),
+            inset 0 1px 1px rgba(255, 255, 255, 0.4);
     }
 
     .spot-review-header {
@@ -320,12 +299,12 @@
     }
 
     .spot-review-rating {
-        @apply flex items-center gap-1 text-xs font-black px-3 py-1.5 rounded-2xl whitespace-nowrap relative;
+        @apply flex items-center gap-1.5 text-[11px] font-black px-3 py-1.5 rounded-2xl whitespace-nowrap relative;
         z-index: 1;
         letter-spacing: 0.03em;
         color: var(--color-text_color);
-        background: rgba(255, 255, 255, 0.45);
-        border: 1px solid var(--cat-outline-25);
+        background: var(--glass-sheet-light);
+        border: 1px solid var(--glass-border-soft);
     }
 
     .spot-review-text {
@@ -336,6 +315,7 @@
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        opacity: 0.9;
     }
 
     .spot-detail-actions {
@@ -371,5 +351,35 @@
 
     .spot-detail-visit-button.visited {
         border-color: rgba(76, 175, 80, 0.32);
+    }
+
+    /* --- Reviews Empty State --- */
+    .spot-reviews-empty {
+        @apply flex flex-col items-center justify-center w-full py-10 px-6 text-center;
+        background: var(--glass-sheet-medium);
+        backdrop-filter: blur(var(--glass-blur-medium)) saturate(var(--glass-sat-medium));
+        border: 1px solid var(--glass-border-soft);
+        border-radius: 24px;
+        margin: 1.5rem 0;
+    }
+
+    .spot-reviews-empty-icon {
+        @apply mb-4 opacity-30;
+        width: 48px;
+        height: 48px;
+        filter: grayscale(1);
+    }
+
+    .spot-reviews-empty-title {
+        @apply text-base font-semibold mb-1;
+        color: var(--color-text_color);
+    }
+
+    .spot-reviews-empty-text {
+        @apply text-sm leading-relaxed;
+        opacity: 0.6;
+        color: var(--color-text_color);
+        max-width: 240px;
+        margin: 0 auto;
     }
 }
