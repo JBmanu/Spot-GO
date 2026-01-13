@@ -1,4 +1,4 @@
-import { getSpots, getCurrentUser, getSavedSpots, pickRating } from "../../database.js";
+import { getSpots, getCurrentUser, getSavedSpots, pickRating, getFilteredSpots } from "../../database.js";
 import { distanceFromUserToSpot, formatDistance } from "../../common.js";
 import { generateSpotCardList } from "./generate-spot-card-list.js";
 import { formatRatingAsText } from "../../common/fitText.js";
@@ -30,6 +30,7 @@ export async function populateSavedSpots({
     containerId = "home-saved-container",
     emptyStateId = "saved-empty-state",
     templateSelector = null,
+    categories = []
 } = {}) {
     const emptyState = document.getElementById(emptyStateId);
 
@@ -37,7 +38,10 @@ export async function populateSavedSpots({
         containerId,
         templateSelector,
         getSpotsFunction: async () => {
-            const spots = await getSavedSpotsData();
+            let spots = await getSavedSpotsData();
+            if (categories && categories.length > 0) {
+                spots = spots.filter(s => categories.includes(s.idCategoria));
+            }
             if (emptyState) {
                 emptyState.classList.toggle("hidden", spots.length > 0);
             }
@@ -53,11 +57,12 @@ export async function populateNearbySpots({
     containerId = "home-nearby-container",
     templateSelector = null,
     limit = 20,
+    categories = []
 } = {}) {
     await generateSpotCardList({
         containerId,
         templateSelector,
-        getSpotsFunction: getSpots,
+        getSpotsFunction: () => getFilteredSpots(categories, "", null),
         sortFunction: (a, b) => distanceFromUserToSpot(a) - distanceFromUserToSpot(b),
         limit,
         useWrapper: true,
@@ -69,13 +74,15 @@ export async function populateTopratedSpots({
     containerId = "home-toprated-carousel",
     templateSelector = null,
     limit = 20,
+    categories = []
 } = {}) {
     await generateSpotCardList({
         containerId,
         templateSelector,
         getSpotsFunction: async () => {
-            const all = await getSpots();
-            return all
+            const spots = await getFilteredSpots(categories, "", null);
+
+            return spots
                 .map(s => ({ spot: s, rating: pickRating(s) }))
                 .sort((a, b) => b.rating - a.rating)
                 .map(item => item.spot);
