@@ -74,10 +74,10 @@
     }
 
     .spot-mission-complete {
-        @apply absolute inset-0 z-20 bg-white/60 backdrop-blur-sm rounded-xl
+        @apply absolute inset-0 z-20 bg-black/40 shadow-lg backdrop-blur-sm rounded-xl
     }
 
-    .spot-mission-complete.active {
+    .spot-mission-complete.inactive {
         @apply hidden
     }
 
