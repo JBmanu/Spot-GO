@@ -1,4 +1,4 @@
-import {collection, getDocs, query, where, limit, getDoc, doc} from "firebase/firestore";
+import {collection, getDocs, query, where, limit, getDoc, doc, updateDoc, arrayRemove} from "firebase/firestore";
 import {db} from "./firebase.js";
 import {distanceFromUserToSpot} from "./common.js";
 
@@ -165,6 +165,18 @@ export async function getFriends(userId) {
         console.log(error);
         return [];
     }
+}
+
+export async function removeFriend(username, friendId) {
+    try {
+        const docRef = doc(db, 'Amico', username);
+        const friendRef = doc(db, 'Utente', friendId);
+        await updateDoc(docRef, {
+            friends: arrayRemove(friendRef)
+        });
+  } catch (error) {
+    console.error('Errore:', error);
+  }
 }
 
 export async function getFilteredSpots(categories = [], searchText = "", filters = null) {

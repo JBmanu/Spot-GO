@@ -1,5 +1,5 @@
-import { doc } from "firebase/firestore";
-import {getFriends} from "../json-data-handler";
+
+import {getCurrentUser, getFriends, removeFriend} from "../json-data-handler";
 import {showConfirmModal} from "../ui/confirmModal.js";
 
 export async function loadCommunityData() {
@@ -49,16 +49,19 @@ async function showsItemsInContainer(items, itemIdName, cardBuilder) {
         hiddenDiv.classList.add('hidden');
         appendHtmlChild(partTwo, hiddenDiv, cardBuilder);
         container.appendChild(hiddenDiv); 
-
-        // Add button to show/hide all other items in list
-        const selQuery = `#community-${itemIdName}-section header`;
-        const header = document.querySelector(selQuery);
-        const button = document.createElement('button');
-        button.id = `show-all-${itemIdName}-button`;
-        button.classList.add('vedi-tutti-button');
-        button.textContent = 'Mostra tutti';
-        button.addEventListener('click', () => toggleExpand(containerId, button));
-        header.appendChild(button);
+        
+        if (items.length >= itemsVisible) {
+            // Add button to show/hide all other items in list
+            const selQuery = `#community-${itemIdName}-section header`;
+            const header = document.querySelector(selQuery);
+            const button = document.createElement('button');
+            button.id = `show-all-${itemIdName}-button`;
+            button.classList.add('vedi-tutti-button');
+            button.textContent = 'Mostra tutti';
+            button.addEventListener('click', () => toggleExpand(containerId, button));
+            header.appendChild(button);
+        }
+        
     }
 }
 
@@ -83,12 +86,15 @@ function toggleExpand(containerId, button) {
     button.textContent = btnLabel;
 }
 
-async function removeFriend(userId, name) {
-    //TODO remove friend from firebase
+async function removeFollower(userId, name) {
     const descr = "Non sarai più amico di " + name + ", ma potrai sempre riallacciare i rapporti.";
     const res = await showConfirmModal(`Vuoi rimuovere ${name} come amico?`, descr);
     if (res) {
-        console.log(`Remove ${userId} user as friend`);
+        //TODO: fix current user email, it not mathc to the one on firebase
+        const loggedUser = await getCurrentUser();
+        await removeFriend(/*loggedMail.username*/"teo@gmail.com", userId).then(
+            await loadFriends()
+        );
     }
 }
 
@@ -145,7 +151,7 @@ function makeFriendActionContainer(data) {
     const removeIcon = document.createElement("img");
     removeIcon.src = "assets/icons/community/delete.svg";
     removeButton.appendChild(removeIcon);
-    removeButton.addEventListener('click', () => removeFriend(data.id, data.username));
+    removeButton.addEventListener('click', () => removeFollower(data.id, data.username));
 
     actionsContainer.appendChild(messageButton);
     actionsContainer.appendChild(removeButton);
