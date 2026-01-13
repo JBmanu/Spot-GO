@@ -3,8 +3,8 @@ import { showConfirmModal } from "../ui/confirmModal.js";
 
 
 const BOOKMARK_ICONS = {
-    filled: "../assets/icons/homepage/Bookmark.svg",
-    empty: "../assets/icons/homepage/BookmarkEmpty.svg",
+    filled: "assets/icons/homepage/Bookmark.svg",
+    empty: "assets/icons/homepage/BookmarkEmpty.svg",
 };
 
 const SELECTORS = {
@@ -41,9 +41,8 @@ export function initializeBookmarkButton(card, { saved = "false" } = {}) {
     const btn = card.querySelector(SELECTORS.bookmarkButton);
     if (!btn) return;
 
-    if (typeof btn.dataset.saved === "undefined") {
-        btn.dataset.saved = saved;
-    }
+    btn.dataset.saved = saved;
+    updateBookmarkVisual(btn, saved === "true");
 }
 
 export async function syncBookmarksUI(scope = document) {

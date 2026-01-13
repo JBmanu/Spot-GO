@@ -5,7 +5,8 @@ let getSpots,
     formatDistance, orderByDistanceFromUser, getFilteredSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
     initializeSpotClickHandlers, initializeVerticalCarousel,
-    openSpotDetailById, openNewSpotPage, generateSpotCardList;
+    openSpotDetailById, openNewSpotPage, generateSpotCardList,
+    syncBookmarksUI, updateBookmarkVisual;
 
 
 import L from 'leaflet';
@@ -38,6 +39,10 @@ Promise.all([
     }),
     import("./common/carousels.js").then(module => {
         initializeVerticalCarousel = module.initializeVerticalCarousel;
+    }),
+    import("./common/bookmark.js").then(module => {
+        syncBookmarksUI = module.syncBookmarksUI;
+        updateBookmarkVisual = module.updateBookmarkVisual;
     }),
 ]).catch(err => console.error("Errore nel caricamento dei moduli in map.js:", err));
 
@@ -96,6 +101,8 @@ async function initializeMap() {
     await loadSearchBar();
     await loadMap();
     await loadSpotsDependentObjects();
+
+    attachBookmarkChangeListener();
 }
 
 async function loadSpotsDependentObjects() {
@@ -312,6 +319,10 @@ async function loadNearbySpotsList() {
         setCategoryText: true
     });
 
+    if (syncBookmarksUI) {
+        await syncBookmarksUI(carouselEl).catch(() => { });
+    }
+
     if (initializeVerticalCarousel) {
         initializeVerticalCarousel(carouselEl);
     }
@@ -330,6 +341,21 @@ function setTileServer(server) {
     currentTileLayer = L.tileLayer(server.url, {
         attribution: server.attribution
     }).addTo(map);
+}
+
+function attachBookmarkChangeListener() {
+    document.addEventListener("bookmark:changed", (e) => {
+        const { spotId, isSaved } = e.detail || {};
+        if (!spotId) return;
+
+        const mapSection = document.querySelector('[data-section-view="map"]');
+        if (mapSection && updateBookmarkVisual) {
+            mapSection.querySelectorAll(`[data-spot-id="${CSS.escape(spotId)}"] [data-bookmark-button]`).forEach((btn) => {
+                btn.dataset.saved = isSaved ? "true" : "false";
+                updateBookmarkVisual(btn, isSaved);
+            });
+        }
+    });
 }
 
 window.reloadProfile = async function () {
