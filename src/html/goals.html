@@ -171,7 +171,7 @@
     <div class="mx-4 my-0">
         <div class="glass-medium missions-type-bar">
             <!-- INDICATORE ANIMATO -->
-            <div class="glass-strong missions-type-bar-indicator"></div>
+            <div class="glass-strong missions-type-indicator"></div>
 
             <!-- BOTTONI -->
             <div class="flex justify-between relative z-10 min-h-13">
@@ -196,24 +196,16 @@
 
     <!-- ================= MISSIONS ================= -->
     <!-- CONTENITORE ESTERNO -->
-    <div class="relative w-full max-w-md overflow-hidden">
+    <div class="missions-ctn">
         <!-- TRACK SCORRIMENTO -->
-        <!-- + BOUNCE -->
-        <!-- class="flex transition-all duration-700 ease-[cubic-bezier(.17,.67,.38,1.21)]" -->
-        <!-- + SMOOTH -->
-        <!-- class="flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]" -->
-        <!-- + VELOCE -->
-        <!-- class="flex transition-all duration-500 ease-[cubic-bezier(.25,.8,.25,1)]"-->
-        <div id="slider"
-             class="flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]"
-             style="transform: translateX(0%);">
+         <div class="mission-type-slider">
 
             <!-- CARD 1 -->
-            <div class="slide shrink-0 w-full p-4 opacity-40 scale-95 transition-all duration-500">
+            <div class="missions-card">
                 <!-- Container -->
-                <div class="flex flex-col gap-2">
+                <div class="vertical-ctn-g2">
                     <!-- ================= Elemento 1 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong rounded-2xl shadow px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
@@ -224,12 +216,12 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">1 / 7</span>
                         </div>
                     </div>
                     <!-- ================= Elemento 2 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong rounded-2xl shadow px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
@@ -240,7 +232,7 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">✓</span>
                         </div>
                     </div>
@@ -248,11 +240,11 @@
             </div>
 
             <!-- CARD 2 -->
-            <div class="slide shrink-0 w-full p-4 opacity-40 scale-95 transition-all duration-500">
+            <div class="missions-card">
                 <!-- Container -->
-                <div class="flex flex-col gap-2">
+                <div class="vertical-ctn-g2">
                     <!-- ================= Elemento 1 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong rounded-2xl shadow px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
@@ -263,12 +255,12 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">1 / 7</span>
                         </div>
                     </div>
                     <!-- ================= Elemento 2 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong rounded-2xl shadow px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
@@ -279,7 +271,7 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">✓</span>
                         </div>
                     </div>
@@ -287,11 +279,11 @@
             </div>
 
             <!-- CARD 3 -->
-            <div class="slide shrink-0 w-full p-4 opacity-40 scale-95 transition-all duration-500">
+            <div class="missions-card">
                 <!-- Container -->
-                <div class="flex flex-col gap-2">
+                <div class="vertical-ctn-g2">
                     <!-- ================= Elemento 1 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong rounded-2xl shadow px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
@@ -302,12 +294,12 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">1 / 7</span>
                         </div>
                     </div>
                     <!-- ================= Elemento 2 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong rounded-2xl shadow px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
@@ -318,7 +310,7 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">✓</span>
                         </div>
                     </div>

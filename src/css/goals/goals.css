@@ -35,7 +35,7 @@
     }
 
 
-    /* ================= SPOT ================= */
+    /* ================= SPOT MISSIONS ================= */
     .spot-card {
         @apply shadow rounded-xl flex flex-col
     }
@@ -72,12 +72,13 @@
         @apply hidden
     }
 
+
     /* ================= MISSIONS TYPE BAR ================= */
     .missions-type-bar {
         @apply relative rounded-2xl shadow px-2 py-2
     }
 
-    .missions-type-bar-indicator {
+    .missions-type-indicator {
         @apply absolute left-0 rounded-xl shadow transition-all duration-300 ease-in-out
     }
 
@@ -88,6 +89,27 @@
 
     .mission-type-btn-element {
         @apply transition-all duration-200 ease-in-out
+    }
+
+
+    /* ================= MISSIONS TYPE ================= */
+    .missions-ctn {
+        @apply relative w-full max-w-md overflow-hidden
+    }
+
+    .mission-type-slider {
+        /* BOUNCE */
+        /* class="flex transition-all duration-700 ease-[cubic-bezier(.17,.67,.38,1.21)]" -->*/
+        /* SMOOTH */
+        /* class="flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]" -->*/
+        /* VELOCE */
+        /* class="flex transition-all duration-500 ease-[cubic-bezier(.25,.8,.25,1)]"-->*/
+        @apply flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]
+        /*transform: translateX(0%);*/
+    }
+
+    .missions-card {
+        @apply shrink-0 w-full p-4 transition-all duration-500 opacity-100 scale-100
     }
 
 }
