@@ -172,6 +172,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         activateToolbar(activeSection);
         currentSection = activeSection;
+
+        document.dispatchEvent(
+            new CustomEvent("section:revealed", { detail: { section: activeSection } })
+        );
     }
 
     async function initSectionLogic(section, wrapperEl) {
