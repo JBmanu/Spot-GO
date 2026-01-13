@@ -52,7 +52,7 @@ export async function populateSavedSpots({
 export async function populateNearbySpots({
     containerId = "home-nearby-container",
     templateSelector = null,
-    limit = 10,
+    limit = 20,
 } = {}) {
     await generateSpotCardList({
         containerId,
@@ -68,7 +68,7 @@ export async function populateNearbySpots({
 export async function populateTopratedSpots({
     containerId = "home-toprated-carousel",
     templateSelector = null,
-    limit = 10,
+    limit = 20,
 } = {}) {
     await generateSpotCardList({
         containerId,

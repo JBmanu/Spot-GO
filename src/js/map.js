@@ -307,6 +307,7 @@ async function loadNearbySpotsList() {
     await generateSpotCardList({
         containerId: "map-nearby-carousel",
         getSpotsFunction: () => spots || [],
+        limit: 20,
         useWrapper: false,
         setCategoryText: true
     });
