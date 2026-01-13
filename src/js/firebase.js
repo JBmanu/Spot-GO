@@ -1,10 +1,12 @@
 /**
  * Configurazione e inizializzazione di Firebase.
+ * Esegui con: npx vite-node database.js
+ * oppure: npm run db:push
  */
 
-import {initializeApp} from "firebase/app";
-import {getFirestore} from "firebase/firestore";
-import {getAuth} from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -30,19 +32,21 @@ let auth = null;
 
 if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
     console.error("Configurazione incompleta! Controlla .env file.");
-    console.error("Decommenta il log delle variabili d'ambiente per il debug.");
 } else {
     try {
         app = initializeApp(firebaseConfig);
         db = getFirestore(app);
         auth = getAuth(app);
 
-        window.firebaseApp = app;
-        window.db = db;
-        window.firebaseAuth = auth;
+        // Se siamo nel browser, esportiamo le variabili globali per comodità
+        if (typeof window !== 'undefined') {
+            window.firebaseApp = app;
+            window.db = db;
+            window.firebaseAuth = auth;
+        }
     } catch (error) {
         console.error("ERRORE di configurazione in Firebase!", error);
     }
 }
 
-export { db };
+export { app, db, auth };
