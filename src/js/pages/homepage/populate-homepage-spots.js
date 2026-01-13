@@ -38,11 +38,29 @@ export async function populateSavedSpots({
         containerId,
         templateSelector,
         getSpotsFunction: async () => {
-            let spots = await getSavedSpotsData();
+            const allSaved = await getSavedSpotsData();
+            let spots = allSaved;
+
             if (categories && categories.length > 0) {
                 spots = spots.filter(s => categories.includes(s.idCategoria));
             }
+
             if (emptyState) {
+                const isFiltered = categories && categories.length > 0;
+                const hasNoSpots = spots.length === 0;
+
+                if (hasNoSpots) {
+                    const titleEl = emptyState.querySelector('h3');
+                    const descEl = emptyState.querySelector('p');
+
+                    if (isFiltered && allSaved.length > 0) {
+                        if (titleEl) titleEl.textContent = "Nessun preferito trovato.";
+                        if (descEl) descEl.textContent = "Non hai spot salvati in questa categoria. Esplora la mappa e salva quelli che ti ispirano.";
+                    } else {
+                        if (titleEl) titleEl.textContent = "Non hai ancora Preferiti.";
+                        if (descEl) descEl.textContent = "Esplora la mappa o ascolta la community e salva gli spot che ti ispirano.";
+                    }
+                }
                 emptyState.classList.toggle("hidden", spots.length > 0);
             }
             return spots;
@@ -55,14 +73,23 @@ export async function populateSavedSpots({
 
 export async function populateNearbySpots({
     containerId = "home-nearby-container",
+    emptyStateId = "nearby-empty-state",
     templateSelector = null,
     limit = 20,
     categories = []
 } = {}) {
+    const emptyState = document.getElementById(emptyStateId);
+
     await generateSpotCardList({
         containerId,
         templateSelector,
-        getSpotsFunction: () => getFilteredSpots(categories, "", null),
+        getSpotsFunction: async () => {
+            const spots = await getFilteredSpots(categories, "", null);
+            if (emptyState) {
+                emptyState.classList.toggle("hidden", spots.length > 0);
+            }
+            return spots;
+        },
         sortFunction: (a, b) => distanceFromUserToSpot(a) - distanceFromUserToSpot(b),
         limit,
         useWrapper: true,
@@ -72,15 +99,22 @@ export async function populateNearbySpots({
 
 export async function populateTopratedSpots({
     containerId = "home-toprated-carousel",
+    emptyStateId = "toprated-empty-state",
     templateSelector = null,
     limit = 20,
     categories = []
 } = {}) {
+    const emptyState = document.getElementById(emptyStateId);
+
     await generateSpotCardList({
         containerId,
         templateSelector,
         getSpotsFunction: async () => {
             const spots = await getFilteredSpots(categories, "", null);
+
+            if (emptyState) {
+                emptyState.classList.toggle("hidden", spots.length > 0);
+            }
 
             return spots
                 .map(s => ({ spot: s, rating: pickRating(s) }))
