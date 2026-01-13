@@ -84,6 +84,23 @@ export async function getReviews(username) {
 }
 
 /**
+ * Carica tutte le recensioni di uno spot da Firestore.
+ */
+export async function getReviewsForSpot(spotId) {
+    try {
+        const q = query(collection(db, "Recensione"), where("idLuogo", "==", spotId));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+    } catch (error) {
+        console.error("Errore recupero recensioni per lo spot:", error);
+        return [];
+    }
+}
+
+/**
  * Recupera gli spot creati da un utente.
  */
 export async function getCreatedSpots(userId) {
