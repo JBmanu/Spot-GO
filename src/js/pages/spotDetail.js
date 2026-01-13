@@ -15,6 +15,7 @@ import {
 import { formatRatingAsText } from "../common/fitText.js";
 import { closeOverlayAndReveal } from "../common/back.js";
 import { initializeHorizontalCarousel } from "../common/carousels.js";
+import { setReviewSpotId } from "./addReview.js";
 
 const state = {
     spotData: null,
@@ -325,6 +326,24 @@ function initializeDetailHandlers(overlayEl) {
             missionsToggle.classList.toggle("expanded", isHidden);
         });
     }
+
+    const addReviewBtn = overlayEl?.querySelector(".spot-add-review-button");
+    if (addReviewBtn) {
+        addReviewBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!state.spotData?.id) return;
+
+            setReviewSpotId(state.spotData.id, async () => {
+                await renderSpotReviews(state.spotData.id, overlayEl);
+            });
+
+            if (window.navigateToSection) {
+                window.navigateToSection("add-review");
+            }
+        });
+    }
+
     setupToolbarNavigation();
 }
 
