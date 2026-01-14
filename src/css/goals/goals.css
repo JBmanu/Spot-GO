@@ -40,7 +40,7 @@
     }
 
     .completable {
-
+        @apply relative
     }
 
 
@@ -74,9 +74,15 @@
     }
 
     .spot-mission-complete {
-        @apply absolute inset-0 z-20 backdrop-blur-2xl
-        backdrop-saturate-150 scale-100 opacity-100 rounded-xl
+        /* backdrop-saturate-150 */
+        @apply absolute inset-0 z-20 backdrop-blur-3xl
+        scale-100 opacity-100 rounded-xl
         transition-all duration-350 ease-[cubic-bezier(.25,.8,.25,1)]
+        backdrop-saturate-200 bg-white/30 border border-white/40;
+        /*@apply absolute inset-0 z-20 backdrop-blur-2xl*/
+        /*backdrop-saturate-150 scale-100 opacity-100 rounded-xl*/
+        /*transition-all duration-350 ease-[cubic-bezier(.25,.8,.25,1)]*/
+
     }
 
     .spot-mission-complete.inactive {
