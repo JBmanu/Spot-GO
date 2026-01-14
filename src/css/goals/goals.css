@@ -54,7 +54,7 @@
     }
 
     .spot-header {
-        @apply cursor-pointer px-3 py-2
+        @apply cursor-pointer px-3 pt-2
     }
 
     .spot-arrow {
@@ -64,13 +64,18 @@
 
     .missions-spot {
         /*sono classi suggerite da chat(ma non vanno): will-change-opacity will-change-filter*/
-        @apply overflow-hidden max-h-0 opacity-0 scale-95 blur-sm px-3
+        @apply overflow-hidden max-h-0 opacity-0 scale-95 blur-sm px-1
         transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
         will-change-transform
     }
 
+    .missions-spot.active,
     .missions-spot.open {
-        @apply max-h-[1000px] opacity-100 scale-100 blur-none py-2
+        @apply max-h-1000 opacity-100 scale-100 blur-none
+    }
+
+    .missions-spot.open {
+        @apply py-2
     }
 
     .spot-mission {
@@ -125,7 +130,7 @@
     }
 
     .missions-card {
-        @apply shrink-0 w-full p-4 transition-all duration-500 opacity-100 scale-100
+        @apply shrink-0 w-full px-4 py-2 transition-all duration-500 opacity-100 scale-100
     }
 
 }

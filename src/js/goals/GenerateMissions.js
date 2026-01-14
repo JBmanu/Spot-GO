@@ -1,10 +1,11 @@
 export async function generateMissions() {
     for (let i = 0; i < 4; i++) {
-        generateSpots("Luogo luogoso", "Cibo", i, 3)
+        // generateSpots("Luogo luogoso", "Cibo", i, 3)
     }
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
         generateSpotMissions(
+            '.missions-spot',
             "Scatta la foto",
             "Usa quella fotocamera del cellulare, ora!",
             100)
@@ -35,6 +36,15 @@ export async function generateMissions() {
             4)
     }
 }
+
+// Generate active spot missions
+// function generateActiveSpotMissions() {
+//     generateSpotMissions(
+//         '.missions-spot',
+//         "Scatta la foto",
+//         "Usa quella fotocamera del cellulare, ora!",
+//         100)
+// }
 
 // Generate spots
 function generateSpots(title, category, progress, allProgress) {
@@ -83,11 +93,11 @@ function generateSpots(title, category, progress, allProgress) {
 }
 
 // Generate spot missions
-function generateSpotMissions(title, description, exp) {
-    const missionCtns = document.querySelectorAll('.missions-spot');
+function generateSpotMissions(selectors, title, description, exp) {
+    const missionCtns = document.querySelectorAll(selectors);
     missionCtns.forEach(ctn => {
         ctn.innerHTML +=
-            `<button class="between-ctn interactive spot-mission completable">
+            `<button class="between-ctn interactive spot-mission completable card">
                 <!-- Left -->
                 <div class="vertical-ctn-g1">
                     <!-- Title -->
@@ -108,7 +118,7 @@ function generateSpotMissions(title, description, exp) {
 function generateDailyMissions(title, description, exp, progress, allProgress) {
     const dailyCtn = document.querySelectorAll('.missions-card');
     dailyCtn[0].innerHTML +=
-        `<div class="between-ctn glass-strong interactive completable px-5 py-4">
+        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card">
             <!-- Lato sinistro -->
             <div class="space-y-1">
                 <h3 class="text-sm font-semibold text-gray-800">${title}</h3>
@@ -129,7 +139,7 @@ function generateDailyMissions(title, description, exp, progress, allProgress) {
 function generateThemeMissions(title, description, exp, progress, allProgress) {
     const themeCtn = document.querySelectorAll('.missions-card');
     themeCtn[1].innerHTML +=
-        `<div class="between-ctn glass-strong interactive completable px-5 py-4">
+        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card">
             <!-- Lato sinistro -->
             <div class="space-y-1">
                 <h3 class="text-sm font-semibold text-gray-800">${title}</h3>
@@ -150,7 +160,7 @@ function generateThemeMissions(title, description, exp, progress, allProgress) {
 function generateLevelMissions(title, description, exp, progress, allProgress) {
     const levelCtn = document.querySelectorAll('.missions-card');
     levelCtn[2].innerHTML +=
-        `<div class="between-ctn glass-strong interactive completable px-5 py-4">
+        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card">
             <!-- Lato sinistro -->
             <div class="space-y-1">
                 <h3 class="text-sm font-semibold text-gray-800">${title}</h3>
