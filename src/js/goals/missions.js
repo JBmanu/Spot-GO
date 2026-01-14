@@ -6,7 +6,6 @@ export async function initializeMissions() {
 
     buttons.forEach((btn, index) => {
         btn.addEventListener("click", () => slider.style.transform = `translateX(-${index * 100}%)`);
-        console.log("Missions initialized");
     });
 
     // const buttons = document.querySelectorAll(".mission-type-btn");
