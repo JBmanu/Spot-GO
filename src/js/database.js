@@ -404,6 +404,22 @@ export async function getFilteredSpots(categories = [], searchText = "", filters
 }
 
 /**
+ * Recupera cartolina per ID da Firestore.
+ */
+export async function getCartolinaById(cardBoardId) {
+    try {
+        const docSnap = await getDoc(doc(db, "Cartolina", cardBoardId));
+        if (docSnap.exists()) {
+            return { id: docSnap.id, ...docSnap.data() };
+        }
+        return null;
+    } catch (err) {
+        console.error("Errore getCartolinaById:", err);
+        return null;
+    }
+}
+
+/**
  * Helper generico per recuperare items da una collezione.
  */
 export async function getItems(collectionName, filter, itemParser) {
