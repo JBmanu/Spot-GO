@@ -12,7 +12,7 @@ function selectionSlider(cards, index) {
     });
 }
 
-export async function initializeMissions() {
+export async function initializeTypeMissions() {
     const buttons = document.querySelectorAll(".mission-type-btn");
     const slider = document.querySelector('.mission-type-slider');
     const cards = document.querySelectorAll(".missions-card");
