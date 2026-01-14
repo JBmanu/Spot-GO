@@ -1,16 +1,27 @@
 <section class="space-y-3">
-
-    <!--Current missions-->
-    <div class="mx-4 my-6">
-
+    <!-- create div that full all the container and add a blur effect -->
+    <div class="all-spots-missions-page mx-4 my-2 p-0">
         <!-- Titolo principale -->
         <div class="between-ctn pb-1">
-            <span class="text-xl font-bold text-gray-800">Missioni spot attivo</span>
-            <span class="text-sm font-bold underline cursor-pointer">Vedi tutti</span>
+            <div class="vertical-ctn">
+                <span class="text-xl font-bold text-gray-800">Missioni da completare</span>
+                <span class="text-sm text-gray-600">Clicca gli spot per vedere le missioni.</span>
+            </div>
+            <button class="back-active-spot-missions text-sm font-bold underline cursor-pointer">Indietro</button>
         </div>
+    </div>
 
-        <!-- Contenitore Active Spot Missions -->
-        <div class="glass-medium spot-card">
+    <div class="main-goals-page">
+        <!-- ================= SPOT MISSIONS ================= -->
+        <div class="mx-4 mt-2 mb-6">
+            <!-- Titolo principale -->
+            <div class="between-ctn pb-1">
+                <span class="text-xl font-bold text-gray-800">Missioni spot attivo</span>
+                <button class="view-all-spots-missions text-sm font-bold underline cursor-pointer">Vedi tutti</button>
+            </div>
+
+            <!-- Contenitore Active Spot Missions -->
+            <div class="glass-medium spot-card">
                 <!-- Spot info -->
                 <div class="between-ctn spot-header pointer-events-none">
                     <!-- Icona + Luogo -->
@@ -42,53 +53,53 @@
                 <!-- Missions -->
                 <div class="vertical-ctn-g2 missions-spot active" data-carousel-type="vertical" data-size="mm">
                 </div>
+            </div>
+
         </div>
 
-    </div>
+        <!-- ================= MISSIONS TYPE BAR ================= -->
+        <div class="mx-4 my-0">
+            <div class="glass-medium interactive missions-type-bar">
+                <!-- INDICATORE ANIMATO -->
+                <div class="glass-strong interactive missions-type-indicator"></div>
 
-    <!--  MISSIONS TYPE BAR -->
-    <div class="mx-4 my-0">
-        <div class="glass-medium interactive missions-type-bar">
-            <!-- INDICATORE ANIMATO -->
-            <div class="glass-strong interactive missions-type-indicator"></div>
+                <!-- BOTTONI -->
+                <div class="flex justify-between relative z-10 min-h-13">
+                    <!-- Daily -->
+                    <button class="mission-type-btn" data-index="0">
+                        <img src="../assets/icons/goals/missionTypes/Sun.svg" class="mission-type-btn-element" alt=""/>
+                        <span class="mission-type-btn-element font-medium">Giornalieri</span>
+                    </button>
+                    <!-- Theme -->
+                    <button class="mission-type-btn" data-index="1">
+                        <img src="../assets/icons/goals/missionTypes/Tag.svg" class="mission-type-btn-element" alt=""/>
+                        <span class="mission-type-btn-element">A tema</span>
+                    </button>
+                    <!-- Level -->
+                    <button class="mission-type-btn" data-index="2">
+                        <img src="../assets/icons/goals/missionTypes/Trophy.svg" class="mission-type-btn-element"
+                             alt=""/>
+                        <span class="mission-type-btn-element">Livello</span>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-            <!-- BOTTONI -->
-            <div class="flex justify-between relative z-10 min-h-13">
-                <!-- Daily -->
-                <button class="mission-type-btn" data-index="0">
-                    <img src="../assets/icons/goals/missionTypes/Sun.svg" class="mission-type-btn-element" alt=""/>
-                    <span class="mission-type-btn-element font-medium">Giornalieri</span>
-                </button>
-                <!-- Theme -->
-                <button class="mission-type-btn" data-index="1">
-                    <img src="../assets/icons/goals/missionTypes/Tag.svg" class="mission-type-btn-element" alt=""/>
-                    <span class="mission-type-btn-element">A tema</span>
-                </button>
-                <!-- Level -->
-                <button class="mission-type-btn" data-index="2">
-                    <img src="../assets/icons/goals/missionTypes/Trophy.svg" class="mission-type-btn-element" alt=""/>
-                    <span class="mission-type-btn-element">Livello</span>
-                </button>
+        <!-- ================= MISSIONS ================= -->
+        <div class="missions-ctn">
+            <!-- TRACK SCORRIMENTO -->
+            <div class="mission-type-slider">
+                <!-- CARD 1 -->
+                <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
+                </div>
+                <!-- CARD 2 -->
+                <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
+                </div>
+                <!-- CARD 3 -->
+                <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- ================= MISSIONS ================= -->
-    <!-- CONTENITORE ESTERNO -->
-    <div class="missions-ctn">
-        <!-- TRACK SCORRIMENTO -->
-        <div class="mission-type-slider">
-            <!-- CARD 1 -->
-            <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
-            </div>
-            <!-- CARD 2 -->
-            <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
-            </div>
-            <!-- CARD 3 -->
-            <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
-            </div>
-        </div>
-    </div>
-
 
 </section>
