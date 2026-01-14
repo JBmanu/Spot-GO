@@ -1,0 +1,215 @@
+import { getSpots, addPolaroidToDatabase } from "../database.js";
+
+let modalElement = null;
+let isModalOpen = false;
+let selectedImage = null;
+let updateSubmitButtonFn = null;
+
+export async function openAddPolaroidModal() {
+    if (isModalOpen) return;
+
+    if (!modalElement) {
+        const response = await fetch("../html/common-pages/add-polaroid.html");
+        if (!response.ok) return;
+
+        const html = await response.text();
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = html;
+        modalElement = tempDiv.firstElementChild;
+
+        const phoneScreen = document.querySelector(".phone-screen");
+        if (!phoneScreen) return;
+        phoneScreen.appendChild(modalElement);
+
+        initializeAddPolaroid(modalElement);
+    }
+
+    isModalOpen = true;
+    modalElement.style.display = "flex";
+    requestAnimationFrame(() => {
+        modalElement.classList.add("active");
+    });
+
+    const mainContainer = document.getElementById("main");
+    if (mainContainer) {
+        mainContainer.style.overflow = "hidden";
+    }
+
+    await loadSpotsIntoDropdown();
+}
+
+async function loadSpotsIntoDropdown() {
+    const locationSelect = modalElement.querySelector("#polaroid-location");
+    if (!locationSelect) return;
+
+    try {
+        const spots = await getSpots();
+
+        locationSelect.innerHTML = '<option value="">Seleziona uno spot...</option>';
+
+        spots.sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
+
+        spots.forEach(spot => {
+            const option = document.createElement("option");
+            option.value = spot.id;
+            option.textContent = spot.nome || spot.id;
+            locationSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Errore caricamento spot:", error);
+    }
+}
+
+export function closeAddPolaroidModal() {
+    if (!isModalOpen || !modalElement) return;
+
+    isModalOpen = false;
+    modalElement.classList.remove("active");
+
+    setTimeout(() => {
+        modalElement.style.display = "none";
+
+        const form = modalElement.querySelector("#add-polaroid-form");
+        if (form) {
+            form.reset();
+            selectedImage = null;
+
+            const preview = modalElement.querySelector("#polaroid-image-preview");
+            if (preview) {
+                preview.classList.remove("active");
+                preview.style.backgroundImage = "";
+            }
+
+            if (updateSubmitButtonFn) {
+                updateSubmitButtonFn();
+            }
+        }
+
+        const mainContainer = document.getElementById("main");
+        if (mainContainer) {
+            mainContainer.style.overflow = "";
+        }
+    }, 300);
+}
+
+function initializeAddPolaroid(wrapperEl) {
+    const form = wrapperEl.querySelector("#add-polaroid-form");
+    const closeBtn = wrapperEl.querySelector(".add-polaroid-close-btn");
+    const overlay = wrapperEl;
+    const imageInput = wrapperEl.querySelector("#polaroid-image-input");
+    const imagePreview = wrapperEl.querySelector("#polaroid-image-preview");
+    const titleInput = wrapperEl.querySelector("#polaroid-title");
+    const locationInput = wrapperEl.querySelector("#polaroid-location");
+    const dateInput = wrapperEl.querySelector("#polaroid-date");
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const helpText = wrapperEl.querySelector("#polaroid-help-text");
+
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+
+    const updateSubmitButton = () => {
+        const hasImage = selectedImage !== null;
+        const hasTitle = titleInput.value.trim().length > 0;
+        const hasLocation = locationInput.value.trim().length > 0;
+        const hasDate = dateInput.value.trim().length > 0;
+
+        submitBtn.disabled = !(hasImage && hasTitle && hasLocation && hasDate);
+
+        if (!hasImage) {
+            helpText.textContent = "Carica una foto e completa tutti i campi";
+        } else if (!hasTitle || !hasLocation || !hasDate) {
+            helpText.textContent = "Completa tutti i campi";
+        } else {
+            helpText.textContent = "\u00A0";
+        }
+    };
+
+    updateSubmitButtonFn = updateSubmitButton;
+
+    imageInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith("image/")) {
+            selectedImage = file;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                imagePreview.style.backgroundImage = `url(${event.target.result})`;
+                imagePreview.classList.add("active");
+                updateSubmitButton();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    titleInput.addEventListener("input", updateSubmitButton);
+    locationInput.addEventListener("input", updateSubmitButton);
+    dateInput.addEventListener("change", updateSubmitButton);
+
+    updateSubmitButton();
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeAddPolaroidModal();
+        });
+    }
+
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {
+            closeAddPolaroidModal();
+        }
+    });
+
+    const escapeHandler = (e) => {
+        if (e.key === "Escape" && isModalOpen) {
+            closeAddPolaroidModal();
+        }
+    };
+    document.addEventListener("keydown", escapeHandler);
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const title = titleInput.value.trim();
+        const location = locationInput.value.trim();
+        const date = dateInput.value;
+
+        if (!selectedImage) {
+            alert("Seleziona un'immagine.");
+            return;
+        }
+
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Salvataggio...";
+
+            const reader = new FileReader();
+            const imageDataUrl = await new Promise((resolve) => {
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(selectedImage);
+            });
+
+            await addPolaroidToDatabase({
+                title,
+                idLuogo: location,
+                date,
+                imageUrl: imageDataUrl
+            });
+
+            form.reset();
+            selectedImage = null;
+            imagePreview.classList.remove("active");
+            imagePreview.style.backgroundImage = "";
+            updateSubmitButton();
+
+            closeAddPolaroidModal();
+
+        } catch (err) {
+            alert("Errore durante il salvataggio. Riprova.");
+            console.error(err);
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Aggiungi Polaroid";
+        }
+    });
+}

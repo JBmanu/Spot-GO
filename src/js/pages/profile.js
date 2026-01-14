@@ -1,4 +1,5 @@
 import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots } from "../database.js";
+import { openAddPolaroidModal } from "./addPolaroid.js";
 
 let loadViewAllSaved;
 
@@ -64,6 +65,19 @@ async function initializeProfileData(overviewContainer) {
         }
     } else {
         console.error("savedSpotsButton not found");
+    }
+
+    const addPolaroidButton = overviewContainer.querySelector(".profile-diary-add-btn");
+    if (addPolaroidButton) {
+        if (addPolaroidButton.dataset.bound !== "true") {
+            addPolaroidButton.dataset.bound = "true";
+
+            addPolaroidButton.addEventListener("click", async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                await openAddPolaroidModal();
+            });
+        }
     }
 }
 
