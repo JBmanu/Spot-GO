@@ -54,7 +54,10 @@
     }
 
     .spot-header {
-        @apply cursor-pointer px-3 pt-2
+        @apply cursor-pointer px-3 py-2
+    }
+    .spot-header.open {
+        @apply pb-0
     }
 
     .spot-arrow {
@@ -69,13 +72,8 @@
         will-change-transform
     }
 
-    .missions-spot.active,
     .missions-spot.open {
-        @apply max-h-1000 opacity-100 scale-100 blur-none
-    }
-
-    .missions-spot.open {
-        @apply py-2
+        @apply max-h-1000 opacity-100 scale-100 blur-none py-2
     }
 
     .spot-mission {

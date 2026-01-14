@@ -9,16 +9,20 @@ function initializeActiveSpotMissions() {
 }
 
 function initializeAllSpotMissions() {
-    // document.querySelectorAll('.spot-card').forEach(card => {
-    //     const header = card.querySelector('.spot-header');
-    //     const missions = card.querySelector('.missions-spot');
-    //     const arrow = card.querySelector('.spot-arrow');
-    //
-    //     header.addEventListener('click', () => {
-    //         missions.classList.toggle('open');
-    //         arrow.classList.toggle('rotate-180')
-    //     });
-    // });
+    document.querySelectorAll('.spot-card').forEach(card => {
+        const header = card.querySelector('.spot-header');
+        const missions = card.querySelector('.missions-spot');
+
+        header.addEventListener('click', () => {
+            header.classList.toggle('open');
+            missions.classList.toggle('open');
+            console.log("click spot missions")
+
+            const arrow = card.querySelector('.spot-arrow');
+            if (!arrow) return;
+            arrow.classList.toggle('rotate-180')
+        });
+    });
 }
 
 

@@ -1,13 +1,19 @@
 <section class="space-y-3">
-    <!-- create div that full all the container and add a blur effect -->
-    <div class="all-spots-missions-page mx-4 my-2 p-0">
-        <!-- Titolo principale -->
-        <div class="between-ctn pb-1">
+
+    <div class="all-spots-missions-page m-0 p-0">
+        <!-- ================= TITOLO PRINCIPALE ================= -->
+        <div class="between-ctn mx-4 mt-2 p-0">
             <div class="vertical-ctn">
                 <span class="text-xl font-bold text-gray-800">Missioni da completare</span>
-                <span class="text-sm text-gray-600">Clicca gli spot per vedere le missioni.</span>
+                <span class="text-sm text-gray-600">Clicca gli spot per vedere le missioni</span>
             </div>
             <button class="back-active-spot-missions text-sm font-bold underline cursor-pointer">Indietro</button>
+        </div>
+
+        <!-- ================= CONTAINER ALL SPOTS MISSIONS ================= -->
+        <div class="mx-2">
+            <div class="vertical-ctn-g2 all-spots-missions-ctn" data-carousel-type="vertical" data-size="xl">
+            </div>
         </div>
     </div>
 
@@ -23,7 +29,7 @@
             <!-- Contenitore Active Spot Missions -->
             <div class="glass-medium spot-card">
                 <!-- Spot info -->
-                <div class="between-ctn spot-header pointer-events-none">
+                <div class="between-ctn spot-header open">
                     <!-- Icona + Luogo -->
                     <div class="vertical-ctn">
                         <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>
@@ -44,14 +50,17 @@
                                         stroke-dasharray="113.097" stroke-dashoffset="22.619"
                                         transform="rotate(-90 20 20)"/>
                             </svg>
-                            <span class="center-ctn absolute inset-0 text-sm font-semibold text-gray-800">
-                            5/7
-                        </span>
+                            <span class="center-ctn absolute inset-0 text-sm font-semibold text-gray-800">5/7</span>
                         </div>
+                        <!-- Arrow -->
+                        <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m6 9 6 6 6-6"/>
+                        </svg>
                     </div>
                 </div>
                 <!-- Missions -->
-                <div class="vertical-ctn-g2 missions-spot active" data-carousel-type="vertical" data-size="mm">
+                <div class="vertical-ctn-g2 missions-spot open pt-0" data-carousel-type="vertical" data-size="mm">
                 </div>
             </div>
 
