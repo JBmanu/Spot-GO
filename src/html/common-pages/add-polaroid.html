@@ -1,0 +1,56 @@
+<div class="add-polaroid-modal-overlay glass-overlay" id="add-polaroid-modal">
+    <div class="add-polaroid-modal glass-modal">
+        <button type="button" class="add-polaroid-close-btn glass-close-btn" aria-label="Chiudi">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
+
+        <div>
+            <div class="add-polaroid-container">
+                <header class="add-polaroid-header">
+                    <h2 class="add-polaroid-title">Aggiungi Polaroid</h2>
+                </header>
+
+                <form id="add-polaroid-form" class="add-polaroid-form">
+                    <div class="add-polaroid-image-upload glass-strong">
+                        <input type="file" id="polaroid-image-input" accept="image/*" class="polaroid-image-input" />
+                        <label for="polaroid-image-input" class="polaroid-image-label">
+                            <div class="polaroid-upload-placeholder">
+                                <img src="../../assets/icons/profile/Add Image.svg" alt="Carica immagine"
+                                    class="upload-icon" />
+                                <span class="upload-text">Carica foto</span>
+                            </div>
+                            <div class="polaroid-image-preview" id="polaroid-image-preview"></div>
+                        </label>
+                    </div>
+
+                    <div class="add-polaroid-input-group">
+                        <label for="polaroid-title" class="input-label">Titolo</label>
+                        <input type="text" id="polaroid-title" class="polaroid-input glass-strong"
+                            placeholder="Es. Tramonto al mare" required maxlength="50" />
+                    </div>
+
+                    <div class="add-polaroid-input-group">
+                        <label for="polaroid-location" class="input-label">Spot</label>
+                        <select id="polaroid-location" class="polaroid-input glass-strong" required>
+                            <option value="">Seleziona uno spot...</option>
+                        </select>
+                    </div>
+
+                    <div class="add-polaroid-input-group">
+                        <label for="polaroid-date" class="input-label">Data</label>
+                        <input type="date" id="polaroid-date" class="polaroid-input glass-strong" required />
+                    </div>
+
+                    <footer class="add-polaroid-footer">
+                        <p class="add-polaroid-help-text" id="polaroid-help-text">
+                            Carica una foto e completa tutti i campi
+                        </p>
+                        <button type="submit" class="submit-polaroid-btn glass-btn-primary">Aggiungi Polaroid</button>
+                    </footer>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
