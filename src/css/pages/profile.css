@@ -1,33 +1,8 @@
 @layer components {
 
     .profile-wrapper {
-        --glass-blur: 28px;
-        --glass-sat: 170%;
-        --glass-contrast: 108%;
-
-        --profile-tint: 255 255 255;
-
-        --glass-surface-1: rgba(255, 255, 255, 0.18);
-        --glass-surface-2: rgba(255, 255, 255, 0.06);
-
-        --glass-border: rgba(255, 255, 255, 0.34);
-        --glass-shadow-1: 0 10px 26px rgba(0, 0, 0, 0.12);
-        --glass-shadow-2: 0 18px 50px rgba(15, 23, 42, 0.10);
-
-        @apply space-y-6;
+        @apply space-y-6 mt-3 mx-1;
         position: relative;
-    }
-
-    .profile-wrapper::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 0;
-        background: radial-gradient(700px 320px at 18% 10%, rgba(255, 255, 255, 0.10) 0%, transparent 60%),
-        radial-gradient(520px 280px at 86% 28%, rgba(255, 255, 255, 0.08) 0%, transparent 62%),
-        linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.04));
-        mix-blend-mode: overlay;
     }
 
     .profile-wrapper > * {
@@ -35,67 +10,18 @@
         z-index: 1;
     }
 
-    .profile-main-card,
-    .profile-card,
     .profile-reward-card,
     .profile-reward-card-large {
+        @apply glass-modal;
         position: relative;
         isolation: isolate;
         overflow: hidden;
-
-        border: 1px solid var(--glass-border);
-        background: linear-gradient(145deg, var(--glass-surface-1), var(--glass-surface-2));
-
-        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
-        backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
-
-        box-shadow: var(--glass-shadow-1);
-        transition: transform 0.18s ease, box-shadow 0.18s ease, backdrop-filter 0.18s ease;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .profile-main-card::before,
-    .profile-card::before,
-    .profile-reward-card::before,
-    .profile-reward-card-large::before {
-        content: "";
-        position: absolute;
-        inset: -10px;
-        pointer-events: none;
-        z-index: 0;
-
-        opacity: 1;
-        transform: scale(1.02);
-        filter: blur(8px) saturate(1.6);
-
-        background: radial-gradient(circle at 28% 18%,
-        rgba(255, 255, 255, 0.22) 0%,
-        rgba(255, 255, 255, 0.10) 28%,
-        transparent 55%
-        ),
-        radial-gradient(circle,
-                transparent 0 70%,
-                rgba(var(--profile-tint) / 0.12) 73%,
-                rgba(var(--profile-tint) / 0.22) 82%,
-                rgba(var(--profile-tint) / 0.18) 100%
-        );
-        border-radius: inherit;
-    }
-
-    .profile-main-card::after,
-    .profile-card::after,
-    .profile-reward-card::after,
-    .profile-reward-card-large::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 1;
-
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26),
-        inset 0 0 0 2px rgba(255, 255, 255, 0.10),
-        0 0 0 2px rgba(var(--profile-tint) / 0.18);
-        opacity: 0.95;
-        border-radius: inherit;
+    .profile-main-card,
+    .profile-card {
+        @apply glass-backdrop-medium;
     }
 
     .profile-main-card > *,
@@ -106,29 +32,12 @@
         z-index: 2;
     }
 
-    .profile-main-card:active,
-    .profile-card:active,
-    .profile-reward-card:active,
-    .profile-reward-card-large:active {
-        transform: scale(0.985);
-        box-shadow: var(--glass-shadow-2);
-    }
-
-    .profile-overview {
-        @apply space-y-5;
-        background: transparent;
-    }
-
     .profile-main-card {
-        @apply p-3 rounded-2xl;
-        box-shadow: 0 18px 44px rgba(15, 23, 42, 0.14), 0 10px 26px rgba(0, 0, 0, 0.10);
+        @apply glass-medium p-3 rounded-2xl mb-3;
     }
 
     .profile-name {
-        @apply text-3xl font-bold text-center mb-4;
-        font-family: "Montserrat", sans-serif;
-        color: rgba(17, 24, 39, 0.94) !important;
-        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+        @apply text-3xl font-bold text-center my-2;
     }
 
     .profile-body-section {
@@ -140,23 +49,17 @@
     }
 
     .profile-avatar {
-        @apply w-24 h-24 rounded-2xl grid place-items-center shrink-0 text-4xl font-black;
-        font-family: "Montserrat", sans-serif;
-
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.18));
-        border: 1px solid rgba(255, 255, 255, 0.36);
-
-        -webkit-backdrop-filter: blur(18px) saturate(160%);
-        backdrop-filter: blur(18px) saturate(160%);
-
-        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.58);
-        color: rgba(17, 24, 39, 0.88);
+        @apply w-24 h-24 rounded-2xl shrink-0 object-cover;
+        border: 3px solid rgba(255, 255, 255, 0.65);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14),
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .profile-username {
         @apply text-xs font-semibold uppercase tracking-wide;
-        color: rgba(99, 102, 106, 0.88) !important;
-        font-family: "Montserrat", sans-serif;
+        color: rgba(28, 124, 84, 0.90);
     }
 
     .profile-data-section {
@@ -165,20 +68,11 @@
     }
 
     .profile-data-item {
-        @apply flex items-center gap-4 p-3.5 rounded-xl;
-        border: 1px solid rgba(255, 255, 255, 0.20);
-        background: rgba(255, 255, 255, 0.10);
-
-        -webkit-backdrop-filter: blur(16px) saturate(150%);
-        backdrop-filter: blur(16px) saturate(150%);
-
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        @apply glass-light flex items-center gap-4 p-3.5 rounded-xl;
         outline: none;
-    }
-
-    .profile-data-item:focus-within {
-        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.10),
-        0 0 0 3px rgba(255, 255, 255, 0.16);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
     }
 
     .profile-data-icon {
@@ -187,25 +81,19 @@
         display: inline-grid;
         place-items: center;
         opacity: 1;
-        filter: drop-shadow(0 6px 18px rgba(15, 23, 42, 0.12)) drop-shadow(0 1px 0 rgba(255, 255, 255, 0.26));
+        filter: drop-shadow(0 8px 20px rgba(102, 217, 178, 0.15)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
     }
 
     .profile-data-label {
-        @apply text-[11px] font-bold uppercase tracking-wider;
-        color: rgba(17, 24, 39, 0.68);
-        font-family: "Montserrat", sans-serif;
+        @apply text-[11px] font-bold uppercase tracking-wider text-gray-400;
     }
 
     .profile-data-value {
-        @apply text-sm font-semibold;
-        color: rgba(22, 24, 29, 0.94);
+        @apply text-sm font-semibold text-gray-600;
     }
 
     .profile-data-content {
-        @apply flex-1 flex flex-col;
-        position: relative;
-        padding-bottom: 10px;
-        min-width: 0;
+        @apply flex-1 flex flex-col relative pb-2.5 min-w-0;
     }
 
     .profile-data-content::after {
@@ -214,15 +102,12 @@
         left: 0;
         right: 0;
         bottom: 2px;
-        height: 1px;
+        height: 2px;
         border-radius: 999px;
-        opacity: 0.9;
-        background: linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0.40) 0%,
-                rgba(255, 255, 255, 0.16) 55%,
-                rgba(255, 255, 255, 0.34) 100%
-        );
+        background: linear-gradient(90deg,
+        rgba(102, 217, 178, 0.5) 0%,
+        rgba(28, 124, 84, 0.5) 100%);
+        opacity: 0.6;
     }
 
     .profile-stats-row {
@@ -252,67 +137,47 @@
         margin-bottom: 0.5rem;
         display: inline-grid;
         place-items: center;
-        filter: drop-shadow(0 6px 18px rgba(16, 24, 40, 0.08));
+        filter: drop-shadow(0 8px 22px rgba(102, 217, 178, 0.2)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.1));
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .profile-overview-number-badge {
-        @apply text-3xl font-black leading-none;
-        color: rgba(17, 24, 39, 0.92);
-        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.60);
+        @apply text-3xl font-black leading-none text-gray-600;
     }
 
     .profile-overview-text-badge {
         @apply text-[10px] font-bold text-center mt-1 uppercase tracking-wide;
-        color: rgba(99, 102, 106, 0.92) !important;
-        font-family: "Montserrat", sans-serif;
+        color: rgba(28, 124, 84, 0.88);
     }
 
     .profile-overview-level-badge {
-        @apply text-base font-bold;
-        font-family: "Montserrat", sans-serif;
-        color: rgba(22, 24, 29, 0.94);
+        @apply text-base font-bold text-gray-600;
     }
 
     .profile-overview-level-number {
         @apply font-black text-2xl ml-1;
-        background: linear-gradient(135deg, rgba(22, 24, 29, 0.95) 0%, rgba(22, 24, 29, 0.72) 55%, rgba(22, 24, 29, 0.90) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.14));
+        color: rgba(28, 124, 84, 0.95);
     }
 
     .profile-overview-progress-bar-container {
         @apply h-3 rounded-full overflow-hidden mt-3 w-full;
-        background: rgba(255, 255, 255, 0.16);
-        box-shadow: inset 0 2px 8px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.52);
-        position: relative;
-    }
-
-    .profile-overview-progress-bar-container::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.00) 60%);
-        opacity: 0.65;
     }
 
     .profile-overview-progress-bar {
         @apply h-full rounded-full;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.54) 55%, rgba(255, 255, 255, 0.82) 100%);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38);
+        background: linear-gradient(90deg,
+        rgba(102, 217, 178, 0.9) 0%,
+        rgba(28, 124, 84, 0.85) 100%);
+        position: relative;
+        overflow: hidden;
     }
 
     .profile-overview-text-large-badge {
-        @apply text-xs font-semibold mt-2;
-        color: rgba(17, 24, 39, 0.80);
-        font-family: "Montserrat", sans-serif;
+        @apply text-xs font-semibold mt-2 text-gray-600;
     }
 
     .profile-card {
-        @apply rounded-2xl p-5 space-y-5;
-        box-shadow: 0 18px 44px rgba(15, 23, 42, 0.14), 0 10px 26px rgba(0, 0, 0, 0.10);
+        @apply rounded-2xl p-5 space-y-5 mb-3;
     }
 
     .profile-diary-header {
@@ -320,43 +185,20 @@
     }
 
     .profile-diary-title {
-        @apply text-2xl font-black tracking-tight;
-        font-family: "Montserrat", sans-serif;
-        color: rgba(22, 24, 29, 0.94);
-        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+        @apply text-2xl font-black tracking-tight text-gray-600;
     }
 
     .profile-diary-add-btn {
-        @apply w-12 h-12 rounded-xl grid place-items-center font-bold text-xl;
-        border: 1px solid rgba(255, 255, 255, 0.42);
-        background: rgba(255, 255, 255, 0.16);
-        -webkit-backdrop-filter: blur(18px) saturate(160%);
-        backdrop-filter: blur(18px) saturate(160%);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.40);
+        @apply glass-btn-secondary w-12 h-12 rounded-xl grid place-items-center font-bold text-xl;
         color: rgba(22, 24, 29, 0.88);
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .profile-diary-add-btn:active {
-        transform: scale(0.96);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
     }
 
     .profile-album-btn {
-        @apply flex items-center gap-2 px-4 py-2 rounded-lg;
-        margin-left: auto;
-        margin-right: auto;
-        justify-content: center;
-        min-width: 160px;
-
-        border: 1px solid rgba(255, 255, 255, 0.42);
-        background: rgba(255, 255, 255, 0.22);
-        -webkit-backdrop-filter: blur(18px) saturate(160%);
-        backdrop-filter: blur(18px) saturate(160%);
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.62);
-
-        color: rgba(22, 24, 29, 0.86);
-        font-family: "Montserrat", sans-serif;
+        @apply glass-btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg justify-start w-fit;
+        @apply relative overflow-hidden text-gray-600;
     }
 
     .profile-carousel {
@@ -394,69 +236,27 @@
 
     .profile-carousel::before {
         left: 0;
-        background: linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0.22) 0%,
-                rgba(255, 255, 255, 0.12) 35%,
-                rgba(255, 255, 255, 0.00) 100%
-        );
+        background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.28) 0%,
+        rgba(255, 255, 255, 0.15) 35%,
+        rgba(255, 255, 255, 0.00) 100%);
     }
 
     .profile-carousel::after {
         right: 0;
-        background: linear-gradient(
-                270deg,
-                rgba(255, 255, 255, 0.22) 0%,
-                rgba(255, 255, 255, 0.12) 35%,
-                rgba(255, 255, 255, 0.00) 100%
-        );
+        background: linear-gradient(270deg,
+        rgba(255, 255, 255, 0.28) 0%,
+        rgba(255, 255, 255, 0.15) 35%,
+        rgba(255, 255, 255, 0.00) 100%);
     }
 
     .profile-polaroid {
-        @apply relative flex-1 rounded-xl p-4 space-y-3;
+        @apply glass-modal relative flex-1 rounded-xl p-4 space-y-3;
         position: relative;
         isolation: isolate;
         overflow: hidden;
         z-index: 2;
-
-        background: linear-gradient(
-                180deg,
-                rgba(255, 255, 255, 0.92) 0%,
-                rgba(248, 249, 251, 0.72) 100%
-        );
-
-        border: 1px solid rgba(255, 255, 255, 0.78);
-
-        box-shadow: 0 18px 50px rgba(15, 23, 42, 0.12),
-        0 6px 16px rgba(0, 0, 0, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.90),
-        inset 0 -10px 24px rgba(0, 0, 0, 0.06);
-    }
-
-    .profile-polaroid::before {
-        content: "";
-        position: absolute;
-        inset: -12px;
-        pointer-events: none;
-        z-index: 0;
-        filter: blur(10px) saturate(1.25);
-        opacity: 0.9;
-
-        background: radial-gradient(320px 220px at 22% 14%, rgba(255, 255, 255, 0.30) 0%, transparent 62%),
-        radial-gradient(300px 200px at 86% 68%, rgba(255, 255, 255, 0.22) 0%, transparent 62%);
-        border-radius: inherit;
-    }
-
-    .profile-polaroid::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 1;
-        border-radius: inherit;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.58),
-        inset 0 0 0 2px rgba(255, 255, 255, 0.18);
-        opacity: 1;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .profile-polaroid > * {
@@ -465,27 +265,21 @@
     }
 
     .profile-polaroid-menu {
-        @apply absolute top-2 right-2 w-9 h-9 rounded-full grid place-items-center;
-        border: 1px solid rgba(255, 255, 255, 0.32);
-        background: rgba(255, 255, 255, 0.20);
-        -webkit-backdrop-filter: blur(14px) saturate(150%);
-        backdrop-filter: blur(14px) saturate(150%);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.36);
+        @apply glass-strong absolute top-2 right-2 w-9 h-9 rounded-full grid place-items-center;
         color: rgba(22, 24, 29, 0.78);
         z-index: 10;
-        transition: transform 0.15s ease;
-    }
-
-    .profile-polaroid-menu:active {
-        transform: scale(0.96);
+        transition: all 0.3s ease;
     }
 
     .profile-polaroid-image-container {
         @apply w-full aspect-square rounded-lg overflow-hidden;
         position: relative;
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        background: rgba(0, 0, 0, 0.05);
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        background: linear-gradient(135deg,
+        rgba(102, 217, 178, 0.08) 0%,
+        rgba(28, 124, 84, 0.05) 100%);
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1),
+        0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .profile-polaroid-image {
@@ -497,21 +291,16 @@
     }
 
     .profile-polaroid-title {
-        @apply text-lg font-bold;
-        font-family: "Montserrat", sans-serif;
-        color: rgba(22, 24, 29, 0.94);
-        letter-spacing: 0.02em;
+        @apply text-lg font-bold text-gray-600;
     }
 
     .profile-polaroid-subtitle {
-        @apply text-sm;
-        color: rgba(17, 24, 39, 0.68);
+        @apply text-sm text-gray-500;
     }
 
     .profile-carousel-counter {
         @apply text-center text-sm font-semibold;
-        color: rgba(17, 24, 39, 0.72);
-        font-family: "Montserrat", sans-serif;
+        color: rgba(28, 124, 84, 0.80);
     }
 
     @media (max-width: 640px) {

@@ -10,8 +10,6 @@
 
 @import "./common/glass.css";
 
-@import "./profile/profile-overview.css";
-
 @import "./pages/homepage.css";
 
 @import "./pages/community.css";
@@ -19,6 +17,8 @@
 @import "./common/carousels.css";
 
 @import "./common/spot-detail.css";
+
+@import "./pages/profile.css";
 
 @import "./map/map.css";
 
