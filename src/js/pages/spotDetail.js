@@ -10,9 +10,12 @@ import {
     getSavedSpots,
     getSpotById,
     pickRating,
+    getReviewsForSpot,
 } from "../database.js";
 import { formatRatingAsText } from "../common/fitText.js";
 import { closeOverlayAndReveal } from "../common/back.js";
+import { initializeHorizontalCarousel } from "../common/carousels.js";
+import { setReviewSpotId, openAddReviewModal } from "./addReview.js";
 
 const state = {
     spotData: null,
@@ -68,7 +71,7 @@ function removeHeaderBookmarkButton() {
 async function exitDetailFlow(main) {
     if (!main) return;
     main.classList.add("spot-detail-exit");
-    await new Promise(r => setTimeout(r, 250)); // Match transition duration
+    await new Promise(r => setTimeout(r, 250));
     closeDetailOverlay(main);
 }
 
@@ -233,6 +236,48 @@ async function populateSpotDetail(spotData, scopeEl = document) {
             await fieldMap[fieldName](el);
         }
     }
+
+    await renderSpotReviews(spotData.id, scopeEl);
+}
+
+async function renderSpotReviews(spotId, scopeEl) {
+    const track = scopeEl.querySelector("#spot-reviews-track");
+    if (!track) return;
+
+    const reviews = await getReviewsForSpot(spotId);
+    if (!reviews || reviews.length === 0) {
+        track.innerHTML = `
+            <div class="spot-reviews-empty">
+                <img src="../../assets/icons/homepage/Star.svg" class="spot-reviews-empty-icon" alt="" />
+                <h3 class="spot-reviews-empty-title">Nessuna recensione ancora</h3>
+                <p class="spot-reviews-empty-text">Sii il primo a condividere la tua esperienza in questo spot!</p>
+            </div>
+        `;
+        return;
+    }
+
+    track.innerHTML = "";
+    const template = document.querySelector('[data-template="review-template"]');
+    if (!template) return;
+
+    for (const review of reviews) {
+        const clone = template.content.cloneNode(true);
+
+        const authorEl = clone.querySelector('[data-slot="author"]');
+        const ratingEl = clone.querySelector('[data-slot="rating"]');
+        const textEl = clone.querySelector('[data-slot="text"]');
+
+        if (authorEl) authorEl.textContent = review.idUtente || "Anonimo";
+        if (ratingEl) ratingEl.textContent = review.valuation || "5";
+        if (textEl) textEl.textContent = review.description || "";
+
+        track.appendChild(clone);
+    }
+
+    const carouselEl = track.closest('[data-carousel-type="horizontal"]');
+    if (carouselEl) {
+        initializeHorizontalCarousel(carouselEl);
+    }
 }
 
 function setupToolbarNavigation() {
@@ -278,6 +323,22 @@ function initializeDetailHandlers(overlayEl) {
             missionsToggle.classList.toggle("expanded", isHidden);
         });
     }
+
+    const addReviewBtn = overlayEl?.querySelector(".spot-add-review-button");
+    if (addReviewBtn) {
+        addReviewBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!state.spotData?.id) return;
+
+            setReviewSpotId(state.spotData.id, async () => {
+                await renderSpotReviews(state.spotData.id, overlayEl);
+            });
+
+            await openAddReviewModal();
+        });
+    }
+
     setupToolbarNavigation();
 }
 
