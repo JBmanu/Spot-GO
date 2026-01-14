@@ -5,7 +5,7 @@
         position: relative;
     }
 
-    .profile-wrapper > * {
+    .profile-wrapper>* {
         position: relative;
         z-index: 1;
     }
@@ -24,10 +24,10 @@
         @apply glass-backdrop-medium;
     }
 
-    .profile-main-card > *,
-    .profile-card > *,
-    .profile-reward-card > *,
-    .profile-reward-card-large > * {
+    .profile-main-card>*,
+    .profile-card>*,
+    .profile-reward-card>*,
+    .profile-reward-card-large>* {
         position: relative;
         z-index: 2;
     }
@@ -52,8 +52,8 @@
         @apply w-24 h-24 rounded-2xl shrink-0 object-cover;
         border: 3px solid rgba(255, 255, 255, 0.65);
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14),
-        0 4px 12px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            0 4px 12px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -105,8 +105,8 @@
         height: 2px;
         border-radius: 999px;
         background: linear-gradient(90deg,
-        rgba(102, 217, 178, 0.5) 0%,
-        rgba(28, 124, 84, 0.5) 100%);
+                rgba(102, 217, 178, 0.5) 0%,
+                rgba(28, 124, 84, 0.5) 100%);
         opacity: 0.6;
     }
 
@@ -166,8 +166,8 @@
     .profile-overview-progress-bar {
         @apply h-full rounded-full;
         background: linear-gradient(90deg,
-        rgba(102, 217, 178, 0.9) 0%,
-        rgba(28, 124, 84, 0.85) 100%);
+                rgba(102, 217, 178, 0.9) 0%,
+                rgba(28, 124, 84, 0.85) 100%);
         position: relative;
         overflow: hidden;
     }
@@ -237,17 +237,17 @@
     .profile-carousel::before {
         left: 0;
         background: linear-gradient(90deg,
-        rgba(255, 255, 255, 0.28) 0%,
-        rgba(255, 255, 255, 0.15) 35%,
-        rgba(255, 255, 255, 0.00) 100%);
+                rgba(255, 255, 255, 0.28) 0%,
+                rgba(255, 255, 255, 0.15) 35%,
+                rgba(255, 255, 255, 0.00) 100%);
     }
 
     .profile-carousel::after {
         right: 0;
         background: linear-gradient(270deg,
-        rgba(255, 255, 255, 0.28) 0%,
-        rgba(255, 255, 255, 0.15) 35%,
-        rgba(255, 255, 255, 0.00) 100%);
+                rgba(255, 255, 255, 0.28) 0%,
+                rgba(255, 255, 255, 0.15) 35%,
+                rgba(255, 255, 255, 0.00) 100%);
     }
 
     .profile-polaroid {
@@ -259,13 +259,13 @@
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .profile-polaroid > * {
+    .profile-polaroid>* {
         position: relative;
         z-index: 2;
     }
 
     .profile-polaroid-menu {
-        @apply glass-strong absolute top-2 right-2 w-9 h-9 rounded-full grid place-items-center;
+        @apply absolute top-2 right-2 w-9 h-9 rounded-[10px] grid place-items-center;
         color: rgba(22, 24, 29, 0.78);
         z-index: 10;
         transition: all 0.3s ease;
@@ -276,10 +276,10 @@
         position: relative;
         border: 2px solid rgba(255, 255, 255, 0.4);
         background: linear-gradient(135deg,
-        rgba(102, 217, 178, 0.08) 0%,
-        rgba(28, 124, 84, 0.05) 100%);
+                rgba(102, 217, 178, 0.08) 0%,
+                rgba(28, 124, 84, 0.05) 100%);
         box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1),
-        0 4px 12px rgba(0, 0, 0, 0.08);
+            0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .profile-polaroid-image {
