@@ -1,4 +1,4 @@
-<section class="profile-wrapper main-page-background">
+<section class="profile-wrapper">
     <div class="profile-main-card">
         <h2 id="profile-name" class="profile-name">
             Paperino
@@ -12,14 +12,14 @@
             </div>
             <div class="profile-data-section">
                 <div class="profile-data-item" tabindex="0">
-                    <img src="../assets/icons/profile/Email.svg" alt="Email icon" class="profile-data-icon"/>
+                    <img src="../assets/icons/profile/Email.svg" alt="Email icon" class="profile-data-icon" />
                     <div class="profile-data-content">
                         <span class="profile-data-label">Email</span>
                         <span id="profile-email" class="profile-data-value"></span>
                     </div>
                 </div>
                 <div class="profile-data-item" tabindex="0">
-                    <img src="../assets/icons/profile/Lock.svg" alt="Password icon" class="profile-data-icon"/>
+                    <img src="../assets/icons/profile/Lock.svg" alt="Password icon" class="profile-data-icon" />
                     <div class="profile-data-content">
                         <span class="profile-data-label">Password</span>
                         <span id="profile-password" class="profile-data-value">****</span>
@@ -29,10 +29,8 @@
         </div>
         <div class="profile-stats-row">
             <div class="profile-reward-card">
-                <img
-                        src="../assets/icons/profile/Thumbs%20Up%20Down.svg"
-                        alt="Written reviews icon"
-                        class="profile-overview-badge-icon"/>
+                <img src="../assets/icons/profile/Thumbs%20Up%20Down.svg" alt="Written reviews icon"
+                    class="profile-overview-badge-icon" />
                 <div id="written-reviews" class="profile-overview-number-badge">0</div>
                 <div class="profile-overview-text-badge">Recensioni scritte</div>
             </div>
@@ -51,59 +49,43 @@
         </div>
         <div class="profile-stats-row">
             <div class="profile-reward-card">
-                <img
-                        src="../assets/icons/profile/Souvenirs.svg"
-                        alt="Visited spots icon"
-                        class="profile-overview-badge-icon"/>
+                <img src="../assets/icons/profile/Souvenirs.svg" alt="Visited spots icon"
+                    class="profile-overview-badge-icon" />
                 <div id="visited-spots" class="profile-overview-number-badge">0</div>
                 <div class="profile-overview-text-badge">Spot visitati</div>
             </div>
             <div class="profile-reward-card">
-                <img
-                        src="../assets/icons/profile/Place%20Marker.svg"
-                        alt="Created spots icon"
-                        class="profile-overview-badge-icon"/>
+                <img src="../assets/icons/profile/Place%20Marker.svg" alt="Created spots icon"
+                    class="profile-overview-badge-icon" />
                 <div id="created-spots" class="profile-overview-number-badge">0</div>
                 <div class="profile-overview-text-badge">Spot creati</div>
             </div>
             <button class="profile-reward-card" id="profile-saved-spots-button" type="button">
-                <img
-                        src="../assets/icons/profile/Bookmark.svg"
-                        alt="Saved spots icon"
-                        class="profile-overview-badge-icon"/>
+                <img src="../assets/icons/profile/Bookmark.svg" alt="Saved spots icon"
+                    class="profile-overview-badge-icon" />
                 <div id="saved-spots" class="profile-overview-number-badge">0</div>
                 <div class="profile-overview-text-badge">Spot salvati</div>
             </button>
         </div>
     </div>
+
+
     <div class="profile-card">
         <div class="profile-diary-header">
             <h1 class="profile-diary-title">Diario di viaggio</h1>
-            <button
-                    type="button"
-                    class="profile-diary-add-btn"
-                    aria-label="Aggiungi nuova polaroid">
-                +
+            <button type="button" class="profile-diary-add-btn" aria-label="Aggiungi nuova polaroid">
+                <img src="../assets/icons/profile/Add Image.svg" alt="Aggiungi polaroid icon">
             </button>
         </div>
-        <button
-                type="button"
-                class="profile-album-btn"
-                aria-label="Apri album">
-            <span class="text-lg">🖼️</span>
-            <span>Apri Album</span>
+        <button type="button" class="profile-album-btn" aria-label="Apri album">
+            <span><img src="../assets/icons/profile/Photo Gallery.svg" alt="Album icon" class="w-6 h-6"></span>
+            <span class="text-sm text-bold text-gray-500">Apri Album</span>
         </button>
         <div class="profile-carousel">
-            <button
-                    type="button"
-                    class="profile-carousel-hit profile-carousel-hit--left"
-                    aria-label="Polaroid precedente"
-            ></button>
+            <button type="button" class="profile-carousel-hit profile-carousel-hit--left"
+                aria-label="Polaroid precedente"></button>
             <article class="profile-polaroid">
-                <button
-                        type="button"
-                        class="profile-polaroid-menu"
-                        aria-label="Menu polaroid">
+                <button type="button" class="profile-polaroid-menu" aria-label="Menu polaroid">
                     ⋮
                 </button>
                 <div class="profile-polaroid-image-container">
@@ -114,11 +96,8 @@
                     <p class="profile-polaroid-subtitle">Luogo - Data</p>
                 </div>
             </article>
-            <button
-                    type="button"
-                    class="profile-carousel-hit profile-carousel-hit--right"
-                    aria-label="Polaroid successiva"
-            ></button>
+            <button type="button" class="profile-carousel-hit profile-carousel-hit--right"
+                aria-label="Polaroid successiva"></button>
         </div>
         <p class="profile-carousel-counter">1/10</p>
     </div>
