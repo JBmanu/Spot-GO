@@ -46,7 +46,7 @@ export function activateToolbar(activeSection = null) {
     }
 }
 
-export function closeOverlayAndReveal({overlay, returnViewKey} = {}) {
+export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
     const main = document.getElementById("main");
     if (!main) return null;
 
@@ -54,6 +54,10 @@ export function closeOverlayAndReveal({overlay, returnViewKey} = {}) {
     if (!ov) return null;
 
     const returnKey = returnViewKey || ov.dataset.returnView || null;
+
+    if (typeof ov.onClose === 'function') {
+        ov.onClose();
+    }
 
     try {
         ov.remove();
@@ -76,20 +80,20 @@ export function closeOverlayAndReveal({overlay, returnViewKey} = {}) {
     main.removeAttribute("data-category");
 
     document.dispatchEvent(
-        new CustomEvent("section:revealed", {detail: {section: shown}})
+        new CustomEvent("section:revealed", { detail: { section: shown } })
     );
 
     return shown;
 }
 
 export function closeOverlay(overlay) {
-    return closeOverlayAndReveal({overlay});
+    return closeOverlayAndReveal({ overlay });
 }
 
-export function goBack({fallback} = {}) {
+export function goBack({ fallback } = {}) {
     const overlay = document.querySelector('[data-overlay-view]');
     if (overlay) {
-        closeOverlayAndReveal({overlay});
+        closeOverlayAndReveal({ overlay });
         return;
     }
 
@@ -109,7 +113,7 @@ export function goBack({fallback} = {}) {
     window.location.href = "/";
 }
 
-export function setupBackButton({fallback} = {}) {
+export function setupBackButton({ fallback } = {}) {
     const buttons = document.querySelectorAll("[data-back]");
     buttons.forEach((btn) => {
         if (btn.dataset.bound === "true") return;
@@ -118,7 +122,7 @@ export function setupBackButton({fallback} = {}) {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
-            goBack({fallback});
+            goBack({ fallback });
         });
     });
 }

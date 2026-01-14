@@ -16,6 +16,7 @@ import { formatRatingAsText } from "../common/fitText.js";
 import { closeOverlayAndReveal } from "../common/back.js";
 import { initializeHorizontalCarousel } from "../common/carousels.js";
 import { setReviewSpotId, openAddReviewModal } from "./addReview.js";
+import { distanceFromUserToSpot, formatDistance } from "../common.js";
 
 const state = {
     spotData: null,
@@ -123,6 +124,8 @@ async function loadSpotDetail(spotId) {
         overlay.dataset.returnView = returnSection;
         overlay.innerHTML = state.templateCache;
 
+        overlay.onClose = removeHeaderBookmarkButton;
+
         main.querySelectorAll("[data-section-view], [data-overlay-view]").forEach((el) => (el.hidden = true));
         main.appendChild(overlay);
 
@@ -211,7 +214,14 @@ async function populateSpotDetail(spotData, scopeEl = document) {
             el.alt = spotData.nome || "Foto spot";
         },
         rating: (el) => el.textContent = formatRatingAsText(pickRating(spotData)) || "4.5",
-        distance: (el) => el.textContent = spotData.distanza ? `${spotData.distanza} m` : "0 m",
+        distance: (el) => {
+            if (spotData.posizione) {
+                const distMeters = distanceFromUserToSpot(spotData);
+                el.textContent = formatDistance(distMeters);
+            } else {
+                el.textContent = spotData.distanza ? `${spotData.distanza} m` : "-";
+            }
+        },
         category: async (el) => {
             const catId = spotData.idCategoria || "mystery";
             const catName = await getCategoryNameIt(catId).catch(() => catId);
