@@ -84,6 +84,45 @@ export async function getReviews(username) {
 }
 
 /**
+ * Carica tutte le recensioni di uno spot da Firestore.
+ */
+export async function getReviewsForSpot(spotId) {
+    try {
+        const q = query(collection(db, "Recensione"), where("idLuogo", "==", spotId));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+    } catch (error) {
+        console.error("Errore recupero recensioni per lo spot:", error);
+        return [];
+    }
+}
+
+/**
+ * Aggiunge una nuova recensione al database Firestore.
+ */
+export async function addReviewToDatabase(spotId, { rating, description }) {
+    const user = await getCurrentUser();
+    if (!user) throw new Error("Utente non autenticato");
+
+    try {
+        const docRef = await addDoc(collection(db, "Recensione"), {
+            idLuogo: spotId,
+            idUtente: user.username,
+            valuation: Number(rating),
+            description: description,
+            timestamp: new Date().toISOString()
+        });
+        return docRef.id;
+    } catch (err) {
+        console.error("Errore salvataggio recensione:", err);
+        throw err;
+    }
+}
+
+/**
  * Recupera gli spot creati da un utente.
  */
 export async function getCreatedSpots(userId) {

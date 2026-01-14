@@ -1,0 +1,162 @@
+@layer components {
+    .add-review-modal-overlay {
+        @apply absolute inset-0 z-[2000] flex items-center justify-center p-4;
+        backdrop-filter: blur(10px) saturate(110%);
+        background: rgba(255, 255, 255, 0.15);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .add-review-modal-overlay.active {
+        @apply opacity-100 pointer-events-auto;
+    }
+
+    .add-review-modal {
+        @apply relative w-full overflow-hidden rounded-[2rem] opacity-0;
+        max-width: 540px;
+        max-height: 85%;
+        transform: translateY(30px) scale(0.95);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        backdrop-filter: blur(28px) saturate(170%) contrast(108%);
+        -webkit-backdrop-filter: blur(28px) saturate(170%) contrast(108%);
+        box-shadow: 0 18px 44px rgba(15, 23, 42, 0.14), 0 10px 26px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.26);
+    }
+
+    .add-review-modal-overlay.active .add-review-modal {
+        @apply opacity-100;
+        transform: translateY(0) scale(1);
+    }
+
+    .add-review-modal-content {
+        @apply flex flex-col h-full overflow-y-auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .add-review-close-btn {
+        @apply absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full z-10 transition-all duration-200 active:scale-95;
+        background: rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(8px);
+    }
+
+    .add-review-close-btn svg {
+        @apply w-5 h-5;
+        stroke: var(--color-text_color);
+        stroke-width: 2.5;
+    }
+
+    .add-review-container {
+        @apply flex flex-col w-full max-w-lg mx-auto relative;
+        padding: 1rem 1.5rem 1.5rem;
+    }
+
+    .add-review-header {
+        @apply flex justify-between items-center mb-4 mt-2;
+    }
+
+    .add-review-title {
+        @apply text-3xl font-black mt-7;
+        color: rgba(17, 24, 39, 0.94);
+        letter-spacing: -0.02em;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .add-review-form {
+        @apply flex-1 flex flex-col gap-4;
+    }
+
+    .add-review-rating-selector {
+        @apply flex flex-col items-center rounded-3xl gap-4 px-8 py-6;
+    }
+
+    .rating-label {
+        @apply text-xs font-black uppercase tracking-wider;
+        color: rgba(99, 102, 106, 0.88);
+    }
+
+    .star-rating-input {
+        @apply flex gap-2;
+    }
+
+    .star-btn {
+        @apply p-3 rounded-2xl transition-all duration-300 bg-transparent;
+        filter: grayscale(1) opacity(0.45);
+        transform: scale(1);
+    }
+
+    .star-btn.active {
+        @apply scale-110;
+        filter: grayscale(0) opacity(1) drop-shadow(0 0 12px rgba(255, 215, 0, 0.5));
+        background: rgba(255, 215, 0, 0.08);
+    }
+
+    .star-btn img {
+        @apply w-9 h-9 transition-transform duration-200;
+    }
+
+    .star-btn:active img {
+        @apply rotate-[15deg];
+    }
+
+    .add-review-input-group {
+        @apply flex flex-col gap-3;
+    }
+
+    .input-label {
+        @apply text-xs font-black uppercase pl-3;
+        letter-spacing: 0.08em;
+        color: rgba(17, 24, 39, 0.68);
+    }
+
+    .review-textarea {
+        @apply w-full h-48 p-6 rounded-3xl text-sm leading-relaxed outline-none border-none resize-none font-medium;
+        color: rgba(22, 24, 29, 0.94);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .review-textarea:focus {
+        @apply -translate-y-0.5;
+        box-shadow: 0 0 0 2px var(--glass-border-soft), 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .review-textarea::placeholder {
+        @apply opacity-50 italic;
+    }
+
+    .add-review-footer {
+        @apply pb-4 mt-4 pt-2;
+    }
+
+    .add-review-help-text {
+        @apply text-xs text-center mb-3 leading-snug;
+        color: rgba(99, 102, 106, 0.88);
+    }
+
+    .submit-review-btn {
+        @apply w-full py-5 rounded-3xl text-sm font-black uppercase relative overflow-hidden text-white;
+        letter-spacing: 0.12em;
+        background: var(--color-primary_color);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.62);
+    }
+
+    .submit-review-btn:disabled {
+        @apply opacity-50 cursor-not-allowed;
+    }
+
+    .submit-review-btn::before {
+        @apply absolute inset-y-0 w-full h-full;
+        content: '';
+        left: -100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .submit-review-btn:active {
+        @apply scale-[0.98];
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+}

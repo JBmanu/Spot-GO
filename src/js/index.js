@@ -14,6 +14,7 @@ const SECTION_CONFIG = {
     goals: { title: "Missioni", content: PATHS.html.goals },
     profile: { title: "Il mio Profilo", content: PATHS.html.profile },
     login: { title: "Accedi", content: PATHS.html.login },
+    "add-review": { title: "Scrivi una recensione", content: PATHS.html.addReview },
 };
 
 const handlers = {
@@ -22,6 +23,7 @@ const handlers = {
     profile: { init: null },
     goals: { init: null },
     community: { init: null },
+    "add-review": { init: null },
 };
 
 const modulesLoaded = Promise.allSettled([
@@ -30,6 +32,7 @@ const modulesLoaded = Promise.allSettled([
     import("./map.js").then((m) => (handlers.map.init = m.initializeMap)),
     import("./goals/goals.js").then((m) => (handlers.goals.init = m.initializeGoals)),
     import("./pages/community.js").then((m) => (handlers.community.init = m.loadCommunityData)),
+    import("./pages/addReview.js").then((m) => (handlers["add-review"].init = m.initializeAddReview)),
 ]);
 
 async function replaceNodeFromHtml({ url, targetSelector, sourceSelector }) {

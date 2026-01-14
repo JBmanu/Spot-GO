@@ -39,12 +39,26 @@
         </select>
       </div>
 
-      <div class="flex items-center gap-3">
-        <label class="font-bold">Prezzo</label>
-        <select id="new-spot-price" class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[100px]">
-          <option></option>
-        </select>
+      <div id="price-section-food" class="flex items-center gap-3">
+        <label class="font-bold">Spesa media</label>
+        <input id="new-spot-price-food" type="number" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none" />
       </div>
+      <div id="price-section-other" class="auth-switch glass-strong" role="tablist" aria-label="Accesso o registrazione">
+        <button class="auth-switch-btn is-active" type="button" role="tab" aria-selected="true" data-auth-tab="login">
+            Gratuito
+        </button>
+        <button class="auth-switch-btn" type="button" role="tab" aria-selected="false" data-auth-tab="register">
+          <div class="flex items-center gap-3">  
+            <label>Intero</label>
+            <input id="new-spot-price" type="number" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none" />
+          </div>
+          <div class="flex items-center gap-3">  
+            <label>Ridotto</label>
+            <input id="new-spot-ridotto" type="checkbox" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none" />
+          </div>
+        </button>
+        <div class="auth-slider"></div>
+    </div>
     </section>
 
     <section class="text-center">
