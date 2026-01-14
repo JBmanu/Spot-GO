@@ -98,20 +98,6 @@ function appendHtmlChild(datas, container, cardMaker) {
     });
 }
 
-function splitArray(arr = [], firstSize = 0) {
-    const first = arr.slice(0, firstSize);
-    const second = arr.slice(firstSize);
-    return [first, second];
-}
-
-function toggleExpand(containerId, button) {
-    const query = `#${containerId} .hidden-items`;
-    const hiddenList = document.querySelector(query);
-    hiddenList.classList.toggle('hidden')
-    const btnLabel = hiddenList.classList.contains('hidden') ? "Mostra tutti" : "Nascondi";
-    button.textContent = btnLabel;
-}
-
 async function removeFollower(userId, name) {
     const descr = "Non sarai più amico di " + name + ", ma potrai sempre riallacciare i rapporti.";
     const res = await showConfirmModal(`Vuoi rimuovere ${name} come amico?`, descr);
@@ -243,14 +229,13 @@ function renderMessages(userData, messages) {
     chatName.textContent = userData.username;
     const messagesContainer = document.getElementById('messagesContainer');
     messagesContainer.innerHTML = '';
-    console.log(messages);
     messages.forEach((msg, idx) => {
-        const msgDiv = document.createElement('div');
+    const msgDiv = document.createElement('div');
         msgDiv.className = `message ${msg.isMittente ? 'sent' : ''}`;
-        
-        const bubble = document.createElement('div');
-        bubble.className = 'message-bubble';
-
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    
         bubble.innerHTML = 
         `<article class="profile-polaroid">
             <button
@@ -268,9 +253,9 @@ function renderMessages(userData, messages) {
             </div>
         </article>
         <div class='text-message'><p>${msg.testo}</p></div>`;
-
-        msgDiv.appendChild(bubble);
-        messagesContainer.appendChild(msgDiv);
+    
+    msgDiv.appendChild(bubble);
+    messagesContainer.appendChild(msgDiv);
     });
     
     // Scorri in fondo
