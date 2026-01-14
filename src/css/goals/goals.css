@@ -3,15 +3,125 @@
     components,
     utilities */
 
+/* gls = goals */
+/* ctn = container */
+/* btn = button */
+
 @layer components {
+    /* ================= CONTAINERS ================= */
+    .center-ctn {
+        @apply flex items-center justify-center
+    }
+
+    .between-ctn {
+        @apply flex justify-between items-center
+    }
+
+    .vertical-ctn,
+    .vertical-ctn-g2 {
+        @apply flex flex-col
+    }
+
+    .vertical-ctn-g1 {
+        @apply gap-1
+    }
+
+    .vertical-ctn-g2 {
+        @apply gap-2
+    }
+
+    .horizontal-ctn {
+
+    }
+
+    /* ================= GENERICS ================= */
+    .interactive {
+        @apply rounded-xl shadow cursor-pointer
+    }
+
+    .completable {
+        @apply relative
+    }
+
+
+    /* ================= SPOT MISSIONS ================= */
+    .spot-card {
+        @apply flex flex-col
+    }
+
+    .spot-header {
+        @apply cursor-pointer px-3 py-2
+    }
+
+    .spot-arrow {
+        @apply w-5 h-5 text-gray-500 transition-transform duration-500
+        ease-[cubic-bezier(0.25,0.8,0.25,1)]
+    }
+
+    .missions-spot {
+        /*sono classi suggerite da chat(ma non vanno): will-change-opacity will-change-filter*/
+        @apply overflow-hidden max-h-0 opacity-0 scale-95 blur-sm px-3
+        transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
+        will-change-transform
+    }
+
+    .missions-spot.open {
+        @apply max-h-[1000px] opacity-100 scale-100 blur-none py-2
+    }
+
+    .spot-mission {
+        @apply px-2 py-2
+    }
+
+    .spot-mission-complete {
+        /* backdrop-saturate-150 */
+        @apply absolute inset-0 z-20 backdrop-blur-3xl backdrop-saturate-200
+        scale-100 opacity-100 rounded-xl bg-white/30 border border-white/40
+        transition-all duration-350 ease-[cubic-bezier(.25,.8,.25,1)];
+    }
+
+    .spot-mission-complete.inactive {
+        @apply scale-0 opacity-0 pointer-events-none
+    }
+
+
+    /* ================= MISSIONS TYPE BAR ================= */
+    .missions-type-bar {
+        @apply relative px-2 py-2
+    }
+
+    .missions-type-indicator {
+        @apply absolute left-0 transition-all duration-300 ease-in-out
+    }
 
     .mission-type-btn {
-        @apply flex items-center gap-1 px-3 py-2 rounded-xl
+        @apply flex items-center gap-1 px-3 py-2
         text-gray-700 cursor-pointer transition;
     }
 
     .mission-type-btn-element {
         @apply transition-all duration-200 ease-in-out
+    }
+
+
+    /* ================= MISSIONS TYPE ================= */
+    .missions-ctn {
+        @apply relative w-full max-w-md overflow-hidden
+    }
+
+    .mission-type-slider {
+        /* BOUNCE */
+        /* class="flex transition-all duration-700 ease-[cubic-bezier(.17,.67,.38,1.21)]" -->*/
+        /* SMOOTH */
+        /* class="flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]" -->*/
+        /* VELOCE */
+        /* class="flex transition-all duration-500 ease-[cubic-bezier(.25,.8,.25,1)]"-->*/
+        @apply flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]
+        /*transform: translateX(0%);*/
+    }
+
+    .missions-card {
+        @apply shrink-0 w-full p-4 transition-all duration-500 opacity-100 scale-100
     }
 
 }

@@ -9,15 +9,14 @@
             <h1 class="text-xl font-bold text-gray-800">Le tue missione in corso</h1>
         </div>
 
-
         <!-- Contenitore principale -->
-        <div class="flex flex-col gap-2">
+        <div class="vertical-ctn-g2">
             <!-- ================= SPOT ================= -->
-            <div class="spot-card glass-medium shadow rounded-xl flex flex-col">
+            <div class="glass-medium interactive spot-card">
                 <!-- Spot info -->
-                <div class="spot-header flex justify-between items-center cursor-pointer px-3 py-2">
+                <div class="between-ctn spot-header">
                     <!-- Icona + Luogo -->
-                    <div class="flex flex-col">
+                    <div class="vertical-ctn">
                         <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>
                         <div class="flex items-center gap-1">
                             <img src="../assets/icons/homepage/Fast%20Food.svg" class="w-4 h-4" alt=""/>
@@ -25,7 +24,7 @@
                         </div>
                     </div>
                     <!-- Mission progress -->
-                    <div class="flex items-center justify-center gap-2">
+                    <div class="center-ctn gap-2">
                         <!-- Cerchio di progresso -->
                         <div class="relative w-10 h-10">
                             <svg class="w-10 h-10">
@@ -36,49 +35,40 @@
                                         stroke-dasharray="113.097" stroke-dashoffset="22.619"
                                         transform="rotate(-90 20 20)"/>
                             </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-800">
+                            <span class="center-ctn absolute inset-0 text-sm font-semibold text-gray-800">
                                 4/5
                             </span>
                         </div>
                         <!-- Arrow -->
-                        <svg class="w-5 h-5 text-gray-500 arrow transition-transform duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
-                             fill="none" stroke="currentColor" stroke-width="2"
+                        <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"
                              viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m6 9 6 6 6-6"/>
                         </svg>
-                        <!-- Arrow -->
-                        <!--                        <span class="text-sm font-semibold text-green-600">+250 XP</span>-->
                     </div>
                 </div>
                 <!-- Missions -->
-                <div class="flex flex-col gap-2 missions overflow-hidden max-h-0 opacity-0 scale-95 blur-sm
-                            transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
-                            will-change-transform will-change-opacity will-change-filter px-3">
+                <div class="vertical-ctn-g2 missions-spot">
                     <!-- Mission -->
-                    <div class="glass-light shadow rounded-xl px-2 py-2 flex justify-between items-center">
+                    <button class="between-ctn interactive spot-mission completable">
                         <!-- Left -->
-                        <div class="flex flex-col gap-1">
+                        <div class="vertical-ctn-g1">
                             <!-- Title -->
-                            <h3 class="font-semibold text-gray-800"> Scatta la foto </h3>
+                            <h3 class="flex items-start font-semibold text-gray-800"> Scatta la foto </h3>
                             <!-- Description -->
                             <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
                         </div>
                         <!-- Reward -->
-                        <div class="flex items-center">
-                            <!--                            <img src="../assets/icons/goals/FlashOn.svg" class="w-8 h-8" alt=""/>-->
+                        <div class="center-ctn">
                             <span class="font-semibold text-green-600">+50 XP</span>
+                            <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt=""/>
                         </div>
-                    </div>
+                    </button>
                     <!-- Mission -->
-                    <div class="glass-light shadow rounded-xl px-2 py-2 flex justify-between items-center">
-                        <!-- Overlay COMPLETATO -->
-                        <div class="absolute inset-0 z-20 flex items-center justify-center bg-white/60 backdrop-blur-sm rounded-xl">
-                            <span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>
-                        </div>
+                    <button class="between-ctn interactive spot-mission completable">
                         <!-- Left -->
                         <div class="flex flex-col gap-1">
                             <!-- Title -->
-                            <h3 class="font-semibold text-gray-800"> Scatta la foto </h3>
+                            <h3 class="flex items-start font-semibold text-gray-800"> Scatta la foto </h3>
                             <!-- Description -->
                             <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
                         </div>
@@ -86,83 +76,7 @@
                         <div class="flex items-center">
                             <span class="font-semibold text-green-600">+50 XP</span>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="spot-card glass-medium shadow rounded-xl flex flex-col">
-                <!-- Spot info -->
-                <div class="spot-header flex justify-between items-center cursor-pointer px-3 py-2">
-                    <!-- Icona + Luogo -->
-                    <div class="flex flex-col">
-                        <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>
-                        <div class="flex items-center gap-1">
-                            <img src="../assets/icons/homepage/Fast%20Food.svg" class="w-4 h-4" alt=""/>
-                            <span class="text-xs text-gray-700">Cibo</span>
-                        </div>
-                    </div>
-                    <!-- Mission progress -->
-                    <div class="flex items-center justify-center gap-2">
-                        <!-- Cerchio di progresso -->
-                        <div class="relative w-10 h-10">
-                            <svg class="w-10 h-10">
-                                <!-- Cerchio sfondo -->
-                                <circle cx="20" cy="20" r="18" stroke="#E5E7EB" stroke-width="4" fill="none"/>
-                                <!-- Cerchio progresso -->
-                                <circle cx="20" cy="20" r="18" stroke="#34D399" stroke-width="4" fill="none"
-                                        stroke-dasharray="113.097" stroke-dashoffset="22.619"
-                                        transform="rotate(-90 20 20)"/>
-                            </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-800">
-                                4/5
-                            </span>
-                        </div>
-                        <!-- Arrow -->
-                        <svg class="w-5 h-5 text-gray-500 arrow transition-transform duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
-                             fill="none" stroke="currentColor" stroke-width="2"
-                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m6 9 6 6 6-6"/>
-                        </svg>
-                        <!-- Arrow -->
-                        <!--                        <span class="text-sm font-semibold text-green-600">+250 XP</span>-->
-                    </div>
-                </div>
-                <!-- Missions -->
-                <div class="flex flex-col gap-2 missions overflow-hidden max-h-0 opacity-0 scale-95 blur-sm
-                            transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
-                            will-change-transform will-change-opacity will-change-filter px-3">
-                    <!-- Mission -->
-                    <div class="glass-light rounded-xl px-2 py-2 flex justify-between items-center">
-                        <!-- Left -->
-                        <div class="flex flex-col gap-1">
-                            <!-- Title -->
-                            <h3 class="font-semibold text-gray-800"> Scatta la foto </h3>
-                            <!-- Description -->
-                            <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
-                        </div>
-                        <!-- Reward -->
-                        <div class="flex items-center">
-                            <!--                            <img src="../assets/icons/goals/FlashOn.svg" class="w-8 h-8" alt=""/>-->
-                            <span class="font-semibold text-green-600">+50 XP</span>
-                        </div>
-                    </div>
-                    <!-- Mission -->
-                    <div class="glass-light rounded-xl px-2 py-2 flex justify-between items-center">
-                        <!-- Overlay COMPLETATO -->
-                        <div class="absolute inset-0 z-20 flex items-center justify-center bg-white/60 backdrop-blur-sm rounded-xl">
-                            <span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>
-                        </div>
-                        <!-- Left -->
-                        <div class="flex flex-col gap-1">
-                            <!-- Title -->
-                            <h3 class="font-semibold text-gray-800"> Scatta la foto </h3>
-                            <!-- Description -->
-                            <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
-                        </div>
-                        <!-- Reward -->
-                        <div class="flex items-center">
-                            <span class="font-semibold text-green-600">+50 XP</span>
-                        </div>
-                    </div>
+                    </button>
                 </div>
             </div>
         </div>
@@ -171,13 +85,12 @@
 
     <!--  MISSIONS TYPE BAR -->
     <div class="mx-4 my-0">
-        <div id="tab-bar" class="glass-medium relative rounded-2xl shadow px-2 py-2 ">
+        <div class="glass-medium interactive missions-type-bar">
             <!-- INDICATORE ANIMATO -->
-            <div id="tab-indicator"
-                 class="absolute left-0 rounded-xl glass-strong shadow transition-all duration-300 ease-in-out"></div>
+            <div class="glass-strong interactive missions-type-indicator"></div>
 
             <!-- BOTTONI -->
-            <div class="relative z-10 flex justify-between min-h-13">
+            <div class="flex justify-between relative z-10 min-h-13">
                 <!-- Daily -->
                 <button class="mission-type-btn" data-index="0">
                     <img src="../assets/icons/goals/missionTypes/Sun.svg" class="mission-type-btn-element" alt=""/>
@@ -199,25 +112,16 @@
 
     <!-- ================= MISSIONS ================= -->
     <!-- CONTENITORE ESTERNO -->
-    <div class="relative w-full max-w-md overflow-hidden">
+    <div class="missions-ctn">
         <!-- TRACK SCORRIMENTO -->
-        <!-- + BOUNCE -->
-        <!-- class="flex transition-all duration-700 ease-[cubic-bezier(.17,.67,.38,1.21)]" -->
-        <!-- + SMOOTH -->
-        <!-- class="flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]" -->
-        <!-- + VELOCE -->
-        <!-- class="flex transition-all duration-500 ease-[cubic-bezier(.25,.8,.25,1)]"-->
-
-        <div id="slider"
-             class="flex transition-all duration-650 ease-[cubic-bezier(.22,.61,.36,1)]"
-             style="transform: translateX(0%);">
+        <div class="mission-type-slider">
 
             <!-- CARD 1 -->
-            <div class="slide shrink-0 w-full p-4">
+            <div class="missions-card">
                 <!-- Container -->
-                <div class="flex flex-col gap-2">
+                <div class="vertical-ctn-g2">
                     <!-- ================= Elemento 1 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
@@ -228,12 +132,12 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">1 / 7</span>
                         </div>
                     </div>
                     <!-- ================= Elemento 2 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
@@ -244,23 +148,19 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">✓</span>
                         </div>
                     </div>
                 </div>
-<!--                <div class="m-4 p-6 rounded-2xl bg-white shadow-xl border border-gray-200">-->
-<!--                    <h2 class="text-xl font-semibold">Contenitore 1</h2>-->
-<!--                    <p class="mt-2 text-gray-600">Testo di esempio</p>-->
-<!--                </div>-->
             </div>
 
             <!-- CARD 2 -->
-            <div class="slide shrink-0 w-full p-4">
+            <div class="missions-card">
                 <!-- Container -->
-                <div class="flex flex-col gap-2">
+                <div class="vertical-ctn-g2">
                     <!-- ================= Elemento 1 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
@@ -271,12 +171,12 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">1 / 7</span>
                         </div>
                     </div>
                     <!-- ================= Elemento 2 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
@@ -287,23 +187,19 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">✓</span>
                         </div>
                     </div>
                 </div>
-<!--                <div class="m-4 p-6 rounded-2xl bg-white shadow-xl border border-gray-200">-->
-<!--                    <h2 class="text-xl font-semibold">Contenitore 2</h2>-->
-<!--                    <p class="mt-2 text-gray-600">Testo di esempio</p>-->
-<!--                </div>-->
             </div>
 
             <!-- CARD 3 -->
-            <div class="slide shrink-0 w-full p-4">
+            <div class="missions-card">
                 <!-- Container -->
-                <div class="flex flex-col gap-2">
+                <div class="vertical-ctn-g2">
                     <!-- ================= Elemento 1 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
@@ -314,12 +210,12 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">1 / 7</span>
                         </div>
                     </div>
                     <!-- ================= Elemento 2 ================= -->
-                    <div class="glass-strong rounded-2xl shadow px-5 py-4 flex justify-between items-center">
+                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
                         <!-- Lato sinistro -->
                         <div class="space-y-1">
                             <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
@@ -330,15 +226,11 @@
                             </div>
                         </div>
                         <!-- Lato destro -->
-                        <div class="flex items-center justify-center">
+                        <div class="center-ctn">
                             <span class="text-lg font-medium text-gray-500">✓</span>
                         </div>
                     </div>
                 </div>
-<!--                <div class="m-4 p-6 rounded-2xl bg-white shadow-xl border border-gray-200">-->
-<!--                    <h2 class="text-xl font-semibold">Contenitore 3</h2>-->
-<!--                    <p class="mt-2 text-gray-600">Testo di esempio</p>-->
-<!--                </div>-->
             </div>
         </div>
     </div>

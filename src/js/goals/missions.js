@@ -1,48 +1,29 @@
 
 
+function selectionSlider(cards, index) {
+    cards.forEach((card, i) => {
+        if (i === index) {
+            card.classList.remove("opacity-40", "scale-95");
+            card.classList.add("opacity-100", "scale-100");
+        } else {
+            card.classList.add("opacity-40", "scale-95");
+            card.classList.remove("opacity-100", "scale-100");
+        }
+    });
+}
+
 export async function initializeMissions() {
     const buttons = document.querySelectorAll(".mission-type-btn");
-    const slider = document.getElementById('slider');
+    const slider = document.querySelector('.mission-type-slider');
+    const cards = document.querySelectorAll(".missions-card");
 
     buttons.forEach((btn, index) => {
-        btn.addEventListener("click", () => slider.style.transform = `translateX(-${index * 100}%)`);
-        console.log("Missions initialized");
+        btn.addEventListener("click", () => {
+            slider.style.transform = `translateX(-${index * 100}%)`
+            selectionSlider(cards, index)
+        });
     });
 
-    // const buttons = document.querySelectorAll(".mission-type-btn");
-    // const slider = document.getElementById('slider');
-    // const slides = [...document.querySelectorAll('.slide')];
-    //
-    // function animate(index) {
-    //     slides.forEach((slide, i) => {
-    //         const offset = i - index;
-    //         const card = slide.querySelector('.card');
-    //
-    //         // offset 0 = attivo, 1 = a destra, -1 = a sinistra
-    //         const scale = 1 - Math.min(Math.abs(offset) * 0.1, 0.2);
-    //         const opacity = 1 - Math.min(Math.abs(offset) * 0.4, 0.6);
-    //
-    //         card.style.transform = `scale(${scale}) translateX(${offset * 30}px)`;
-    //         card.style.opacity = opacity;
-    //     });
-    // }
-    //
-    // buttons.forEach((btn, index) => {
-    //     btn.addEventListener("click", () => {
-    //         slider.style.transition = 'transform 0.65s cubic-bezier(.22,.61,.36,1)';
-    //         slider.style.transform = `translateX(-${index * 100}%)`;
-    //         // animazione durante la transizione
-    //         let start;
-    //         function step(ts) {
-    //             if (!start) start = ts;
-    //             const progress = (ts - start) / 650;
-    //             animate(index);
-    //             if (progress < 1) requestAnimationFrame(step);
-    //         }
-    //         requestAnimationFrame(step);
-    //     });
-    // });
-    //
-    // animate(0); // stato iniziale
+    selectionSlider(cards, 0)
     console.log("Missions initialized");
 }

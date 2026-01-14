@@ -1,8 +1,4 @@
-﻿const CONTAINER = "tab-bar";
-const INDICATOR = "tab-indicator";
-const BUTTON = ".mission-type-btn";
-
-function activeButton(buttons, activeButton) {
+﻿function activeButton(buttons, activeButton) {
     const ICON_ACTIVE_CLASS = "icon";
     const ICON_INACTIVE_CLASS = "icon-mini";
 
@@ -45,8 +41,12 @@ function updateIndicatorPosition(container, indicator, button) {
 
 
 export async function initializeMissionsBar() {
-    const container = document.getElementById(CONTAINER);
-    const indicator = document.getElementById(INDICATOR);
+    const CONTAINER = ".missions-type-bar";
+    const INDICATOR = ".missions-type-indicator";
+    const BUTTON = ".mission-type-btn";
+
+    const container = document.querySelector(CONTAINER);
+    const indicator = document.querySelector(INDICATOR);
     const buttons = document.querySelectorAll(BUTTON);
 
     if (!buttons.length || !indicator || !container) return;

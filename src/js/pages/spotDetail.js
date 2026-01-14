@@ -16,6 +16,7 @@ import { formatRatingAsText } from "../common/fitText.js";
 import { closeOverlayAndReveal } from "../common/back.js";
 import { initializeHorizontalCarousel } from "../common/carousels.js";
 import { setReviewSpotId, openAddReviewModal } from "./addReview.js";
+import { distanceFromUserToSpot, formatDistance } from "../common.js";
 
 const state = {
     spotData: null,
@@ -123,6 +124,8 @@ async function loadSpotDetail(spotId) {
         overlay.dataset.returnView = returnSection;
         overlay.innerHTML = state.templateCache;
 
+        overlay.onClose = removeHeaderBookmarkButton;
+
         main.querySelectorAll("[data-section-view], [data-overlay-view]").forEach((el) => (el.hidden = true));
         main.appendChild(overlay);
 
@@ -211,9 +214,30 @@ async function populateSpotDetail(spotData, scopeEl = document) {
             el.alt = spotData.nome || "Foto spot";
         },
         rating: (el) => el.textContent = formatRatingAsText(pickRating(spotData)) || "4.5",
-        distance: (el) => el.textContent = spotData.distanza ? `${spotData.distanza} m` : "0 m",
+        distance: (el) => {
+            if (spotData.posizione) {
+                const distMeters = distanceFromUserToSpot(spotData);
+                el.textContent = formatDistance(distMeters);
+            } else {
+                el.textContent = spotData.distanza ? `${spotData.distanza} m` : "-";
+            }
+        },
         category: async (el) => {
-            el.textContent = await getCategoryNameIt(spotData.idCategoria).catch(() => "");
+            const catId = spotData.idCategoria || "mystery";
+            const catName = await getCategoryNameIt(catId).catch(() => catId);
+
+            const iconMap = {
+                "food": "../../assets/icons/homepage/Fast Food.svg",
+                "culture": "../../assets/icons/homepage/Cathedral.svg",
+                "nature": "../../assets/icons/homepage/Oak Tree.svg",
+                "mystery": "../../assets/icons/homepage/Desura.svg"
+            };
+            const iconSrc = iconMap[catId] || iconMap["mystery"];
+
+            el.innerHTML = `
+                <img src="${iconSrc}" class="spot-category-icon" alt="" />
+                <span>${catName}</span>
+            `;
         },
         description: (el) => el.textContent = spotData.descrizione || "Nessuna descrizione disponibile",
         address: (el) => el.textContent = spotData.indirizzo || "",
@@ -241,12 +265,13 @@ async function populateSpotDetail(spotData, scopeEl = document) {
 }
 
 async function renderSpotReviews(spotId, scopeEl) {
-    const track = scopeEl.querySelector("#spot-reviews-track");
-    if (!track) return;
+    const container = scopeEl.querySelector("#spot-reviews-track");
+    if (!container) return;
 
     const reviews = await getReviewsForSpot(spotId);
     if (!reviews || reviews.length === 0) {
-        track.innerHTML = `
+        container.removeAttribute("data-carousel-type");
+        container.innerHTML = `
             <div class="spot-reviews-empty">
                 <img src="../../assets/icons/homepage/Star.svg" class="spot-reviews-empty-icon" alt="" />
                 <h3 class="spot-reviews-empty-title">Nessuna recensione ancora</h3>
@@ -256,7 +281,8 @@ async function renderSpotReviews(spotId, scopeEl) {
         return;
     }
 
-    track.innerHTML = "";
+    container.setAttribute("data-carousel-type", "horizontal");
+    container.innerHTML = "";
     const template = document.querySelector('[data-template="review-template"]');
     if (!template) return;
 
@@ -271,13 +297,10 @@ async function renderSpotReviews(spotId, scopeEl) {
         if (ratingEl) ratingEl.textContent = review.valuation || "5";
         if (textEl) textEl.textContent = review.description || "";
 
-        track.appendChild(clone);
+        container.appendChild(clone);
     }
 
-    const carouselEl = track.closest('[data-carousel-type="horizontal"]');
-    if (carouselEl) {
-        initializeHorizontalCarousel(carouselEl);
-    }
+    initializeHorizontalCarousel(container);
 }
 
 function setupToolbarNavigation() {
@@ -336,6 +359,54 @@ function initializeDetailHandlers(overlayEl) {
             });
 
             await openAddReviewModal();
+        });
+    }
+
+    const navButton = overlayEl?.querySelector("#spot-detail-visit-button");
+    let navModal = overlayEl?.querySelector("#spot-navigation-modal");
+
+    if (navModal) {
+        const phoneScreen = document.querySelector(".phone-screen");
+        if (phoneScreen && navModal.parentElement !== phoneScreen) {
+            phoneScreen.appendChild(navModal);
+        }
+    }
+
+    const navCancel = navModal?.querySelector("#nav-modal-cancel");
+    const navConfirm = navModal?.querySelector("#nav-modal-confirm");
+
+    if (navButton && navModal) {
+        navButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            navModal.style.display = "flex";
+            requestAnimationFrame(() => {
+                navModal.classList.add("active");
+            });
+
+            const mainContainer = document.getElementById("main");
+            if (mainContainer) {
+                mainContainer.style.overflow = "hidden";
+            }
+        });
+
+        const closeModal = () => {
+            navModal.classList.remove("active");
+
+            setTimeout(() => {
+                navModal.style.display = "none";
+
+                const mainContainer = document.getElementById("main");
+                if (mainContainer) {
+                    mainContainer.style.overflow = "";
+                }
+            }, 300);
+        };
+
+        if (navCancel) navCancel.addEventListener("click", closeModal);
+        if (navConfirm) navConfirm.addEventListener("click", closeModal);
+
+        navModal.addEventListener("click", (e) => {
+            if (e.target === navModal) closeModal();
         });
     }
 
