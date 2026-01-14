@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId} from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId, orderBy} from "firebase/firestore";
 import { db, auth } from "./firebase.js";
 import { distanceFromUserToSpot } from "./common.js";
 
@@ -174,7 +174,7 @@ export async function getVisitedSpots(username) {
 /**
  * Recupera la lista amici di un utente.
  */
-export async function getFriends(userId) {
+export async function getFollowingUser(userId) {
     if (!userId) return [];
     try {
         const docRef = doc(db, 'Amico', userId);
@@ -203,6 +203,48 @@ export async function getFriends(userId) {
     }
 }
 
+// Funzione per ottenere tutti gli utenti in "Amico" che hanno l'utente target nei Friends
+export async function getFollowersUser(targetUserId) {
+  try {
+    //Logged User followings users
+    const docRef = doc(db, 'Amico', targetUserId);
+    const docSnapshot = await getDoc(docRef);
+    const snapData = docSnapshot.data();
+    const followingsBack = snapData.friends.map(f => f.id);
+
+
+    // Get all users that follows logged user.
+    const amiciRef = collection(db, 'Amico');
+    const q = query(amiciRef);
+    
+    const querySnapshot = await getDocs(q);
+    const asyncCompute = querySnapshot.docs.map(async (userDoc) => {
+        const docData = userDoc.data();
+        const ids = docData.friends.map(ref => ref.id);
+
+        if (ids.includes(targetUserId)) {
+            const followerId = userDoc.id;
+            const userRef = doc(db, 'Utente', followerId);
+            const followerDoc = await getDoc(userRef);
+            const data = {
+                id: followerDoc.id,
+                followingBack: followingsBack.includes(followerDoc.id),
+                livello: followerDoc.data().livello || "-",
+                email: followerDoc.data().email || "-",
+                username: followerDoc.data().username || "-"
+            }
+            return data;
+        }
+    });
+
+    const users = await Promise.all(asyncCompute);
+    return users.filter(i => i != null);
+  } catch (error) {
+    console.error('Errore query Amico:', error);
+    return [];
+  }
+}
+
 export async function removeFriend(userId, friendId) {
     if (!friendId) return;
     try {
@@ -217,23 +259,21 @@ export async function removeFriend(userId, friendId) {
 }
 
 /**
- * Aggiunge un amico a un utente (reciproco).
+ * UserId inizia a seguire friendEmail
  */
-export async function addFriend(userId, friendEmail) {
+export async function addFollows(userId, friendEmail) {
     if (!userId || !friendEmail) return;
     try {
         const userRef = doc(db, "Amico", userId);
         const friendRef = doc(db, "Utente", friendEmail);
         await setDoc(userRef, { friends: arrayUnion(friendRef) }, { merge: true });
-        //followers and following approach not need reciprocity
-        //await setDoc(friendRef, { friends: arrayUnion(userRef) }, { merge: true });
         console.log(`${userId} ora segue ${friendEmail}`);
     } catch (error) {
         console.error("Errore aggiunta follow:", error);
     }
 }
 
-export async function getSuggestedFriends(userId) {
+export async function getSuggestedFollows(userId) {
     if (!userId) return;
     try {
         const userDocRef = doc(db, 'Amico', userId);
@@ -259,15 +299,18 @@ export async function getSuggestedFriends(userId) {
             }
         });
 
-        // 4. Recupera i dati da Utenti per ogni ID
-        const availableFriends = await getItems('Utente',  where(documentId(), 'in', availableIds), 
-            (id, data) => ({
-                id: id,
-                livello: data.livello || "-",
-                email: data.email || "-",
-                username: data.username || "-"
-            })
-        );
+        var availableFriends = [];
+        if (availableIds.length !== 0) {
+            // 4. Recupera i dati da Utenti per ogni ID
+            availableFriends = await getItems('Utente',  where(documentId(), 'in', availableIds), 
+                (id, data) => ({
+                    id: id,
+                    livello: data.livello || "-",
+                    email: data.email || "-",
+                    username: data.username || "-"
+                })
+            );
+        }
         return availableFriends;
     } catch (error) {
         console.error('Errore:', error);
@@ -275,23 +318,31 @@ export async function getSuggestedFriends(userId) {
     }
 }
 
-/**
- * Rimuove un amico da un utente (reciproco).
- */
-// export async function removeFriend(userId, friendEmail) {
-//     if (!userId || !friendEmail) return;
-//     try {
-//         const userRef = doc(db, "Amico", userId);
-//         const friendRef = doc(db, "Amico", friendEmail);
+export async function pullMessages(fromUserId, toFriendId) {
+    const chatId = makeChatId(fromUserId, toFriendId);
+    const q = query(
+        collection(db, 'Chat', chatId, 'messaggi'),
+        orderBy('timestamp', 'asc')
+    );
+    const snapshot = await getDocs(q);
+    var chatMessages = [];
+    snapshot.forEach(doc => {
+        const message = doc.data();
+        const isSent = message.mittente === fromUserId;
+        chatMessages.push({
+            isMittente: isSent,
+            testo: message.text,
+            timestamp: message.timestamp,
+            ref: message.cartolinaRef
+        });
+    });
+    return chatMessages;
+}
 
-//         await updateDoc(userRef, { friends: arrayRemove(friendEmail) });
-//         await updateDoc(friendRef, { friends: arrayRemove(userId) });
-
-//         console.log(`Amicizia rimossa tra ${userId} e ${friendEmail}`);
-//     } catch (error) {
-//         console.error("Errore rimozione amico:", error);
-//     }
-// }
+function makeChatId(str1, str2) {
+    const sorted = [str1, str2].sort();
+    return sorted.join('-');
+}
 
 /**
  * Filtra gli spot caricati da Firestore.

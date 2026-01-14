@@ -1,4 +1,5 @@
 <section class="space-y-3 flex flex-col">
+  <!-- HIdden chat view -->
   <section id="chat-container" class="hidden-chat">
     <header class="chat-header glass-medium">
       <button id="closeBtn" class="close-btn">✕</button>
@@ -8,55 +9,47 @@
       <!-- Messaggi verranno inseriti qui -->
     </div>
   </section>
-  <section id="community-friends-section" class="community-section">
-    <header class="glass-medium">
-      <h2>I tuoi amici</h2>
-    </header>
-    <div id="community-friends-container" class="vertical-carousel-track" role="list">
-      <!-- Friend Placeholder -->
-      <!-- <article class="community-card" role="listitem" data-user-id="">
-        <div class="flex flex-row justify-between items-center">
-          <div class="user-avatar">U</div>
-          <div class="user-card-data">
-            <h3 class="text-xl font-bold">User</h3>
-              <p class="font-bold italic"><span>@</span>username</p>
-          </div> 
-        </div> -->
-        <!-- Action buttons -->
-        <!-- <div class="card-actions-container">
-          <button class="comm-button-action-icon" alt="Send message" aria-label="Send message friend">
-            <img src="assets/icons/community/message.svg" alt="Message Icon"/>
-          </button>
-          <button class="comm-button-action-icon" alt="Remove friend" aria-label="Remove friend">
-            <img src="assets/icons/community/delete.svg" alt="Remove friend"/>
-          </button>
-        </div> -->
-        <!-- End Action buttons -->
-      <!-- </article> -->
-      <!-- End friend placeholder -->
+
+  <!-- Selettore tab -->
+  <div class="mx-4 my-0 p-4">
+        <div id="tab-bar" class="glass-medium relative rounded-2xl shadow px-2 py-2 ">
+            <!-- BOTTONI -->
+            <div class="relative z-10 flex justify-between min-h-13">
+                <!-- Seguiti -->
+                <button id="community-tab-follows" class="active-community-tab">
+                    <span>Seguiti</span>
+                </button>
+                <!-- Seguaci -->
+                <button id="community-tab-followers">
+                    <span>Seguaci</span>
+                </button>
+                <!-- Suggeriti -->
+                <button id="community-tab-suggested">
+                    <span>Suggeriti</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+  <!-- Tab Seguiti -->
+  <section id="community-follows-section" class="community-section">
+    <div id="community-follows-container" class="vertical-carousel-track" role="list">
+      <!-- Follows cards list -->
     </div>
   </section>
-  <section id="community-suggested-section" class="community-section">
-    <header class="glass-medium">
-       <h2>Suggeriti</h2>
-    </header>
+
+  <!-- Tab Seguaci -->
+  <section id="community-followers-section" class="community-section hidden">
+    <div id="community-followers-container" class="vertical-carousel-track" role="list">
+      <!-- Followers cards list -->
+       seguaci
+    </div>
+  </section>
+
+  <!-- Tab Suggeriti -->
+  <section id="community-suggested-section" class="community-section hidden">
     <div id="community-suggested-container" class="vertical-carousel-track" role="list">
-      <!-- Friend Placeholder -->
-      <!-- <article class="community-card" role="listitem" data-user-id="">
-        <div class="flex flex-row justify-between items-center">
-          <div class="user-avatar">U</div>
-          <div class="user-card-data">
-            <h3 class="text-xl font-bold">User</h3>
-            <p class="font-bold italic"><span>@</span>username</p>
-          </div>
-        </div> -->
-        <!-- Action buttons -->
-        <!-- <div class="card-actions-container">
-          <button class="comm-button-action-icon" alt="Add friend" aria-label="Add friend">
-            <img src="assets/icons/community/message.svg" alt=""/>
-          </button>
-        </div> -->
-        <!-- End Action buttons -->
-      <!-- </article> -->
+      <!-- Suggested followers list -->
+       suggeriti
   </section>
 </section>
