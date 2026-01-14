@@ -14,7 +14,6 @@
             </div>
         </div>
 
-
         <div class="missions-wrapper">
             <div id="spot-missions-toggle" class="spot-detail-missions-banner">
                 <img src="../../assets/icons/homepage/Medal.svg" alt="Missioni" class="missions-icon" />
@@ -49,23 +48,17 @@
             </div>
         </div>
 
-
         <div class="spot-detail-header">
             <div class="spot-detail-image-container">
                 <img data-field="image" src="" alt="Foto principale dello spot" class="spot-detail-image" />
             </div>
         </div>
 
-
         <div class="spot-detail-description-compact glass-strong">
             <p data-field="description" class="spot-detail-description glass-strong">
                 Descrizione dello spot
             </p>
         </div>
-
-
-
-
 
         <div class="spot-detail-info-detailed glass-strong">
             <div class="info-row">
@@ -98,7 +91,6 @@
             </div>
         </div>
 
-
         <div class="spot-reviews">
 
             <span class="glass-strong p-1.5 rounded-2xl">
@@ -123,14 +115,26 @@
 
 
 <div class="spot-detail-actions glass-strong">
-    <button type="button" id="spot-detail-visit-button"
-        class="spot-detail-action-button glass spot-detail-visit-button">
-        <img src="../../assets/icons/profile/Thumbs%20Up%20Down.svg" alt="Segna come visitato" class="icon-mini">
-        Visitato
-    </button>
     <button type="button" id="spot-detail-share-button"
         class="spot-detail-action-button glass spot-detail-share-button">
         <img src="../../assets/icons/homepage/Detail/Goal.svg" alt="Attiva missioni" class="icon-mini">
         Attiva missioni
-    </button>
+        <button type="button" id="spot-detail-visit-button"
+            class="spot-detail-action-button glass spot-detail-visit-button">
+            <img src="../../assets/icons/homepage/Detail/Navigation.svg" alt="Naviga" class="icon-mini">
+            Naviga
+        </button>
+</div>
+
+<!-- Navigation Modal -->
+<div id="spot-navigation-modal" class="navigation-modal-overlay" style="display: none;">
+    <div class="navigation-modal glass-strong">
+        <h3 class="navigation-modal-title">Avvia navigazione</h3>
+        <p class="navigation-modal-text">Vuoi aprire le indicazioni per raggiungere questo spot?</p>
+
+        <div class="navigation-modal-actions">
+            <button type="button" class="nav-modal-btn cancel" id="nav-modal-cancel">Annulla</button>
+            <button type="button" class="nav-modal-btn confirm" id="nav-modal-confirm">Apri Maps</button>
+        </div>
+    </div>
 </div>

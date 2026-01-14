@@ -362,6 +362,54 @@ function initializeDetailHandlers(overlayEl) {
         });
     }
 
+    const navButton = overlayEl?.querySelector("#spot-detail-visit-button");
+    let navModal = overlayEl?.querySelector("#spot-navigation-modal");
+
+    if (navModal) {
+        const phoneScreen = document.querySelector(".phone-screen");
+        if (phoneScreen && navModal.parentElement !== phoneScreen) {
+            phoneScreen.appendChild(navModal);
+        }
+    }
+
+    const navCancel = navModal?.querySelector("#nav-modal-cancel");
+    const navConfirm = navModal?.querySelector("#nav-modal-confirm");
+
+    if (navButton && navModal) {
+        navButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            navModal.style.display = "flex";
+            requestAnimationFrame(() => {
+                navModal.classList.add("active");
+            });
+
+            const mainContainer = document.getElementById("main");
+            if (mainContainer) {
+                mainContainer.style.overflow = "hidden";
+            }
+        });
+
+        const closeModal = () => {
+            navModal.classList.remove("active");
+
+            setTimeout(() => {
+                navModal.style.display = "none";
+
+                const mainContainer = document.getElementById("main");
+                if (mainContainer) {
+                    mainContainer.style.overflow = "";
+                }
+            }, 300);
+        };
+
+        if (navCancel) navCancel.addEventListener("click", closeModal);
+        if (navConfirm) navConfirm.addEventListener("click", closeModal);
+
+        navModal.addEventListener("click", (e) => {
+            if (e.target === navModal) closeModal();
+        });
+    }
+
     setupToolbarNavigation();
 }
 
