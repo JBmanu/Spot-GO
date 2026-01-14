@@ -1,29 +1,85 @@
 
-import {getCurrentUser, getFriends, removeFriend, getSuggestedFriends, addFriend} from "../database.js";
+import {getCurrentUser, getFollowingUser, removeFriend, getFollowersUser, getSuggestedFollows, addFollows, pullMessages} from "../database.js";
 import {showConfirmModal} from "../ui/confirmModal.js";
 
 export async function loadCommunityData() {
     const user = await getCurrentUser();
     if (!user) return;
-    await loadFriends(user.email);
-    await loadSuggested(user.email);
+    const loggedUser = await getCurrentUser();
+    await Promise.all([
+        loadFollowing(loggedUser.email),
+        loadFollowers(loggedUser.email),
+        loadSuggested(loggedUser.email)
+    ]);
+    initTabSelector(loggedUser.email);
 }
 
-async function loadFriends(userId) {
-    var friends = await getFriends(userId);
-    showsItemsInContainer(friends, "friends", makeFriendCard);
+function initTabSelector(userId) {
+    const btnFollows = document.getElementById("community-tab-follows");
+    const btnFollowers = document.getElementById("community-tab-followers");
+    const btnSuggested = document.getElementById("community-tab-suggested");
+
+    const followsSection = document.getElementById("community-follows-section");
+    const followersSection = document.getElementById("community-followers-section");
+    const suggestedSection = document.getElementById("community-suggested-section");
+
+    const buttons = [btnFollows, btnFollowers, btnSuggested];
+    const sections = [followsSection, followersSection, suggestedSection];
+
+    btnFollows.addEventListener('click', async () => {
+        hideAll(sections);
+        unselectAllButton(buttons);
+        btnFollows.classList.add('active-community-tab');
+        followsSection.classList.remove('hidden');
+        await loadFollowing(userId);
+    });
+
+    btnFollowers.addEventListener('click', async () => {
+        unselectAllButton(buttons);
+        hideAll(sections);
+        btnFollowers.classList.add('active-community-tab');
+        followersSection.classList.remove('hidden');
+    });
+
+    btnSuggested.addEventListener('click', async () => {
+        unselectAllButton(buttons);
+        hideAll(sections);
+        await loadSuggested(userId);
+        btnSuggested.classList.add('active-community-tab');
+        suggestedSection.classList.remove('hidden');
+    }); 
+}
+
+function hideAll(nodes) {
+    nodes.forEach(b => b.classList.add('hidden'));
+}
+
+function unselectAllButton(buttons) {
+    buttons.forEach(b => b.classList.remove('active-community-tab'));
+}
+
+async function loadFollowing(userId) {
+    var follows = await getFollowingUser(userId);
+    showsItemsInContainer(follows, "follows", makeFriendCard);
 }
 
 async function loadSuggested(userId) {
-    var suggested = await getSuggestedFriends(userId);
+    var suggested = await getSuggestedFollows(userId);
     showsItemsInContainer(suggested, "suggested", makeSuggestedCard);
+}
+
+async function loadFollowers(userId) {
+    var followers = await getFollowersUser(userId);
+    showsItemsInContainer(followers, "followers", 
+        data => data.followingBack ? makeFriendCard(data): makeSuggestedCard(data)
+    );
 }
 
 /**
  * Generate item list providing containerId, array of items
  * and itemIdName (is used to identify html nodes about this items).
  */
-async function showsItemsInContainer(items, itemIdName, cardBuilder) {
+async function showsItemsInContainer(items, itemIdName, cardBuilderStrategy) {
     const containerId = `community-${itemIdName}-container`;
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -31,49 +87,15 @@ async function showsItemsInContainer(items, itemIdName, cardBuilder) {
         container.innerHTML = '<p>Nessun elemento trovato</p>';
         return;
     } else {
-        const itemsVisible = 5;
-        const [partOne, partTwo] = splitArray(items, itemsVisible);
-        appendHtmlChild(partOne, container, cardBuilder);
-
-        const hiddenDiv = document.createElement('div');
-        hiddenDiv.classList.add('hidden-items');
-        hiddenDiv.classList.add('hidden');
-        appendHtmlChild(partTwo, hiddenDiv, cardBuilder);
-        container.appendChild(hiddenDiv); 
-        
-        if (items.length >= itemsVisible) {
-            // Add button to show/hide all other items in list
-            const selQuery = `#community-${itemIdName}-section header`;
-            const header = document.querySelector(selQuery);
-            const button = document.createElement('button');
-            button.id = `show-all-${itemIdName}-button`;
-            button.classList.add('vedi-tutti-button');
-            button.textContent = 'Mostra tutti';
-            button.addEventListener('click', () => toggleExpand(containerId, button));
-            header.appendChild(button);
-        }
+        appendHtmlChild(items, container, cardBuilderStrategy);
     }
 }
 
 function appendHtmlChild(datas, container, cardMaker) {
     datas.forEach(itemData => {
-        const friendCard = cardMaker(itemData);
-        container.appendChild(friendCard);
+        const followCard = cardMaker(itemData);
+        container.appendChild(followCard);
     });
-}
-
-function splitArray(arr = [], firstSize = 0) {
-    const first = arr.slice(0, firstSize);
-    const second = arr.slice(firstSize);
-    return [first, second];
-}
-
-function toggleExpand(containerId, button) {
-    const query = `#${containerId} .hidden-items`;
-    const hiddenList = document.querySelector(query);
-    hiddenList.classList.toggle('hidden')
-    const btnLabel = hiddenList.classList.contains('hidden') ? "Mostra tutti" : "Nascondi";
-    button.textContent = btnLabel;
 }
 
 async function removeFollower(userId, name) {
@@ -89,34 +111,34 @@ async function removeFollower(userId, name) {
 
 async function addFollower(userId) {
     const loggedUser = await getCurrentUser();
-    await addFriend(loggedUser.email, userId).then(
+    await addFollows(loggedUser.email, userId).then(
         await loadCommunityData()
     );
 }
 
 function makeCardInfo(data) {
-    const friendAvatar = document.createElement("div");
-    friendAvatar.className = "user-avatar";
-    friendAvatar.textContent = data.username.substring(0, 2);
+    const followAvatar = document.createElement("div");
+    followAvatar.className = "user-avatar";
+    followAvatar.textContent = data.username.substring(0, 2);
 
-    const friendCardData = document.createElement("div");
-    friendCardData.className = "user-card-data";
+    const followCardData = document.createElement("div");
+    followCardData.className = "user-card-data";
 
-    const friendName = document.createElement("h3");
-    friendName.className = "text-xl font-bold";
-    friendName.textContent = data.username;
+    const followName = document.createElement("h3");
+    followName.className = "text-xl font-bold";
+    followName.textContent = data.username;
 
-    const friendUsername = document.createElement("p");
-    friendUsername.className = "font-bold italic";
-    friendUsername.innerHTML = `<span>@</span>${data.username}`;
+    const followUsername = document.createElement("p");
+    followUsername.className = "italic";
+    followUsername.innerHTML = `<span>@</span>${data.username}`;
 
-    friendCardData.appendChild(friendName);
-    friendCardData.appendChild(friendUsername);
+    followCardData.appendChild(followName);
+    followCardData.appendChild(followUsername);
 
     const flexContainer = document.createElement("div");
     flexContainer.className = "flex flex-row justify-between items-center";
-    flexContainer.appendChild(friendAvatar);
-    flexContainer.appendChild(friendCardData);
+    flexContainer.appendChild(followAvatar);
+    flexContainer.appendChild(followCardData);
     return flexContainer;
 }
 
@@ -131,8 +153,8 @@ function makeFriendActionContainer(data) {
     const messageIcon = document.createElement("img");
     messageIcon.src = "assets/icons/community/message.svg";
     messageButton.appendChild(messageIcon);
-    messageButton.addEventListener('click', () => {
-        renderMessages(data);
+    messageButton.addEventListener('click', async () => {
+        await fetchFriendMessages(data);
     });
 
     const removeButton = document.createElement("button");
@@ -151,7 +173,7 @@ function makeFriendActionContainer(data) {
 }
 
 /**
- * Generate HTML friend list item given friend data.
+ * Generate HTML follow list item given follow data.
  * Returns an article child.
  */
 function makeFriendCard(data) {
@@ -194,27 +216,14 @@ function makeSuggestedCard(data) {
 /**
  * Chat loading
  */
+async function fetchFriendMessages(followingData) {
+    const userMail = await getCurrentUser();
+    const messages = await pullMessages(userMail.email, followingData.email);
+    console.log(messages);
+    renderMessages(followingData, messages);
+}
 
-// Messaggi di esempio
-const messages = [
-    { sent: false, image: 'https://via.placeholder.com/200?text=Immagine+1', text: 'Guarda questa foto!' },
-    { sent: true, text: 'Bellissima! 😊' },
-    { sent: false, image: 'https://via.placeholder.com/200?text=Paesaggio', text: 'L\'ho scattata ieri al tramonto' },
-    { sent: true, image: 'https://via.placeholder.com/200?text=Risposta', text: 'Spettacolare!' },
-    { sent: false, text: 'Vuoi venire sabato?' },
-    { sent: false, image: 'https://via.placeholder.com/200?text=Immagine+1', text: 'Guarda questa foto!' },
-    { sent: true, text: 'Bellissima! 😊' },
-    { sent: false, image: 'https://via.placeholder.com/200?text=Paesaggio', text: 'L\'ho scattata ieri al tramonto' },
-    { sent: true, image: 'https://via.placeholder.com/200?text=Risposta', text: 'Spettacolare!' },
-    { sent: false, text: 'Vuoi venire sabato?' },
-    { sent: false, image: 'https://via.placeholder.com/200?text=Immagine+1', text: 'Guarda questa foto!' },
-    { sent: true, text: 'Bellissima! 😊' },
-    { sent: false, image: 'https://via.placeholder.com/200?text=Paesaggio', text: 'L\'ho scattata ieri al tramonto' },
-    { sent: true, image: 'https://via.placeholder.com/200?text=Risposta', text: 'Spettacolare!' },
-    { sent: false, text: 'Vuoi venire sabato?' }
-];
-
-function renderMessages(userData) {
+function renderMessages(userData, messages) {
     document.getElementById('chat-container').classList.toggle('hidden-chat');
     const chatName = document.getElementById('user-chat-name');
     chatName.textContent = userData.username;
@@ -222,24 +231,28 @@ function renderMessages(userData) {
     messagesContainer.innerHTML = '';
     messages.forEach((msg, idx) => {
     const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${msg.sent ? 'sent' : ''}`;
+        msgDiv.className = `message ${msg.isMittente ? 'sent' : ''}`;
     
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
     
-    // if (msg.image) {
-    //     const img = document.createElement('img');
-    //     img.src = msg.image;
-    //     img.className = 'message-image';
-    //     bubble.appendChild(img);
-    // }
-    
-    if (msg.text) {
-        const textDiv = document.createElement('div');
-        textDiv.className = 'message-text';
-        textDiv.textContent = msg.text;
-        bubble.appendChild(textDiv);
-    }
+        bubble.innerHTML = 
+        `<article class="profile-polaroid">
+            <button
+                    type="button"
+                    class="profile-polaroid-menu"
+                    aria-label="Menu polaroid">
+                ⋮
+            </button>
+            <div class="profile-polaroid-image-container">
+                <div class="profile-polaroid-image"></div>
+            </div>
+            <div class="profile-polaroid-text">
+                <h2 class="profile-polaroid-title">titolo cartolina luogo</h2>
+                <p class="profile-polaroid-subtitle">data polaroid</p>
+            </div>
+        </article>
+        <div class='text-message'><p>${msg.testo}</p></div>`;
     
     msgDiv.appendChild(bubble);
     messagesContainer.appendChild(msgDiv);
