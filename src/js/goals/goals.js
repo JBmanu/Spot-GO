@@ -9,14 +9,15 @@ let isInitialized = false;
 export async function initializeGoals() {
     if (isInitialized) return;
     isInitialized = true;
-    // Style
-    await initializeSpotsMissions();
-    await initializeMissionsBar();
-    await initializeTypeMissions();
 
     // Generate
     await generateMissions();
     await generateCompletable();
+
+    // Style
+    await initializeSpotsMissions();
+    await initializeMissionsBar();
+    await initializeTypeMissions();
 
     console.log("Goals module initialized");
 }

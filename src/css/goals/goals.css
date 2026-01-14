@@ -45,6 +45,10 @@
 
 
     /* ================= SPOT MISSIONS ================= */
+    .spot-card-ctn {
+
+    }
+
     .spot-card {
         @apply flex flex-col
     }
