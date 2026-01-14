@@ -13,6 +13,27 @@
         --category-rgb: 175 140 80;
     }
 
+    .spot-detail-category-label {
+        @apply inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mt-2;
+        background: linear-gradient(135deg, var(--cat-tint-medium), var(--cat-tint-light));
+        backdrop-filter: blur(8px) saturate(110%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 12px rgba(var(--category-rgb), 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        color: var(--cat-text);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .spot-category-icon {
+        width: 15px;
+        height: 15px;
+        filter: drop-shadow(0 1px 2px rgba(var(--category-rgb), 0.3));
+        opacity: 0.95;
+    }
+
     .spot-detail-wrapper[data-category="nature"] {
         --category-rgb: 13 90 63;
     }
@@ -36,7 +57,7 @@
     }
 
     .spot-detail-container {
-        @apply flex-1 overflow-visible justify-center pb-1;
+        @apply flex-1 overflow-visible justify-center pb-1 relative;
     }
 
     .spot-detail-header {
@@ -46,6 +67,12 @@
 
     .spot-detail-image-container {
         @apply relative w-full h-full overflow-hidden;
+    }
+
+    .spot-detail-image-container::after {
+        content: '';
+        @apply absolute inset-0 pointer-events-none;
+        background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
     }
 
     .spot-detail-image {
@@ -72,15 +99,30 @@
     }
 
     .spot-detail-rating {
-        @apply flex items-center gap-2 text-xs font-black px-3 py-2 shrink-0 rounded-2xl relative;
+        @apply flex items-center gap-1.5 text-sm font-black px-4 py-2 shrink-0 rounded-2xl relative overflow-hidden;
         @apply z-10;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.01em;
         color: var(--color-text_color);
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.25));
+        backdrop-filter: blur(16px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow:
+            0 8px 20px rgba(0, 0, 0, 0.12),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+            inset 0 0 12px var(--cat-outline-20);
+    }
+
+    .spot-detail-rating span {
+        font-size: 16px;
+        line-height: 1;
+        margin-top: 1px;
+        filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.5));
     }
 
     .rating-star {
-        @apply w-4 h-4;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.10));
+        @apply w-4.5 h-4.5;
+        filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.4)) drop-shadow(0 0 2px rgba(255, 215, 0, 0.6));
+        transform: translateY(-0.5px);
     }
 
     .spot-detail-bookmark-button {
@@ -105,7 +147,7 @@
     }
 
     .spot-detail-description-compact {
-        @apply px-4 -mt-6 relative z-10 m-0 p-4 rounded-3xl text-sm leading-relaxed;
+        @apply p-3 -mt-8 relative z-10 m-0 rounded-3xl text-sm leading-relaxed;
     }
 
     .spot-detail-description-compact .spot-detail-description {
@@ -113,32 +155,64 @@
         background: var(--cat-tint-strong);
     }
 
-    .spot-detail-missions-banner {
-        @apply w-2xs mx-auto mb-4 flex items-center justify-center gap-3 rounded-xl px-4 py-3 relative overflow-hidden;
-        @apply z-5;
-        cursor: pointer;
-        transition: transform 180ms ease;
-        border-radius: 24px;
-        border: 1px solid var(--cat-outline-20);
-        background: var(--cat-grad-lite), linear-gradient(145deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.2));
+    .missions-wrapper {
+        @apply w-full max-w-[70%] mx-auto mb-4 relative z-50;
     }
 
+    .spot-detail-missions-banner {
+        @apply w-full flex items-center justify-center gap-3 px-4 py-2.5 relative overflow-hidden;
+        @apply z-10;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border-radius: 20px;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        backdrop-filter: blur(28px) saturate(170%) contrast(108%);
+        -webkit-backdrop-filter: blur(28px) saturate(170%) contrast(108%);
+        box-shadow:
+            0 18px 44px rgba(15, 23, 42, 0.14),
+            0 10px 26px rgba(0, 0, 0, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 0.26);
+    }
+
+    .spot-detail-missions-banner.expanded {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
 
     .spot-detail-missions-banner:active {
-        transform: scale(0.98);
+        transform: scale(0.97);
+    }
+
+    .spot-detail-missions-banner::after {
+        content: '';
+        @apply w-4 h-4 opacity-40;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: transform 0.3s ease;
+    }
+
+    .spot-detail-missions-banner.expanded::after {
+        transform: rotate(90deg);
     }
 
     .missions-icon {
-        @apply w-5 h-5 shrink-0;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.10));
+        @apply w-6 h-6 shrink-0;
+        filter: drop-shadow(0 2px 4px rgba(var(--category-rgb), 0.3));
     }
 
     .missions-text {
-        @apply text-xs font-semibold whitespace-nowrap;
-        letter-spacing: 0.02em;
-        text-decoration: underline;
-        text-decoration-thickness: 2px;
-        text-underline-offset: 3px;
+        @apply text-xs font-bold text-left;
+        color: var(--color-text_color);
+        letter-spacing: 0.01em;
+        line-height: 1.2;
+        text-decoration: none;
+    }
+
+    .missions-text span {
+        color: rgba(var(--category-rgb), 1);
+        font-weight: 900;
     }
 
     .spot-detail-info-detailed {
@@ -192,11 +266,22 @@
     }
 
     .spot-missions-details {
-        @apply px-4 pt-2 pb-1;
+        @apply w-full absolute top-10 left-0 right-0 z-50 pt-2 pb-4 px-4;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.35));
+        backdrop-filter: blur(28px) saturate(170%) contrast(108%);
+        border-bottom-left-radius: 24px;
+        border-bottom-right-radius: 24px;
+        box-shadow:
+            0 24px 48px -12px rgba(15, 23, 42, 0.18),
+            0 12px 24px -8px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        border-top: none;
+        margin-top: -12px;
+        padding-top: 18px;
     }
 
     .missions-list {
-        @apply grid grid-cols-2 gap-3 mt-3;
+        @apply flex flex-col gap-2 mt-2;
     }
 
     .mission-item {
@@ -204,13 +289,19 @@
     }
 
     .mission-banner {
-        @apply w-full min-h-16 px-4 py-3 rounded-3xl text-xs font-black uppercase text-center flex items-center justify-center;
-        letter-spacing: 0.05em;
+        @apply w-full min-h-[48px] px-4 py-2.5 rounded-2xl text-xs font-bold uppercase text-left flex items-center justify-start gap-3;
+        letter-spacing: 0.04em;
         color: var(--ink-82);
-        transition: transform 180ms ease;
-        border-radius: 24px;
-        background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(var(--category-rgb) / 0.05));
-        border: 1px solid var(--cat-outline-20);
+        transition: transform 180ms ease, background 0.3s;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(10px);
+    }
+
+    .mission-banner::before {
+        content: '';
+        @apply w-2 h-2 rounded-full shrink-0;
     }
 
     .mission-banner:active {
@@ -218,9 +309,23 @@
     }
 
     .mission-banner.completed {
-        color: rgb(var(--category-rgb));
-        background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(var(--category-rgb) / 0.2));
-        border: 1px solid rgb(var(--category-rgb));
+        color: rgba(60, 60, 67, 0.5);
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        pointer-events: none;
+        box-shadow: none;
+    }
+
+    .mission-banner.completed::before {
+        content: '';
+        @apply w-4 h-4 rounded-none shrink-0;
+        background-color: transparent;
+        background-image: url("../../assets/icons/homepage/Detail/Done.svg");
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        box-shadow: none;
+        filter: invert(45%) sepia(21%) saturate(285%) hue-rotate(195deg) brightness(88%) contrast(85%);
     }
 
     .missions-toggle-button {

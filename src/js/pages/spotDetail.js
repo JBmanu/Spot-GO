@@ -213,7 +213,21 @@ async function populateSpotDetail(spotData, scopeEl = document) {
         rating: (el) => el.textContent = formatRatingAsText(pickRating(spotData)) || "4.5",
         distance: (el) => el.textContent = spotData.distanza ? `${spotData.distanza} m` : "0 m",
         category: async (el) => {
-            el.textContent = await getCategoryNameIt(spotData.idCategoria).catch(() => "");
+            const catId = spotData.idCategoria || "mystery";
+            const catName = await getCategoryNameIt(catId).catch(() => catId);
+
+            const iconMap = {
+                "food": "../../assets/icons/homepage/Fast Food.svg",
+                "culture": "../../assets/icons/homepage/Cathedral.svg",
+                "nature": "../../assets/icons/homepage/Oak Tree.svg",
+                "mystery": "../../assets/icons/homepage/Desura.svg"
+            };
+            const iconSrc = iconMap[catId] || iconMap["mystery"];
+
+            el.innerHTML = `
+                <img src="${iconSrc}" class="spot-category-icon" alt="" />
+                <span>${catName}</span>
+            `;
         },
         description: (el) => el.textContent = spotData.descrizione || "Nessuna descrizione disponibile",
         address: (el) => el.textContent = spotData.indirizzo || "",

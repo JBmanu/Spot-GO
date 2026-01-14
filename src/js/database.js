@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId} from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId } from "firebase/firestore";
 import { db, auth } from "./firebase.js";
 import { distanceFromUserToSpot } from "./common.js";
 
@@ -31,7 +31,22 @@ export async function getCategorieMap() {
 
 export async function getCategoryNameIt(categoriaId) {
     const categorieMap = await getCategorieMap();
-    return categorieMap[categoriaId] || categoriaId;
+    let name = categorieMap[categoriaId];
+
+    const systemCategories = {
+        "food": "Cibo",
+        "culture": "Cultura",
+        "nature": "Natura",
+        "mystery": "Mistero"
+    };
+
+    if (!name || name === categoriaId || systemCategories[categoriaId]) {
+        if (systemCategories[categoriaId]) {
+            return systemCategories[categoriaId];
+        }
+    }
+
+    return name || categoriaId;
 }
 
 /**
@@ -211,9 +226,9 @@ export async function removeFriend(userId, friendId) {
         await updateDoc(docRef, {
             friends: arrayRemove(friendRef)
         });
-  } catch (error) {
-    console.error('Errore:', error);
-  }
+    } catch (error) {
+        console.error('Errore:', error);
+    }
 }
 
 /**
@@ -238,7 +253,7 @@ export async function getSuggestedFriends(userId) {
     try {
         const userDocRef = doc(db, 'Amico', userId);
         const userDocSnapshot = await getDoc(userDocRef);
-        
+
         const currentFriendsIds = new Set();
         if (userDocSnapshot.exists()) {
             const friendRefs = userDocSnapshot.data().friends || [];
@@ -250,7 +265,7 @@ export async function getSuggestedFriends(userId) {
         // 2. Ottieni TUTTI i documenti dalla collezione Amico
         const amicoCollectionRef = collection(db, 'Amico');
         const allUsersSnapshot = await getDocs(amicoCollectionRef);
-        
+
         // 3. Filtra escludendo gli amici attuali e l'utente stesso
         const availableIds = [];
         allUsersSnapshot.forEach(doc => {
@@ -260,7 +275,7 @@ export async function getSuggestedFriends(userId) {
         });
 
         // 4. Recupera i dati da Utenti per ogni ID
-        const availableFriends = await getItems('Utente',  where(documentId(), 'in', availableIds), 
+        const availableFriends = await getItems('Utente', where(documentId(), 'in', availableIds),
             (id, data) => ({
                 id: id,
                 livello: data.livello || "-",

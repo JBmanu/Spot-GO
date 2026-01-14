@@ -15,10 +15,38 @@
         </div>
 
 
-        <div id="spot-missions-toggle" class="spot-detail-missions-banner glass">
-            <img src="../../assets/icons/homepage/Medal.svg" alt="Missioni" class="missions-icon" />
-            <span class="missions-text">Missioni: <span id="spot-missions-completed">0</span> di <span
-                    id="spot-missions-total">0</span> completate</span>
+        <div class="missions-wrapper">
+            <div id="spot-missions-toggle" class="spot-detail-missions-banner glass">
+                <img src="../../assets/icons/homepage/Medal.svg" alt="Missioni" class="missions-icon" />
+                <span class="missions-text">Missioni: <span id="spot-missions-completed">0</span> di <span
+                        id="spot-missions-total">0</span> completate</span>
+            </div>
+
+
+            <div id="spot-missions-details" class="spot-missions-details" style="display: none;">
+                <div id="spot-missions-list" class="missions-list">
+                    <div class="mission-item">
+                        <span class="mission-banner glass completed" data-mission-id="mission-1">Scatta una foto al
+                            tramonto</span>
+                    </div>
+                    <div class="mission-item">
+                        <span class="mission-banner glass" data-mission-id="mission-2">Visita durante il
+                            weekend</span>
+                    </div>
+                    <div class="mission-item">
+                        <span class="mission-banner glass" data-mission-id="mission-3">Condividi sui social</span>
+                    </div>
+                    <div id="spot-missions-hidden" class="missions-hidden" style="display: none;">
+                        <div class="mission-item">
+                            <span class="mission-banner glass" data-mission-id="mission-4">Porta un amico</span>
+                        </div>
+                        <div class="mission-item">
+                            <span class="mission-banner glass" data-mission-id="mission-5">Lascia una
+                                recensione</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -36,29 +64,7 @@
         </div>
 
 
-        <div id="spot-missions-details" class="spot-missions-details" style="display: none;">
-            <div id="spot-missions-list" class="missions-list">
-                <div class="mission-item">
 
-                    <span class="mission-banner glass completed" data-mission-id="mission-1">Scatta una foto al
-                        tramonto</span>
-                </div>
-                <div class="mission-item">
-                    <span class="mission-banner glass" data-mission-id="mission-2">Visita durante il weekend</span>
-                </div>
-                <div class="mission-item">
-                    <span class="mission-banner glass" data-mission-id="mission-3">Condividi sui social</span>
-                </div>
-                <div id="spot-missions-hidden" class="missions-hidden" style="display: none;">
-                    <div class="mission-item">
-                        <span class="mission-banner glass" data-mission-id="mission-4">Porta un amico</span>
-                    </div>
-                    <div class="mission-item">
-                        <span class="mission-banner glass" data-mission-id="mission-5">Lascia una recensione</span>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
         <div class="spot-detail-info-detailed glass-strong">
@@ -128,4 +134,4 @@
         Attiva missioni
     </button>
 </div>
-</div>
+
