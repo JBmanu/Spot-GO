@@ -50,6 +50,38 @@
 
 }
 
+@utility glass {
+    --glass-blur: 20px;
+    --glass-sat: 180%;
+    --glass-sheet-a: 0.28;
+    --glass-sheet-b: 0.12;
+    --glass-border: rgba(255, 255, 255, 0.42);
+}
+
+@utility glass-light {
+    --glass-blur: var(--glass-blur-light);
+    --glass-sat: var(--glass-sat-light);
+    --glass-sheet-a: 0.18;
+    --glass-sheet-b: 0.08;
+    --glass-border: rgba(255, 255, 255, 0.32);
+}
+
+@utility glass-medium {
+    --glass-blur: var(--glass-blur-medium);
+    --glass-sat: var(--glass-sat-medium);
+    --glass-sheet-a: 0.35;
+    --glass-sheet-b: 0.18;
+    --glass-border: var(--glass-border-soft);
+}
+
+@utility glass-strong {
+    --glass-blur: var(--glass-blur-strong);
+    --glass-sat: var(--glass-sat-strong);
+    --glass-sheet-a: 0.52;
+    --glass-sheet-b: 0.32;
+    --glass-border: var(--glass-border-strong);
+}
+
 @utility glass-overlay {
     @apply absolute inset-0 flex items-center justify-center;
     backdrop-filter: blur(10px) saturate(110%);
@@ -85,15 +117,30 @@
 }
 
 @utility glass-backdrop-light {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(8px) saturate(110%);
+    box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.5),
+        0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 @utility glass-backdrop-medium {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(16px) saturate(140%);
+    box-shadow:
+        inset 0 1px 2px rgba(255, 255, 255, 0.6),
+        0 12px 40px rgba(0, 0, 0, 0.10);
 }
 
 @utility glass-backdrop-strong {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(28px) saturate(170%) contrast(108%);
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.7),
+        0 16px 48px rgba(0, 0, 0, 0.12);
 }
 
 @utility glass-btn-primary {
@@ -121,4 +168,11 @@
     border: 1px solid rgba(255, 255, 255, 0.6);
     color: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(4px);
+}
+
+@utility glass-input {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
