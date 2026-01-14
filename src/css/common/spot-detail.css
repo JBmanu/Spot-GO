@@ -56,12 +56,12 @@
     }
 
     .spot-detail-title-container {
-        @apply px-4 py-3 flex justify-between items-center gap-3 relative;
+        @apply px-3 py-2.5 flex justify-between items-center gap-3 relative;
     }
 
     .spot-detail-title-section {
         @apply flex-1 flex flex-col gap-2 items-start relative;
-        z-index: 1;
+        @apply z-10;
     }
 
     .spot-detail-title {
@@ -73,7 +73,7 @@
 
     .spot-detail-rating {
         @apply flex items-center gap-2 text-xs font-black px-3 py-2 shrink-0 rounded-2xl relative;
-        z-index: 1;
+        @apply z-10;
         letter-spacing: 0.05em;
         color: var(--color-text_color);
     }
@@ -101,7 +101,7 @@
 
     .spot-detail-bookmark-button .bookmark-icon {
         @apply w-6 h-6;
-        filter: saturate(1.2) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
+        filter: saturate(1.2) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.10));
     }
 
     .spot-detail-description-compact {
@@ -115,17 +115,14 @@
 
     .spot-detail-missions-banner {
         @apply w-2xs mx-auto mb-4 flex items-center justify-center gap-3 rounded-xl px-4 py-3 relative overflow-hidden;
-        z-index: 5;
+        @apply z-5;
         cursor: pointer;
         transition: transform 180ms ease;
         border-radius: 24px;
         border: 1px solid var(--cat-outline-20);
-        background: var(--cat-grad-lite), linear-gradient(145deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+        background: var(--cat-grad-lite), linear-gradient(145deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.2));
     }
 
-    .spot-detail-missions-banner:hover {
-        transform: scale(1.02);
-    }
 
     .spot-detail-missions-banner:active {
         transform: scale(0.98);
@@ -145,17 +142,17 @@
     }
 
     .spot-detail-info-detailed {
-        @apply mx-4 mt-4 p-5 rounded-3xl flex flex-col gap-4 relative overflow-hidden;
+        @apply mx-4 mt-4 p-5 rounded-3xl flex flex-col gap-3 relative overflow-hidden;
         border-radius: 24px;
         transition: box-shadow 0.2s, border-color 0.2s, background 0.2s;
-        background: linear-gradient(135deg, rgba(var(--category-rgb), 0.15) 0%, rgba(255, 255, 255, 0.4) 100%);
+        background: linear-gradient(135deg, rgba(var(--category-rgb), 0.15) 0%, rgba(255, 255, 255, 0.26) 100%);
         border: 1px solid rgb(var(--category-rgb));
-        box-shadow: 0 18px 42px rgba(var(--category-rgb), 0.15), 0 6px 14px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        box-shadow: 0 18px 42px rgba(var(--category-rgb), 0.15), 0 6px 14px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.42);
     }
 
     .info-row {
         @apply flex items-start gap-3 relative;
-        z-index: 1;
+        @apply z-10;
     }
 
     .info-content {
@@ -228,7 +225,7 @@
 
     .missions-toggle-button {
         @apply w-10 h-10 grid place-items-center rounded-2xl relative;
-        z-index: 1;
+        @apply z-10;
         transition: transform 180ms ease;
     }
 
@@ -240,15 +237,20 @@
         @apply w-5 h-5;
         opacity: 0.85;
         transition: transform 220ms ease;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.10));
     }
 
     .spot-reviews {
         @apply flex items-end justify-between gap-3 w-full px-4 pt-6 pb-0 mt-2;
     }
 
+    .review-template {
+        width: 85vw;
+        max-width: 380px;
+    }
+
     .spot-add-review-button {
-        @apply px-4 py-3 rounded-2xl text-xs font-black uppercase;
+        @apply px-3 py-2.5 rounded-2xl text-xs font-black uppercase;
         letter-spacing: 0.04em;
         color: var(--color-text_color);
         background: var(--cat-grad-hero);
@@ -270,62 +272,55 @@
         transform: scale(0.98);
     }
 
-    .spot-review-carousel-item {
-        @apply shrink-0;
-        width: 82%;
-        scroll-snap-align: center;
-        scroll-snap-stop: always;
-    }
 
     .spot-review-item {
-        @apply p-5 rounded-3xl min-h-[180px] w-full flex flex-col gap-4 relative overflow-hidden;
-        background: var(--glass-sheet-medium);
-        backdrop-filter: blur(var(--glass-blur-medium)) saturate(var(--glass-sat-medium));
-        border: 1px solid var(--glass-border-soft);
-        box-shadow:
-            0 8px 32px rgba(0, 0, 0, 0.12),
-            inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        @apply p-4 rounded-3xl min-h-[180px] w-full flex flex-col gap-3 relative overflow-hidden;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        backdrop-filter: blur(28px) saturate(170%) contrast(108%);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12), 0 6px 12px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.26);
     }
 
     .spot-review-header {
         @apply flex justify-between items-center gap-2 relative;
-        z-index: 1;
+        @apply z-10;
     }
 
     .spot-review-author {
         @apply font-black text-sm capitalize;
-        color: var(--color-text_color);
+        color: rgba(17, 24, 39, 0.94);
         letter-spacing: 0.02em;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
     }
 
     .spot-review-rating {
         @apply flex items-center gap-1.5 text-[11px] font-black px-3 py-1.5 rounded-2xl whitespace-nowrap relative;
-        z-index: 1;
+        @apply z-10;
         letter-spacing: 0.03em;
-        color: var(--color-text_color);
-        background: var(--glass-sheet-light);
-        border: 1px solid var(--glass-border-soft);
+        color: rgba(99, 102, 106, 0.88);
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.5);
     }
 
     .spot-review-text {
         @apply text-sm leading-relaxed m-0 font-medium flex-1 relative;
-        z-index: 1;
+        @apply z-10;
         color: var(--color-text_color);
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
-        overflow: hidden;
+        @apply overflow-hidden;
         opacity: 0.9;
     }
 
     .spot-detail-actions {
         @apply sticky bottom-0 z-50 w-full p-3 flex gap-3;
-        box-shadow: 0 32px 72px rgba(0, 0, 0, 0.20), 0 12px 26px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 32px 72px rgba(0, 0, 0, 0.20), 0 12px 26px rgba(0, 0, 0, 0.10);
     }
 
     .spot-detail-action-button {
         @apply flex-1 flex items-center justify-center gap-3 px-5 py-4 rounded-3xl text-xs font-black uppercase relative overflow-hidden;
-        z-index: 1;
+        @apply z-10;
         letter-spacing: 0.05em;
         background: var(--cat-grad-lite);
         transition: transform 180ms ease;
@@ -355,9 +350,9 @@
 
     /* --- Reviews Empty State --- */
     .spot-reviews-empty {
-        @apply flex flex-col items-center justify-center w-full py-10 px-6 text-center;
+        @apply flex flex-col items-center justify-center w-full py-8 px-6 text-center;
         background: var(--glass-sheet-medium);
-        backdrop-filter: blur(var(--glass-blur-medium)) saturate(var(--glass-sat-medium));
+        backdrop-filter: blur(28px) saturate(170%) contrast(108%);
         border: 1px solid var(--glass-border-soft);
         border-radius: 24px;
         margin: 1.5rem 0;

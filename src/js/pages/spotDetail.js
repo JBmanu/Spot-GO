@@ -241,12 +241,13 @@ async function populateSpotDetail(spotData, scopeEl = document) {
 }
 
 async function renderSpotReviews(spotId, scopeEl) {
-    const track = scopeEl.querySelector("#spot-reviews-track");
-    if (!track) return;
+    const container = scopeEl.querySelector("#spot-reviews-track");
+    if (!container) return;
 
     const reviews = await getReviewsForSpot(spotId);
     if (!reviews || reviews.length === 0) {
-        track.innerHTML = `
+        container.removeAttribute("data-carousel-type");
+        container.innerHTML = `
             <div class="spot-reviews-empty">
                 <img src="../../assets/icons/homepage/Star.svg" class="spot-reviews-empty-icon" alt="" />
                 <h3 class="spot-reviews-empty-title">Nessuna recensione ancora</h3>
@@ -256,7 +257,8 @@ async function renderSpotReviews(spotId, scopeEl) {
         return;
     }
 
-    track.innerHTML = "";
+    container.setAttribute("data-carousel-type", "horizontal");
+    container.innerHTML = "";
     const template = document.querySelector('[data-template="review-template"]');
     if (!template) return;
 
@@ -271,13 +273,10 @@ async function renderSpotReviews(spotId, scopeEl) {
         if (ratingEl) ratingEl.textContent = review.valuation || "5";
         if (textEl) textEl.textContent = review.description || "";
 
-        track.appendChild(clone);
+        container.appendChild(clone);
     }
 
-    const carouselEl = track.closest('[data-carousel-type="horizontal"]');
-    if (carouselEl) {
-        initializeHorizontalCarousel(carouselEl);
-    }
+    initializeHorizontalCarousel(container);
 }
 
 function setupToolbarNavigation() {
