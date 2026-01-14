@@ -162,9 +162,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         showOnly(section);
         await initSectionOnce(section, wrapper);
-
-        const st = sectionState.get(section);
-        if (st) st.initialized = true;
     }
 
     window.navigateToSection = navigateTo;
@@ -209,8 +206,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const st = sectionState.get(section);
         if (!st || st.initialized) return;
 
-        await initSectionLogic(section, wrapperEl);
         st.initialized = true;
+        await initSectionLogic(section, wrapperEl);
     }
 
     toolbar.addEventListener("click", async (e) => {
