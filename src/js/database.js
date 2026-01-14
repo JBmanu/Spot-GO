@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId} from "firebase/firestore";
 import { db, auth } from "./firebase.js";
 import { distanceFromUserToSpot } from "./common.js";
 
@@ -136,6 +136,7 @@ export async function getVisitedSpots(username) {
  * Recupera la lista amici di un utente.
  */
 export async function getFriends(userId) {
+    if (!userId) return [];
     try {
         const docRef = doc(db, 'Amico', userId);
         const docSnapshot = await getDoc(docRef);
@@ -143,11 +144,12 @@ export async function getFriends(userId) {
             const snapData = docSnapshot.data();
             const friendPromises = snapData.friends.map(async friendRef => {
                 const doc = await getDoc(friendRef)
+                const docData = doc.data();
                 return {
                     id: doc.id,
-                    livello: doc.data().livello || "-",
-                    email: doc.data().email || "-",
-                    username: doc.data().username || "-"
+                    livello: docData.livello || "-",
+                    email: docData.email || "-",
+                    username: docData.username || "-"
                 }
             })
             const friends = await Promise.all(friendPromises);
@@ -162,9 +164,10 @@ export async function getFriends(userId) {
     }
 }
 
-export async function removeFriend(username, friendId) {
+export async function removeFriend(userId, friendId) {
+    if (!friendId) return;
     try {
-        const docRef = doc(db, 'Amico', username);
+        const docRef = doc(db, 'Amico', userId);
         const friendRef = doc(db, 'Utente', friendId);
         await updateDoc(docRef, {
             friends: arrayRemove(friendRef)
@@ -181,14 +184,55 @@ export async function addFriend(userId, friendEmail) {
     if (!userId || !friendEmail) return;
     try {
         const userRef = doc(db, "Amico", userId);
-        const friendRef = doc(db, "Amico", friendEmail);
-
-        await setDoc(userRef, { friends: arrayUnion(friendEmail) }, { merge: true });
-        await setDoc(friendRef, { friends: arrayUnion(userId) }, { merge: true });
-
-        console.log(`Amicizia aggiunta tra ${userId} e ${friendEmail}`);
+        const friendRef = doc(db, "Utente", friendEmail);
+        await setDoc(userRef, { friends: arrayUnion(friendRef) }, { merge: true });
+        //followers and following approach not need reciprocity
+        //await setDoc(friendRef, { friends: arrayUnion(userRef) }, { merge: true });
+        console.log(`${userId} ora segue ${friendEmail}`);
     } catch (error) {
-        console.error("Errore aggiunta amico:", error);
+        console.error("Errore aggiunta follow:", error);
+    }
+}
+
+export async function getSuggestedFriends(userId) {
+    if (!userId) return;
+    try {
+        const userDocRef = doc(db, 'Amico', userId);
+        const userDocSnapshot = await getDoc(userDocRef);
+        
+        const currentFriendsIds = new Set();
+        if (userDocSnapshot.exists()) {
+            const friendRefs = userDocSnapshot.data().friends || [];
+            friendRefs.forEach(ref => {
+                currentFriendsIds.add(ref.id);
+            });
+        }
+
+        // 2. Ottieni TUTTI i documenti dalla collezione Amico
+        const amicoCollectionRef = collection(db, 'Amico');
+        const allUsersSnapshot = await getDocs(amicoCollectionRef);
+        
+        // 3. Filtra escludendo gli amici attuali e l'utente stesso
+        const availableIds = [];
+        allUsersSnapshot.forEach(doc => {
+            if (doc.id !== userId && !currentFriendsIds.has(doc.id)) {
+                availableIds.push(doc.id);
+            }
+        });
+
+        // 4. Recupera i dati da Utenti per ogni ID
+        const availableFriends = await getItems('Utente',  where(documentId(), 'in', availableIds), 
+            (id, data) => ({
+                id: id,
+                livello: data.livello || "-",
+                email: data.email || "-",
+                username: data.username || "-"
+            })
+        );
+        return availableFriends;
+    } catch (error) {
+        console.error('Errore:', error);
+        return [];
     }
 }
 

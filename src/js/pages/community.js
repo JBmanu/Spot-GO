@@ -1,32 +1,21 @@
 
-import {getCurrentUser, getFriends, removeFriend} from "../database.js";
+import {getCurrentUser, getFriends, removeFriend, getSuggestedFriends, addFriend} from "../database.js";
 import {showConfirmModal} from "../ui/confirmModal.js";
 
 export async function loadCommunityData() {
     const user = await getCurrentUser();
     if (!user) return;
-
-    await loadFriends(user.id);
-    await loadSuggested(user.id);
+    await loadFriends(user.email);
+    await loadSuggested(user.email);
 }
 
-async function loadFriends() {
-    var friends = await getFriends("teo@gmail.com");
-    console.log(friends);
+async function loadFriends(userId) {
+    var friends = await getFriends(userId);
     showsItemsInContainer(friends, "friends", makeFriendCard);
 }
 
-async function loadSuggested() {
-    var suggested = [] //await getSuggestedFriends("AMNSHSNGXdZ0xm4XRWBS");
-     for (let index = 0; index < 5; index++) {
-        suggested.push(
-            {
-                id: "id-utente"+index,
-                email: "suggested@mail.com",
-                username: "suggested " + index
-            }
-        );
-    }
+async function loadSuggested(userId) {
+    var suggested = await getSuggestedFriends(userId);
     showsItemsInContainer(suggested, "suggested", makeSuggestedCard);
 }
 
@@ -38,7 +27,6 @@ async function showsItemsInContainer(items, itemIdName, cardBuilder) {
     const containerId = `community-${itemIdName}-container`;
     const container = document.getElementById(containerId);
     container.innerHTML = "";
-
     if (items.length === 0) {
         container.innerHTML = '<p>Nessun elemento trovato</p>';
         return;
@@ -64,7 +52,6 @@ async function showsItemsInContainer(items, itemIdName, cardBuilder) {
             button.addEventListener('click', () => toggleExpand(containerId, button));
             header.appendChild(button);
         }
-        
     }
 }
 
@@ -93,16 +80,18 @@ async function removeFollower(userId, name) {
     const descr = "Non sarai più amico di " + name + ", ma potrai sempre riallacciare i rapporti.";
     const res = await showConfirmModal(`Vuoi rimuovere ${name} come amico?`, descr);
     if (res) {
-        //TODO: fix current user email, it not mathc to the one on firebase
         const loggedUser = await getCurrentUser();
-        await removeFriend(/*loggedMail.username*/"teo@gmail.com", userId).then(
-            await loadFriends()
+        await removeFriend(loggedUser.email, userId).then(
+            await loadCommunityData()
         );
     }
 }
 
-function addFriend(userId) {
-    console.log(`Add ${userId} to friends`);
+async function addFollower(userId) {
+    const loggedUser = await getCurrentUser();
+    await addFriend(loggedUser.email, userId).then(
+        await loadCommunityData()
+    );
 }
 
 function makeCardInfo(data) {
@@ -192,7 +181,7 @@ function makeSuggestedCard(data) {
     const addIcon = document.createElement("img");
     addIcon.src = "assets/icons/community/add_user.svg";
     addButton.appendChild(addIcon);
-    addButton.addEventListener('click', () => addFriend(data.id));
+    addButton.addEventListener('click', () => addFollower(data.id));
 
     actionsContainer.appendChild(addButton);
 
