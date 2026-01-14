@@ -1,6 +1,6 @@
 export async function generateMissions() {
-    for (let i = 0; i < 4; i++) {
-        // generateSpots("Luogo luogoso", "Cibo", i, 3)
+    for (let i = 0; i < 20; i++) {
+        generateAllSpots('.all-spots-missions-ctn', "Luogo luogoso", "Cibo", i, 3)
     }
 
     for (let i = 0; i < 3; i++) {
@@ -47,8 +47,9 @@ export async function generateMissions() {
 // }
 
 // Generate spots
-function generateSpots(title, category, progress, allProgress) {
-    const spotCtn = document.querySelector('.spot-card-ctn');
+function generateAllSpots(selector, title, category, progress, allProgress) {
+    // spot-card-ctn serve per contenere tutte le missioni degli spot attivati
+    const spotCtn = document.querySelector(selector);
     spotCtn.innerHTML +=
         `<div class="glass-medium interactive spot-card">
             <!-- Spot info -->
@@ -78,14 +79,14 @@ function generateSpots(title, category, progress, allProgress) {
                         </span>
                     </div>
                     <!-- Arrow -->
-                    <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m6 9 6 6 6-6"/>
-                    </svg>
+<!--                    <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"-->
+<!--                        viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">-->
+<!--                        <path d="m6 9 6 6 6-6"/>-->
+<!--                    </svg>-->
                 </div>
             </div>
             <!-- Missions -->
-            <div class="vertical-ctn-g2 missions-spot">
+            <div class="vertical-ctn-g2 missions-spot" data-carousel-type="vertical" data-size="mm">
             
             </div>          
         </div>`;

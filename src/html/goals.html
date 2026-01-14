@@ -1,20 +1,35 @@
 <section class="space-y-3">
 
-    <!--Current missions-->
-    <div class="mx-4 my-6">
-
-        <!-- Titolo principale -->
-        <div class="between-ctn pb-1">
-<!--            <img src="../assets/icons/toolbar/Goal.svg" class="icon" alt="Mission Icon"/>-->
-            <span class="text-xl font-bold text-gray-800">Missioni spot attivo</span>
-            <span class="text-sm font-bold underline">Vedi tutti</span>
+    <div class="all-spots-missions-page m-0 p-0">
+        <!-- ================= TITOLO PRINCIPALE ================= -->
+        <div class="between-ctn mx-4 mt-2 p-0">
+            <div class="vertical-ctn">
+                <span class="text-xl font-bold text-gray-800">Missioni da completare</span>
+                <span class="text-sm text-gray-600">Clicca gli spot per vedere le missioni</span>
+            </div>
+            <button class="back-active-spot-missions text-sm font-bold underline cursor-pointer">Indietro</button>
         </div>
 
-        <!-- Contenitore principale -->
-        <div class="vertical-ctn-g2 spot-card-ctn">
-            <div class="glass-medium interactive spot-card">
+        <!-- ================= CONTAINER ALL SPOTS MISSIONS ================= -->
+        <div class="mx-2">
+            <div class="vertical-ctn-g2 all-spots-missions-ctn" data-carousel-type="vertical" data-size="xl">
+            </div>
+        </div>
+    </div>
+
+    <div class="main-goals-page">
+        <!-- ================= SPOT MISSIONS ================= -->
+        <div class="mx-4 mt-2 mb-6">
+            <!-- Titolo principale -->
+            <div class="between-ctn pb-1">
+                <span class="text-xl font-bold text-gray-800">Missioni spot attivo</span>
+                <button class="view-all-spots-missions text-sm font-bold underline cursor-pointer">Vedi tutti</button>
+            </div>
+
+            <!-- Contenitore Active Spot Missions -->
+            <div class="glass-medium spot-card">
                 <!-- Spot info -->
-                <div class="between-ctn spot-header">
+                <div class="between-ctn spot-header open">
                     <!-- Icona + Luogo -->
                     <div class="vertical-ctn">
                         <h2 class="text-lg font-semibold text-gray-800 truncate"> Luogo luogoso </h2>
@@ -35,63 +50,65 @@
                                         stroke-dasharray="113.097" stroke-dashoffset="22.619"
                                         transform="rotate(-90 20 20)"/>
                             </svg>
-                            <span class="center-ctn absolute inset-0 text-sm font-semibold text-gray-800">
-                            5/7
-                        </span>
+                            <span class="center-ctn absolute inset-0 text-sm font-semibold text-gray-800">5/7</span>
                         </div>
+                        <!-- Arrow -->
+                        <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m6 9 6 6 6-6"/>
+                        </svg>
                     </div>
                 </div>
                 <!-- Missions -->
-                <div class="vertical-ctn-g2 missions-spot active" data-carousel-type="vertical" data-size="mm">
+                <div class="vertical-ctn-g2 missions-spot open pt-0" data-carousel-type="vertical" data-size="mm">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= MISSIONS TYPE BAR ================= -->
+        <div class="mx-4 my-0">
+            <div class="glass-medium interactive missions-type-bar">
+                <!-- INDICATORE ANIMATO -->
+                <div class="glass-strong interactive missions-type-indicator"></div>
+
+                <!-- BOTTONI -->
+                <div class="flex justify-between relative z-10 min-h-13">
+                    <!-- Daily -->
+                    <button class="mission-type-btn" data-index="0">
+                        <img src="../assets/icons/goals/missionTypes/Sun.svg" class="mission-type-btn-element" alt=""/>
+                        <span class="mission-type-btn-element font-medium">Giornalieri</span>
+                    </button>
+                    <!-- Theme -->
+                    <button class="mission-type-btn" data-index="1">
+                        <img src="../assets/icons/goals/missionTypes/Tag.svg" class="mission-type-btn-element" alt=""/>
+                        <span class="mission-type-btn-element">A tema</span>
+                    </button>
+                    <!-- Level -->
+                    <button class="mission-type-btn" data-index="2">
+                        <img src="../assets/icons/goals/missionTypes/Trophy.svg" class="mission-type-btn-element"
+                             alt=""/>
+                        <span class="mission-type-btn-element">Livello</span>
+                    </button>
                 </div>
             </div>
         </div>
 
-    </div>
-
-    <!--  MISSIONS TYPE BAR -->
-    <div class="mx-4 my-0">
-        <div class="glass-medium interactive missions-type-bar">
-            <!-- INDICATORE ANIMATO -->
-            <div class="glass-strong interactive missions-type-indicator"></div>
-
-            <!-- BOTTONI -->
-            <div class="flex justify-between relative z-10 min-h-13">
-                <!-- Daily -->
-                <button class="mission-type-btn" data-index="0">
-                    <img src="../assets/icons/goals/missionTypes/Sun.svg" class="mission-type-btn-element" alt=""/>
-                    <span class="mission-type-btn-element font-medium">Giornalieri</span>
-                </button>
-                <!-- Theme -->
-                <button class="mission-type-btn" data-index="1">
-                    <img src="../assets/icons/goals/missionTypes/Tag.svg" class="mission-type-btn-element" alt=""/>
-                    <span class="mission-type-btn-element">A tema</span>
-                </button>
-                <!-- Level -->
-                <button class="mission-type-btn" data-index="2">
-                    <img src="../assets/icons/goals/missionTypes/Trophy.svg" class="mission-type-btn-element" alt=""/>
-                    <span class="mission-type-btn-element">Livello</span>
-                </button>
+        <!-- ================= MISSIONS ================= -->
+        <div class="missions-ctn">
+            <!-- TRACK SCORRIMENTO -->
+            <div class="mission-type-slider">
+                <!-- CARD 1 -->
+                <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
+                </div>
+                <!-- CARD 2 -->
+                <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
+                </div>
+                <!-- CARD 3 -->
+                <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- ================= MISSIONS ================= -->
-    <!-- CONTENITORE ESTERNO -->
-    <div class="missions-ctn">
-        <!-- TRACK SCORRIMENTO -->
-        <div class="mission-type-slider">
-            <!-- CARD 1 -->
-            <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
-            </div>
-            <!-- CARD 2 -->
-            <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
-            </div>
-            <!-- CARD 3 -->
-            <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
-            </div>
-        </div>
-    </div>
-
 
 </section>

@@ -50,11 +50,14 @@
     }
 
     .spot-card {
-        @apply flex flex-col
+        @apply flex flex-col rounded-xl
     }
 
     .spot-header {
-        @apply cursor-pointer px-3 pt-2
+        @apply cursor-pointer px-3 py-2
+    }
+    .spot-header.open {
+        @apply pb-0
     }
 
     .spot-arrow {
@@ -69,13 +72,8 @@
         will-change-transform
     }
 
-    .missions-spot.active,
     .missions-spot.open {
-        @apply max-h-1000 opacity-100 scale-100 blur-none
-    }
-
-    .missions-spot.open {
-        @apply py-2
+        @apply max-h-1000 opacity-100 scale-100 blur-none py-2
     }
 
     .spot-mission {
@@ -84,7 +82,7 @@
 
     .spot-mission-complete {
         /* backdrop-saturate-150 */
-        @apply absolute inset-0 z-20 backdrop-blur-3xl backdrop-saturate-200
+        @apply absolute inset-0 z-20 backdrop-blur-md backdrop-saturate-200
         scale-100 opacity-100 rounded-xl bg-white/30 border border-white/40
         transition-all duration-350 ease-[cubic-bezier(.25,.8,.25,1)];
     }

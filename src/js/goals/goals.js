@@ -1,8 +1,9 @@
-﻿import {initializeMissionsBar} from "./missionsTypeBar.js";
-import {initializeSpotsMissions} from "./spotsMissions.js";
-import {initializeTypeMissions} from "./typeMissions.js";
-import {generateCompletable} from "./missionCompletable.js";
-import {generateMissions} from "./GenerateMissions.js";
+﻿import {initializeMissionsBar} from "./interaction/missionsTypeBar.js";
+import {initializeSpotsMissions} from "./interaction/spotsMissions.js";
+import {initializeTypeMissions} from "./interaction/typeMissions.js";
+import {generateCompletable} from "./interaction/missionCompletable.js";
+import {generateMissions} from "./generateMissions.js";
+import {initializedAllSpotsMissions} from "./interaction/allSpotsMissions.js";
 
 let isInitialized = false;
 
@@ -14,8 +15,9 @@ export async function initializeGoals() {
     await generateMissions();
     await generateCompletable();
 
-    // Style
+    // Interaction
     await initializeSpotsMissions();
+    await initializedAllSpotsMissions();
     await initializeMissionsBar();
     await initializeTypeMissions();
 
