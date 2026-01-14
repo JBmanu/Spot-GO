@@ -48,6 +48,7 @@ export async function generateMissions() {
 
 // Generate spots
 function generateSpots(title, category, progress, allProgress) {
+    // spot-card-ctn serve per contenere tutte le missioni degli spot attivati
     const spotCtn = document.querySelector('.spot-card-ctn');
     spotCtn.innerHTML +=
         `<div class="glass-medium interactive spot-card">

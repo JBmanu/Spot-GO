@@ -1,7 +1,7 @@
-﻿import {initializeMissionsBar} from "./missionsTypeBar.js";
-import {initializeSpotsMissions} from "./spotsMissions.js";
-import {initializeTypeMissions} from "./typeMissions.js";
-import {generateCompletable} from "./missionCompletable.js";
+﻿import {initializeMissionsBar} from "./interaction/missionsTypeBar.js";
+import {initializeSpotsMissions} from "./interaction/spotsMissions.js";
+import {initializeTypeMissions} from "./interaction/typeMissions.js";
+import {generateCompletable} from "./interaction/missionCompletable.js";
 import {generateMissions} from "./GenerateMissions.js";
 
 let isInitialized = false;
