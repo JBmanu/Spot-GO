@@ -4,14 +4,14 @@
     <div class="mx-4 my-6">
 
         <!-- Titolo principale -->
-        <div class="flex items-center gap-2 mb-4">
-            <img src="../assets/icons/toolbar/Goal.svg" class="icon" alt="Mission Icon"/>
-            <h1 class="text-xl font-bold text-gray-800">Le tue missione in corso</h1>
+        <div class="between-ctn pb-1">
+<!--            <img src="../assets/icons/toolbar/Goal.svg" class="icon" alt="Mission Icon"/>-->
+            <span class="text-xl font-bold text-gray-800">Missioni spot attivo</span>
+            <span class="text-sm font-bold underline">Vedi tutti</span>
         </div>
 
         <!-- Contenitore principale -->
-        <div class="vertical-ctn-g2">
-            <!-- ================= SPOT ================= -->
+        <div class="vertical-ctn-g2 spot-card-ctn">
             <div class="glass-medium interactive spot-card">
                 <!-- Spot info -->
                 <div class="between-ctn spot-header">
@@ -36,47 +36,13 @@
                                         transform="rotate(-90 20 20)"/>
                             </svg>
                             <span class="center-ctn absolute inset-0 text-sm font-semibold text-gray-800">
-                                4/5
-                            </span>
+                            5/7
+                        </span>
                         </div>
-                        <!-- Arrow -->
-                        <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"
-                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m6 9 6 6 6-6"/>
-                        </svg>
                     </div>
                 </div>
                 <!-- Missions -->
-                <div class="vertical-ctn-g2 missions-spot">
-                    <!-- Mission -->
-                    <button class="between-ctn interactive spot-mission completable">
-                        <!-- Left -->
-                        <div class="vertical-ctn-g1">
-                            <!-- Title -->
-                            <h3 class="flex items-start font-semibold text-gray-800"> Scatta la foto </h3>
-                            <!-- Description -->
-                            <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
-                        </div>
-                        <!-- Reward -->
-                        <div class="center-ctn">
-                            <span class="font-semibold text-green-600">+50 XP</span>
-                            <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt=""/>
-                        </div>
-                    </button>
-                    <!-- Mission -->
-                    <button class="between-ctn interactive spot-mission completable">
-                        <!-- Left -->
-                        <div class="flex flex-col gap-1">
-                            <!-- Title -->
-                            <h3 class="flex items-start font-semibold text-gray-800"> Scatta la foto </h3>
-                            <!-- Description -->
-                            <p class="text-xs text-gray-600"> Usa quella fotocamera del cellulare, ora! </p>
-                        </div>
-                        <!-- Reward -->
-                        <div class="flex items-center">
-                            <span class="font-semibold text-green-600">+50 XP</span>
-                        </div>
-                    </button>
+                <div class="vertical-ctn-g2 missions-spot active" data-carousel-type="vertical" data-size="mm">
                 </div>
             </div>
         </div>
@@ -115,122 +81,14 @@
     <div class="missions-ctn">
         <!-- TRACK SCORRIMENTO -->
         <div class="mission-type-slider">
-
             <!-- CARD 1 -->
-            <div class="missions-card">
-                <!-- Container -->
-                <div class="vertical-ctn-g2">
-                    <!-- ================= Elemento 1 ================= -->
-                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
-                        <!-- Lato sinistro -->
-                        <div class="space-y-1">
-                            <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
-                            <p class="text-xs text-gray-600">Complete daily activities</p>
-                            <div class="flex items-center gap-1 text-xs text-gray-700">
-                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
-                                <span>+50 XP</span>
-                            </div>
-                        </div>
-                        <!-- Lato destro -->
-                        <div class="center-ctn">
-                            <span class="text-lg font-medium text-gray-500">1 / 7</span>
-                        </div>
-                    </div>
-                    <!-- ================= Elemento 2 ================= -->
-                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
-                        <!-- Lato sinistro -->
-                        <div class="space-y-1">
-                            <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
-                            <p class="text-xs text-gray-600">Open the app at least once</p>
-                            <div class="flex items-center gap-1 text-xs text-gray-700">
-                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
-                                <span>+30 XP</span>
-                            </div>
-                        </div>
-                        <!-- Lato destro -->
-                        <div class="center-ctn">
-                            <span class="text-lg font-medium text-gray-500">✓</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
             </div>
-
             <!-- CARD 2 -->
-            <div class="missions-card">
-                <!-- Container -->
-                <div class="vertical-ctn-g2">
-                    <!-- ================= Elemento 1 ================= -->
-                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
-                        <!-- Lato sinistro -->
-                        <div class="space-y-1">
-                            <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
-                            <p class="text-xs text-gray-600">Complete daily activities</p>
-                            <div class="flex items-center gap-1 text-xs text-gray-700">
-                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
-                                <span>+50 XP</span>
-                            </div>
-                        </div>
-                        <!-- Lato destro -->
-                        <div class="center-ctn">
-                            <span class="text-lg font-medium text-gray-500">1 / 7</span>
-                        </div>
-                    </div>
-                    <!-- ================= Elemento 2 ================= -->
-                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
-                        <!-- Lato sinistro -->
-                        <div class="space-y-1">
-                            <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
-                            <p class="text-xs text-gray-600">Open the app at least once</p>
-                            <div class="flex items-center gap-1 text-xs text-gray-700">
-                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
-                                <span>+30 XP</span>
-                            </div>
-                        </div>
-                        <!-- Lato destro -->
-                        <div class="center-ctn">
-                            <span class="text-lg font-medium text-gray-500">✓</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
             </div>
-
             <!-- CARD 3 -->
-            <div class="missions-card">
-                <!-- Container -->
-                <div class="vertical-ctn-g2">
-                    <!-- ================= Elemento 1 ================= -->
-                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
-                        <!-- Lato sinistro -->
-                        <div class="space-y-1">
-                            <h3 class="text-sm font-semibold text-gray-800">Daily Mission</h3>
-                            <p class="text-xs text-gray-600">Complete daily activities</p>
-                            <div class="flex items-center gap-1 text-xs text-gray-700">
-                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
-                                <span>+50 XP</span>
-                            </div>
-                        </div>
-                        <!-- Lato destro -->
-                        <div class="center-ctn">
-                            <span class="text-lg font-medium text-gray-500">1 / 7</span>
-                        </div>
-                    </div>
-                    <!-- ================= Elemento 2 ================= -->
-                    <div class="between-ctn glass-strong interactive completable px-5 py-4">
-                        <!-- Lato sinistro -->
-                        <div class="space-y-1">
-                            <h3 class="text-sm font-semibold text-gray-800">Login Mission</h3>
-                            <p class="text-xs text-gray-600">Open the app at least once</p>
-                            <div class="flex items-center gap-1 text-xs text-gray-700">
-                                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
-                                <span>+30 XP</span>
-                            </div>
-                        </div>
-                        <!-- Lato destro -->
-                        <div class="center-ctn">
-                            <span class="text-lg font-medium text-gray-500">✓</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="vertical-ctn-g2 missions-card" data-carousel-type="vertical" data-size="md">
             </div>
         </div>
     </div>

@@ -1,28 +1,14 @@
 @layer components {
     .add-review-modal-overlay {
-        @apply absolute inset-0 z-[2000] flex items-center justify-center p-4;
-        backdrop-filter: blur(10px) saturate(110%);
-        background: rgba(255, 255, 255, 0.15);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .add-review-modal-overlay.active {
-        @apply opacity-100 pointer-events-auto;
+        @apply z-2000 p-4;
     }
 
     .add-review-modal {
-        @apply relative w-full overflow-hidden rounded-[2rem] opacity-0;
+        @apply w-full rounded-4xl opacity-0;
         max-width: 540px;
         max-height: 85%;
         transform: translateY(30px) scale(0.95);
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        background: linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
-        border: 1px solid rgba(255, 255, 255, 0.42);
-        backdrop-filter: blur(28px) saturate(170%) contrast(108%);
-        -webkit-backdrop-filter: blur(28px) saturate(170%) contrast(108%);
-        box-shadow: 0 18px 44px rgba(15, 23, 42, 0.14), 0 10px 26px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.26);
     }
 
     .add-review-modal-overlay.active .add-review-modal {
@@ -37,8 +23,6 @@
 
     .add-review-close-btn {
         @apply absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full z-10 transition-all duration-200 active:scale-95;
-        background: rgba(0, 0, 0, 0.05);
-        backdrop-filter: blur(8px);
     }
 
     .add-review-close-btn svg {
@@ -97,7 +81,7 @@
     }
 
     .star-btn:active img {
-        @apply rotate-[15deg];
+        @apply rotate-15;
     }
 
     .add-review-input-group {
@@ -135,24 +119,16 @@
     }
 
     .submit-review-btn {
-        @apply w-full py-5 rounded-3xl text-sm font-black uppercase relative overflow-hidden text-white;
+        @apply glass-btn-primary w-full py-5 rounded-3xl text-sm font-black uppercase text-white;
         letter-spacing: 0.12em;
-        background: var(--color-primary_color);
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.62);
     }
 
     .submit-review-btn:disabled {
         @apply opacity-50 cursor-not-allowed;
     }
 
-    .submit-review-btn::before {
-        @apply absolute inset-y-0 w-full h-full;
-        content: '';
-        left: -100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s ease;
-    }
+
 
     .submit-review-btn:active {
         @apply scale-[0.98];
