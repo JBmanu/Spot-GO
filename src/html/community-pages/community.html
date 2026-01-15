@@ -1,3 +1,4 @@
+
 <!-- HIdden chat view -->
 <section id="chat-container" class="hidden-chat">
   <header class="chat-header glass-medium">
@@ -9,34 +10,30 @@
   </div>
 </section>
 
-<section id="community-search-container" class="glass-overlay">
-  <div class="w-full px-4 py-3 bg-main_paper community-search-wrapper">
-    <div class="relative flex items-center gap-2">
-        <div class="relative flex-1 flex items-center">
+<section id="community-search-section" class="hidden">
+  <div class="community-search-wrapper mx-4 my-0 p-4">
+    <div class="glass-medium relative rounded-2xl shadow px-2 py-2 flex items-center gap-2">
+        <div class="relative flex-1 flex items-center min-h-13">
             <input type="text" id="community-user-search-input" placeholder="Cerca Utente" class="w-full px-4 py-2.5 pl-10 rounded-xl border border-border_color bg-main_paper text-text_color placeholder-text_color/50 focus:outline-none focus:border-primary_color focus:ring-1 focus:ring-primary_color/50" style="font-family: 'Montserrat', sans-serif;">
             <svg class="absolute left-3 w-5 h-5 text-text_color/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
         </div>
-
         <button type="button" id="community-close-search-btn" class="flex items-center justify-center w-11 h-11 rounded-xl border border-border_color bg-main_paper hover:bg-main_paper/80 transition-colors" aria-label="Annulla ricerca">
-            <img src="../../../assets/icons/community/close-search.svg" alt="Filtro" class="w-6 h-6">
+            <img src="../../../assets/icons/community/close-search.svg" alt="Chiudi ricerca" class="w-6 h-6">
         </button>
     </div>
   </div>
-
-<!-- Tab risultati -->
-  <section id="community-results-section" class="community-section hidden">
+  <!-- Tab risultati -->
+  <section id="community-results-section" class="community-section">
     <div id="community-results-container" class="vertical-carousel-track" role="list">
   </section>
 </section>
 
-
-<div class="community-main-body">
-  <section id="community-users">
+  <div id="community-main-body">
     <!-- Selettore tab -->
     <div id="community-section-selector" class="mx-4 my-0 p-4">
-        <div id="tab-bar" class="glass-medium relative rounded-2xl shadow px-2 py-2 ">
+        <div id="tab-bar" class="glass-medium relative rounded-2xl shadow px-2 py-2">
             <!-- BOTTONI -->
             <div class="relative z-10 flex justify-between min-h-13">
                 <!-- Seguiti -->
@@ -47,7 +44,7 @@
                 <button id="community-tab-followers">
                     <span>Seguaci</span>
                 </button>
-                <!-- Suggeriti -->
+                <!-- Cerca -->
                 <button id="community-tab-search">
                     <span>Cerca</span>
                 </button>
@@ -61,32 +58,61 @@
           <!-- Follows cards list -->
         </div>
       </section>
-
       <!-- Tab Seguaci -->
       <section id="community-followers-section" class="community-section hidden">
         <div id="community-followers-container" class="vertical-carousel-track" role="list">
           <!-- Followers cards list -->
-          seguaci
-      </div>
-    </section>
-
+        </div>
+      </section>
     </div>
-  </section>
+  </div>
 
     <!-- Suggeriti -->
-  <section id="community-suggested-section" class="w-full max-w-none ml-2">
+  <!-- <section id="community-suggested-section" class="w-full max-w-none ml-2">
     <header class="flex flex-row items-center justify-between">
-        <script type="module" src="/@vite/client"></script>
         <h2 class="home-section-title">Suggeriti</h2>
     </header>
-    <div id="community-suggested-container" class="carousel-horizontal_track" role="list" data-drag-init="1" style="overflow-x: auto; display: flex; flex-direction: row; touch-action: pan-y;">
-      <!-- Suggested followers list -->
-    <div id="community-empty-suggestion" class="empty-state-banner hidden">
-          <h3 class="text-lg font-semibold mb-2">Nessun risultato trovato.</h3>
-          <p class="text-sm text-text_color/70">
-              Non ci sono spot vicini per questa categoria. Prova a cambiarla!
-          </p>
-      </div>
+    <div id="community-suggested-container" class="carousel-horizontal_track" role="list" data-drag-init="1"></div>
   </section>
+ -->
 
-</div>
+<div class="carousel-horizontal_track" data-drag-init="1" style="overflow-x: auto; display: flex; flex-direction: row; touch-action: pan-y;">
+  <!-- IMPORTANTE VEDERE CSS spot-card-nearby -->
+    <article class="general-card spot-card-nearby carousel-horizontal_item community-card" role="listitem" data-user-id="teo@gmail.com">
+      <div class="flex flex-row items-center">
+        <div class="user-avatar">Te</div>
+        <div class="user-card-data">
+          <h3 class="text-xl font-bold">Teo</h3>
+          <p class="italic">
+            <span>@</span>Teo
+          </p>
+        </div>
+        </div>
+        <div class="card-actions-container">
+          <button type="button" class="comm-button-action-icon" alt="Invia messaggio" aria-label="Invia messaggio">
+            <img src="assets/icons/community/message.svg">
+          </button>
+          <button type="button" class="comm-button-action-icon" alt="Rimuovi amico" aria-label="Rimuovi amico">
+            <img src="assets/icons/community/delete.svg">
+          </button>
+        </div>
+      </article>
+        <!-- <article class="glass-strong" data-slot="card" data-spot-id="ixdzOResuuMH8p0zpu6h" >
+            <div class="glass-medium" data-slot="body">
+                <h3 data-slot="title" data-field="title">Mausoleo di Monte del Grano</h3>
+                <div data-slot="meta">
+                    <span data-slot="meta-item">
+                        <img src="../../assets/icons/homepage/Place%20Marker.svg" alt="Posizione" data-slot="pin-icon">
+                        <span data-slot="meta-text" data-field="distance">180 m</span>
+                        <span class="opacity-45">•</span>
+                        <span data-slot="meta-text" data-field="category">Cultura</span>
+                    </span>
+
+                    <div class="glass-medium" data-slot="rating-pill">
+                        <span data-slot="rating-value" data-field="rating">4.2</span>
+                        <img src="../../assets/icons/homepage/Star.svg" alt="stella" data-slot="rating-star">
+                    </div>
+                </div>
+            </div>
+        </article> -->
+  </div>

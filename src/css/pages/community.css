@@ -1,35 +1,23 @@
 @layer components {
 
-    #community-section-selector {
-        position: sticky;
-        top: 0;
-        z-index: 100;
+    .floating-toolbar {
+        @apply glass-medium relative rounded-2xl shadow px-2 py-2;
     }
 
-    .community-main-body{
+    .community-search-wrapper {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .community-main-body {
         height: 80vh;
         display: flex;
         flex-direction: column;
     }
 
-    #community-suggested-section {
-        flex-shrink: 0; /* Altezza fissa, non si riduce */
-        position: sticky;
-        bottom: 0;
-    }
-
-    #community-suggested-section .community-card {
-        width: 300px;
-        display: initial;
-    }
-
     #community-suggested-section .community-card div:first-child {
         justify-content: center;
-    }
-
-    #community-users {
-        flex: 1; /* Occupa tutto lo spazio disponibile */
-        overflow-y: auto; /* Scroll solo qui se necessario */
     }
     
     .community-card {

@@ -32,30 +32,38 @@ function makeCardInfo(data) {
 function makeFriendActionContainer(data) {
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
-    const messageButton = document.createElement("button");
-    messageButton.setAttribute("type", "button");
-    messageButton.setAttribute("class", "comm-button-action-icon");
-    messageButton.setAttribute("alt", "Invia messaggio");
-    messageButton.setAttribute("aria-label", "Invia messaggio");
-    const messageIcon = document.createElement("img");
-    messageIcon.src = "assets/icons/community/message.svg";
-    messageButton.appendChild(messageIcon);
-    messageButton.addEventListener('click', async () => {
-        await fetchFriendMessages(data);
-    });
+    console.log("Data", data);
+    if (data.followingBack == true || data.followingBack == null) {
+        const messageButton = document.createElement("button");
+        messageButton.setAttribute("type", "button");
+        messageButton.setAttribute("class", "comm-button-action-icon");
+        messageButton.setAttribute("alt", "Invia messaggio");
+        messageButton.setAttribute("aria-label", "Invia messaggio");
+        const messageIcon = document.createElement("img");
+        messageIcon.src = "assets/icons/community/message.svg";
+        messageButton.appendChild(messageIcon);
+        messageButton.addEventListener('click', async () => {
+            await fetchFriendMessages(data);
+        });
 
-    const removeButton = document.createElement("button");
-    removeButton.setAttribute("type", "button");
-    removeButton.setAttribute("class", "comm-button-action-icon");
-    removeButton.setAttribute("alt", "Rimuovi amico");
-    removeButton.setAttribute("aria-label", "Rimuovi amico");
-    const removeIcon = document.createElement("img");
-    removeIcon.src = "assets/icons/community/delete.svg";
-    removeButton.appendChild(removeIcon);
-    removeButton.addEventListener('click', () => removeFollower(data.id, data.username));
+        const removeButton = document.createElement("button");
+        removeButton.setAttribute("type", "button");
+        removeButton.setAttribute("class", "comm-button-action-icon");
+        removeButton.setAttribute("alt", "Rimuovi amico");
+        removeButton.setAttribute("aria-label", "Rimuovi amico");
+        const removeIcon = document.createElement("img");
+        removeIcon.src = "assets/icons/community/delete.svg";
+        removeButton.appendChild(removeIcon);
+        removeButton.addEventListener('click', () => removeFollower(data.id, data.username));
 
-    actionsContainer.appendChild(messageButton);
-    actionsContainer.appendChild(removeButton);
+        actionsContainer.appendChild(messageButton);
+        actionsContainer.appendChild(removeButton);
+    } else {
+        const followIcon = document.createElement("img");
+        followIcon.src = "assets/icons/community/add_user.svg";
+        const iconBtn = followActionBtn(data.id, followIcon);
+        actionsContainer.appendChild(iconBtn);
+    }
     return actionsContainer;
 }
 
@@ -73,7 +81,7 @@ export function makeFriendCard(data) {
     return article;
 }
 
-export function makeSuggestedCard(data, isRowCard) {
+export function makeSuggestedCard(data) {
     const article = document.createElement("article");
     article.className = "community-card";
     article.setAttribute("role", "listitem");
@@ -82,27 +90,26 @@ export function makeSuggestedCard(data, isRowCard) {
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
 
-    const addButton = document.createElement("button");
-    addButton.setAttribute("type", "button");
-    addButton.setAttribute("class", "comm-button-action-icon");
-    addButton.setAttribute("alt", "Aggiungi amico");
-    addButton.setAttribute("aria-label", "Aggiungi amico");
+    const followsText = document.createElement("p");
+    followsText.textContent = "Segui";
 
-    if (!isRowCard) {
-        const addIcon = document.createElement("img");
-        addIcon.src = "assets/icons/community/add_user.svg";
-        addButton.appendChild(addIcon);
-    } else {
-        const followsText = document.createElement("p");
-        followsText.textContent = "Segui";
-        addButton.appendChild(followsText);
-    }
-    addButton.addEventListener('click', () => addFollower(data.id));
+    const addButton = followActionBtn(data.id, followsText);
     actionsContainer.appendChild(addButton);
     article.appendChild(makeCardInfo(data, isRowCard));
     article.appendChild(actionsContainer);
 
     return article;
+}
+
+function followActionBtn(userId, btnBody) {
+    const addButton = document.createElement("button");
+    addButton.setAttribute("type", "button");
+    addButton.setAttribute("class", "comm-button-action-icon");
+    addButton.setAttribute("alt", "Aggiungi amico");
+    addButton.setAttribute("aria-label", "Aggiungi amico");
+    addButton.appendChild(btnBody);
+    addButton.addEventListener('click', () => addFollower(userId));
+    return addButton;
 }
 
 async function removeFollower(userId, name) {

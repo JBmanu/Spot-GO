@@ -9,53 +9,25 @@ export async function loadCommunityData() {
     await Promise.all([
         loadFollowing(loggedUser.email),
         loadFollowers(loggedUser.email),
-        loadSuggested(loggedUser.email)
+        //loadSuggested(loggedUser.email)
     ]);
     initTabSelector(loggedUser.email);
 }
 
 function initTabSelector(userId) {
-    // const searchbarInput = document.getElementById("community-user-search-input");
-    // const btnCloseSearch = document.getElementById("community-close-search-btn");
+    const searchbarInput = document.getElementById("community-user-search-input");
+    const body = document.getElementById("community-main-body");
+    const btnCloseSearch = document.getElementById("community-close-search-btn");
     const btnFollows = document.getElementById("community-tab-follows");
     const btnFollowers = document.getElementById("community-tab-followers");
     const btnSearch = document.getElementById("community-tab-search");
 
-    // const searchSection = document.getElementById("community-results-section");
+    const searchsection = document.getElementById("community-search-section");
     const followsSection = document.getElementById("community-follows-section");
     const followersSection = document.getElementById("community-followers-section");
 
     const buttons = [btnFollows, btnFollowers, btnSearch];
     const sections = [followsSection, followersSection];
-
-    // searchbarInput.addEventListener("input", () => {
-    //     //if (searchbarInput.value.length < 3) return;
-    //     searchUser(searchbarInput.value).then(results =>
-    //         getCurrentUser().then(loggedUser =>
-    //             getFollowingUser(loggedUser.email).then(followings => {
-    //                 const followingIds = followings.map(f => f.email);
-    //                 const finalRes = results.map(usr => {
-    //                     return {
-    //                         ...usr,
-    //                         following: followingIds.includes(usr.email)
-    //                     }
-    //                 });
-    //                 showsItemsInContainer(finalRes, "results", data =>
-    //                     data.following ? makeFriendCard(data) : makeSuggestedCard(data));
-    //             })
-    //         ));
-    // });
-
-    // searchbarInput.addEventListener('click', ()=> {
-    //     hideAll(sections);
-    //     searchSection.classList.remove('hidden');
-    // });
-
-    // btnCloseSearch.addEventListener('click', ()=> {
-    //     searchbarInput.value = '';
-    //     const resultsDiv = document.getElementById("community-results-container");
-    //     resultsDiv.innerHTML = '';
-    // });
 
     btnFollows.addEventListener('click', async () => {
         hideAll(sections);
@@ -74,6 +46,34 @@ function initTabSelector(userId) {
 
     btnSearch.addEventListener('click', () => {
         console.log("Open search modal");
+        const searchsection = document.getElementById("community-search-section");
+        searchsection.classList.remove('hidden');
+        body.classList.add('hidden');
+    });
+
+    btnCloseSearch.addEventListener('click', ()=> {
+        searchbarInput.value = '';
+        const resultsDiv = document.getElementById("community-results-container");
+        resultsDiv.innerHTML = '';
+        searchsection.classList.add('hidden');
+        body.classList.remove('hidden');
+    });
+
+    searchbarInput.addEventListener("input", () => {
+        //if (searchbarInput.value.length < 3) return;
+        searchUser(searchbarInput.value).then(results =>
+            getCurrentUser().then(loggedUser =>
+                getFollowingUser(loggedUser.email).then(followings => {
+                    const followingIds = followings.map(f => f.email);
+                    const finalRes = results.map(usr => {
+                        return {
+                            ...usr,
+                            followingBack: followingIds.includes(usr.email)
+                        }
+                    });
+                    showsItemsInContainer(finalRes, "results", data => makeFriendCard(data));
+                })
+            ));
     });
 }
 
@@ -87,20 +87,19 @@ function unselectAllButton(buttons) {
 
 async function loadFollowing(userId) {
     getFollowingUser(userId).then(follows => 
-        showsItemsInContainer(follows, "follows", makeFriendCard)
+        showsItemsInContainer(follows, "follows", data => makeFriendCard(data))
     );
 }
 
 async function loadSuggested(userId) {
     getSuggestedFollows(userId).then(suggested => 
-        showsItemsInContainer(suggested, "suggested", data => makeSuggestedCard(data, true))
+        showsItemsInContainer(suggested, "suggested", data => makeSuggestedCard(data))
     );
 }
 
 async function loadFollowers(userId) {
     getFollowersUser(userId).then(followers => {
-        showsItemsInContainer(followers, "followers", 
-            data => data.followingBack ? makeFriendCard(data): makeSuggestedCard(data, false));
+        showsItemsInContainer(followers, "followers", data => makeFriendCard(data));
     });
 }
 
