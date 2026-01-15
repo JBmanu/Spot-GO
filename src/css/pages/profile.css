@@ -10,7 +10,8 @@
 
     .profile-reward-card,
     .profile-reward-card-large {
-        @apply glass-modal relative isolate overflow-hidden duration-300 ease-[cubic-bezier(0.16, 1, 0.3, 1)];
+        @apply glass-modal relative isolate overflow-hidden duration-300;
+        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
         transition-property: all;
     }
 
@@ -207,7 +208,7 @@
     }
 
     #polaroid-carousel-container .carousel-horizontal_track {
-        @apply p-0;
+        @apply p-0 snap-x snap-mandatory;
     }
 
     .profile-carousel-hit {
@@ -244,7 +245,7 @@
     }
 
     .profile-polaroid {
-        @apply glass-modal relative rounded-xl p-4 space-y-3 isolate overflow-hidden z-20 w-[350px] shrink-0 shadow-none;
+        @apply glass-modal relative rounded-xl p-4 space-y-3 isolate overflow-hidden z-20 w-[380px] shrink-0 shadow-none snap-center;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid rgba(152, 152, 152, 0.4);
     }
