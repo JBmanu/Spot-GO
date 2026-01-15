@@ -15,16 +15,32 @@ export async function loadCommunityData() {
 }
 
 function initTabSelector(userId) {
+    const searchWrapper = document.getElementById('searchWrapper');
     const btnFollows = document.getElementById("community-tab-follows");
     const btnFollowers = document.getElementById("community-tab-followers");
     const btnSuggested = document.getElementById("community-tab-suggested");
 
+    const searchSection = document.getElementById("community-results-section");
     const followsSection = document.getElementById("community-follows-section");
     const followersSection = document.getElementById("community-followers-section");
     const suggestedSection = document.getElementById("community-suggested-section");
 
     const buttons = [btnFollows, btnFollowers, btnSuggested];
-    const sections = [followsSection, followersSection, suggestedSection];
+    const sections = [searchSection, followsSection, followersSection, suggestedSection];
+
+    searchWrapper.addEventListener('mouseenter', function() {
+        console.log('🔍 Hover IN - Espansione avviata!');
+        hideAll(buttons);
+        hideAll(sections);
+        searchSection.classList.remove('hidden');
+    });
+
+    searchWrapper.addEventListener('mouseleave', function() {
+        console.log('🔍 Hover OUT - Collasso avviato!');
+        buttons.forEach(b => b.classList.remove('hidden'));
+        unselectAllButton(buttons);
+        // followsSection.classList.remove('hidden');
+    });
 
     btnFollows.addEventListener('click', async () => {
         hideAll(sections);

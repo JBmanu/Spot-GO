@@ -15,6 +15,16 @@
         <div id="tab-bar" class="glass-medium relative rounded-2xl shadow px-2 py-2 ">
             <!-- BOTTONI -->
             <div class="relative z-10 flex justify-between min-h-13">
+                <div class="search-wrapper" id="searchWrapper">
+                  <button id="search-user-btn" class="search-btn" aria-label="Submit Search">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </button>
+                  <input type="text" class="search-input" placeholder="Search website..." aria-label="Search">
+                </div>
+
                 <!-- Seguiti -->
                 <button id="community-tab-follows" class="active-community-tab">
                     <span>Seguiti</span>
@@ -30,6 +40,14 @@
             </div>
         </div>
     </div>
+
+  
+  <!-- Tab Suggeriti -->
+  <section id="community-results-section" class="community-section hidden">
+    <div id="community-results-container" class="vertical-carousel-track" role="list">
+      <!-- Suggested followers list -->
+       risultati ricerca
+  </section>
 
   <!-- Tab Seguiti -->
   <section id="community-follows-section" class="community-section">
