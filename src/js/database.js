@@ -513,10 +513,10 @@ export async function insertNewSpot(spot) {
  * Adds a new polaroid to the database
  */
 export async function addPolaroidToDatabase({ title, idLuogo, date, imageUrl }) {
-    const user = await getCurrentUser();
-    if (!user) throw new Error("Utente non autenticato");
-
     try {
+        const user = await getCurrentUser();
+        if (!user) throw new Error("Utente non autenticato");
+
         const docRef = await addDoc(collection(db, "Cartolina"), {
             idUtente: user.id,
             title: title,
@@ -531,4 +531,18 @@ export async function addPolaroidToDatabase({ title, idLuogo, date, imageUrl }) 
         console.error("Errore salvataggio polaroid:", err);
         throw err;
     }
+}
+
+/**
+ * Recupera le polaroid create da un utente
+ */
+export async function getUserPolaroids(userId) {
+    return getItems(
+        "Cartolina",
+        where('idUtente', '==', userId),
+        (id, data) => ({
+            id: id,
+            ...data
+        })
+    );
 }
