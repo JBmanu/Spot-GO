@@ -255,7 +255,7 @@
     }
 
     .profile-polaroid-menu {
-        @apply absolute top-2 right-2 w-9 h-9 rounded-[10px] grid place-items-center z-10 transition-all duration-300 ease-out;
+        @apply absolute top-2 right-2 w-9 h-9 rounded-[10px] grid place-items-center z-30 transition-all duration-300 ease-out;
         color: rgba(22, 24, 29, 0.78);
     }
 
@@ -287,6 +287,32 @@
     .profile-carousel-counter {
         @apply text-center text-sm font-semibold;
         color: rgba(28, 124, 84, 0.80);
+    }
+
+    .profile-polaroids-empty {
+        @apply glass-modal flex flex-col items-center justify-center w-full py-8 px-6 text-center;
+        border-radius: 24px;
+        margin: 1.5rem 0;
+    }
+
+    .profile-polaroids-empty-icon {
+        @apply mb-4 opacity-30;
+        width: 48px;
+        height: 48px;
+        filter: grayscale(1);
+    }
+
+    .profile-polaroids-empty-title {
+        @apply text-base font-semibold mb-1;
+        color: var(--color-text_color);
+    }
+
+    .profile-polaroids-empty-text {
+        @apply text-sm leading-relaxed;
+        opacity: 0.6;
+        color: var(--color-text_color);
+        max-width: 240px;
+        margin: 0 auto;
     }
 
     @media (max-width: 640px) {

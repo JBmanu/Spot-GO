@@ -209,7 +209,13 @@ async function getPolaroidTemplate() {
 }
 
 function renderEmptyCarousel(container) {
-    container.innerHTML = "";
+    container.innerHTML = `
+        <div class="profile-polaroids-empty">
+            <img src="../assets/icons/profile/Photo%20Gallery.svg" class="profile-polaroids-empty-icon" alt="" />
+            <h3 class="profile-polaroids-empty-title">Nessuna polaroid ancora</h3>
+            <p class="profile-polaroids-empty-text">Crea la tua prima polaroid per immortalare i tuoi ricordi!</p>
+        </div>
+    `;
     updateCarouselCounter(0, 0);
 }
 
