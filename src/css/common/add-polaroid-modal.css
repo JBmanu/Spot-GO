@@ -4,11 +4,12 @@
     }
 
     .add-polaroid-modal {
-        @apply w-full rounded-4xl opacity-0;
+        @apply w-full rounded-4xl opacity-0 flex flex-col;
         max-width: 540px;
         max-height: 85%;
         transform: translateY(30px) scale(0.95);
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow: hidden;
     }
 
     .add-polaroid-modal-overlay.active .add-polaroid-modal {
@@ -29,6 +30,10 @@
     .add-polaroid-container {
         @apply flex flex-col w-full max-w-lg mx-auto relative;
         padding: 1rem 1.5rem 1.5rem;
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+        -webkit-overflow-scrolling: touch;
+        flex: 1;
     }
 
     .add-polaroid-header {
