@@ -29,7 +29,7 @@ function renderMessages(userData, messages) {
             const bubble = document.createElement('div');
             bubble.className = 'message-bubble';
             bubble.innerHTML = 
-            `<article class="community-chat-polaroid ">
+            `<article class="community-chat-polaroid" >
                 <button
                         type="button"
                         class="profile-polaroid-menu"
@@ -47,7 +47,16 @@ function renderMessages(userData, messages) {
                 </div>
             </article>
             <div class='text-message'><p>${msg.testo}</p></div>`;
-        
+            const article = bubble.querySelector('.community-chat-polaroid');
+            if (article) {
+                article.addEventListener('click', (e) => {
+                    if (e.target.closest('.profile-polaroid-menu')) {
+                        return;
+                    }
+                    //TODO: open modal cartolina details
+                    openPolaroidDetailsModal(msg.cartolina);            
+                });
+            }
             msgDiv.appendChild(bubble);
             messagesContainer.appendChild(msgDiv);
         });

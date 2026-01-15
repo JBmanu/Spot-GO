@@ -23,7 +23,7 @@ function makeCardInfo(data) {
     followCardData.appendChild(followUsername);
 
     const flexContainer = document.createElement("div");
-    flexContainer.className = "flex flex-row justify-between items-center";
+    flexContainer.className = "flex flex-row items-center";
     flexContainer.appendChild(followAvatar);
     flexContainer.appendChild(followCardData);
     return flexContainer;
@@ -73,7 +73,7 @@ export function makeFriendCard(data) {
     return article;
 }
 
-export function makeSuggestedCard(data) {
+export function makeSuggestedCard(data, isRowCard) {
     const article = document.createElement("article");
     article.className = "community-card";
     article.setAttribute("role", "listitem");
@@ -87,14 +87,19 @@ export function makeSuggestedCard(data) {
     addButton.setAttribute("class", "comm-button-action-icon");
     addButton.setAttribute("alt", "Aggiungi amico");
     addButton.setAttribute("aria-label", "Aggiungi amico");
-    const addIcon = document.createElement("img");
-    addIcon.src = "assets/icons/community/add_user.svg";
-    addButton.appendChild(addIcon);
+
+    if (!isRowCard) {
+        const addIcon = document.createElement("img");
+        addIcon.src = "assets/icons/community/add_user.svg";
+        addButton.appendChild(addIcon);
+    } else {
+        const followsText = document.createElement("p");
+        followsText.textContent = "Segui";
+        addButton.appendChild(followsText);
+    }
     addButton.addEventListener('click', () => addFollower(data.id));
-
     actionsContainer.appendChild(addButton);
-
-    article.appendChild(makeCardInfo(data));
+    article.appendChild(makeCardInfo(data, isRowCard));
     article.appendChild(actionsContainer);
 
     return article;

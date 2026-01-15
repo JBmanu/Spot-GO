@@ -1,15 +1,15 @@
-<section class="space-y-3 flex flex-col">
-  <!-- HIdden chat view -->
-  <section id="chat-container" class="hidden-chat">
-    <header class="chat-header glass-medium">
-      <button id="closeBtn" class="close-btn">✕</button>
-      <h2>Chat con <p id="user-chat-name"></p></h2>
-    </header>
-    <div class="messages-container " id="messagesContainer">
-      <!-- Messaggi verranno inseriti qui -->
-    </div>
-  </section>
+<!-- HIdden chat view -->
+<section id="chat-container" class="hidden-chat">
+  <header class="chat-header glass-medium">
+    <button id="closeBtn" class="close-btn">✕</button>
+    <h2>Chat con <p id="user-chat-name"></p></h2>
+  </header>
+  <div class="messages-container " id="messagesContainer">
+    <!-- Messaggi verranno inseriti qui -->
+  </div>
+</section>
 
+<section id="community-search-container" class="glass-overlay">
   <div class="w-full px-4 py-3 bg-main_paper community-search-wrapper">
     <div class="relative flex items-center gap-2">
         <div class="relative flex-1 flex items-center">
@@ -23,10 +23,19 @@
             <img src="../../../assets/icons/community/close-search.svg" alt="Filtro" class="w-6 h-6">
         </button>
     </div>
-</div>
+  </div>
 
-  <!-- Selettore tab -->
-  <div id="community-section-selector" class="mx-4 my-0 p-4">
+<!-- Tab risultati -->
+  <section id="community-results-section" class="community-section hidden">
+    <div id="community-results-container" class="vertical-carousel-track" role="list">
+  </section>
+</section>
+
+
+<div class="community-main-body">
+  <section id="community-users">
+    <!-- Selettore tab -->
+    <div id="community-section-selector" class="mx-4 my-0 p-4">
         <div id="tab-bar" class="glass-medium relative rounded-2xl shadow px-2 py-2 ">
             <!-- BOTTONI -->
             <div class="relative z-10 flex justify-between min-h-13">
@@ -39,40 +48,45 @@
                     <span>Seguaci</span>
                 </button>
                 <!-- Suggeriti -->
-                <button id="community-tab-suggested">
-                    <span>Suggeriti</span>
+                <button id="community-tab-search">
+                    <span>Cerca</span>
                 </button>
             </div>
         </div>
     </div>
+    <div class="flex flex-col space-y-3">
+        <!-- Tab Seguiti -->
+      <section id="community-follows-section" class="community-section">
+        <div id="community-follows-container" class="vertical-carousel-track" role="list">
+          <!-- Follows cards list -->
+        </div>
+      </section>
 
-  
-  <!-- Tab risultati -->
-  <section id="community-results-section" class="community-section hidden">
-    <div id="community-results-container" class="vertical-carousel-track" role="list">
-      <!-- Suggested followers list -->
-       risultati ricerca
-  </section>
+      <!-- Tab Seguaci -->
+      <section id="community-followers-section" class="community-section hidden">
+        <div id="community-followers-container" class="vertical-carousel-track" role="list">
+          <!-- Followers cards list -->
+          seguaci
+      </div>
+    </section>
 
-  <!-- Tab Seguiti -->
-  <section id="community-follows-section" class="community-section">
-    <div id="community-follows-container" class="vertical-carousel-track" role="list">
-      <!-- Follows cards list -->
     </div>
   </section>
 
-  <!-- Tab Seguaci -->
-  <section id="community-followers-section" class="community-section hidden">
-    <div id="community-followers-container" class="vertical-carousel-track" role="list">
-      <!-- Followers cards list -->
-       seguaci
-    </div>
+    <!-- Suggeriti -->
+  <section id="community-suggested-section" class="w-full max-w-none ml-2">
+    <header class="flex flex-row items-center justify-between">
+        <script type="module" src="/@vite/client"></script>
+        <h2 class="home-section-title">Suggeriti</h2>
+    </header>
+    <div id="community-suggested-container" class="carousel-horizontal_track" role="list" data-drag-init="1" style="overflow-x: auto; display: flex; flex-direction: row; touch-action: pan-y;">
+      <!-- Suggested followers list -->
+    <div id="community-empty-suggestion" class="empty-state-banner hidden">
+          <h3 class="text-lg font-semibold mb-2">Nessun risultato trovato.</h3>
+          <p class="text-sm text-text_color/70">
+              Non ci sono spot vicini per questa categoria. Prova a cambiarla!
+          </p>
+      </div>
   </section>
 
-  <!-- Tab Suggeriti -->
-  <section id="community-suggested-section" class="community-section hidden">
-    <div id="community-suggested-container" class="vertical-carousel-track" role="list">
-      <!-- Suggested followers list -->
-       suggeriti
-  </section>
-</section>
+</div>

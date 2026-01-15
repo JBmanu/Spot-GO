@@ -15,56 +15,47 @@ export async function loadCommunityData() {
 }
 
 function initTabSelector(userId) {
-    const searchbarInput = document.getElementById("community-user-search-input");
-    const btnCloseSearch = document.getElementById("community-close-search-btn");
+    // const searchbarInput = document.getElementById("community-user-search-input");
+    // const btnCloseSearch = document.getElementById("community-close-search-btn");
     const btnFollows = document.getElementById("community-tab-follows");
     const btnFollowers = document.getElementById("community-tab-followers");
-    const btnSuggested = document.getElementById("community-tab-suggested");
+    const btnSearch = document.getElementById("community-tab-search");
 
-    const searchSection = document.getElementById("community-results-section");
-    const sectionSelector = document.getElementById("community-section-selector");
+    // const searchSection = document.getElementById("community-results-section");
     const followsSection = document.getElementById("community-follows-section");
     const followersSection = document.getElementById("community-followers-section");
-    const suggestedSection = document.getElementById("community-suggested-section");
 
-    const buttons = [btnFollows, btnFollowers, btnSuggested];
-    const sections = [searchSection, followsSection, followersSection, suggestedSection];
+    const buttons = [btnFollows, btnFollowers, btnSearch];
+    const sections = [followsSection, followersSection];
 
-    searchbarInput.addEventListener("input", () => {
-        //if (searchbarInput.value.length < 3) return;
-        searchUser(searchbarInput.value).then(results =>
-            getCurrentUser().then(loggedUser =>
-                getFollowingUser(loggedUser.email).then(followings => {
-                    const followingIds = followings.map(f => f.email);
-                    const finalRes = results.map(usr => {
-                        return {
-                            ...usr,
-                            following: followingIds.includes(usr.email)
-                        }
-                    });
-                    showsItemsInContainer(finalRes, "results", data =>
-                        data.following ? makeFriendCard(data) : makeSuggestedCard(data));
-                })
-            ));
-    });
+    // searchbarInput.addEventListener("input", () => {
+    //     //if (searchbarInput.value.length < 3) return;
+    //     searchUser(searchbarInput.value).then(results =>
+    //         getCurrentUser().then(loggedUser =>
+    //             getFollowingUser(loggedUser.email).then(followings => {
+    //                 const followingIds = followings.map(f => f.email);
+    //                 const finalRes = results.map(usr => {
+    //                     return {
+    //                         ...usr,
+    //                         following: followingIds.includes(usr.email)
+    //                     }
+    //                 });
+    //                 showsItemsInContainer(finalRes, "results", data =>
+    //                     data.following ? makeFriendCard(data) : makeSuggestedCard(data));
+    //             })
+    //         ));
+    // });
 
-    searchbarInput.addEventListener('click', ()=> {
-        hideAll(sections);
-        sectionSelector.classList.add('hidden');
-        searchSection.classList.remove('hidden');
-    });
+    // searchbarInput.addEventListener('click', ()=> {
+    //     hideAll(sections);
+    //     searchSection.classList.remove('hidden');
+    // });
 
-    btnCloseSearch.addEventListener('click', ()=> {
-        hideAll(sections);
-        unselectAllButton(buttons);
-        searchbarInput.value = '';
-        const resultsDiv = document.getElementById("community-results-container");
-        resultsDiv.innerHTML = '';
-        sectionSelector.classList.remove('hidden');
-        followsSection.classList.remove('hidden');
-        btnFollows.classList.add('active-community-tab');
-
-    });
+    // btnCloseSearch.addEventListener('click', ()=> {
+    //     searchbarInput.value = '';
+    //     const resultsDiv = document.getElementById("community-results-container");
+    //     resultsDiv.innerHTML = '';
+    // });
 
     btnFollows.addEventListener('click', async () => {
         hideAll(sections);
@@ -81,13 +72,9 @@ function initTabSelector(userId) {
         followersSection.classList.remove('hidden');
     });
 
-    btnSuggested.addEventListener('click', async () => {
-        unselectAllButton(buttons);
-        hideAll(sections);
-        await loadSuggested(userId);
-        btnSuggested.classList.add('active-community-tab');
-        suggestedSection.classList.remove('hidden');
-    }); 
+    btnSearch.addEventListener('click', () => {
+        console.log("Open search modal");
+    });
 }
 
 function hideAll(nodes) {
@@ -106,14 +93,14 @@ async function loadFollowing(userId) {
 
 async function loadSuggested(userId) {
     getSuggestedFollows(userId).then(suggested => 
-        showsItemsInContainer(suggested, "suggested", makeSuggestedCard)
+        showsItemsInContainer(suggested, "suggested", data => makeSuggestedCard(data, true))
     );
 }
 
 async function loadFollowers(userId) {
     getFollowersUser(userId).then(followers => {
         showsItemsInContainer(followers, "followers", 
-            data => data.followingBack ? makeFriendCard(data): makeSuggestedCard(data));
+            data => data.followingBack ? makeFriendCard(data): makeSuggestedCard(data, false));
     });
 }
 
