@@ -188,18 +188,18 @@ export async function getVisitedSpots(username) {
 
 export async function searchUser(searchId) {
     if (!searchId) return [];
-  
+
     try {
         // Collection reference
         const usersCol = collection(db, 'Utente');
-        
+
         // Query per ID che inizia con searchId
         const q = query(
             usersCol,
             where('__name__', '>=', searchId),
             where('__name__', '<=', searchId + '\uf8ff')
         );
-        
+
         // Esegui query
         const querySnapshot = await getDocs(q);
         // Array risultati
@@ -207,16 +207,16 @@ export async function searchUser(searchId) {
         querySnapshot.forEach((doc) => {
             const docData = doc.data();
             matchingUsers.push({
-                    id: doc.id,
-                    livello: docData.livello || "-",
-                    email: docData.email || "-",
-                    username: docData.username || "-",
-                    name: docData.name || "-"
-                });
+                id: doc.id,
+                livello: docData.livello || "-",
+                email: docData.email || "-",
+                username: docData.username || "-",
+                name: docData.name || "-"
+            });
         });
-        
+
         return matchingUsers;
-        
+
     } catch (error) {
         console.log('Errore:', error);
         return [];
@@ -548,7 +548,7 @@ export async function insertNewSpot(spot) {
 /**
  * Adds a new polaroid to the database
  */
-export async function addPolaroidToDatabase({ title, idLuogo, date, imageUrl }) {
+export async function addPolaroidToDatabase({ title, idLuogo, date, imageUrl, diary }) {
     try {
         const user = await getCurrentUser();
         if (!user) throw new Error("Utente non autenticato");
@@ -559,6 +559,7 @@ export async function addPolaroidToDatabase({ title, idLuogo, date, imageUrl }) 
             idLuogo: idLuogo,
             date: date,
             immagini: imageUrl ? [imageUrl] : [],
+            diary: diary || "",
             friends: [],
             timestamp: new Date().toISOString()
         });
@@ -581,4 +582,18 @@ export async function getUserPolaroids(userId) {
             ...data
         })
     );
+}
+
+/**
+ * Updates a polaroid document
+ */
+export async function updatePolaroid(polaroidId, dataToUpdate) {
+    try {
+        const docRef = doc(db, "Cartolina", polaroidId);
+        await updateDoc(docRef, dataToUpdate);
+        console.log(`Polaroid ${polaroidId} aggiornata`);
+    } catch (err) {
+        console.error("Errore aggiornamento polaroid:", err);
+        throw err;
+    }
 }

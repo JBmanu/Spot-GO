@@ -101,6 +101,7 @@ function initializeAddPolaroid(wrapperEl) {
     const titleInput = wrapperEl.querySelector("#polaroid-title");
     const locationInput = wrapperEl.querySelector("#polaroid-location");
     const dateInput = wrapperEl.querySelector("#polaroid-date");
+    const diaryInput = wrapperEl.querySelector("#polaroid-diary");
     const submitBtn = form.querySelector('button[type="submit"]');
     const helpText = wrapperEl.querySelector("#polaroid-help-text");
 
@@ -174,6 +175,7 @@ function initializeAddPolaroid(wrapperEl) {
         const title = titleInput.value.trim();
         const location = locationInput.value.trim();
         const date = dateInput.value;
+        const diary = diaryInput ? diaryInput.value.trim() : "";
 
         if (!selectedImage) {
             alert("Seleziona un'immagine.");
@@ -194,7 +196,8 @@ function initializeAddPolaroid(wrapperEl) {
                 title,
                 idLuogo: location,
                 date,
-                imageUrl: imageDataUrl
+                imageUrl: imageDataUrl,
+                diary
             });
 
             form.reset();
