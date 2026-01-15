@@ -84,21 +84,13 @@
         <div class="profile-carousel">
             <button type="button" class="profile-carousel-hit profile-carousel-hit--left"
                 aria-label="Polaroid precedente"></button>
-            <article class="profile-polaroid">
-                <button type="button" class="profile-polaroid-menu glass-backdrop-medium" aria-label="Menu polaroid">
-                    <img src="../assets/icons/profile/Menu.svg" alt="Menu icon">
-                </button>
-                <div class="profile-polaroid-image-container">
-                    <div class="profile-polaroid-image"></div>
-                </div>
-                <div class="profile-polaroid-text">
-                    <h2 class="profile-polaroid-title">Titolo della polaroid</h2>
-                    <p class="profile-polaroid-subtitle">Luogo - Data</p>
-                </div>
-            </article>
+            <section data-carousel-type="horizontal" data-card-selector=".polaroid-template"
+                id="polaroid-carousel-container">
+                <!-- Popolato da JavaScript -->
+            </section>
             <button type="button" class="profile-carousel-hit profile-carousel-hit--right"
                 aria-label="Polaroid successiva"></button>
         </div>
-        <p class="profile-carousel-counter">1/10</p>
+        <p class="profile-carousel-counter" id="polaroid-carousel-counter">0/0</p>
     </div>
 </section>

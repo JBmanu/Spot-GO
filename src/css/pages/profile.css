@@ -1,22 +1,17 @@
 @layer components {
 
     .profile-wrapper {
-        @apply space-y-6 mt-3 mx-1;
-        position: relative;
+        @apply space-y-6 mt-3 mx-1 relative;
     }
 
     .profile-wrapper>* {
-        position: relative;
-        z-index: 1;
+        @apply relative z-10;
     }
 
     .profile-reward-card,
     .profile-reward-card-large {
-        @apply glass-modal;
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        @apply glass-modal relative isolate overflow-hidden duration-300 ease-[cubic-bezier(0.16, 1, 0.3, 1)];
+        transition-property: all;
     }
 
     .profile-main-card,
@@ -28,8 +23,7 @@
     .profile-card>*,
     .profile-reward-card>*,
     .profile-reward-card-large>* {
-        position: relative;
-        z-index: 2;
+        @apply relative z-20;
     }
 
     .profile-main-card {
@@ -206,32 +200,31 @@
         gap: 0;
     }
 
+    #polaroid-carousel-container {
+        @apply w-full max-w-full;
+        min-width: 0;
+        margin: 0 auto;
+    }
+
+    #polaroid-carousel-container .carousel-horizontal_track {
+        @apply p-0;
+    }
+
     .profile-carousel-hit {
-        @apply absolute top-0 bottom-0;
-        width: 64px;
-        border: 0;
-        background: transparent;
-        z-index: 3;
-        cursor: pointer;
+        @apply absolute top-0 bottom-0 w-16 border-0 bg-transparent z-30 cursor-pointer;
     }
 
     .profile-carousel-hit--left {
-        left: 0;
+        @apply left-0;
     }
 
     .profile-carousel-hit--right {
-        right: 0;
+        @apply right-0;
     }
 
     .profile-carousel::before,
     .profile-carousel::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 44px;
-        pointer-events: none;
-        z-index: 2;
+        @apply content-[''] absolute top-0 bottom-0 w-11 pointer-events-none z-20;
     }
 
     .profile-carousel::before {
@@ -251,30 +244,22 @@
     }
 
     .profile-polaroid {
-        @apply glass-modal relative flex-1 rounded-xl p-4 space-y-3;
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        z-index: 2;
+        @apply glass-modal relative rounded-xl p-4 space-y-3 isolate overflow-hidden z-20 w-[350px] shrink-0 shadow-none;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(152, 152, 152, 0.4);
     }
 
     .profile-polaroid>* {
-        position: relative;
-        z-index: 2;
+        @apply relative z-20;
     }
 
     .profile-polaroid-menu {
-        @apply absolute top-2 right-2 w-9 h-9 rounded-[10px] grid place-items-center;
+        @apply absolute top-2 right-2 w-9 h-9 rounded-[10px] grid place-items-center z-10 transition-all duration-300 ease-out;
         color: rgba(22, 24, 29, 0.78);
-        z-index: 10;
-        transition: all 0.3s ease;
     }
 
     .profile-polaroid-image-container {
-        @apply w-full aspect-square rounded-lg overflow-hidden;
-        position: relative;
-        border: 2px solid rgba(255, 255, 255, 0.4);
+        @apply w-full aspect-square rounded-lg overflow-hidden relative border-2 border-white/40;
         background: linear-gradient(135deg,
                 rgba(102, 217, 178, 0.08) 0%,
                 rgba(28, 124, 84, 0.05) 100%);
@@ -283,7 +268,7 @@
     }
 
     .profile-polaroid-image {
-        @apply w-full h-full object-cover;
+        @apply w-full h-full bg-cover bg-center bg-no-repeat;
     }
 
     .profile-polaroid-text {
