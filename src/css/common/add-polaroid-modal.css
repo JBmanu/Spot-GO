@@ -1,0 +1,180 @@
+@layer components {
+    .add-polaroid-modal-overlay {
+        @apply z-2000 p-4;
+    }
+
+    .add-polaroid-modal {
+        @apply w-full rounded-4xl opacity-0;
+        max-width: 540px;
+        max-height: 85%;
+        transform: translateY(30px) scale(0.95);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .add-polaroid-modal-overlay.active .add-polaroid-modal {
+        @apply opacity-100;
+        transform: translateY(0) scale(1);
+    }
+
+    .add-polaroid-close-btn {
+        @apply absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full z-10 transition-all duration-200 active:scale-95;
+    }
+
+    .add-polaroid-close-btn svg {
+        @apply w-5 h-5;
+        stroke: var(--color-text_color);
+        stroke-width: 2.5;
+    }
+
+    .add-polaroid-container {
+        @apply flex flex-col w-full max-w-lg mx-auto relative;
+        padding: 1rem 1.5rem 1.5rem;
+    }
+
+    .add-polaroid-header {
+        @apply flex justify-between items-center mb-4 mt-2;
+    }
+
+    .add-polaroid-title {
+        @apply text-3xl font-black mt-7;
+        color: rgba(17, 24, 39, 0.94);
+        letter-spacing: -0.02em;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .add-polaroid-form {
+        @apply flex-1 flex flex-col gap-4;
+    }
+
+    .add-polaroid-image-upload {
+        @apply rounded-3xl overflow-hidden;
+        position: relative;
+    }
+
+    .polaroid-image-input {
+        @apply hidden;
+    }
+
+    .polaroid-image-label {
+        @apply block cursor-pointer;
+        min-height: 200px;
+        position: relative;
+    }
+
+    .polaroid-upload-placeholder {
+        @apply flex flex-col items-center justify-center gap-3 py-12;
+        transition: all 0.3s ease;
+        min-height: 200px;
+    }
+
+    .polaroid-image-label:hover .polaroid-upload-placeholder {
+        @apply scale-105;
+    }
+
+    .upload-icon {
+        @apply w-16 h-16 opacity-60;
+        filter: drop-shadow(0 4px 12px rgba(28, 124, 84, 0.2));
+    }
+
+    .upload-text {
+        @apply text-sm font-bold uppercase tracking-wider;
+        color: rgba(28, 124, 84, 0.88);
+    }
+
+    .polaroid-image-preview {
+        @apply hidden;
+        position: absolute;
+        inset: 0;
+        min-height: 200px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .polaroid-image-preview.active {
+        @apply block;
+    }
+
+    .polaroid-image-preview.active~.polaroid-upload-placeholder {
+        @apply hidden;
+    }
+
+    .add-polaroid-input-group {
+        @apply flex flex-col gap-3;
+    }
+
+    .input-label {
+        @apply text-xs font-black uppercase pl-3;
+        letter-spacing: 0.08em;
+        color: rgba(17, 24, 39, 0.68);
+    }
+
+    .polaroid-input {
+        @apply w-full px-6 py-4 rounded-3xl text-sm outline-none border-none font-medium;
+        color: rgba(22, 24, 29, 0.94);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .polaroid-input:focus {
+        @apply -translate-y-0.5;
+        box-shadow: 0 0 0 2px var(--glass-border-soft), 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .polaroid-input::placeholder {
+        @apply opacity-50 italic;
+    }
+
+    .polaroid-input[type="date"] {
+        @apply font-semibold;
+    }
+
+    .polaroid-input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: opacity(0.6);
+        cursor: pointer;
+    }
+
+    .polaroid-input[type="text"],
+    .polaroid-input[type="date"],
+    select.polaroid-input {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    select.polaroid-input {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2328124, 84' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1.5rem center;
+        padding-right: 3rem;
+    }
+
+    select.polaroid-input option {
+        @apply bg-white text-gray-800 py-2;
+    }
+
+    .add-polaroid-footer {
+        @apply pb-4 mt-4 pt-2;
+    }
+
+    .add-polaroid-help-text {
+        @apply text-xs text-center mb-3 leading-snug;
+        color: rgba(99, 102, 106, 0.88);
+    }
+
+    .submit-polaroid-btn {
+        @apply w-full py-5 rounded-3xl text-sm font-black uppercase text-white;
+        letter-spacing: 0.12em;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .submit-polaroid-btn:disabled {
+        @apply opacity-50 cursor-not-allowed;
+    }
+
+    .submit-polaroid-btn:active:not(:disabled) {
+        @apply scale-[0.98];
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+}

@@ -1,82 +1,77 @@
-import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots } from "../database.js";
+import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPolaroids, getSpotById, getCurrentUser } from "../database.js";
+import { openAddPolaroidModal } from "./addPolaroid.js";
+
+const AVATAR_MAP = {
+    "Luana": "Luana.svg",
+    "Julio Manuel": "Manuel.svg",
+    "Alessandro": "Ale.svg",
+    "Teo": "Teo.svg",
+    "DEFAULT": "default.svg"
+};
+
+const TEMPLATE_PATH = "../html/common-pages/spot-templates.html";
+const DEFAULT_POLAROID_IMG = "../assets/default-polaroid.jpg";
 
 let loadViewAllSaved;
+let cachedPolaroidTemplate = null;
 
-const __profileDepsReady = Promise.all([
+const profileDepsReady = Promise.all([
     import("./viewAllSaved.js").then((m) => {
         loadViewAllSaved = m.loadViewAllSaved;
     }),
 ]).catch((err) => {
-    console.error("Errore nel caricamento dei moduli in profile.js:", err);
+    console.error("Error loading profile dependencies:", err);
 });
 
-async function loadProfileOverview(wrapper) {
-    await __profileDepsReady;
+export async function loadProfileOverview(wrapper) {
+    await profileDepsReady;
 
-    const overviewContainer = wrapper;
-    if (!overviewContainer) return;
+    if (!wrapper) return;
 
-    await initializeProfileData(overviewContainer);
+    await initializeProfileData(wrapper);
 }
 
-async function initializeProfileData(overviewContainer) {
-    await __profileDepsReady;
+window.reloadProfile = async function () {
+    const wrapper = document.querySelector('.profile-wrapper');
+    await loadProfileOverview(wrapper);
+};
+
+async function initializeProfileData(container) {
+    await profileDepsReady;
 
     const currentUserStr = localStorage.getItem('currentUser');
     if (!currentUserStr) return;
 
     const user = JSON.parse(currentUserStr);
 
-    const avatarMap = {
-        "Luana": "Luana.svg",
-        "Julio Manuel": "Manuel.svg",
-        "Alessandro": "Ale.svg",
-        "Teo": "Teo.svg"
-    };
+    updateProfileHeader(user);
 
+    await updateUserCounters(user.username);
+
+    setupProfileEventListeners(container);
+
+    await initializePolaroidCarousel();
+}
+
+function updateProfileHeader(user) {
     const profileData = {
         name: user.username || "",
         username: user.username ? "@" + user.username : "",
         email: user.email || "",
-        avatarSrc: `../assets/icons/login-signup/${avatarMap[user.username] || 'default.svg'}`,
+        avatarSrc: `../assets/icons/login-signup/${AVATAR_MAP[user.username] || AVATAR_MAP.DEFAULT}`,
     };
 
-    updateProfileUI(profileData);
+    const elements = {
+        name: document.getElementById("profile-name"),
+        username: document.getElementById("profile-username"),
+        email: document.getElementById("profile-email"),
+        avatar: document.getElementById("profile-avatar")
+    };
 
-    await updateUserCounters(user.username);
-
-    const savedSpotsButton = overviewContainer.querySelector("#profile-saved-spots-button");
-    if (savedSpotsButton) {
-        if (savedSpotsButton.dataset.bound !== "true") {
-            savedSpotsButton.dataset.bound = "true";
-
-            savedSpotsButton.addEventListener("click", async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (typeof loadViewAllSaved !== "function") {
-                    console.error("loadViewAllSaved is not a function");
-                    return;
-                }
-
-                await loadViewAllSaved("profile");
-            });
-        }
-    } else {
-        console.error("savedSpotsButton not found");
-    }
-}
-
-function updateProfileUI(data) {
-    const nameEl = document.getElementById("profile-name");
-    const usernameEl = document.getElementById("profile-username");
-    const emailEl = document.getElementById("profile-email");
-    const avatarEl = document.getElementById("profile-avatar");
-
-    if (nameEl) nameEl.textContent = data.name;
-    if (usernameEl) usernameEl.textContent = data.username;
-    if (emailEl) emailEl.textContent = data.email;
-    if (avatarEl) avatarEl.src = data.avatarSrc;
+    if (elements.name) elements.name.textContent = profileData.name;
+    if (elements.username) elements.username.textContent = profileData.username;
+    if (elements.email) elements.email.textContent = profileData.email;
+    if (elements.avatar) elements.avatar.src = profileData.avatarSrc;
 }
 
 async function updateUserCounters(username) {
@@ -88,27 +83,249 @@ async function updateUserCounters(username) {
             getCreatedSpots(username)
         ]);
 
-        const savedCount = saved.length;
-        const reviewsCount = reviews.length;
-        const visitedCount = visited.length;
-        const createdCount = created.length;
+        const elements = {
+            saved: document.getElementById("saved-spots"),
+            reviews: document.getElementById("written-reviews"),
+            visited: document.getElementById("visited-spots"),
+            created: document.getElementById("created-spots")
+        };
 
-        const savedEl = document.getElementById("saved-spots");
-        const reviewsEl = document.getElementById("written-reviews");
-        const visitedEl = document.getElementById("visited-spots");
-        const createdEl = document.getElementById("created-spots");
+        if (elements.saved) elements.saved.textContent = saved.length;
+        if (elements.reviews) elements.reviews.textContent = reviews.length;
+        if (elements.visited) elements.visited.textContent = visited.length;
+        if (elements.created) elements.created.textContent = created.length;
 
-        if (savedEl) savedEl.textContent = savedCount;
-        if (reviewsEl) reviewsEl.textContent = reviewsCount;
-        if (visitedEl) visitedEl.textContent = visitedCount;
-        if (createdEl) createdEl.textContent = createdCount;
     } catch (error) {
-        console.error("Errore nell'aggiornamento dei contatori:", error);
+        console.error("Error updating profile counters:", error);
     }
 }
 
-window.reloadProfile = async function () {
-    await loadProfileOverview();
-};
+function setupProfileEventListeners(container) {
+    const savedSpotsButton = container.querySelector("#profile-saved-spots-button");
+    if (savedSpotsButton) {
+        if (savedSpotsButton.dataset.bound !== "true") {
+            savedSpotsButton.dataset.bound = "true";
+            savedSpotsButton.addEventListener("click", handleSavedSpotsClick);
+        }
+    } else {
+        console.error("Button #profile-saved-spots-button not found");
+    }
 
-export { loadProfileOverview };
+    const addPolaroidButton = container.querySelector(".profile-diary-add-btn");
+    if (addPolaroidButton) {
+        if (addPolaroidButton.dataset.bound !== "true") {
+            addPolaroidButton.dataset.bound = "true";
+            addPolaroidButton.addEventListener("click", handleAddPolaroidClick);
+        }
+    }
+}
+
+async function handleSavedSpotsClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof loadViewAllSaved !== "function") {
+        console.error("loadViewAllSaved is not available");
+        return;
+    }
+    await loadViewAllSaved("profile");
+}
+
+async function handleAddPolaroidClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    await openAddPolaroidModal();
+}
+
+async function initializePolaroidCarousel() {
+    const container = document.getElementById("polaroid-carousel-container");
+    if (!container) return;
+
+    try {
+        const polaroidData = await fetchPolaroidData();
+
+        if (!polaroidData || polaroidData.length === 0) {
+            renderEmptyCarousel(container);
+            return;
+        }
+
+        const template = await getPolaroidTemplate();
+        if (!template) {
+            console.error("Polaroid template missing");
+            return;
+        }
+
+        renderCarouselItems(container, polaroidData, template);
+
+    } catch (err) {
+        console.error("Error initializing polaroid carousel:", err);
+    }
+}
+
+async function fetchPolaroidData() {
+    const user = await getCurrentUser();
+    if (!user) return [];
+
+    const polaroids = await getUserPolaroids(user.id);
+    if (!polaroids || polaroids.length === 0) return [];
+
+    return Promise.all(polaroids.map(async (p) => {
+        let subtitle = p.date || "";
+        if (p.idLuogo) {
+            try {
+                const spot = await getSpotById(p.idLuogo);
+                if (spot?.nome) {
+                    subtitle = `${spot.nome} - ${subtitle}`;
+                }
+            } catch (e) {
+                console.error("Error fetching spot info for polaroid:", e);
+            }
+        }
+
+        return {
+            id: p.id,
+            title: p.title || "Senza Titolo",
+            subtitle: subtitle,
+            image: (p.immagini && p.immagini.length > 0) ? p.immagini[0] : "",
+            date: p.date
+        };
+    }));
+}
+
+async function getPolaroidTemplate() {
+    if (cachedPolaroidTemplate) return cachedPolaroidTemplate;
+
+    try {
+        const response = await fetch(TEMPLATE_PATH);
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        cachedPolaroidTemplate = doc.querySelector('[data-template="polaroid-template"]');
+        return cachedPolaroidTemplate;
+    } catch (err) {
+        console.error("Failed to fetch polaroid template:", err);
+        return null;
+    }
+}
+
+function renderEmptyCarousel(container) {
+    container.innerHTML = `
+        <div class="profile-polaroids-empty">
+            <img src="../assets/icons/profile/Photo%20Gallery.svg" class="profile-polaroids-empty-icon" alt="" />
+            <h3 class="profile-polaroids-empty-title">Nessuna polaroid ancora</h3>
+            <p class="profile-polaroids-empty-text">Crea la tua prima polaroid per immortalare i tuoi ricordi!</p>
+        </div>
+    `;
+    updateCarouselCounter(0, 0);
+}
+
+function renderCarouselItems(container, items, template) {
+    container.innerHTML = "";
+    const track = document.createElement("div");
+    track.className = "carousel-horizontal_track";
+
+    items.forEach(item => {
+        const clone = template.content.cloneNode(true);
+        fillPolaroidContent(clone, item);
+        track.appendChild(clone);
+    });
+
+    container.appendChild(track);
+
+    setupCarouselControls(track, items.length);
+}
+
+function fillPolaroidContent(node, item) {
+    const titleEl = node.querySelector('[data-slot="title"]');
+    const subtitleEl = node.querySelector('[data-slot="subtitle"]');
+    const imageContainer = node.querySelector('.profile-polaroid-image');
+
+    if (titleEl) titleEl.textContent = item.title;
+    if (subtitleEl) subtitleEl.textContent = item.subtitle;
+
+    if (imageContainer) {
+        const bgImage = item.image ? `url('${item.image}')` : `url('${DEFAULT_POLAROID_IMG}')`;
+        const imgUrl = item.image || DEFAULT_POLAROID_IMG;
+
+        if (imageContainer.tagName === 'IMG') {
+            imageContainer.src = imgUrl;
+        } else {
+            imageContainer.style.backgroundImage = bgImage;
+        }
+    }
+}
+
+function setupCarouselControls(track, totalItems) {
+    track.dataset.currentIndex = "0";
+    updateCarouselCounter(totalItems, 1);
+
+    const btnLeft = document.querySelector(".profile-carousel-hit--left");
+    const btnRight = document.querySelector(".profile-carousel-hit--right");
+
+    const scrollToIndex = (index) => {
+        const children = track.children;
+        if (!children.length) return;
+        const safeIndex = Math.min(Math.max(index, 0), children.length - 1);
+        const target = children[safeIndex];
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+    };
+
+    if (btnLeft) {
+        btnLeft.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const current = parseInt(track.dataset.currentIndex || "0", 10);
+            scrollToIndex(current - 1);
+        };
+    }
+
+    if (btnRight) {
+        btnRight.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const current = parseInt(track.dataset.currentIndex || "0", 10);
+            scrollToIndex(current + 1);
+        };
+    }
+
+    const updateCounterOnScroll = () => {
+        if (!track.isConnected) return;
+
+        const children = Array.from(track.children);
+        if (children.length === 0) return;
+
+        const trackRect = track.getBoundingClientRect();
+        const trackCenter = trackRect.left + trackRect.width / 2;
+
+        let closestIndex = 0;
+        let minDistance = Infinity;
+
+        children.forEach((child, index) => {
+            const childRect = child.getBoundingClientRect();
+            const childCenter = childRect.left + childRect.width / 2;
+            const dist = Math.abs(trackCenter - childCenter);
+            if (dist < minDistance) {
+                minDistance = dist;
+                closestIndex = index;
+            }
+        });
+
+        if (track.dataset.currentIndex !== String(closestIndex)) {
+            track.dataset.currentIndex = String(closestIndex);
+            updateCarouselCounter(totalItems, closestIndex + 1);
+        }
+    };
+
+    track.addEventListener('scroll', () => window.requestAnimationFrame(updateCounterOnScroll), { passive: true });
+
+    setTimeout(updateCounterOnScroll, 100);
+}
+
+function updateCarouselCounter(total, current) {
+    const counter = document.getElementById("polaroid-carousel-counter");
+    if (counter) {
+        counter.textContent = total > 0 ? `${current}/${total}` : "0/0";
+    }
+}

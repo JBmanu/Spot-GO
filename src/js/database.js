@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId, orderBy} from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId, orderBy } from "firebase/firestore";
 import { db, auth } from "./firebase.js";
 import { distanceFromUserToSpot } from "./common.js";
 
@@ -220,44 +220,44 @@ export async function getFollowingUser(userId) {
 
 // Funzione per ottenere tutti gli utenti in "Amico" che hanno l'utente target nei Friends
 export async function getFollowersUser(targetUserId) {
-  try {
-    //Logged User followings users
-    const docRef = doc(db, 'Amico', targetUserId);
-    const docSnapshot = await getDoc(docRef);
-    const snapData = docSnapshot.data();
-    const followingsBack = snapData.friends.map(f => f.id);
+    try {
+        //Logged User followings users
+        const docRef = doc(db, 'Amico', targetUserId);
+        const docSnapshot = await getDoc(docRef);
+        const snapData = docSnapshot.data();
+        const followingsBack = snapData.friends.map(f => f.id);
 
 
-    // Get all users that follows logged user.
-    const amiciRef = collection(db, 'Amico');
-    const q = query(amiciRef);
-    
-    const querySnapshot = await getDocs(q);
-    const asyncCompute = querySnapshot.docs.map(async (userDoc) => {
-        const docData = userDoc.data();
-        const ids = docData.friends.map(ref => ref.id);
+        // Get all users that follows logged user.
+        const amiciRef = collection(db, 'Amico');
+        const q = query(amiciRef);
 
-        if (ids.includes(targetUserId)) {
-            const followerId = userDoc.id;
-            const userRef = doc(db, 'Utente', followerId);
-            const followerDoc = await getDoc(userRef);
-            const data = {
-                id: followerDoc.id,
-                followingBack: followingsBack.includes(followerDoc.id),
-                livello: followerDoc.data().livello || "-",
-                email: followerDoc.data().email || "-",
-                username: followerDoc.data().username || "-"
+        const querySnapshot = await getDocs(q);
+        const asyncCompute = querySnapshot.docs.map(async (userDoc) => {
+            const docData = userDoc.data();
+            const ids = docData.friends.map(ref => ref.id);
+
+            if (ids.includes(targetUserId)) {
+                const followerId = userDoc.id;
+                const userRef = doc(db, 'Utente', followerId);
+                const followerDoc = await getDoc(userRef);
+                const data = {
+                    id: followerDoc.id,
+                    followingBack: followingsBack.includes(followerDoc.id),
+                    livello: followerDoc.data().livello || "-",
+                    email: followerDoc.data().email || "-",
+                    username: followerDoc.data().username || "-"
+                }
+                return data;
             }
-            return data;
-        }
-    });
+        });
 
-    const users = await Promise.all(asyncCompute);
-    return users.filter(i => i != null);
-  } catch (error) {
-    console.error('Errore query Amico:', error);
-    return [];
-  }
+        const users = await Promise.all(asyncCompute);
+        return users.filter(i => i != null);
+    } catch (error) {
+        console.error('Errore query Amico:', error);
+        return [];
+    }
 }
 
 export async function removeFriend(userId, friendId) {
@@ -317,7 +317,7 @@ export async function getSuggestedFollows(userId) {
         var availableFriends = [];
         if (availableIds.length !== 0) {
             // 4. Recupera i dati da Utenti per ogni ID
-            availableFriends = await getItems('Utente',  where(documentId(), 'in', availableIds), 
+            availableFriends = await getItems('Utente', where(documentId(), 'in', availableIds),
                 (id, data) => ({
                     id: id,
                     livello: data.livello || "-",
@@ -507,4 +507,42 @@ export function pickRating(spot) {
 export async function insertNewSpot(spot) {
     const docRef = await addDoc(collection(db, "Luogo"), spot);
     return docRef.id;
+}
+
+/**
+ * Adds a new polaroid to the database
+ */
+export async function addPolaroidToDatabase({ title, idLuogo, date, imageUrl }) {
+    try {
+        const user = await getCurrentUser();
+        if (!user) throw new Error("Utente non autenticato");
+
+        const docRef = await addDoc(collection(db, "Cartolina"), {
+            idUtente: user.id,
+            title: title,
+            idLuogo: idLuogo,
+            date: date,
+            immagini: imageUrl ? [imageUrl] : [],
+            friends: [],
+            timestamp: new Date().toISOString()
+        });
+        return docRef.id;
+    } catch (err) {
+        console.error("Errore salvataggio polaroid:", err);
+        throw err;
+    }
+}
+
+/**
+ * Recupera le polaroid create da un utente
+ */
+export async function getUserPolaroids(userId) {
+    return getItems(
+        "Cartolina",
+        where('idUtente', '==', userId),
+        (id, data) => ({
+            id: id,
+            ...data
+        })
+    );
 }

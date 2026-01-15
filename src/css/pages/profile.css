@@ -1,22 +1,18 @@
 @layer components {
 
     .profile-wrapper {
-        @apply space-y-6 mt-3 mx-1;
-        position: relative;
+        @apply space-y-6 mt-3 mx-1 relative;
     }
 
-    .profile-wrapper > * {
-        position: relative;
-        z-index: 1;
+    .profile-wrapper>* {
+        @apply relative z-10;
     }
 
     .profile-reward-card,
     .profile-reward-card-large {
-        @apply glass-modal;
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        @apply glass-modal relative isolate overflow-hidden duration-300;
+        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+        transition-property: all;
     }
 
     .profile-main-card,
@@ -24,12 +20,11 @@
         @apply glass-backdrop-medium;
     }
 
-    .profile-main-card > *,
-    .profile-card > *,
-    .profile-reward-card > *,
-    .profile-reward-card-large > * {
-        position: relative;
-        z-index: 2;
+    .profile-main-card>*,
+    .profile-card>*,
+    .profile-reward-card>*,
+    .profile-reward-card-large>* {
+        @apply relative z-20;
     }
 
     .profile-main-card {
@@ -52,8 +47,8 @@
         @apply w-24 h-24 rounded-2xl shrink-0 object-cover;
         border: 3px solid rgba(255, 255, 255, 0.65);
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14),
-        0 4px 12px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            0 4px 12px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -105,8 +100,8 @@
         height: 2px;
         border-radius: 999px;
         background: linear-gradient(90deg,
-        rgba(102, 217, 178, 0.5) 0%,
-        rgba(28, 124, 84, 0.5) 100%);
+                rgba(102, 217, 178, 0.5) 0%,
+                rgba(28, 124, 84, 0.5) 100%);
         opacity: 0.6;
     }
 
@@ -166,8 +161,8 @@
     .profile-overview-progress-bar {
         @apply h-full rounded-full;
         background: linear-gradient(90deg,
-        rgba(102, 217, 178, 0.9) 0%,
-        rgba(28, 124, 84, 0.85) 100%);
+                rgba(102, 217, 178, 0.9) 0%,
+                rgba(28, 124, 84, 0.85) 100%);
         position: relative;
         overflow: hidden;
     }
@@ -206,84 +201,75 @@
         gap: 0;
     }
 
+    #polaroid-carousel-container {
+        @apply w-full max-w-full;
+        min-width: 0;
+        margin: 0 auto;
+    }
+
+    #polaroid-carousel-container .carousel-horizontal_track {
+        @apply p-0 snap-x snap-mandatory;
+    }
+
     .profile-carousel-hit {
-        @apply absolute top-0 bottom-0;
-        width: 64px;
-        border: 0;
-        background: transparent;
-        z-index: 3;
-        cursor: pointer;
+        @apply absolute top-0 bottom-0 w-16 border-0 bg-transparent z-30 cursor-pointer;
     }
 
     .profile-carousel-hit--left {
-        left: 0;
+        @apply left-0;
     }
 
     .profile-carousel-hit--right {
-        right: 0;
+        @apply right-0;
     }
 
     .profile-carousel::before,
     .profile-carousel::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 44px;
-        pointer-events: none;
-        z-index: 2;
+        @apply content-[''] absolute top-0 bottom-0 w-11 pointer-events-none z-20;
     }
 
     .profile-carousel::before {
         left: 0;
         background: linear-gradient(90deg,
-        rgba(255, 255, 255, 0.28) 0%,
-        rgba(255, 255, 255, 0.15) 35%,
-        rgba(255, 255, 255, 0.00) 100%);
+                rgba(255, 255, 255, 0.28) 0%,
+                rgba(255, 255, 255, 0.15) 35%,
+                rgba(255, 255, 255, 0.00) 100%);
     }
 
     .profile-carousel::after {
         right: 0;
         background: linear-gradient(270deg,
-        rgba(255, 255, 255, 0.28) 0%,
-        rgba(255, 255, 255, 0.15) 35%,
-        rgba(255, 255, 255, 0.00) 100%);
+                rgba(255, 255, 255, 0.28) 0%,
+                rgba(255, 255, 255, 0.15) 35%,
+                rgba(255, 255, 255, 0.00) 100%);
     }
 
     .profile-polaroid {
-        @apply glass-modal relative flex-1 rounded-xl p-4 space-y-3;
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        z-index: 2;
+        @apply glass-modal relative rounded-xl p-4 space-y-3 isolate overflow-hidden z-20 w-[380px] shrink-0 shadow-none snap-center;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(152, 152, 152, 0.4);
     }
 
-    .profile-polaroid > * {
-        position: relative;
-        z-index: 2;
+    .profile-polaroid>* {
+        @apply relative z-20;
     }
 
     .profile-polaroid-menu {
-        @apply glass-strong absolute top-2 right-2 w-9 h-9 rounded-full grid place-items-center;
+        @apply absolute top-2 right-2 w-9 h-9 rounded-[10px] grid place-items-center z-30 transition-all duration-300 ease-out;
         color: rgba(22, 24, 29, 0.78);
-        z-index: 10;
-        transition: all 0.3s ease;
     }
 
     .profile-polaroid-image-container {
-        @apply w-full aspect-square rounded-lg overflow-hidden;
-        position: relative;
-        border: 2px solid rgba(255, 255, 255, 0.4);
+        @apply w-full aspect-square rounded-lg overflow-hidden relative border-2 border-white/40;
         background: linear-gradient(135deg,
-        rgba(102, 217, 178, 0.08) 0%,
-        rgba(28, 124, 84, 0.05) 100%);
+                rgba(102, 217, 178, 0.08) 0%,
+                rgba(28, 124, 84, 0.05) 100%);
         box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1),
-        0 4px 12px rgba(0, 0, 0, 0.08);
+            0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .profile-polaroid-image {
-        @apply w-full h-full object-cover;
+        @apply w-full h-full bg-cover bg-center bg-no-repeat;
     }
 
     .profile-polaroid-text {
@@ -301,6 +287,32 @@
     .profile-carousel-counter {
         @apply text-center text-sm font-semibold;
         color: rgba(28, 124, 84, 0.80);
+    }
+
+    .profile-polaroids-empty {
+        @apply glass-modal flex flex-col items-center justify-center w-full py-8 px-6 text-center;
+        border-radius: 24px;
+        margin: 1.5rem 0;
+    }
+
+    .profile-polaroids-empty-icon {
+        @apply mb-4 opacity-30;
+        width: 48px;
+        height: 48px;
+        filter: grayscale(1);
+    }
+
+    .profile-polaroids-empty-title {
+        @apply text-base font-semibold mb-1;
+        color: var(--color-text_color);
+    }
+
+    .profile-polaroids-empty-text {
+        @apply text-sm leading-relaxed;
+        opacity: 0.6;
+        color: var(--color-text_color);
+        max-width: 240px;
+        margin: 0 auto;
     }
 
     @media (max-width: 640px) {

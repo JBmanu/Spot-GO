@@ -145,3 +145,19 @@
         </div>
     </div>
 </template>
+
+<!-- Template Polaroid -->
+<template data-template="polaroid-template">
+    <article class="carousel-horizontal_item profile-polaroid polaroid-template">
+        <button type="button" class="profile-polaroid-menu glass-backdrop-medium" aria-label="Menu polaroid">
+            <img src="../../assets/icons/profile/Menu.svg" alt="Menu icon">
+        </button>
+        <div class="profile-polaroid-image-container">
+            <div class="profile-polaroid-image" data-slot="image" data-field="image"></div>
+        </div>
+        <div class="profile-polaroid-text">
+            <h2 class="profile-polaroid-title" data-slot="title" data-field="title"></h2>
+            <p class="profile-polaroid-subtitle" data-slot="subtitle" data-field="subtitle"></p>
+        </div>
+    </article>
+</template>
