@@ -1,4 +1,4 @@
-import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots } from "../database.js";
+import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPolaroids, getSpotById, getCurrentUser } from "../database.js";
 import { openAddPolaroidModal } from "./addPolaroid.js";
 
 let loadViewAllSaved;
@@ -78,6 +78,198 @@ async function initializeProfileData(overviewContainer) {
                 await openAddPolaroidModal();
             });
         }
+    }
+
+    await initializePolaroidCarousel();
+}
+
+async function initializePolaroidCarousel() {
+    const container = document.getElementById("polaroid-carousel-container");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    try {
+        const [user, templateResponse] = await Promise.all([
+            getCurrentUser(),
+            fetch("../html/common-pages/spot-templates.html")
+        ]);
+
+        if (!user) {
+            updateCarouselCounter(0);
+            return;
+        }
+
+        const templateHtml = await templateResponse.text();
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = templateHtml;
+        const template = tempDiv.querySelector('[data-template="polaroid-template"]');
+
+        if (!template) {
+            return;
+        }
+
+        const polaroids = await getUserPolaroids(user.id);
+
+        if (!polaroids || polaroids.length === 0) {
+            updateCarouselCounter(0);
+            return;
+        }
+
+        const populatedPolaroids = await Promise.all(polaroids.map(async (p) => {
+            let subtitle = p.date || "";
+            if (p.idLuogo) {
+                try {
+                    const spot = await getSpotById(p.idLuogo);
+                    if (spot && spot.nome) {
+                        subtitle = `${spot.nome} - ${subtitle}`;
+                    }
+                } catch (e) {
+                    console.error("error fetching spot name", e);
+                }
+            }
+
+            const image = (p.immagini && p.immagini.length > 0) ? p.immagini[0] : "";
+
+            return {
+                title: p.title || "Senza Titolo",
+                subtitle: subtitle,
+                image: image,
+                date: p.date,
+                id: p.id
+            };
+        }));
+
+        if (populatedPolaroids.length === 0) {
+            updateCarouselCounter(0);
+            return;
+        }
+
+        populatedPolaroids.forEach(polaroid => {
+            const clone = template.content.cloneNode(true);
+            const titleEl = clone.querySelector('[data-slot="title"]');
+            const subtitleEl = clone.querySelector('[data-slot="subtitle"]');
+
+            if (titleEl) titleEl.textContent = polaroid.title;
+            if (subtitleEl) subtitleEl.textContent = polaroid.subtitle;
+
+            const imageContainer = clone.querySelector('.profile-polaroid-image');
+            if (imageContainer) {
+                if (imageContainer.tagName === 'IMG') {
+                    imageContainer.src = polaroid.image || "../assets/default-polaroid.jpg";
+                } else {
+                    imageContainer.style.backgroundImage = `url('${polaroid.image || "../assets/default-polaroid.jpg"}')`;
+                }
+            }
+
+            container.appendChild(clone);
+        });
+
+        updateCarouselCounter(populatedPolaroids.length);
+
+        const btnLeft = document.querySelector(".profile-carousel-hit--left");
+        const btnRight = document.querySelector(".profile-carousel-hit--right");
+
+        if (btnLeft && btnRight) {
+            const track = container.querySelector(".carousel-horizontal_track");
+
+            const getMetrics = () => {
+                if (!track || !track.children.length) return null;
+                const card = track.children[0];
+                const style = window.getComputedStyle(card);
+                const trackStyle = window.getComputedStyle(track);
+                const gap = parseFloat(trackStyle.gap) || 0;
+
+                const marginLeft = parseFloat(style.marginLeft) || 0;
+                const marginRight = parseFloat(style.marginRight) || 0;
+                const cardWidth = card.offsetWidth;
+
+                const stride = cardWidth + marginLeft + marginRight + gap;
+
+                return { stride, cardWidth, marginLeft, visibleWidth: track.clientWidth };
+            };
+
+            const updateCounterOnScroll = () => {
+                if (!track) return;
+                const metrics = getMetrics();
+                if (!metrics) return;
+                const { stride } = metrics;
+                if (stride <= 0) return;
+
+                const scrollLeft = track.scrollLeft;
+
+                const currentIndex = Math.round(scrollLeft / stride);
+
+                const total = populatedPolaroids.length;
+                const safeIndex = Math.min(Math.max(currentIndex, 0), total - 1);
+
+                updateCarouselCounter(total, safeIndex + 1);
+            };
+
+            if (track) {
+                track.addEventListener("scroll", () => {
+                    window.requestAnimationFrame(updateCounterOnScroll);
+                }, { passive: true });
+
+                updateCounterOnScroll();
+            }
+
+            const scrollToCard = (targetIndex) => {
+                if (!track) return;
+                const metrics = getMetrics();
+                if (!metrics) return;
+                const { stride, cardWidth, marginLeft, visibleWidth } = metrics;
+
+                const total = track.children.length;
+                const safeIndex = Math.min(Math.max(targetIndex, 0), total - 1);
+
+                const cardStart = (safeIndex * stride) + marginLeft;
+                const cardCenter = cardStart + (cardWidth / 2);
+                const targetScroll = cardCenter - (visibleWidth / 2);
+
+                track.scrollTo({
+                    left: targetScroll,
+                    behavior: "smooth"
+                });
+            };
+
+            btnLeft.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const metrics = getMetrics();
+                if (!track || !metrics) return;
+
+                const centerPoint = track.scrollLeft + (metrics.visibleWidth / 2);
+                const currentIndex = Math.round((centerPoint - (metrics.cardWidth / 2)) / metrics.stride);
+
+                scrollToCard(currentIndex - 1);
+            };
+
+            btnRight.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const metrics = getMetrics();
+                if (!track || !metrics) return;
+
+                const centerPoint = track.scrollLeft + (metrics.visibleWidth / 2);
+                const currentIndex = Math.round((centerPoint - (metrics.cardWidth / 2)) / metrics.stride);
+
+                scrollToCard(currentIndex + 1);
+            };
+
+            setTimeout(() => scrollToCard(0), 100);
+        }
+
+    } catch (err) {
+        console.error("Errore caricamento template polaroid:", err);
+    }
+}
+
+function updateCarouselCounter(total, current = 1) {
+    const counter = document.getElementById("polaroid-carousel-counter");
+    if (counter) {
+        counter.textContent = total > 0 ? `${current}/${total}` : "0/0";
     }
 }
 
