@@ -3,36 +3,72 @@ import {fetchFriendMessages} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
 
+export function makeSuggestedCard(data) {
+
+    const article = document.createElement("article");
+    article.className = "general-card carousel-horizontal_item community-card community-suggest-card";
+    article.setAttribute("role", "listitem");
+    article.setAttribute("data-user-id", data.id);
+
+    const actionsContainer = document.createElement("div");
+    actionsContainer.className = "card-actions-container";
+
+    const followsText = document.createElement("p");
+    followsText.textContent = "Segui";
+
+    const addButton = followActionBtn(data.id, followsText);
+    actionsContainer.appendChild(addButton);
+
+    article.appendChild(makeCardInfo(data));
+    article.appendChild(actionsContainer);
+
+    return article;
+}
+
+/**
+ * Generate HTML follow list item given follow data.
+ * Returns an article child.
+ */
+export function makeFriendCard(data) {
+    const article = document.createElement("article");
+    article.className = "community-card";
+    article.setAttribute("role", "listitem");
+    article.setAttribute("data-user-id", data.id);
+    article.appendChild(makeCardInfo(data));
+    article.appendChild(makeFriendActionContainer(data));
+    return article;
+}
+
 function makeCardInfo(data) {
-    const followAvatar = document.createElement("div");
-    followAvatar.className = "user-avatar";
-    followAvatar.textContent = data.username.substring(0, 2);
 
-    const followCardData = document.createElement("div");
-    followCardData.className = "user-card-data";
+    const avatar = document.createElement("div");
+    avatar.className = "user-avatar";
+    avatar.textContent = data.username.substring(0, 2);
 
-    const followName = document.createElement("h3");
-    followName.className = "text-xl font-bold";
-    followName.textContent = data.username;
+    const userInfo = document.createElement("div");
+    userInfo.className = "card-user-info flex flex-col justify-between ml-4";
 
-    const followUsername = document.createElement("p");
-    followUsername.className = "italic";
-    followUsername.innerHTML = `<span>@</span>${data.username}`;
+    const name = document.createElement("h3");
+    name.className = "text-xl font-bold";
+    name.textContent = data.username;
+    userInfo.appendChild(name);
 
-    followCardData.appendChild(followName);
-    followCardData.appendChild(followUsername);
+    const username = document.createElement("p");
+    username.className = "italic";
+    username.innerHTML = `<span>@</span>${data.username}`;
+    userInfo.appendChild(username);
 
-    const flexContainer = document.createElement("div");
-    flexContainer.className = "flex flex-row items-center";
-    flexContainer.appendChild(followAvatar);
-    flexContainer.appendChild(followCardData);
-    return flexContainer;
+    const container = document.createElement("div");
+    container.className = "flex flex-row items-center";
+    container.appendChild(avatar);
+    container.appendChild(userInfo);
+    return container;
 }
 
 function makeFriendActionContainer(data) {
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
-    console.log("Data", data);
+
     if (data.followingBack == true || data.followingBack == null) {
         const messageButton = document.createElement("button");
         messageButton.setAttribute("type", "button");
@@ -67,44 +103,11 @@ function makeFriendActionContainer(data) {
     return actionsContainer;
 }
 
-/**
- * Generate HTML follow list item given follow data.
- * Returns an article child.
- */
-export function makeFriendCard(data) {
-    const article = document.createElement("article");
-    article.className = "community-card";
-    article.setAttribute("role", "listitem");
-    article.setAttribute("data-user-id", data.id);
-    article.appendChild(makeCardInfo(data));
-    article.appendChild(makeFriendActionContainer(data));
-    return article;
-}
-
-export function makeSuggestedCard(data) {
-    const article = document.createElement("article");
-    article.className = "community-card";
-    article.setAttribute("role", "listitem");
-    article.setAttribute("data-user-id", data.id);
-
-    const actionsContainer = document.createElement("div");
-    actionsContainer.className = "card-actions-container";
-
-    const followsText = document.createElement("p");
-    followsText.textContent = "Segui";
-
-    const addButton = followActionBtn(data.id, followsText);
-    actionsContainer.appendChild(addButton);
-    article.appendChild(makeCardInfo(data, isRowCard));
-    article.appendChild(actionsContainer);
-
-    return article;
-}
 
 function followActionBtn(userId, btnBody) {
     const addButton = document.createElement("button");
     addButton.setAttribute("type", "button");
-    addButton.setAttribute("class", "comm-button-action-icon");
+    addButton.setAttribute("class", "comm-button-action-icon follow-btn");
     addButton.setAttribute("alt", "Aggiungi amico");
     addButton.setAttribute("aria-label", "Aggiungi amico");
     addButton.appendChild(btnBody);

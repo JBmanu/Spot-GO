@@ -9,13 +9,13 @@ export async function loadCommunityData() {
     await Promise.all([
         loadFollowing(loggedUser.email),
         loadFollowers(loggedUser.email),
-        //loadSuggested(loggedUser.email)
+        loadSuggested(loggedUser.email)
     ]);
     initTabSelector(loggedUser.email);
 }
 
 function initTabSelector(userId) {
-    const searchbarInput = document.getElementById("community-user-search-input");
+    const searchbarInput = document.getElementById("community-search-input");
     const body = document.getElementById("community-main-body");
     const btnCloseSearch = document.getElementById("community-close-search-btn");
     const btnFollows = document.getElementById("community-tab-follows");

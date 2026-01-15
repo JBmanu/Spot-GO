@@ -14,7 +14,7 @@
   <div class="community-search-wrapper mx-4 my-0 p-4">
     <div class="glass-medium relative rounded-2xl shadow px-2 py-2 flex items-center gap-2">
         <div class="relative flex-1 flex items-center min-h-13">
-            <input type="text" id="community-user-search-input" placeholder="Cerca Utente" class="w-full px-4 py-2.5 pl-10 rounded-xl border border-border_color bg-main_paper text-text_color placeholder-text_color/50 focus:outline-none focus:border-primary_color focus:ring-1 focus:ring-primary_color/50" style="font-family: 'Montserrat', sans-serif;">
+            <input type="text" id="community-search-input" placeholder="Cerca Utente" class="w-full px-4 py-2.5 pl-10 rounded-xl border border-border_color bg-main_paper text-text_color placeholder-text_color/50 focus:outline-none focus:border-primary_color focus:ring-1 focus:ring-primary_color/50" style="font-family: 'Montserrat', sans-serif;">
             <svg class="absolute left-3 w-5 h-5 text-text_color/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
@@ -68,17 +68,9 @@
   </div>
 
     <!-- Suggeriti -->
-  <!-- <section id="community-suggested-section" class="w-full max-w-none ml-2">
-    <header class="flex flex-row items-center justify-between">
-        <h2 class="home-section-title">Suggeriti</h2>
-    </header>
-    <div id="community-suggested-container" class="carousel-horizontal_track" role="list" data-drag-init="1"></div>
-  </section>
- -->
 
-<div class="carousel-horizontal_track" data-drag-init="1" style="overflow-x: auto; display: flex; flex-direction: row; touch-action: pan-y;">
-  <!-- IMPORTANTE VEDERE CSS spot-card-nearby -->
-    <article class="general-card spot-card-nearby carousel-horizontal_item community-card" role="listitem" data-user-id="teo@gmail.com">
+<div id="community-suggested-container" class="carousel-horizontal_track" data-drag-init="1" style="overflow-x: auto; display: flex; flex-direction: row; touch-action: pan-y;">
+    <article class="general-card carousel-horizontal_item " role="listitem" data-user-id="teo@gmail.com">
       <div class="flex flex-row items-center">
         <div class="user-avatar">Te</div>
         <div class="user-card-data">
@@ -97,22 +89,4 @@
           </button>
         </div>
       </article>
-        <!-- <article class="glass-strong" data-slot="card" data-spot-id="ixdzOResuuMH8p0zpu6h" >
-            <div class="glass-medium" data-slot="body">
-                <h3 data-slot="title" data-field="title">Mausoleo di Monte del Grano</h3>
-                <div data-slot="meta">
-                    <span data-slot="meta-item">
-                        <img src="../../assets/icons/homepage/Place%20Marker.svg" alt="Posizione" data-slot="pin-icon">
-                        <span data-slot="meta-text" data-field="distance">180 m</span>
-                        <span class="opacity-45">•</span>
-                        <span data-slot="meta-text" data-field="category">Cultura</span>
-                    </span>
-
-                    <div class="glass-medium" data-slot="rating-pill">
-                        <span data-slot="rating-value" data-field="rating">4.2</span>
-                        <img src="../../assets/icons/homepage/Star.svg" alt="stella" data-slot="rating-star">
-                    </div>
-                </div>
-            </div>
-        </article> -->
   </div>
