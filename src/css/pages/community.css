@@ -10,14 +10,20 @@
         z-index: 1;
     }
 
+    .community-suggest-card {
+        flex-direction: column;
+        width: 250px;
+        aspect-ratio: 1 / 0.8;
+    }
+
+    .follow-btn {
+        
+    }
+
     .community-main-body {
         height: 80vh;
         display: flex;
         flex-direction: column;
-    }
-
-    #community-suggested-section .community-card div:first-child {
-        justify-content: center;
     }
     
     .community-card {
@@ -39,7 +45,7 @@
         background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.18));
     }
 
-    .user-card-data {
+    .card-user-info {
         @apply flex flex-col justify-between ml-4;
     }
 

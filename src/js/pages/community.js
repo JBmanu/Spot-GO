@@ -9,7 +9,7 @@ export async function loadCommunityData() {
     await Promise.all([
         loadFollowing(loggedUser.email),
         loadFollowers(loggedUser.email),
-        //loadSuggested(loggedUser.email)
+        loadSuggested(loggedUser.email)
     ]);
     initTabSelector(loggedUser.email);
 }
