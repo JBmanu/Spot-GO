@@ -1,8 +1,33 @@
 @layer components {
+
+    .floating-toolbar {
+        @apply glass-medium relative rounded-2xl shadow px-2 py-2;
+    }
+
+    .community-search-wrapper {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .community-suggest-card {
+        flex-direction: column;
+        width: 250px;
+        aspect-ratio: 1 / 0.8;
+    }
+
+    .follow-btn {
+        
+    }
+
+    .community-main-body {
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+    }
     
     .community-card {
         @apply flex justify-between rounded-2xl border bg-main_paper p-2;
-        min-width: 0;
         border-radius: var(--radius-2xl);
         margin: calc(var(--spacing) * 3);
         background: rgba(255, 255, 255, 0.468);
@@ -20,7 +45,7 @@
         background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.18));
     }
 
-    .user-card-data {
+    .card-user-info {
         @apply flex flex-col justify-between ml-4;
     }
 
@@ -144,6 +169,7 @@
 
     .message.sent .message-bubble {
       background: var(--color-accent_color);
+      filter: saturate(0.8);
       color: white;
     }
 
@@ -158,6 +184,12 @@
         height: 100%;
         object-fit: cover;
         object-position: center;
+    }
+
+    .community-chat-polaroid {
+        @apply relative rounded-xl p-4 space-y-3 isolate overflow-hidden z-20 shrink-0 shadow-none snap-center;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(152, 152, 152, 0.4);
     }
 
     .chat-header {

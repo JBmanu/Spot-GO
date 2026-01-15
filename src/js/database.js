@@ -548,7 +548,7 @@ export async function insertNewSpot(spot) {
 /**
  * Adds a new polaroid to the database
  */
-export async function addPolaroidToDatabase({ title, idLuogo, date, imageUrl, diary }) {
+export async function addPolaroidToDatabase({ title, idLuogo, date, imageUrl }) {
     try {
         const user = await getCurrentUser();
         if (!user) throw new Error("Utente non autenticato");
@@ -559,7 +559,6 @@ export async function addPolaroidToDatabase({ title, idLuogo, date, imageUrl, di
             idLuogo: idLuogo,
             date: date,
             immagini: imageUrl ? [imageUrl] : [],
-            diary: diary || "",
             friends: [],
             timestamp: new Date().toISOString()
         });
@@ -583,6 +582,91 @@ export async function getUserPolaroids(userId) {
         })
     );
 }
+
+/**
+ * Ottiene tutte le notifiche dell'utente corrente
+ */
+export async function getUserNotifications() {
+    const currentUser = await getCurrentUser();
+    const utenteTo = currentUser.email;
+
+    return getItems(
+        "Notifiche",
+        where('utenteTo', '==', utenteTo),
+        (id, data) => ({
+            id: id,
+            ...data
+        })
+    );
+}
+
+/**
+ * Invia una notifica dall'utente corrente ad un determinato utente
+ */
+export async function sendNotificationToUser(userId) {
+    try {
+        const currentUser = await getCurrentUser();
+        if (!currentUser) {
+            throw new Error("Utente non autenticato");
+        }
+
+        const utenteFrom = currentUser.email;
+        const utenteTo = userId;
+
+        if (!utenteTo) {
+            throw new Error("Destinatario notifica non valido");
+        }
+
+        const docRef = await addDoc(collection(db, "Notifiche"), {
+            utenteFrom,
+            utenteTo,
+            viewed: false,
+            timestamp: new Date().toISOString()
+        });
+
+        return docRef.id;
+    } catch (err) {
+        console.error("Errore invio notifica:", err);
+        throw err;
+    }
+}
+
+/**
+ * Cancella tutte le notifiche dell'utente corrente
+ */
+export async function deleteAllUserNotifications() {
+    try {
+        const currentUser = await getCurrentUser();
+            if (!currentUser) {
+            throw new Error("Utente non autenticato");
+        }
+
+        const utenteTo = currentUser.email;
+
+        const q = query(
+            collection(db, "Notifiche"),
+            where("utenteTo", "==", utenteTo)
+        );
+
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            return 0; // nessuna notifica da cancellare
+        }
+
+        const deletePromises = snapshot.docs.map((docSnap) =>
+            deleteDoc(doc(db, "Notifiche", docSnap.id))
+        );
+
+        await Promise.all(deletePromises);
+
+        return snapshot.size; // numero notifiche eliminate
+    } catch (err) {
+        console.error("Errore cancellazione notifiche:", err);
+        throw err;
+    }
+}
+
 
 /**
  * Updates a polaroid document
