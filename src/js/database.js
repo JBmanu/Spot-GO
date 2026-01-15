@@ -186,8 +186,49 @@ export async function getVisitedSpots(username) {
     }
 }
 
+export async function searchUser(searchId) {
+    if (!searchId) return [];
+  
+    try {
+        console.log('🔍 Cerco ID contenenti:', searchId);
+        // Collection reference
+        const usersCol = collection(db, 'Utente');
+        
+        // Query per ID che inizia con searchId
+        const q = query(
+        usersCol,
+        where('__name__', '>=', searchId),
+        where('__name__', '<=', searchId + '\uf8ff')
+        );
+        
+        // Esegui query
+        const querySnapshot = await getDocs(q);
+        
+        // Array risultati
+        const matchingUsers = [];
+
+        querySnapshot.forEach((doc) => {
+            const docData = doc.data();
+            matchingUsers.push({
+                    id: doc.id,
+                    livello: docData.livello || "-",
+                    email: docData.email || "-",
+                    username: docData.username || "-",
+                    name: docData.name || "-"
+                });
+        });
+        
+        console.log(`✅ ${matchingUsers.length} utenti trovati`);
+        return matchingUsers;
+        
+    } catch (error) {
+        console.log('Errore:', error);
+        return [];
+    }
+}
+
 /**
- * Recupera la lista amici di un utente.
+ * Recupera gli utenti seguiti
  */
 export async function getFollowingUser(userId) {
     if (!userId) return [];

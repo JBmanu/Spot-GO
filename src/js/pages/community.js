@@ -1,5 +1,5 @@
 
-import {getCurrentUser, getCartolinaById, getFollowingUser, removeFriend, getFollowersUser, getSuggestedFollows, addFollows, pullMessages} from "../database.js";
+import {searchUser, getCurrentUser, getCartolinaById, getFollowingUser, removeFriend, getFollowersUser, getSuggestedFollows, addFollows, pullMessages} from "../database.js";
 import {showConfirmModal} from "../ui/confirmModal.js";
 
 export async function loadCommunityData() {
@@ -31,7 +31,20 @@ function initTabSelector(userId) {
     const sections = [searchSection, followsSection, followersSection, suggestedSection];
 
     searchbarInput.addEventListener("input", () => {
-        console.log(searchbarInput.value);
+        searchUser(searchbarInput.value).then(results =>
+            getCurrentUser().then(loggedUser =>
+                getFollowingUser(loggedUser.email).then(followings => {
+                    const followingIds = followings.map(f => f.email);
+                    results.map(usr => {
+                        return {
+                            ...usr,
+                            following: followingIds.includes(usr.email)
+                        }
+                    })
+                    //TODO: fix following flag
+                    showsItemsInContainer(results, "results", data => data.following ? makeFriendCard(data) : makeSuggestedCard(data));
+                })
+            ));
     });
 
     searchbarInput.addEventListener('click', ()=> {
@@ -82,20 +95,22 @@ function unselectAllButton(buttons) {
 }
 
 async function loadFollowing(userId) {
-    var follows = await getFollowingUser(userId);
-    showsItemsInContainer(follows, "follows", makeFriendCard);
+    getFollowingUser(userId).then(follows => 
+        showsItemsInContainer(follows, "follows", makeFriendCard)
+    );
 }
 
 async function loadSuggested(userId) {
-    var suggested = await getSuggestedFollows(userId);
-    showsItemsInContainer(suggested, "suggested", makeSuggestedCard);
+    getSuggestedFollows(userId).then(suggested => 
+        showsItemsInContainer(suggested, "suggested", makeSuggestedCard)
+    );
 }
 
 async function loadFollowers(userId) {
-    var followers = await getFollowersUser(userId);
-    showsItemsInContainer(followers, "followers", 
-        data => data.followingBack ? makeFriendCard(data): makeSuggestedCard(data)
-    );
+    getFollowersUser(userId).then(followers => {
+        showsItemsInContainer(followers, "followers", 
+            data => data.followingBack ? makeFriendCard(data): makeSuggestedCard(data));
+    });
 }
 
 /**
@@ -245,14 +260,12 @@ async function fetchFriendMessages(followingData) {
     const messagesPromise = messagesData.map(async msg => {
         //TODO: capire perche non  carica/legge i dati 
         const cartolina =  await getCartolinaById(msg.ref);
-        console.log("Cartolina: ",cartolina);
         return {
             ... msg,
             cartolina: cartolina
         }
     });
     const messages = await Promise.all(messagesPromise);
-    console.log(messages);
     renderMessages(followingData, messages);
 }
 
