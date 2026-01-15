@@ -17,6 +17,7 @@ import {
 import { loadViewAllSaved } from "../viewAllSaved.js";
 import { autoInitializeCarousels, initializeHorizontalCarousel } from "../../common/carousels.js";
 import { PATHS } from "../../paths.js";
+import { pollForUserNotifications, stopPollingUserNotifications } from "../../notifications.js";
 
 const state = {
     homepageBuilt: false,
@@ -176,6 +177,10 @@ async function buildHomepageOnce(homepageRoot) {
 
     homepageRoot.dataset.homepageBuilt = "true";
     state.homepageBuilt = true;
+
+    // Notifiche
+    stopPollingUserNotifications();
+    pollForUserNotifications();
 }
 
 export async function resetHomepageState(homepageRoot) {

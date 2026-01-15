@@ -8,6 +8,8 @@ let newSpotSection;
 let map;
 let spotPositionMarker;
 let selectedSpotPosition = [0,0];
+let otherPriceDisplayMode;
+let foodPriceDisplayMode;
 
 async function getNewSpotPageHtml() {
     if (__newSpotPageHtml) return __newSpotPageHtml;
@@ -87,6 +89,8 @@ export async function openNewSpotPage() {
     renderHeaderForNewSpotPage();
     
     loadMap();
+    initializePriceTab();
+    initializeCategorySelector();
     initializeAddSpotButton();
     await loadStarRating();
 
@@ -111,10 +115,8 @@ function closeNewSpotPage() {
 }
 
 function initializeAddSpotButton() {
-    const button = document.getElementById('add-spot-button');
-    if (!button || button.dataset.bound === "true") return;
-    button.dataset.bound = "true";
-    button.addEventListener('click', addNewSpotAndClose);
+    const form = document.getElementById('new-spot-form');
+    form.addEventListener('submit', addNewSpotAndClose);
 }
 
 async function loadMap() {
@@ -178,55 +180,172 @@ async function loadStarRating() {
   newSpotSection.querySelector('.rating-container').appendChild(starRatingEl);
 }
 
+function initializeCategorySelector() {
+    const categorySelector = document.getElementById('new-spot-category');
+
+    categorySelector.addEventListener("change", (e) => {
+        updateCategoryUI(e.target.value);
+    });
+
+    updateCategoryUI(categorySelector.value);
+}
+
+function updateCategoryUI(value) {
+    const foodFields = document.getElementById('price-section-food');
+    const otherFields = document.getElementById('price-section-other');
+
+    if (value === "food") {
+        foodFields.style.display = foodPriceDisplayMode;
+        otherFields.style.display = "none";
+    } else {
+        foodFields.style.display = "none";
+        otherFields.style.display = otherPriceDisplayMode;
+    }
+}
+
+function initializePriceTab() {
+    const switchButtons = document.querySelectorAll('.new-spot-switch-btn');
+
+    switchButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.authTab;
+            switchToTab(tab);
+        });
+    });
+
+    foodPriceDisplayMode = document.getElementById('price-section-food').style.display;
+    otherPriceDisplayMode = document.getElementById('price-section-other').style.display;
+
+    document.getElementById('new-spot-price-food').addEventListener('input', validatePriceInputField);
+    document.getElementById('new-spot-price-intero').addEventListener('input', validatePriceInputField);
+    document.getElementById('new-spot-price-ridotto').addEventListener('input', validatePriceInputField);
+}
+
+function switchToTab(tab) {
+    const switchButtons = document.querySelectorAll('.new-spot-switch-btn');
+    const slider = document.querySelector('.new-spot-slider');
+
+    switchButtons.forEach(btn => {
+        const isActive = btn.dataset.authTab === tab;
+        btn.classList.toggle('is-active', isActive);
+        btn.classList.toggle('text-black', isActive);
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    if (slider) slider.style.left = tab === 'free' ? '1%' : '51%';
+}
+
+function validatePriceInputField(e) {
+    let value = e.target.value;
+
+    // Rimuove tutto tranne numeri, punto e virgola
+    value = value.replace(/[^0-9.,]/g, "");
+
+    // Se ci sono più separatori, tiene solo il primo
+    const firstSeparatorIndex = value.search(/[.,]/);
+    if (firstSeparatorIndex !== -1) {
+        const before = value.slice(0, firstSeparatorIndex + 1);
+        const after = value
+            .slice(firstSeparatorIndex + 1)
+            .replace(/[.,]/g, "");
+
+        // Limita a massimo 2 cifre decimali
+        value = before + after.slice(0, 2);
+    }
+
+    // Converte eventuale virgola in punto (standard DB)
+    value = value.replace(",", ".");
+
+    e.target.value = value;
+}
+
 async function readNewSpotDataFromFields() {
+    const form = document.getElementById("new-spot-form");
+    if (!form) {
+        throw new Error("Form new-spot-form non trovata");
+    }
+
     const currentUser = await getCurrentUser();
     const idCreatore = currentUser.email;
 
-    const nome = document.getElementById("new-spot-name").value.trim();
-    const descrizione = document.getElementById("new-spot-desc").value.trim();
-    const idCategoria = document.getElementById("new-spot-category").value;
+    const nome = form.elements["name"]?.value.trim();
+    const descrizione = form.elements["description"]?.value.trim();
+    const idCategoria = form.elements["category"]?.value;
 
-    const posizione = { coord1: selectedSpotPosition[0], coord2: selectedSpotPosition[1] };
+    // posizione
+    const posizione = selectedSpotPosition
+        ? { coord1: selectedSpotPosition[0], coord2: selectedSpotPosition[1] }
+        : null;
+
     const indirizzo = "";
 
-    const openTime = document.getElementById("new-spot-open-time").value;
-    const closeTime = document.getElementById("new-spot-close-time").value;
+    const openTime = form.elements["open_time"]?.value;
+    const closeTime = form.elements["close_time"]?.value;
 
     const orari =
-        openTime && closeTime ? [{ inizio: openTime, fine: closeTime }] : [];
+        openTime && closeTime
+            ? [{ inizio: openTime, fine: closeTime }]
+            : [];
 
-    const prezzoSelect = document.getElementById("new-spot-price");
-    const costo = prezzoSelect.value
-        ? [{ tipo: "Standard", prezzo: Number(prezzoSelect.value) }]
-        : [];
+    const costo = [];
+
+    // stato tab prezzo
+    const freeTabActive = document
+        .querySelector('[data-auth-tab="free"]')
+        ?.classList.contains("is-active");
+
+    if (freeTabActive) {
+        costo.push({ tipo: "Gratuito", prezzo: 0 });
+    } else {
+        const prezzoInteroRaw = form.elements["price_intero"]?.value;
+        const prezzoRidottoRaw = form.elements["price_ridotto"]?.value;
+        const prezzoFoodRaw = form.elements["price_food"]?.value;
+
+        const parsePrice = (v) =>
+            v ? Number(v.replace(",", ".")) : null;
+
+        const prezzoFood = parsePrice(prezzoFoodRaw);
+        const prezzoIntero = parsePrice(prezzoInteroRaw);
+        const prezzoRidotto = parsePrice(prezzoRidottoRaw);
+
+        if (idCategoria === "food" && prezzoFood !== null) {
+            costo.push({ tipo: "Spesa media", prezzo: prezzoFood });
+        }
+
+        if (prezzoIntero !== null) {
+            costo.push({ tipo: "Intero", prezzo: prezzoIntero });
+        }
+
+        if (prezzoRidotto !== null) {
+            costo.push({ tipo: "Ridotto", prezzo: prezzoRidotto });
+        }
+    }
 
     const immagine = "/db/img/placeholder.jpg";
 
-    const ratingStars = document.querySelectorAll(
-        ".rating-container .star.active"
-    );
+    const ratingStars = form.querySelectorAll(".rating-container .star.active");
     const valutazione = ratingStars.length || null;
 
-    const recensione = document.querySelector(
-        '.filter-section textarea'
-    )?.value.trim();
+    const recensione = form.elements["review"]?.value.trim() || null;
 
     if (!nome || !descrizione || !idCategoria || !posizione) {
         throw new Error("Compila tutti i campi obbligatori");
     }
 
     return {
-        costo,
+        nome,
         descrizione,
         idCategoria,
-        idCreatore,
-        immagine,
-        indirizzo,
-        nome,
-        orari,
         posizione,
-        valutazione
-    }
+        indirizzo,
+        orari,
+        costo,
+        valutazione,
+        recensione,
+        immagine,
+        idCreatore
+    };
 }
 
 async function addNewSpotAndClose() {

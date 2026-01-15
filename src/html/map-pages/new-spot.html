@@ -1,99 +1,190 @@
-<section data-section-view="new-spot" class="max-w-md mx-auto bg-white min-h-screen flex flex-col p-4 font-sans text-black">
-  <div class="space-y-6 pb-24">
-    <section>
-      <label class="block font-bold mb-2">Posizione: <span class="font-normal" id="spot-position"></span></label>
-      <div id="new-spot-map-container" class="mt-2 px-3">
+<section data-section-view="new-spot" class="max-w-md mx-auto min-h-screen flex flex-col font-sans text-black">
+  <form id="new-spot-form" class="space-y-6">
+    <div class="p-4">
+      <!-- POSIZIONE -->
+      <section>
+        <label class="block font-bold mb-2">
+          Posizione:
+          <span class="font-normal" id="spot-position"></span>
+        </label>
+        <div id="new-spot-map-container" class="mt-2 px-3">
           <div id="new-spot-map" class="new-spot-map"></div>
-      </div>
-    </section>
-
-    <section class="space-y-4">
-      <div>
-        <label class="block font-bold mb-1">Nome dello Spot *</label>
-        <input id="new-spot-name" type="text" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none" />
-      </div>
-      <div>
-        <label class="block font-bold mb-1">Descrizione *</label>
-        <textarea id="new-spot-desc" rows="3" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"></textarea>
-      </div>
-    </section>
-
-    <section class="space-y-4">
-      <div class="flex items-center gap-3">
-        <label class="font-bold">Categoria *</label>
-        <select id="new-spot-category" class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[100px]">
-          <option value="culture">Cultura</option>
-          <option value="food">Cibo</option>
-          <option value="nature">Natura</option>
-          <option value="mystery">Mistero</option>
-        </select>
-      </div>
-      
-      <div class="flex flex-wrap items-center gap-3">
-        <label class="font-bold">Orario di apertura</label>
-        <select id="new-spot-open-time" class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]">
-          <option></option>
-        </select>
-        <select id="new-spot-close-time" class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]">
-          <option></option>
-        </select>
-      </div>
-
-      <div id="price-section-food" class="flex items-center gap-3">
-        <label class="font-bold">Spesa media</label>
-        <input id="new-spot-price-food" type="number" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none" />
-      </div>
-      <div id="price-section-other" class="auth-switch glass-strong" role="tablist" aria-label="Accesso o registrazione">
-        <button class="auth-switch-btn is-active" type="button" role="tab" aria-selected="true" data-auth-tab="login">
-            Gratuito
-        </button>
-        <button class="auth-switch-btn" type="button" role="tab" aria-selected="false" data-auth-tab="register">
-          <div class="flex items-center gap-3">  
-            <label>Intero</label>
-            <input id="new-spot-price" type="number" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none" />
-          </div>
-          <div class="flex items-center gap-3">  
-            <label>Ridotto</label>
-            <input id="new-spot-ridotto" type="checkbox" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none" />
-          </div>
-        </button>
-        <div class="auth-slider"></div>
-    </div>
-    </section>
-
-    <section class="text-center">
-      <h3 class="text-xl font-bold mb-4">Immagine *</h3>
-      <div class="flex justify-center gap-4">
-        <button class="flex items-center gap-2 border-2 border-black rounded-xl px-4 py-2 font-bold">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          Scatta
-        </button>
-        <button class="flex items-center gap-2 border-2 border-black rounded-xl px-4 py-2 font-bold">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          Scegli
-        </button>
-      </div>
-    </section>
-
-    <section class="space-y-3">
-      <div class="flex items-center justify-between">
-        <label class="font-bold text-lg">Recensione</label>
-        <div class="flex gap-1 text-2xl rating-container">
-          <!-- [dynamic] star rating -->
         </div>
-      </div>
-      <textarea rows="3" class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"></textarea>
-    </section>
-  </div>
+      </section>
 
-  <div class="sticky bottom-4 left-0 right-0 bg-white pt-2">
-    <button id="add-spot-button" class="w-full bg-white border-4 border-black text-black py-3 rounded-2xl font-black text-2xl uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
-      Aggiungi
-    </button>
-  </div>
+      <!-- NOME / DESCRIZIONE -->
+      <section class="space-y-4">
+        <div>
+          <label for="new-spot-name" class="block font-bold mb-1">
+            Nome dello Spot *
+          </label>
+          <input
+            id="new-spot-name"
+            name="name"
+            type="text"
+            required
+            class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label for="new-spot-desc" class="block font-bold mb-1">
+            Descrizione *
+          </label>
+          <textarea
+            id="new-spot-desc"
+            name="description"
+            rows="3"
+            required
+            class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
+          ></textarea>
+        </div>
+      </section>
+
+      <!-- CATEGORIA / PREZZO / ORARI -->
+      <section class="space-y-4">
+
+        <div class="flex items-center gap-3">
+          <label for="new-spot-category" class="font-bold">
+            Categoria *
+          </label>
+          <select
+            id="new-spot-category"
+            name="category"
+            required
+            class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[100px]"
+          >
+            <option value="culture">Cultura</option>
+            <option value="food">Cibo</option>
+            <option value="nature">Natura</option>
+            <option value="mystery">Mistero</option>
+          </select>
+        </div>
+
+        <!-- FOOD -->
+        <div id="price-section-food" class="flex items-center gap-3">
+          <label for="new-spot-price-food" class="font-bold">
+            Spesa media
+          </label>
+          <input
+            id="new-spot-price-food"
+            name="price_food"
+            type="text"
+            inputmode="decimal"
+            placeholder="0.00"
+            class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
+          />
+        </div>
+
+        <!-- ALTRE CATEGORIE -->
+        <div id="price-section-other" class="auth-switch glass-strong" role="tablist" aria-label="Prezzo">
+
+          <button
+            class="auth-switch-btn new-spot-switch-btn is-active"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            data-auth-tab="free"
+          >
+            Gratuito
+          </button>
+
+          <button
+            class="auth-switch-btn new-spot-switch-btn"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            data-auth-tab="price"
+          >
+            <div class="flex items-center gap-3">
+              <label for="new-spot-price-intero">Intero</label>
+              <input
+                id="new-spot-price-intero"
+                name="price_intero"
+                type="text"
+                inputmode="decimal"
+                placeholder="0.00"
+                class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
+              />
+            </div>
+
+            <div class="flex items-center gap-3">
+              <label for="new-spot-price-ridotto">Ridotto</label>
+              <input
+                id="new-spot-price-ridotto"
+                name="price_ridotto"
+                type="text"
+                inputmode="decimal"
+                placeholder="0.00"
+                class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
+              />
+            </div>
+          </button>
+
+          <div class="auth-slider new-spot-slider"></div>
+        </div>
+
+        <!-- ORARI -->
+        <div class="flex flex-wrap items-center gap-3">
+          <label class="font-bold">Orario di apertura</label>
+
+          <select
+            id="new-spot-open-time"
+            name="open_time"
+            class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]"
+          >
+            <option></option>
+          </select>
+
+          <select
+            id="new-spot-close-time"
+            name="close_time"
+            class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]"
+          >
+            <option></option>
+          </select>
+        </div>
+      </section>
+
+      <!-- IMMAGINE -->
+      <section class="text-center">
+        <h3 class="text-xl font-bold mb-4">Immagine *</h3>
+
+        <!-- qui probabilmente userai un input file nascosto -->
+        <div class="flex justify-center gap-4">
+          <button type="button" class="flex items-center gap-2 border-2 border-black rounded-xl px-4 py-2 font-bold">
+            Scatta
+          </button>
+
+          <button type="button" class="flex items-center gap-2 border-2 border-black rounded-xl px-4 py-2 font-bold">
+            Scegli
+          </button>
+        </div>
+      </section>
+
+      <!-- RECENSIONE -->
+      <section class="space-y-3">
+        <div class="flex items-center justify-between">
+          <label class="font-bold text-lg">Recensione</label>
+          <div class="flex gap-1 text-2xl rating-container">
+            <!-- [dynamic] star rating -->
+          </div>
+        </div>
+
+        <textarea
+          name="review"
+          rows="3"
+          class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
+        ></textarea>
+      </section>
+    </div>
+    
+        <!-- SUBMIT -->
+      <div class="spot-detail-actions glass-strong">
+        <button type="sumbit" id="add-spot-button"
+            class="spot-detail-action-button glass spot-detail-share-button">
+            Aggiungi
+        </button>
+      </div>
+  </form>
 </section>
