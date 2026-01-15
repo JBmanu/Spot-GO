@@ -190,23 +190,20 @@ export async function searchUser(searchId) {
     if (!searchId) return [];
   
     try {
-        console.log('🔍 Cerco ID contenenti:', searchId);
         // Collection reference
         const usersCol = collection(db, 'Utente');
         
         // Query per ID che inizia con searchId
         const q = query(
-        usersCol,
-        where('__name__', '>=', searchId),
-        where('__name__', '<=', searchId + '\uf8ff')
+            usersCol,
+            where('__name__', '>=', searchId),
+            where('__name__', '<=', searchId + '\uf8ff')
         );
         
         // Esegui query
         const querySnapshot = await getDocs(q);
-        
         // Array risultati
         const matchingUsers = [];
-
         querySnapshot.forEach((doc) => {
             const docData = doc.data();
             matchingUsers.push({
@@ -218,7 +215,6 @@ export async function searchUser(searchId) {
                 });
         });
         
-        console.log(`✅ ${matchingUsers.length} utenti trovati`);
         return matchingUsers;
         
     } catch (error) {
@@ -267,7 +263,6 @@ export async function getFollowersUser(targetUserId) {
         const docSnapshot = await getDoc(docRef);
         const snapData = docSnapshot.data();
         const followingsBack = snapData.friends.map(f => f.id);
-
 
         // Get all users that follows logged user.
         const amiciRef = collection(db, 'Amico');

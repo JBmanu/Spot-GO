@@ -31,18 +31,19 @@ function initTabSelector(userId) {
     const sections = [searchSection, followsSection, followersSection, suggestedSection];
 
     searchbarInput.addEventListener("input", () => {
+        //if (searchbarInput.value.length < 3) return;
         searchUser(searchbarInput.value).then(results =>
             getCurrentUser().then(loggedUser =>
                 getFollowingUser(loggedUser.email).then(followings => {
                     const followingIds = followings.map(f => f.email);
-                    results.map(usr => {
+                    const finalRes = results.map(usr => {
                         return {
                             ...usr,
                             following: followingIds.includes(usr.email)
                         }
-                    })
-                    //TODO: fix following flag
-                    showsItemsInContainer(results, "results", data => data.following ? makeFriendCard(data) : makeSuggestedCard(data));
+                    });
+                    showsItemsInContainer(finalRes, "results", data =>
+                        data.following ? makeFriendCard(data) : makeSuggestedCard(data));
                 })
             ));
     });
@@ -57,9 +58,12 @@ function initTabSelector(userId) {
         hideAll(sections);
         unselectAllButton(buttons);
         searchbarInput.value = '';
+        const resultsDiv = document.getElementById("community-results-container");
+        resultsDiv.innerHTML = '';
         sectionSelector.classList.remove('hidden');
         followsSection.classList.remove('hidden');
         btnFollows.classList.add('active-community-tab');
+
     });
 
     btnFollows.addEventListener('click', async () => {
