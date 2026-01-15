@@ -15,12 +15,14 @@ export async function loadCommunityData() {
 }
 
 function initTabSelector(userId) {
-    const searchWrapper = document.getElementById('searchWrapper');
+    const searchbarInput = document.getElementById("community-user-search-input");
+    const btnCloseSearch = document.getElementById("community-close-search-btn");
     const btnFollows = document.getElementById("community-tab-follows");
     const btnFollowers = document.getElementById("community-tab-followers");
     const btnSuggested = document.getElementById("community-tab-suggested");
 
     const searchSection = document.getElementById("community-results-section");
+    const sectionSelector = document.getElementById("community-section-selector");
     const followsSection = document.getElementById("community-follows-section");
     const followersSection = document.getElementById("community-followers-section");
     const suggestedSection = document.getElementById("community-suggested-section");
@@ -28,18 +30,23 @@ function initTabSelector(userId) {
     const buttons = [btnFollows, btnFollowers, btnSuggested];
     const sections = [searchSection, followsSection, followersSection, suggestedSection];
 
-    searchWrapper.addEventListener('mouseenter', function() {
-        console.log('🔍 Hover IN - Espansione avviata!');
-        hideAll(buttons);
+    searchbarInput.addEventListener("input", () => {
+        console.log(searchbarInput.value);
+    });
+
+    searchbarInput.addEventListener('click', ()=> {
         hideAll(sections);
+        sectionSelector.classList.add('hidden');
         searchSection.classList.remove('hidden');
     });
 
-    searchWrapper.addEventListener('mouseleave', function() {
-        console.log('🔍 Hover OUT - Collasso avviato!');
-        buttons.forEach(b => b.classList.remove('hidden'));
+    btnCloseSearch.addEventListener('click', ()=> {
+        hideAll(sections);
         unselectAllButton(buttons);
-        // followsSection.classList.remove('hidden');
+        searchbarInput.value = '';
+        sectionSelector.classList.remove('hidden');
+        followsSection.classList.remove('hidden');
+        btnFollows.classList.add('active-community-tab');
     });
 
     btnFollows.addEventListener('click', async () => {
