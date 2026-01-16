@@ -245,7 +245,7 @@
     }
 
     .profile-polaroid {
-        @apply glass-modal relative rounded-xl p-4 space-y-3 isolate overflow-hidden z-20 w-[380px] shrink-0 shadow-none snap-center;
+        @apply glass-modal relative rounded-xl p-4 space-y-3 isolate z-20 w-[380px] shrink-0 shadow-none snap-center;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid rgba(152, 152, 152, 0.4);
     }

@@ -82,15 +82,24 @@
             <span class="text-sm text-bold text-gray-500">Apri Album</span>
         </button>
         <div class="profile-carousel">
-            <button type="button" class="profile-carousel-hit profile-carousel-hit--left"
-                aria-label="Polaroid precedente"></button>
             <section data-carousel-type="horizontal" data-card-selector=".polaroid-template"
                 id="polaroid-carousel-container">
                 <!-- Popolato da JavaScript -->
             </section>
-            <button type="button" class="profile-carousel-hit profile-carousel-hit--right"
-                aria-label="Polaroid successiva"></button>
         </div>
         <p class="profile-carousel-counter" id="polaroid-carousel-counter">0/0</p>
+    </div>
+    <div id="polaroid-delete-modal" class="navigation-modal-overlay glass-overlay" style="display: none;">
+        <div class="navigation-modal glass-modal glass-modal-opaque">
+            <h3 class="navigation-modal-title">Elimina Polaroid</h3>
+            <p class="navigation-modal-text">Sei sicuro di voler eliminare questa polaroid? L'azione è
+                irreversibile.</p>
+
+            <div class="navigation-modal-actions">
+                <button type="button" class="nav-modal-btn cancel" id="delete-modal-cancel">Annulla</button>
+                <button type="button" class="nav-modal-btn confirm delete-confirm"
+                    id="delete-modal-confirm">Elimina</button>
+            </div>
+        </div>
     </div>
 </section>

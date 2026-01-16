@@ -149,9 +149,41 @@
 <!-- Template Polaroid -->
 <template data-template="polaroid-template">
     <article class="carousel-horizontal_item profile-polaroid polaroid-template">
-        <button type="button" class="profile-polaroid-menu glass-backdrop-medium" aria-label="Menu polaroid">
-            <img src="../../assets/icons/profile/Menu.svg" alt="Menu icon">
-        </button>
+        <div class="polaroid-menu-wrapper" style="position: absolute; top: 8px; right: 8px; z-index: 30;">
+            <button type="button" class="profile-polaroid-menu glass-backdrop-medium" aria-label="Menu polaroid">
+                <img src="../../assets/icons/profile/Menu.svg" alt="Menu icon">
+            </button>
+            <div class="polaroid-menu-dropdown">
+                <button type="button" data-action="edit-polaroid" class="polaroid-menu-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="polaroid-menu-item-icon">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    <span class="polaroid-menu-text">Modifica</span>
+                </button>
+                <div class="polaroid-menu-divider"></div>
+                <button type="button" data-action="share-polaroid" class="polaroid-menu-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="polaroid-menu-item-icon">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    <span class="polaroid-menu-text">Condividi</span>
+                </button>
+                <button type="button" data-action="delete-polaroid" class="polaroid-menu-item text-red-500">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="polaroid-menu-item-icon">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    <span class="polaroid-menu-text">Elimina</span>
+                </button>
+            </div>
+        </div>
         <div class="profile-polaroid-image-container">
             <div class="profile-polaroid-image" data-slot="image" data-field="image"></div>
         </div>
