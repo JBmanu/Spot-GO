@@ -10,6 +10,15 @@
         z-index: 1;
     }
 
+    #community-section-selector button, .follow-btn {
+        padding: 1em;
+        transition: transform 0.3s ease;
+    }
+
+    #community-section-selector button:hover, .follow-btn:hover {
+        transform: scale(1.1);
+    }
+
     .follow-btn {
         
     }
@@ -24,6 +33,7 @@
     }
     
     .community-suggest-card {
+        justify-content: space-evenly;
         flex-direction: column;
         width: 230px;
         aspect-ratio: 1 / 0.8;
@@ -49,6 +59,8 @@
 
     .community-card {
         @apply flex justify-between rounded-2xl border bg-main_paper p-2;
+        padding-left: 1rem;
+        padding-right: 1rem;
         border-radius: var(--radius-2xl);
         margin: calc(var(--spacing) * 3);
         background: rgba(255, 255, 255, 0.468);
