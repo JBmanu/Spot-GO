@@ -637,7 +637,7 @@ export async function sendNotificationToUser(userId) {
 export async function deleteAllUserNotifications() {
     try {
         const currentUser = await getCurrentUser();
-            if (!currentUser) {
+        if (!currentUser) {
             throw new Error("Utente non autenticato");
         }
 
@@ -678,6 +678,17 @@ export async function updatePolaroid(polaroidId, dataToUpdate) {
         console.log(`Polaroid ${polaroidId} aggiornata`);
     } catch (err) {
         console.error("Errore aggiornamento polaroid:", err);
+        throw err;
+    }
+}
+
+export async function deletePolaroid(polaroidId) {
+    try {
+        const docRef = doc(db, "Cartolina", polaroidId);
+        await deleteDoc(docRef);
+        console.log(`Polaroid ${polaroidId} eliminata`);
+    } catch (err) {
+        console.error("Errore eliminazione polaroid:", err);
         throw err;
     }
 }

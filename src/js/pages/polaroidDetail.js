@@ -1,4 +1,4 @@
-import { getSpotById, updatePolaroid } from "../database.js";
+import { getSpotById, updatePolaroid, deletePolaroid } from "../database.js";
 import { closeOverlayAndReveal } from "../common/back.js";
 import { openSpotDetailById } from "./spotDetail.js";
 
@@ -302,13 +302,59 @@ function initializeDetailHandlers(overlay, data) {
         }
 
         const deleteBtn = menuDropdown.querySelector('[data-action="delete-polaroid"]');
-        if (deleteBtn) {
+        const deleteModal = overlay.querySelector("#polaroid-delete-modal");
+
+        if (deleteBtn && deleteModal) {
+            const confirmBtn = deleteModal.querySelector("#delete-modal-confirm");
+            const cancelBtn = deleteModal.querySelector("#delete-modal-cancel");
+
             deleteBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
                 closeMenu();
 
-                if (confirm("Sei sicuro di voler eliminare questa polaroid?")) {
+                deleteModal.style.display = "flex";
+                requestAnimationFrame(() => {
+                    deleteModal.classList.add("active");
+                });
+            });
+
+            const closeModal = () => {
+                deleteModal.classList.remove("active");
+                setTimeout(() => {
+                    deleteModal.style.display = "none";
+                }, 300);
+            };
+
+            cancelBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                closeModal();
+            });
+
+            confirmBtn.addEventListener("click", async (e) => {
+                e.preventDefault();
+                try {
+                    await deletePolaroid(data.id);
+                    closeModal();
+
+                    const main = getMain();
+                    await exitDetailFlow(main);
+
+                    const returnViewId = overlay.dataset.returnView;
+                    if (returnViewId === "profile" || document.querySelector('[data-section-view="profile"]:not([hidden])')) {
+                        if (window.reloadProfileHeader) window.reloadProfileHeader();
+
+                        document.dispatchEvent(new CustomEvent("polaroid:deleted", { detail: { id: data.id } }));
+                    }
+
+                } catch (err) {
+                    console.error("Error deleting polaroid:", err);
+                    alert("Errore durante l'eliminazione.");
+                    closeModal();
                 }
+            });
+
+            deleteModal.addEventListener("click", (e) => {
+                if (e.target === deleteModal) closeModal();
             });
         }
     }

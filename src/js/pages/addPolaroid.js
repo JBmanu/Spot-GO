@@ -208,6 +208,8 @@ function initializeAddPolaroid(wrapperEl) {
 
             closeAddPolaroidModal();
 
+            document.dispatchEvent(new CustomEvent("polaroid:added"));
+
         } catch (err) {
             alert("Errore durante il salvataggio. Riprova.");
             console.error(err);

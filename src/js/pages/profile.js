@@ -137,6 +137,20 @@ function setupProfileEventListeners(container) {
             addPolaroidButton.addEventListener("click", handleAddPolaroidClick);
         }
     }
+
+    if (container.dataset.liveUpdatesBound !== "true") {
+        container.dataset.liveUpdatesBound = "true";
+
+        document.addEventListener("polaroid:added", () => {
+            initializePolaroidCarousel();
+            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+        });
+
+        document.addEventListener("polaroid:deleted", () => {
+            initializePolaroidCarousel();
+            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+        });
+    }
 }
 
 async function handleSavedSpotsClick(e) {
