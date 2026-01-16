@@ -25,7 +25,16 @@ function renderMessages(userData, messages) {
         messages.forEach(msg => {
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${msg.isMittente ? 'sent' : ''}`;
-    
+
+            const msgDateTime = new Date(msg.timestamp.seconds * 1000)
+                .toLocaleDateString('it-IT', {
+                    minute: '2-digit',
+                    hour: '2-digit',
+                    day: '2-digit',
+                    month: '2-digit', 
+                    year: '2-digit'
+                });
+                
             const bubble = document.createElement('div');
             bubble.className = 'message-bubble';
             bubble.innerHTML = 
@@ -46,7 +55,7 @@ function renderMessages(userData, messages) {
                     <p class="profile-polaroid-subtitle">${formatDate(msg.cartolina.date)}</p>
                 </div>
             </article>
-            <div class='text-message'><p>${msg.testo}</p></div>`;
+            <div class='datetime-message'><p>${msgDateTime}</p></div>`;
             const article = bubble.querySelector('.community-chat-polaroid');
             if (article) {
                 article.addEventListener('click', (e) => {

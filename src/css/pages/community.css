@@ -45,6 +45,10 @@
         background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.18));
     }
 
+    .user-avatar img {
+        max-width: 80%;
+    }
+
     .card-user-info {
         @apply flex flex-col justify-between ml-4;
     }
@@ -173,10 +177,12 @@
       color: white;
     }
 
-    .text-message {
-      font-size: 12pt;
-      text-align: left;
-      margin-top: 10px;
+    .datetime-message {
+        font-size: 10pt;
+        text-align: left;
+        margin-top: 10px;
+        display: flex;
+        justify-content: right;
     }
 
     .cardboard-image {
