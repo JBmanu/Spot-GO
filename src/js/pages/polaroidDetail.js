@@ -163,7 +163,7 @@ async function populatePolaroidDetail(data, overlay) {
     if (dateEl) dateEl.textContent = formatDate(data.date) || "";
 
     if (imageEl) {
-        const imgUrl = (data.image && data.image !== "") ? data.image : "../assets/default-polaroid.jpg";
+        const imgUrl = (data.immagini && data.immagini !== "") ? data.immagini[0] : "../assets/default-polaroid.jpg";
         imageEl.src = imgUrl;
     }
 

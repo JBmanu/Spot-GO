@@ -1,5 +1,6 @@
 import {getCurrentUser, getCartolinaById, pullMessages} from "../../database.js";
 import {formatDate} from "../../common/datetime.js";
+import {openPolaroidDetail} from "../polaroidDetail.js"
 
 export async function fetchFriendMessages(followingData) {
     const userMail = await getCurrentUser();
@@ -63,7 +64,8 @@ function renderMessages(userData, messages) {
                         return;
                     }
                     //TODO: open modal cartolina details
-                    openPolaroidDetailsModal(msg.cartolina);            
+                    openPolaroidDetail(msg.cartolina);
+                    
                 });
             }
             msgDiv.appendChild(bubble);
