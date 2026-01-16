@@ -1,5 +1,6 @@
 import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPolaroids, getSpotById, getCurrentUser } from "../database.js";
 import { openAddPolaroidModal } from "./addPolaroid.js";
+import { openPolaroidDetail } from "./polaroidDetail.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",
@@ -36,13 +37,23 @@ window.reloadProfile = async function () {
     await loadProfileOverview(wrapper);
 };
 
+export async function reloadProfileHeader() {
+    const user = await getCurrentUser();
+    if (!user) return;
+    updateProfileHeader(user);
+    const btn = document.getElementById("header-bookmark-button");
+    if (btn) btn.style.display = "none";
+}
+
+window.reloadProfileHeader = reloadProfileHeader;
+
 async function initializeProfileData(container) {
     await profileDepsReady;
 
-    const currentUserStr = localStorage.getItem('currentUser');
-    if (!currentUserStr) return;
+    await profileDepsReady;
 
-    const user = JSON.parse(currentUserStr);
+    const user = await getCurrentUser();
+    if (!user) return;
 
     updateProfileHeader(user);
 
@@ -65,13 +76,21 @@ function updateProfileHeader(user) {
         name: document.getElementById("profile-name"),
         username: document.getElementById("profile-username"),
         email: document.getElementById("profile-email"),
-        avatar: document.getElementById("profile-avatar")
+        avatar: document.getElementById("profile-avatar"),
+        backButton: document.getElementById("header-back-button")
     };
 
     if (elements.name) elements.name.textContent = profileData.name;
     if (elements.username) elements.username.textContent = profileData.username;
     if (elements.email) elements.email.textContent = profileData.email;
     if (elements.avatar) elements.avatar.src = profileData.avatarSrc;
+
+    const title = document.getElementById("header-title");
+    if (title) {
+        title.classList.add("hidden");
+    }
+    const logoText = document.getElementById("header-logo-text");
+    if (logoText) logoText.style.display = "";
 }
 
 async function updateUserCounters(username) {
@@ -117,6 +136,20 @@ function setupProfileEventListeners(container) {
             addPolaroidButton.dataset.bound = "true";
             addPolaroidButton.addEventListener("click", handleAddPolaroidClick);
         }
+    }
+
+    if (container.dataset.liveUpdatesBound !== "true") {
+        container.dataset.liveUpdatesBound = "true";
+
+        document.addEventListener("polaroid:added", () => {
+            initializePolaroidCarousel();
+            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+        });
+
+        document.addEventListener("polaroid:deleted", () => {
+            initializePolaroidCarousel();
+            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+        });
     }
 }
 
@@ -187,7 +220,9 @@ async function fetchPolaroidData() {
             title: p.title || "Senza Titolo",
             subtitle: subtitle,
             image: (p.immagini && p.immagini.length > 0) ? p.immagini[0] : "",
-            date: p.date
+            date: p.date,
+            idLuogo: p.idLuogo,
+            diary: p.diary || ""
         };
     }));
 }
@@ -227,6 +262,16 @@ function renderCarouselItems(container, items, template) {
     items.forEach(item => {
         const clone = template.content.cloneNode(true);
         fillPolaroidContent(clone, item);
+
+        const polaroidEl = clone.querySelector('.profile-polaroid');
+        if (polaroidEl) {
+            polaroidEl.addEventListener('click', (e) => {
+                if (e.target.closest('.profile-polaroid-menu')) return;
+                e.preventDefault();
+                openPolaroidDetail(item);
+            });
+        }
+
         track.appendChild(clone);
     });
 

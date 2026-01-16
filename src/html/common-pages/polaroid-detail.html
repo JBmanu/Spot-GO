@@ -1,0 +1,118 @@
+<div class="flex flex-col h-full">
+
+    <div class="polaroid-detail-container">
+
+        <!-- Top Bar: Menu (Absolute) -->
+        <div class="polaroid-menu-float">
+            <button type="button" data-action="open-menu" class="polaroid-menu-btn">
+                <img src="../../assets/icons/profile/Menu.svg" alt="Menu" class="polaroid-menu-icon" />
+            </button>
+
+            <!-- Menu Dropdown -->
+            <div data-element="menu-dropdown" class="polaroid-menu-dropdown">
+                <button type="button" data-action="edit-polaroid" class="polaroid-menu-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="polaroid-menu-item-icon">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    <span class="polaroid-menu-text">Modifica</span>
+                </button>
+                <div class="polaroid-menu-divider"></div>
+                <button type="button" data-action="share-polaroid" class="polaroid-menu-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="polaroid-menu-item-icon">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    <span class="polaroid-menu-text">Condividi</span>
+                </button>
+                <button type="button" data-action="delete-polaroid" class="polaroid-menu-item text-red-500">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="polaroid-menu-item-icon">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    <span class="polaroid-menu-text">Elimina</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Header: Title & Meta -->
+        <div class="polaroid-header-section">
+            <div class="polaroid-title-row">
+                <img src="../../assets/icons/profile/Certificate.svg" alt="Certificato" class="polaroid-title-icon">
+                <h1 data-field="title" class="polaroid-title">
+                    Titolo Polaroid
+                </h1>
+            </div>
+
+            <div class="polaroid-meta-container">
+                <div class="polaroid-meta-group-left">
+                    <span class="polaroid-meta-label">Data</span>
+                    <span data-field="date" class="polaroid-meta-value">Data</span>
+                </div>
+                <div class="polaroid-meta-separator"></div>
+                <div class="polaroid-meta-group-right">
+                    <span class="polaroid-meta-label text-right">Spot</span>
+                    <button type="button" data-field="spot-name-header" class="polaroid-spot-link">
+                        Spot
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Container -->
+        <div class="polaroid-image-wrapper">
+            <div class="polaroid-image-inner">
+                <img data-field="image" src="" alt="Polaroid" class="polaroid-image" />
+            </div>
+        </div>
+
+        <!-- Diary Section -->
+        <div class="polaroid-diary-section">
+            <label class="polaroid-diary-label">Il tuo diario</label>
+
+            <!-- Content State -->
+            <div class="polaroid-diary-box" data-section="diary" style="display: none;">
+                <div data-field="diary-display" class="polaroid-diary-text-display"></div>
+                <textarea data-field="diary" class="polaroid-diary-input" style="display: none;"></textarea>
+            </div>
+
+            <!-- Empty State -->
+            <div class="polaroid-diary-empty" data-section="diary-empty" style="display: none;">
+                <img src="../../assets/icons/profile/Sad.svg" alt="Icona triste" class="polaroid-diary-empty-icon">
+                <span class="polaroid-diary-empty-text">
+                    Ogni foto ha una storia.<br>Raccontala qui!
+                </span>
+                <span class="polaroid-diary-instruction">
+                    (Tocca il menu in alto e scegli Modifica per iniziare)
+                </span>
+            </div>
+
+            <!-- Edit Actions -->
+            <div class="polaroid-edit-actions" data-section="edit-actions" style="display: none;">
+                <button type="button" data-action="cancel-edit" class="polaroid-action-btn-cancel">Annulla</button>
+                <button type="button" data-action="save-edit" class="polaroid-action-btn-confirm">Conferma</button>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="polaroid-delete-modal" class="navigation-modal-overlay glass-overlay" style="display: none;">
+            <div class="navigation-modal glass-modal glass-modal-opaque">
+                <h3 class="navigation-modal-title">Elimina Polaroid</h3>
+                <p class="navigation-modal-text">Sei sicuro di voler eliminare questa polaroid? L'azione è
+                    irreversibile.</p>
+
+                <div class="navigation-modal-actions">
+                    <button type="button" class="nav-modal-btn cancel" id="delete-modal-cancel">Annulla</button>
+                    <button type="button" class="nav-modal-btn confirm delete-confirm"
+                        id="delete-modal-confirm">Elimina</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

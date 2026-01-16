@@ -188,18 +188,18 @@ export async function getVisitedSpots(username) {
 
 export async function searchUser(searchId) {
     if (!searchId) return [];
-  
+
     try {
         // Collection reference
         const usersCol = collection(db, 'Utente');
-        
+
         // Query per ID che inizia con searchId
         const q = query(
             usersCol,
             where('__name__', '>=', searchId),
             where('__name__', '<=', searchId + '\uf8ff')
         );
-        
+
         // Esegui query
         const querySnapshot = await getDocs(q);
         // Array risultati
@@ -207,16 +207,16 @@ export async function searchUser(searchId) {
         querySnapshot.forEach((doc) => {
             const docData = doc.data();
             matchingUsers.push({
-                    id: doc.id,
-                    livello: docData.livello || "-",
-                    email: docData.email || "-",
-                    username: docData.username || "-",
-                    name: docData.name || "-"
-                });
+                id: doc.id,
+                livello: docData.livello || "-",
+                email: docData.email || "-",
+                username: docData.username || "-",
+                name: docData.name || "-"
+            });
         });
-        
+
         return matchingUsers;
-        
+
     } catch (error) {
         console.log('Errore:', error);
         return [];
@@ -637,7 +637,7 @@ export async function sendNotificationToUser(userId) {
 export async function deleteAllUserNotifications() {
     try {
         const currentUser = await getCurrentUser();
-            if (!currentUser) {
+        if (!currentUser) {
             throw new Error("Utente non autenticato");
         }
 
@@ -667,3 +667,28 @@ export async function deleteAllUserNotifications() {
     }
 }
 
+
+/**
+ * Updates a polaroid document
+ */
+export async function updatePolaroid(polaroidId, dataToUpdate) {
+    try {
+        const docRef = doc(db, "Cartolina", polaroidId);
+        await updateDoc(docRef, dataToUpdate);
+        console.log(`Polaroid ${polaroidId} aggiornata`);
+    } catch (err) {
+        console.error("Errore aggiornamento polaroid:", err);
+        throw err;
+    }
+}
+
+export async function deletePolaroid(polaroidId) {
+    try {
+        const docRef = doc(db, "Cartolina", polaroidId);
+        await deleteDoc(docRef);
+        console.log(`Polaroid ${polaroidId} eliminata`);
+    } catch (err) {
+        console.error("Errore eliminazione polaroid:", err);
+        throw err;
+    }
+}
