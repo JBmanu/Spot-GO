@@ -1,6 +1,7 @@
 
 import {searchUser, getCurrentUser, getFollowingUser, getFollowersUser, getSuggestedFollows} from "../database.js";
 import {makeFriendCard, makeSuggestedCard} from '../pages/community/cardsFactory.js'
+import {createSearchBarWithKeyboard} from '../createComponent.js';
 
 export async function loadCommunityData() {
     const user = await getCurrentUser();
@@ -11,11 +12,22 @@ export async function loadCommunityData() {
         loadFollowers(loggedUser.email),
         loadSuggested(loggedUser.email)
     ]);
+    await configureKeyboard();
     initTabSelector(loggedUser.email);
 }
 
+async function configureKeyboard() {
+    // Bind search bar and keyboard to search section.
+    const {searchBarEl, keyboardEl, overlayEl} = await createSearchBarWithKeyboard("Cerca utente", onValueChangeSearch);
+    const searchsection = document.getElementById("community-search-section");
+    const searchInput = searchBarEl.querySelector("#view-all-saved-search");
+    // Sostituisci solo con l'input estratto
+    document.getElementById("community-search-input").replaceWith(searchInput);
+    searchsection.appendChild(keyboardEl);
+} 
+
 function initTabSelector(userId) {
-    const searchbarInput = document.getElementById("community-search-input");
+    const searchbarInput = document.getElementById("view-all-saved-search");
     const body = document.getElementById("community-main-body");
     const btnCloseSearch = document.getElementById("community-close-search-btn");
     const btnFollows = document.getElementById("community-tab-follows");
@@ -58,23 +70,23 @@ function initTabSelector(userId) {
         searchsection.classList.add('hidden');
         body.classList.remove('hidden');
     });
+}
 
-    searchbarInput.addEventListener("input", () => {
-        //if (searchbarInput.value.length < 3) return;
-        searchUser(searchbarInput.value).then(results =>
-            getCurrentUser().then(loggedUser =>
-                getFollowingUser(loggedUser.email).then(followings => {
-                    const followingIds = followings.map(f => f.email);
-                    const finalRes = results.map(usr => {
-                        return {
-                            ...usr,
-                            followingBack: followingIds.includes(usr.email)
-                        }
-                    });
-                    showsItemsInContainer(finalRes, "results", data => makeFriendCard(data));
-                })
-            ));
-    });
+function onValueChangeSearch(value) {
+    searchUser(value).then(results =>
+        getCurrentUser().then(loggedUser =>
+            getFollowingUser(loggedUser.email).then(followings => {
+                const followingIds = followings.map(f => f.email);
+                const finalRes = results.map(usr => {
+                    return {
+                        ...usr,
+                        followingBack: followingIds.includes(usr.email)
+                    }
+                });
+                showsItemsInContainer(finalRes, "results", data => makeFriendCard(data));
+            })
+        ));
+
 }
 
 function hideAll(nodes) {
@@ -118,7 +130,6 @@ const P404_MSG = {
 async function showsItemsInContainer(items, itemIdName, cardBuilderStrategy) {
     const containerId = `community-${itemIdName}-container`;
     const errData = P404_MSG[itemIdName] || P404_MSG["default"];
-    console.log(errData);
     const container = document.getElementById(containerId);
     container.innerHTML = "";
     if (items.length === 0) {

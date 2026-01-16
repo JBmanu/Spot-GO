@@ -5,7 +5,6 @@ export async function fetchFriendMessages(followingData) {
     const userMail = await getCurrentUser();
     const messagesData = await pullMessages(userMail.email, followingData.email);
     const messagesPromise = messagesData.map(async msg => {
-        //TODO: capire perche non  carica/legge i dati 
         const cartolina =  await getCartolinaById(msg.ref);
         return {
             ... msg,
