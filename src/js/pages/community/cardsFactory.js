@@ -2,14 +2,7 @@ import {showConfirmModal} from "../../ui/confirmModal.js";
 import {fetchFriendMessages} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
-
-const AVATAR_MAP = {
-    "Luana": "Luana.svg",
-    "Julio Manuel": "Manuel.svg",
-    "Alessandro": "Ale.svg",
-    "Teo": "Teo.svg",
-    "DEFAULT": "default.svg"
-};
+import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
 
 export function makeSuggestedCard(data) {
 

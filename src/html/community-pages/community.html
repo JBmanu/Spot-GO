@@ -2,11 +2,18 @@
 <!-- HIdden chat view -->
 <section id="chat-container" class="hidden-chat">
   <header class="chat-header glass-medium">
-    <button id="closeBtn" class="close-btn">✕</button>
-    <h2>Chat con <p id="user-chat-name"></p></h2>
+    <div class="chat-header-left">
+      <div class="chat-avatar">
+        <img src="" alt="User Avatar" id="chat-avatar-img">👤
+      </div>
+      <div class="chat-user-info">
+        <h2 class="user-name" id="user-chat-name">Caricamento...</h2>
+      </div>
+    </div>
+    <button id="closeBtn" class="close-btn" title="Chiudi chat">✕</button>
   </header>
-  <div class="messages-container " id="messagesContainer">
-    <!-- Messaggi verranno inseriti qui -->
+  <div class="messages-container" id="messagesContainer">
+    <!-- Messaggi dinamici -->
   </div>
 </section>
 
@@ -30,42 +37,42 @@
   </section>
 </section>
 
-  <div id="community-main-body">
-    <!-- Selettore tab -->
-    <div id="community-section-selector" class="mx-4 my-0 p-4">
-        <div id="tab-bar" class="glass-medium relative rounded-2xl shadow px-2 py-2">
-            <!-- BOTTONI -->
-            <div class="relative z-10 flex justify-between min-h-13">
-                <!-- Seguiti -->
-                <button id="community-tab-follows" class="active-community-tab">
-                    <span>Seguiti</span>
-                </button>
-                <!-- Seguaci -->
-                <button id="community-tab-followers">
-                    <span>Seguaci</span>
-                </button>
-                <!-- Cerca -->
-                <button id="community-tab-search">
-                    <span>Cerca</span>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="flex flex-col space-y-3">
-        <!-- Tab Seguiti -->
-      <section id="community-follows-section" class="community-section">
-        <div id="community-follows-container" class="vertical-carousel-track" role="list">
-          <!-- Follows cards list -->
-        </div>
-      </section>
-      <!-- Tab Seguaci -->
-      <section id="community-followers-section" class="community-section hidden">
-        <div id="community-followers-container" class="vertical-carousel-track" role="list">
-          <!-- Followers cards list -->
-        </div>
-      </section>
-    </div>
+<div id="community-main-body">
+  <!-- Selettore tab -->
+  <div id="community-section-selector" class="mx-4 my-0 p-4">
+      <div id="tab-bar" class="glass-medium relative rounded-2xl shadow px-2 py-2">
+          <!-- BOTTONI -->
+          <div class="relative z-10 flex justify-between min-h-13">
+              <!-- Seguiti -->
+              <button id="community-tab-follows" class="active-community-tab">
+                  <span>Seguiti</span>
+              </button>
+              <!-- Seguaci -->
+              <button id="community-tab-followers">
+                  <span>Seguaci</span>
+              </button>
+              <!-- Cerca -->
+              <button id="community-tab-search">
+                  <span>Cerca</span>
+              </button>
+          </div>
+      </div>
   </div>
+  <div class="flex flex-col space-y-3">
+      <!-- Tab Seguiti -->
+    <section id="community-follows-section" class="community-section">
+      <div id="community-follows-container" class="vertical-carousel-track" role="list">
+        <!-- Follows cards list -->
+      </div>
+    </section>
+    <!-- Tab Seguaci -->
+    <section id="community-followers-section" class="community-section hidden">
+      <div id="community-followers-container" class="vertical-carousel-track" role="list">
+        <!-- Followers cards list -->
+      </div>
+    </section>
+  </div>
+</div>
 
     <!-- Suggeriti -->
 <section id="community-suggested-wrapper" class="glass-medium ">

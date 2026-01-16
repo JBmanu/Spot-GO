@@ -1,6 +1,7 @@
 import {getCurrentUser, getCartolinaById, pullMessages} from "../../database.js";
 import {formatDate} from "../../common/datetime.js";
 import {openPolaroidDetail} from "../polaroidDetail.js"
+import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
 
 export async function fetchFriendMessages(followingData) {
     const userMail = await getCurrentUser();
@@ -16,10 +17,24 @@ export async function fetchFriendMessages(followingData) {
     renderMessages(followingData, messages);
 }
 
+function hideCommunityMainSections() {
+    document.getElementById("community-main-body").classList.add('hidden');
+    document.getElementById("community-suggested-wrapper").classList.add('hidden');
+}
+
+function showCommunityMainSections() {
+    document.getElementById("community-main-body").classList.remove('hidden');
+    document.getElementById("community-suggested-wrapper").classList.remove('hidden');
+}
+
 function renderMessages(userData, messages) {
+    hideCommunityMainSections();
     document.getElementById('chat-container').classList.toggle('hidden-chat');
     const chatName = document.getElementById('user-chat-name');
     chatName.textContent = userData.username;
+    const avatarImage = document.getElementById('chat-avatar-img');
+    avatarImage.src = `../assets/icons/login-signup/${AVATAR_MAP[userData.username] || AVATAR_MAP.DEFAULT}`;
+
     const messagesContainer = document.getElementById('messagesContainer');
     messagesContainer.innerHTML ='';
     if (messages.length > 0) {
@@ -63,9 +78,7 @@ function renderMessages(userData, messages) {
                     if (e.target.closest('.profile-polaroid-menu')) {
                         return;
                     }
-                    //TODO: open modal cartolina details
                     openPolaroidDetail(msg.cartolina);
-                    
                 });
             }
             msgDiv.appendChild(bubble);
@@ -77,6 +90,7 @@ function renderMessages(userData, messages) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
     // Chiudi chat
     document.getElementById('closeBtn').addEventListener('click', () => {
+        showCommunityMainSections();
         document.getElementById('chat-container').classList.add('hidden-chat');
     });
 }
