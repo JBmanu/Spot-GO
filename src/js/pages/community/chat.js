@@ -1,4 +1,5 @@
 import {getCurrentUser, getCartolinaById, pullMessages} from "../../database.js";
+import {formatDate} from "../../common/datetime.js";
 
 export async function fetchFriendMessages(followingData) {
     const userMail = await getCurrentUser();
@@ -79,11 +80,3 @@ function renderMessages(userData, messages) {
     });
 }
 
-function formatDate(timestamp) {
-  return new Date(timestamp.seconds * 1000)
-    .toLocaleDateString('it-IT', {
-      day: '2-digit',
-      month: '2-digit', 
-      year: 'numeric'
-    });
-}

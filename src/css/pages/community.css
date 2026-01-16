@@ -27,6 +27,7 @@
         flex-direction: column;
         width: 230px;
         aspect-ratio: 1 / 0.8;
+        border: 4px solid rgba(152, 152, 152, 0.4);
     }
 
     #community-suggested-wrapper {

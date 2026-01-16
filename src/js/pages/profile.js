@@ -1,6 +1,7 @@
 import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPolaroids, getSpotById, getCurrentUser } from "../database.js";
 import { openAddPolaroidModal } from "./addPolaroid.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
+import { formatDate } from "../common/datetime.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",
@@ -203,7 +204,7 @@ async function fetchPolaroidData() {
     if (!polaroids || polaroids.length === 0) return [];
 
     return Promise.all(polaroids.map(async (p) => {
-        let subtitle = p.date || "";
+        let subtitle = formatDate(p.date) || "";
         if (p.idLuogo) {
             try {
                 const spot = await getSpotById(p.idLuogo);
