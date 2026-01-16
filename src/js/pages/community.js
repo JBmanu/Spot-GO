@@ -3,6 +3,8 @@ import {searchUser, getCurrentUser, getFollowingUser, getFollowersUser, getSugge
 import {makeFriendCard, makeSuggestedCard} from '../pages/community/cardsFactory.js'
 import {createSearchBarWithKeyboard} from '../createComponent.js';
 
+let keyboardSetted = false;
+
 export async function loadCommunityData() {
     const user = await getCurrentUser();
     if (!user) return;
@@ -12,20 +14,23 @@ export async function loadCommunityData() {
         loadFollowers(loggedUser.email),
         loadSuggested(loggedUser.email)
     ]);
-    await configureKeyboard();
+    if (keyboardSetted !== true) {
+        await configureKeyboard();
+    }
     initTabSelector(loggedUser.email);
 }
 
 async function configureKeyboard() {
     // Bind search bar and keyboard to search section.
     const {searchBarEl, keyboardEl, overlayEl} = await createSearchBarWithKeyboard("Cerca utente", onValueChangeSearch);
-    const searchsection = document.getElementById("community-search-section");
+    const communityPage = document.querySelector('[data-section-view="community"]');
     //Estrai nodo input
     const searchInput = searchBarEl.querySelector("#view-all-saved-search");
     // Sostituisci l'input mio con quello estratto e associato alla keyboard
     document.getElementById("community-search-input").replaceWith(searchInput);
-    searchsection.appendChild(keyboardEl);
-} 
+    communityPage.appendChild(keyboardEl);
+    keyboardSetted = true;
+}
 
 function initTabSelector(userId) {
     const searchbarInput = document.getElementById("view-all-saved-search");

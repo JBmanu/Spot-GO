@@ -14,7 +14,7 @@ const AVATAR_MAP = {
 export function makeSuggestedCard(data) {
 
     const article = document.createElement("article");
-    article.className = "general-card carousel-horizontal_item community-card community-suggest-card";
+    article.className = "carousel-horizontal_item community-card community-suggest-card";
     article.setAttribute("role", "listitem");
     article.setAttribute("data-user-id", data.id);
 
