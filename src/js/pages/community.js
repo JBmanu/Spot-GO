@@ -20,8 +20,9 @@ async function configureKeyboard() {
     // Bind search bar and keyboard to search section.
     const {searchBarEl, keyboardEl, overlayEl} = await createSearchBarWithKeyboard("Cerca utente", onValueChangeSearch);
     const searchsection = document.getElementById("community-search-section");
+    //Estrai nodo input
     const searchInput = searchBarEl.querySelector("#view-all-saved-search");
-    // Sostituisci solo con l'input estratto
+    // Sostituisci l'input mio con quello estratto e associato alla keyboard
     document.getElementById("community-search-input").replaceWith(searchInput);
     searchsection.appendChild(keyboardEl);
 } 

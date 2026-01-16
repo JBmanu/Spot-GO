@@ -71,7 +71,9 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
         overlay.style.transform = "translateY(0)";
 
         const searchBarRect = searchBarEl.getBoundingClientRect();
-        const overlayRect = overlay.closest('[data-overlay-view]').getBoundingClientRect();
+        const overlayContainer = overlay.closest('[data-overlay-view]') || document.body;
+        const overlayRect = overlayContainer.getBoundingClientRect();
+    
         const topOffset = searchBarRect.bottom - overlayRect.top;
         overlay.style.top = topOffset + 'px';
 
