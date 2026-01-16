@@ -1,5 +1,6 @@
 import { getSpotById, updatePolaroid, deletePolaroid } from "../database.js";
 import { closeOverlayAndReveal } from "../common/back.js";
+import { formatDate } from "../common/datetime.js";
 import { openSpotDetailById } from "./spotDetail.js";
 
 const state = {
@@ -160,12 +161,11 @@ async function populatePolaroidDetail(data, overlay) {
     const diaryEl = overlay.querySelector('[data-field="diary"]');
 
     if (titleEl) titleEl.textContent = data.title || "Senza Titolo";
-    if (dateEl) dateEl.textContent = data.date || "";
 
-
+    if (dateEl) dateEl.textContent = formatDate(data.date) || "";
 
     if (imageEl) {
-        const imgUrl = (data.image && data.image !== "") ? data.image : "../assets/default-polaroid.jpg";
+        const imgUrl = (data.immagini && data.immagini !== "") ? data.immagini[0] : "../assets/default-polaroid.jpg";
         imageEl.src = imgUrl;
     }
 

@@ -3,6 +3,14 @@ import {fetchFriendMessages} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
 
+const AVATAR_MAP = {
+    "Luana": "Luana.svg",
+    "Julio Manuel": "Manuel.svg",
+    "Alessandro": "Ale.svg",
+    "Teo": "Teo.svg",
+    "DEFAULT": "default.svg"
+};
+
 export function makeSuggestedCard(data) {
 
     const article = document.createElement("article");
@@ -43,7 +51,11 @@ function makeCardInfo(data) {
 
     const avatar = document.createElement("div");
     avatar.className = "user-avatar";
-    avatar.textContent = data.username.substring(0, 2);
+
+    const avatarImage = document.createElement("img");
+    avatarImage.src = `../assets/icons/login-signup/${AVATAR_MAP[data.username] || AVATAR_MAP.DEFAULT}`;
+    //avatar.textContent = data.username.substring(0, 2);
+    avatar.appendChild(avatarImage);
 
     const userInfo = document.createElement("div");
     userInfo.className = "card-user-info flex flex-col justify-between ml-4";

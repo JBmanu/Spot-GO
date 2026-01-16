@@ -1,10 +1,11 @@
 import {getCurrentUser, getCartolinaById, pullMessages} from "../../database.js";
+import {formatDate} from "../../common/datetime.js";
+import {openPolaroidDetail} from "../polaroidDetail.js"
 
 export async function fetchFriendMessages(followingData) {
     const userMail = await getCurrentUser();
     const messagesData = await pullMessages(userMail.email, followingData.email);
     const messagesPromise = messagesData.map(async msg => {
-        //TODO: capire perche non  carica/legge i dati 
         const cartolina =  await getCartolinaById(msg.ref);
         return {
             ... msg,
@@ -25,7 +26,16 @@ function renderMessages(userData, messages) {
         messages.forEach(msg => {
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${msg.isMittente ? 'sent' : ''}`;
-    
+
+            const msgDateTime = new Date(msg.timestamp.seconds * 1000)
+                .toLocaleDateString('it-IT', {
+                    minute: '2-digit',
+                    hour: '2-digit',
+                    day: '2-digit',
+                    month: '2-digit', 
+                    year: '2-digit'
+                });
+                
             const bubble = document.createElement('div');
             bubble.className = 'message-bubble';
             bubble.innerHTML = 
@@ -46,7 +56,7 @@ function renderMessages(userData, messages) {
                     <p class="profile-polaroid-subtitle">${formatDate(msg.cartolina.date)}</p>
                 </div>
             </article>
-            <div class='text-message'><p>${msg.testo}</p></div>`;
+            <div class='datetime-message'><p>${msgDateTime}</p></div>`;
             const article = bubble.querySelector('.community-chat-polaroid');
             if (article) {
                 article.addEventListener('click', (e) => {
@@ -54,7 +64,8 @@ function renderMessages(userData, messages) {
                         return;
                     }
                     //TODO: open modal cartolina details
-                    openPolaroidDetailsModal(msg.cartolina);            
+                    openPolaroidDetail(msg.cartolina);
+                    
                 });
             }
             msgDiv.appendChild(bubble);
@@ -70,11 +81,3 @@ function renderMessages(userData, messages) {
     });
 }
 
-function formatDate(timestamp) {
-  return new Date(timestamp.seconds * 1000)
-    .toLocaleDateString('it-IT', {
-      day: '2-digit',
-      month: '2-digit', 
-      year: 'numeric'
-    });
-}
