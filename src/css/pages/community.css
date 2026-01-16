@@ -4,28 +4,48 @@
         @apply glass-medium relative rounded-2xl shadow px-2 py-2;
     }
 
-    .community-search-wrapper {
+    .community-search-wrapper, #community-section-selector {
         position: sticky;
         top: 0;
         z-index: 1;
-    }
-
-    .community-suggest-card {
-        flex-direction: column;
-        width: 250px;
-        aspect-ratio: 1 / 0.8;
     }
 
     .follow-btn {
         
     }
 
-    .community-main-body {
-        height: 80vh;
+    .community-section {
+        height: 70vh;
+    }
+
+    #community-main-body {
         display: flex;
         flex-direction: column;
     }
     
+    .community-suggest-card {
+        flex-direction: column;
+        width: 230px;
+        aspect-ratio: 1 / 0.8;
+    }
+
+    #community-suggested-wrapper {
+        position: sticky;
+        bottom: 0;
+        z-index: 1;
+        padding: 12px;
+        max-height: 250px;
+    }
+
+    #community-suggested-wrapper > h2 {
+        margin-bottom: calc(var(--spacing) * 1);
+        font-size: var(--text-xl);
+        line-height: var(--tw-leading, var(--text-xl--line-height));
+        --tw-font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-gray-800);
+    }
+
     .community-card {
         @apply flex justify-between rounded-2xl border bg-main_paper p-2;
         border-radius: var(--radius-2xl);
@@ -107,7 +127,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: 1;
+        z-index: 2;
         animation: slideIn 0.3s ease;
     }
 
@@ -220,6 +240,47 @@
 
     .close-btn:hover {
       color: var(--color-primary);
+    }
+
+
+    /* Pagina nessun risultato */
+    .empty-state {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+        width: 100%;
+        padding: 40px 20px;
+    }
+
+    .empty-state-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .empty-state-emoji {
+        font-size: 4rem;
+        line-height: 1;
+        animation: gentle-bounce 2s ease-in-out infinite;
+    }
+
+    .empty-state-text {
+        font-size: 1rem;
+        color: #666;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    @keyframes gentle-bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
     }
 
 }
