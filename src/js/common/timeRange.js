@@ -112,7 +112,7 @@ export function validateTimeRange(timeRangeEl) {
     return values.every(isTwoDigits);
 }
 
-export function readTimeRangeForDb(timeRangeEl) {
+export function readTimeRangeValues(timeRangeEl) {
     if (!validateTimeRange(timeRangeEl)) return [];
 
     const sh = timeRangeEl.querySelector("#start-h").value;

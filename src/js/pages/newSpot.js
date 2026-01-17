@@ -2,13 +2,13 @@ import { loadComponentAsDocument } from "../createComponent";
 import { USER_PROTO_POSITION } from "../common";
 import { createStarRating } from "../createComponent";
 import { insertNewSpot, getCurrentUser } from "../database";
-import { initializeTimeRangeControl } from "../common/timeRange";
+import { initializeTimeRangeControl, validateTimeRange, readTimeRangeValues } from "../common/timeRange";
 
 let __newSpotPageHtml = null;
 let newSpotSection;
 let map;
 let spotPositionMarker;
-let selectedSpotPosition = [0,0];
+let selectedSpotPosition = null;
 let otherPriceDisplayMode;
 let foodPriceDisplayMode;
 
@@ -94,6 +94,9 @@ export async function openNewSpotPage() {
     initializeCategorySelector();
     initializeTimeRange();
     initializeAddSpotButton();
+    setupNewSpotFormValidation();
+
+    selectedSpotPosition = null;
 
     // Bottone indietro
     const backBtn = document.querySelector("[data-back]");
@@ -172,6 +175,7 @@ async function loadMap() {
         .addTo(map);
 
       newSpotSection.querySelector('#spot-position').textContent = `${lat.toFixed(4)} : ${lng.toFixed(4)}`;
+      validateNewSpotForm();
     });
 
 }
@@ -254,6 +258,70 @@ function validatePriceInputField(e) {
     value = value.replace(",", ".");
 
     e.target.value = value;
+}
+
+function setupNewSpotFormValidation() {
+    const form = document.getElementById("new-spot-form");
+    const submitBtn = document.getElementById("add-spot-button");
+
+    if (!form || !submitBtn) return;
+
+    const update = () => {
+        submitBtn.disabled = !validateNewSpotForm();
+        submitBtn.classList.toggle("opacity-50", submitBtn.disabled);
+        submitBtn.classList.toggle("cursor-not-allowed", submitBtn.disabled);
+    };
+
+    // input + change coprono quasi tutto
+    form.addEventListener("input", update);
+    form.addEventListener("change", update);
+
+    update(); // stato iniziale
+}
+
+function validateNewSpotForm() {
+    const form = document.getElementById("new-spot-form");
+    if (!form) return false;
+
+    // ===== CAMPI BASE =====
+    const nome = form.querySelector("#new-spot-name")?.value.trim();
+    const descrizione = form.querySelector("#new-spot-desc")?.value.trim();
+    const categoria = form.querySelector("#new-spot-category")?.value;
+
+    // posizione (assumo variabile globale già settata)
+    const posizioneValida =
+        Array.isArray(selectedSpotPosition) &&
+        selectedSpotPosition.length === 2;
+
+    if (!nome || !descrizione || !categoria || !posizioneValida) {
+        return false;
+    }
+
+    // ===== PREZZO =====
+    if (categoria !== "food") {
+        const freeTabActive = form
+            .querySelector('[data-auth-tab="free"]')
+            ?.classList.contains("is-active");
+
+        if (!freeTabActive) {
+            const prezzoIntero =
+                form.querySelector("#new-spot-price-intero")?.value.trim();
+            const prezzoRidotto =
+                form.querySelector("#new-spot-price-ridotto")?.value.trim();
+
+            if (!prezzoIntero && !prezzoRidotto) {
+                return false;
+            }
+        }
+    }
+
+    // ===== ORARI =====
+    const timeRangeEl = form.querySelector(".time-range");
+    if (timeRangeEl && !validateTimeRange(timeRangeEl)) {
+        return false;
+    }
+
+    return true;
 }
 
 async function readNewSpotDataFromFields() {
