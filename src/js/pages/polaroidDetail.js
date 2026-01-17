@@ -2,6 +2,7 @@ import { getSpotById, updatePolaroid, deletePolaroid } from "../database.js";
 import { closeOverlayAndReveal } from "../common/back.js";
 import { formatDate } from "../common/datetime.js";
 import { openSpotDetailById } from "./spotDetail.js";
+import { sharePolaroidModal } from "./sharePolaroid.js";
 
 const state = {
     templateCache: null,
@@ -292,19 +293,10 @@ function initializeDetailHandlers(overlay, data) {
 
         const shareBtn = menuDropdown.querySelector('[data-action="share-polaroid"]');
         if (shareBtn) {
-            shareBtn.addEventListener("click", (e) => {
+            shareBtn.addEventListener("click", async (e) => {
                 e.stopPropagation();
                 closeMenu();
-
-                if (navigator.share) {
-                    navigator.share({
-                        title: data.title || 'Polaroid',
-                        text: data.diary || 'Guarda questa polaroid su Spot GO!',
-                        url: window.location.href
-                    }).catch(console.error);
-                } else {
-                    alert("Condivisione non supportata su questo browser");
-                }
+                await sharePolaroidModal(data);
             });
         }
 

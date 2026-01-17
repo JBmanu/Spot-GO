@@ -1,52 +1,17 @@
 import { addReviewToDatabase } from "../database.js";
+import { closeModal, openModal } from "../common/modalView.js";
 
 let currentSpotId = null;
 let onReviewComplete = null;
-let modalElement = null;
-let isModalOpen = false;
 let selectedRating = 0;
 let updateSubmitButtonFn = null;
 
 export async function openAddReviewModal() {
-    if (isModalOpen) return;
-
-    if (!modalElement) {
-        const response = await fetch("../html/common-pages/add-review.html");
-        if (!response.ok) return;
-
-        const html = await response.text();
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = html;
-        modalElement = tempDiv.firstElementChild;
-
-        const phoneScreen = document.querySelector(".phone-screen");
-        if (!phoneScreen) return;
-        phoneScreen.appendChild(modalElement);
-
-        initializeAddReview(modalElement);
-    }
-
-    isModalOpen = true;
-    modalElement.style.display = "flex";
-    requestAnimationFrame(() => {
-        modalElement.classList.add("active");
-    });
-
-    const mainContainer = document.getElementById("main");
-    if (mainContainer) {
-        mainContainer.style.overflow = "hidden";
-    }
+    await openModal("../html/common-pages/add-review.html", ".phone-screen", initializeAddReview);
 }
 
 export function closeAddReviewModal() {
-    if (!isModalOpen || !modalElement) return;
-
-    isModalOpen = false;
-    modalElement.classList.remove("active");
-
-    setTimeout(() => {
-        modalElement.style.display = "none";
-
+    closeModal(modalElement => {
         const form = modalElement.querySelector("#add-review-form");
         if (form) {
             form.reset();
@@ -57,12 +22,7 @@ export function closeAddReviewModal() {
                 updateSubmitButtonFn();
             }
         }
-
-        const mainContainer = document.getElementById("main");
-        if (mainContainer) {
-            mainContainer.style.overflow = "";
-        }
-    }, 300);
+    });
 }
 
 export function initializeAddReview(wrapperEl) {

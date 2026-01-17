@@ -3,27 +3,43 @@ import {fetchFriendMessages} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
+import { openModal } from "../../common/modalView.js";
+import {initializeProfileData} from "../profile.js";
 
-export function makeSuggestedCard(data) {
+export function makeSelectableCard(data) {
+    return makeGenericCard(data, checkboxAction(data));
+}
 
+function checkboxAction(data) {
+    // <input type="checkbox" class="receiver-checkbox checked" data-friend-id-mail="teo@gmail.com">
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'receiver-checkbox checked';
+    checkbox.setAttribute('data-friend-id-mail', data.id);
+    return checkbox;
+}
+
+function makeGenericCard(data, actionContainer) {
     const article = document.createElement("article");
-    article.className = "carousel-horizontal_item community-card community-suggest-card";
+    article.className = "community-card";
     article.setAttribute("role", "listitem");
     article.setAttribute("data-user-id", data.id);
+    article.appendChild(makeCardInfo(data));
+    article.appendChild(actionContainer);
+    return article;
+}
 
+export function makeSuggestedCard(data) {
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
-
     const followsText = document.createElement("p");
-    followsText.textContent = "Segui";
-
     const addButton = followActionBtn(data.id, followsText);
+    followsText.textContent = "Segui";
     actionsContainer.appendChild(addButton);
 
-    article.appendChild(makeCardInfo(data));
-    article.appendChild(actionsContainer);
-
-    return article;
+    const card = makeGenericCard(data, actionsContainer)
+    card.classList.add("community-suggest-card", "carousel-horizontal_item");
+    return card;
 }
 
 /**
@@ -31,13 +47,7 @@ export function makeSuggestedCard(data) {
  * Returns an article child.
  */
 export function makeFriendCard(data) {
-    const article = document.createElement("article");
-    article.className = "community-card";
-    article.setAttribute("role", "listitem");
-    article.setAttribute("data-user-id", data.id);
-    article.appendChild(makeCardInfo(data));
-    article.appendChild(makeFriendActionContainer(data));
-    return article;
+    return makeGenericCard(data, makeFriendActionContainer(data));
 }
 
 function makeCardInfo(data) {
@@ -67,6 +77,13 @@ function makeCardInfo(data) {
     container.className = "flex flex-row items-center";
     container.appendChild(avatar);
     container.appendChild(userInfo);
+    container.addEventListener('click', async () => {
+        await openModal("../html/profile.html", ".phone-screen", async (modalElement) => {
+            //TODO: implements generic function in  order to use it to see other users and also current logged one
+                await initializeProfileData(modalElement, userId)
+            });
+    });
+
     return container;
 }
 

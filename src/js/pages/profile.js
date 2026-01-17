@@ -3,6 +3,7 @@ import { openAddPolaroidModal } from "./addPolaroid.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
 import { formatDate } from "../common/datetime.js";
 import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
+import { sharePolaroidModal } from "./sharePolaroid.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",
@@ -49,7 +50,7 @@ export async function reloadProfileHeader() {
 
 window.reloadProfileHeader = reloadProfileHeader;
 
-async function initializeProfileData(container) {
+export async function initializeProfileData(container) {
     await profileDepsReady;
 
     await profileDepsReady;
@@ -232,16 +233,16 @@ function renderCarouselItems(container, items, template) {
     const track = document.createElement("div");
     track.className = "carousel-horizontal_track";
 
-    items.forEach(item => {
+    items.forEach(itemData => {
         const clone = template.content.cloneNode(true);
-        fillPolaroidContent(clone, item);
+        fillPolaroidContent(clone, itemData);
 
         const polaroidEl = clone.querySelector('.profile-polaroid');
         if (polaroidEl) {
             polaroidEl.addEventListener('click', (e) => {
                 if (e.target.closest('.polaroid-menu-wrapper') || e.target.closest('.polaroid-menu-dropdown') || e.target.closest('.profile-polaroid-menu')) return;
                 e.preventDefault();
-                openPolaroidDetail(item);
+                openPolaroidDetail(itemData);
             });
 
             const menuBtn = clone.querySelector('.profile-polaroid-menu');
@@ -287,13 +288,13 @@ function renderCarouselItems(container, items, template) {
                         menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
                         if (polaroidEl) polaroidEl.style.zIndex = "";
 
-                        openPolaroidDetail(item, { startInEditMode: true });
+                        openPolaroidDetail(itemData, { startInEditMode: true });
                     });
                 }
 
                 const shareBtn = menuDropdown.querySelector('[data-action="share-polaroid"]');
                 if (shareBtn) {
-                    shareBtn.addEventListener('click', (e) => {
+                    shareBtn.addEventListener('click', async (e) => {
                         console.log("Share action clicked");
                         e.preventDefault();
                         e.stopPropagation();
@@ -301,16 +302,8 @@ function renderCarouselItems(container, items, template) {
                         menuDropdown.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
                         menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
                         if (polaroidEl) polaroidEl.style.zIndex = "";
-
-                        if (navigator.share) {
-                            navigator.share({
-                                title: item.title || 'Polaroid',
-                                text: item.diary || 'Guarda questa polaroid su Spot GO!',
-                                url: window.location.href
-                            }).catch(console.error);
-                        } else {
-                            alert("Condivisione non supportata su questo browser");
-                        }
+                        
+                        await sharePolaroidModal(itemData);
                     });
                 }
 
@@ -325,7 +318,7 @@ function renderCarouselItems(container, items, template) {
                         menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
                         if (polaroidEl) polaroidEl.style.zIndex = "";
 
-                        showDeleteConfirmation(item);
+                        showDeleteConfirmation(itemData);
                     });
                 }
             }
