@@ -143,7 +143,7 @@ async function loadMap() {
     // Aggiunta posizione corrente dell'utente (simulata)
     L.marker(USER_PROTO_POSITION, {
         icon: L.icon({
-            iconUrl: '../../assets/icons/map/Arrow.png',
+            iconUrl: '../../assets/icons/map/Navigation.svg',
             iconSize: [40, 40],
             iconAnchor: [20, 40]
         }),
