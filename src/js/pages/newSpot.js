@@ -11,6 +11,7 @@ let spotPositionMarker;
 let selectedSpotPosition = null;
 let otherPriceDisplayMode;
 let foodPriceDisplayMode;
+let imageController;
 
 async function getNewSpotPageHtml() {
     if (__newSpotPageHtml) return __newSpotPageHtml;
@@ -93,6 +94,7 @@ export async function openNewSpotPage() {
     initializePriceTab();
     initializeCategorySelector();
     initializeTimeRange();
+    imageController = initializeImageInput();
     initializeAddSpotButton();
     setupNewSpotFormValidation();
 
@@ -236,6 +238,52 @@ function switchToTab(tab) {
     if (slider) slider.style.left = tab === 'free' ? '1%' : '51%';
 }
 
+function initializeImageInput() {
+    const wrapperEl = document.getElementById('new-spot-image-wrapper');
+    const imageInput = wrapperEl.querySelector("#new-spot-image-input");
+    const imagePreview = wrapperEl.querySelector("#new-spot-image-preview");
+
+    let selectedImage = null;
+
+    if (!imageInput || !imagePreview) {
+        console.warn("Image input o preview non trovati");
+        return;
+    }
+
+    imageInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith("image/")) return;
+
+        selectedImage = file;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            imagePreview.style.backgroundImage = `url(${event.target.result})`;
+            imagePreview.classList.add("active");
+        };
+        reader.readAsDataURL(file);
+    });
+
+    return {
+        getImage: () => selectedImage,
+        resetImage: () => {
+            selectedImage = null;
+            imageInput.value = "";
+            imagePreview.classList.remove("active");
+            imagePreview.style.backgroundImage = "";
+        }
+    };
+}
+
+async function imageToUrlPath(image) {
+    const reader = new FileReader();
+    const imageDataUrl = await new Promise((resolve) => {
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(image);
+    });
+    return imageDataUrl;
+}
+
 function validatePriceInputField(e) {
     let value = e.target.value;
 
@@ -288,12 +336,22 @@ function validateNewSpotForm() {
     const descrizione = form.querySelector("#new-spot-desc")?.value.trim();
     const categoria = form.querySelector("#new-spot-category")?.value;
 
-    // posizione (assumo variabile globale già settata)
     const posizioneValida =
         Array.isArray(selectedSpotPosition) &&
         selectedSpotPosition.length === 2;
 
     if (!nome || !descrizione || !categoria || !posizioneValida) {
+        return false;
+    }
+
+    // ===== IMMAGINE =====
+    const imageInput = form.querySelector("#new-spot-image-input");
+    const imageValida =
+        imageInput &&
+        imageInput.files &&
+        imageInput.files.length > 0;
+
+    if (!imageValida) {
         return false;
     }
 
