@@ -1,4 +1,12 @@
-import {clearMissionTemplates, createMissionTemplate} from "../db/missionTemplateConnector.js";
+import {clearMissionTemplates, createMissionTemplate} from "../missionTemplateConnector.js";
+
+export const TYPE_MISSION = {
+    SPOT: "spot",
+    DAILY: "daily",
+    THEME: "theme",
+    LEVEL: "level"
+}
+
 
 const MISSION_TEMPLATES = [
     // 🏞 SPOT
@@ -34,7 +42,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Completa il check-in giornaliero",
         Description: "Passa a salutare e inizia la giornata!",
-        Type: "daily",
+        Type: TYPE_MISSION.DAILY,
         Category: null,
         Action: "login",
         Target: 1,
@@ -43,7 +51,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Scatta una foto oggi",
         Description: "Mostraci cosa hai scoperto in giro!",
-        Type: "daily",
+        Type: TYPE_MISSION.DAILY,
         Category: null,
         Action: "fai_foto",
         Target: 1,
@@ -52,7 +60,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Scrivi una recensione oggi",
         Description: "Condividi emozioni a parole!",
-        Type: "daily",
+        Type: TYPE_MISSION.DAILY,
         Category: null,
         Action: "scrivi_recensione",
         Target: 1,
@@ -61,7 +69,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Crea una polaroid oggi",
         Description: "Crea un ricordo unico della giornata!",
-        Type: "daily",
+        Type: TYPE_MISSION.DAILY,
         Category: null,
         Action: "crea_polaroid",
         Target: 1,
@@ -70,7 +78,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Completa tutte le missioni giornaliere",
         Description: "Tieni il ritmo, oggi le fai tutte!",
-        Type: "daily",
+        Type: TYPE_MISSION.DAILY,
         Category: null,
         Action: "completa_missioni",
         Target: 4,
@@ -79,7 +87,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Condividi una polaroid oggi",
         Description: "Diffondi bellezza, ispira gli altri!",
-        Type: "daily",
+        Type: TYPE_MISSION.DAILY,
         Category: null,
         Action: "condividi_polaroid",
         Target: 1,

@@ -1,4 +1,4 @@
-export async function generateCompletable() {
+export async function initializeCompletable() {
     const completableMissions = document.querySelectorAll('.completable');
     completableMissions.forEach(mission => {
         const completeDiv = mission.querySelector('.spot-mission-complete');

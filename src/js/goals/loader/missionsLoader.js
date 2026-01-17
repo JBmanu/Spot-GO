@@ -1,4 +1,4 @@
-export async function generateMissions() {
+export async function missionsLoad() {
     for (let i = 0; i < 20; i++) {
         generateAllSpots('.all-spots-missions-ctn', "Luogo luogoso", "Cibo", i, 3)
     }
