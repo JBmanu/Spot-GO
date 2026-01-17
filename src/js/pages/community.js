@@ -2,7 +2,7 @@
 import {searchUser, getCurrentUser, getFollowingUser, getFollowersUser, getSuggestedFollows} from "../database.js";
 import {makeFriendCard, makeSuggestedCard} from '../pages/community/cardsFactory.js'
 import {createSearchBarWithKeyboard} from '../createComponent.js';
-
+import {showsItemsInContainer} from './community/communityUtility.js'
 let keyboardSetted = false;
 
 export async function loadCommunityData() {
@@ -89,7 +89,7 @@ function onValueChangeSearch(value) {
                         followingBack: followingIds.includes(usr.email)
                     }
                 });
-                showsItemsInContainer(finalRes, "results", data => makeFriendCard(data));
+                showsItemsInContainer(finalRes, "results", "community-results-container", data => makeFriendCard(data));
             })
         ));
 
@@ -105,63 +105,20 @@ function unselectAllButton(buttons) {
 
 async function loadFollowing(userId) {
     getFollowingUser(userId).then(follows => 
-        showsItemsInContainer(follows, "follows", data => makeFriendCard(data))
+        showsItemsInContainer(follows, 'follows', 'community-follows-container', data => makeFriendCard(data))
     );
 }
 
 async function loadSuggested(userId) {
     getSuggestedFollows(userId).then(suggested => 
-        showsItemsInContainer(suggested, "suggested", data => makeSuggestedCard(data))
+        showsItemsInContainer(suggested, 'suggested', "community-suggested-container", data => makeSuggestedCard(data))
     );
 }
 
 async function loadFollowers(userId) {
     getFollowersUser(userId).then(followers => {
-        showsItemsInContainer(followers, "followers", data => makeFriendCard(data));
+        showsItemsInContainer(followers, 'followers', "community-followers-container", data => makeFriendCard(data));
     });
 }
 
-const P404_MSG = {
-    "follows": {emoji: '🥲', testo: 'Non segui ancora nessuno'},
-    "following": {emoji: '🙄', testo: 'Nessuno ancora ti segue'},
-    "results": {emoji: '🤷🏼‍♂️', testo: 'Nessun utente trovato'},
-    "suggested": {emoji: '', testo: 'Per ora nessuna proposta'},
-    "default" : {emoji: '🔍', testo: 'Nessun risultato'},
-};
-
-/**
- * Generate item list providing containerId, array of items
- * and itemIdName (is used to identify html nodes about this items).
- */
-async function showsItemsInContainer(items, itemIdName, cardBuilderStrategy) {
-    const containerId = `community-${itemIdName}-container`;
-    const errData = P404_MSG[itemIdName] || P404_MSG["default"];
-    const container = document.getElementById(containerId);
-    container.innerHTML = "";
-    if (items.length === 0) {
-        container.appendChild(createEmptyStateNode(errData.emoji, errData.testo));
-        return;
-    } else {
-        appendHtmlChild(items, container, cardBuilderStrategy);
-    }
-}
-
-function appendHtmlChild(datas, container, cardMaker) {
-    datas.forEach(itemData => {
-        const followCard = cardMaker(itemData);
-        container.appendChild(followCard);
-    });
-}
-
-function createEmptyStateNode(emoji = '🔍', message = 'Nessun utente trovato') {
-    const emptyState = document.createElement('div');
-    emptyState.className = 'empty-state';
-    emptyState.innerHTML = `
-        <div class="empty-state-content">
-            <span class="empty-state-emoji">${emoji}</span>
-            <p class="empty-state-text">${message}</p>
-        </div>
-    `;
-    return emptyState;
-}
 
