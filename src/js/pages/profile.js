@@ -2,6 +2,7 @@ import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPol
 import { openAddPolaroidModal } from "./addPolaroid.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
 import { formatDate } from "../common/datetime.js";
+import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",
@@ -11,15 +12,15 @@ const AVATAR_MAP = {
     "DEFAULT": "default.svg"
 };
 
-const TEMPLATE_PATH = "../html/common-pages/spot-templates.html";
-const DEFAULT_POLAROID_IMG = "../assets/default-polaroid.jpg";
-
 let loadViewAllSaved;
-let cachedPolaroidTemplate = null;
+let loadViewAllPolaroids;
 
 const profileDepsReady = Promise.all([
     import("./viewAllSaved.js").then((m) => {
         loadViewAllSaved = m.loadViewAllSaved;
+    }),
+    import("./viewAllPolaroids.js").then((m) => {
+        loadViewAllPolaroids = m.loadViewAllPolaroids;
     }),
 ]).catch((err) => {
     console.error("Error loading profile dependencies:", err);
@@ -139,6 +140,14 @@ function setupProfileEventListeners(container) {
         }
     }
 
+    const openAlbumButton = container.querySelector(".profile-album-btn");
+    if (openAlbumButton) {
+        if (openAlbumButton.dataset.bound !== "true") {
+            openAlbumButton.dataset.bound = "true";
+            openAlbumButton.addEventListener("click", handleOpenAlbumClick);
+        }
+    }
+
     if (container.dataset.liveUpdatesBound !== "true") {
         container.dataset.liveUpdatesBound = "true";
 
@@ -171,12 +180,23 @@ async function handleAddPolaroidClick(e) {
     await openAddPolaroidModal();
 }
 
+async function handleOpenAlbumClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof loadViewAllPolaroids !== "function") {
+        console.error("loadViewAllPolaroids is not available");
+        return;
+    }
+    await loadViewAllPolaroids("profile");
+}
+
 async function initializePolaroidCarousel() {
     const container = document.getElementById("polaroid-carousel-container");
     if (!container) return;
 
     try {
-        const polaroidData = await fetchPolaroidData();
+        const polaroidData = await fetchFormattedUserPolaroids();
 
         if (!polaroidData || polaroidData.length === 0) {
             renderEmptyCarousel(container);
@@ -193,57 +213,6 @@ async function initializePolaroidCarousel() {
 
     } catch (err) {
         console.error("Error initializing polaroid carousel:", err);
-    }
-}
-
-async function fetchPolaroidData() {
-    const user = await getCurrentUser();
-    if (!user) return [];
-
-    const polaroids = await getUserPolaroids(user.id);
-    if (!polaroids || polaroids.length === 0) return [];
-
-    return Promise.all(polaroids.map(async (p) => {
-        let dateStr = formatDate(p.date) || "";
-        let spotName = "";
-
-        if (p.idLuogo) {
-            try {
-                const spot = await getSpotById(p.idLuogo);
-                if (spot?.nome) {
-                    spotName = spot.nome;
-                }
-            } catch (e) {
-                console.error("Error fetching spot info for polaroid:", e);
-            }
-        }
-
-        return {
-            id: p.id,
-            title: p.title || "Senza Titolo",
-            spotName: spotName || "Posizione sconosciuta",
-            dateStr: dateStr,
-            image: (p.immagini && p.immagini.length > 0) ? p.immagini[0] : "",
-            date: p.date,
-            idLuogo: p.idLuogo,
-            diary: p.diary || ""
-        };
-    }));
-}
-
-async function getPolaroidTemplate() {
-    if (cachedPolaroidTemplate) return cachedPolaroidTemplate;
-
-    try {
-        const response = await fetch(TEMPLATE_PATH);
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        cachedPolaroidTemplate = doc.querySelector('[data-template="polaroid-template"]');
-        return cachedPolaroidTemplate;
-    } catch (err) {
-        console.error("Failed to fetch polaroid template:", err);
-        return null;
     }
 }
 
@@ -430,28 +399,6 @@ function showDeleteConfirmation(item) {
     modal.onclick = (e) => {
         if (e.target === modal) closeModal();
     };
-}
-
-function fillPolaroidContent(node, item) {
-    const titleEl = node.querySelector('[data-slot="title"]');
-    const spotNameEl = node.querySelector('[data-slot="spot-name"]');
-    const dateEl = node.querySelector('[data-slot="date"]');
-    const imageContainer = node.querySelector('.profile-polaroid-image');
-
-    if (titleEl) titleEl.textContent = item.title;
-    if (spotNameEl) spotNameEl.textContent = item.spotName;
-    if (dateEl) dateEl.textContent = item.dateStr;
-
-    if (imageContainer) {
-        const bgImage = item.image ? `url('${item.image}')` : `url('${DEFAULT_POLAROID_IMG}')`;
-        const imgUrl = item.image || DEFAULT_POLAROID_IMG;
-
-        if (imageContainer.tagName === 'IMG') {
-            imageContainer.src = imgUrl;
-        } else {
-            imageContainer.style.backgroundImage = bgImage;
-        }
-    }
 }
 
 function setupCarouselControls(track, totalItems) {
