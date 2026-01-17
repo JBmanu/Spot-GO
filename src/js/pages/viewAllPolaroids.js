@@ -153,8 +153,38 @@ function renderViewAllPolaroidsEmptyMessage(container) {
     `;
 }
 
+
+function groupPolaroidsByDate(polaroids) {
+    const sorted = [...polaroids].sort((a, b) => {
+        const dateA = a.date && typeof a.date.toDate === 'function' ? a.date.toDate() : new Date(a.date);
+        const dateB = b.date && typeof b.date.toDate === 'function' ? b.date.toDate() : new Date(b.date);
+        return dateB - dateA;
+    });
+
+    const grouped = {};
+    sorted.forEach(p => {
+        const date = p.date && typeof p.date.toDate === 'function' ? p.date.toDate() : new Date(p.date);
+        if (isNaN(date.getTime())) return;
+
+        const monthName = date.toLocaleString('it-IT', { month: 'long' });
+        const year = date.getFullYear();
+        const key = `${monthName} ${year}`;
+
+        if (!grouped[key]) {
+            grouped[key] = [];
+        }
+        grouped[key].push(p);
+    });
+
+    return grouped;
+}
+
 async function renderViewAllPolaroidsGrid(container, polaroids, query = "") {
     container.innerHTML = "";
+
+    container.classList.remove("grid", "grid-cols-2", "gap-4");
+    container.classList.add("flex", "flex-col", "gap-6", "pb-24");
+
     const template = await getPolaroidTemplate();
     if (!template) return;
 
@@ -172,25 +202,43 @@ async function renderViewAllPolaroidsGrid(container, polaroids, query = "") {
         return;
     }
 
-    filteredPolaroids.forEach(item => {
-        const clone = template.content.cloneNode(true);
-        fillPolaroidContent(clone, item);
+    const grouped = groupPolaroidsByDate(filteredPolaroids);
 
-        const card = clone.querySelector('.profile-polaroid');
-        if (card) {
-            card.classList.remove('carousel-horizontal_item');
-            card.style.width = "100%";
-            card.style.margin = "0";
+    for (const [header, items] of Object.entries(grouped)) {
 
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('.polaroid-menu-wrapper') || e.target.closest('.polaroid-menu-dropdown') || e.target.closest('.profile-polaroid-menu')) return;
-                e.preventDefault();
-                openPolaroidDetail(item);
-            });
-        }
+        const section = document.createElement("div");
+        section.className = "timeline-section";
 
-        container.appendChild(clone);
-    });
+        const headerEl = document.createElement("div");
+        headerEl.className = "timeline-header";
+        headerEl.innerHTML = `<h3 class="text-lg font-bold capitalize text-primary">${header}</h3>`;
+        section.appendChild(headerEl);
+
+        const grid = document.createElement("div");
+        grid.className = "grid grid-cols-2 gap-4";
+
+        items.forEach(item => {
+            const clone = template.content.cloneNode(true);
+            fillPolaroidContent(clone, item);
+
+            const card = clone.querySelector('.profile-polaroid');
+            if (card) {
+                card.classList.remove('carousel-horizontal_item');
+                card.style.width = "100%";
+                card.style.margin = "0";
+
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('.polaroid-menu-wrapper') || e.target.closest('.polaroid-menu-dropdown') || e.target.closest('.profile-polaroid-menu')) return;
+                    e.preventDefault();
+                    openPolaroidDetail(item);
+                });
+            }
+            grid.appendChild(clone);
+        });
+
+        section.appendChild(grid);
+        container.appendChild(section);
+    }
 }
 
 async function closeViewAllPolaroidsAndRestore() {
@@ -279,6 +327,7 @@ export async function loadViewAllPolaroids(returnViewKey = null) {
 
         state.overlayEl.classList.remove("keyboard-overlay");
         state.overlayEl.classList.add("keyboard-overlay-view-all");
+        state.overlayEl.classList.add("keyboard-overlay-hidden");
     }
 
     pushViewAllPolaroidsHistoryState(returnViewKey);
