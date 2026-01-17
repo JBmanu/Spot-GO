@@ -281,7 +281,7 @@
     }
 
     .profile-polaroid-subtitle {
-        @apply text-sm text-gray-500;
+        @apply text-sm text-gray-500 flex justify-between items-center gap-2;
     }
 
     .profile-carousel-counter {

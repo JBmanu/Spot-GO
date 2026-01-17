@@ -165,7 +165,12 @@ async function populatePolaroidDetail(data, overlay) {
     if (dateEl) dateEl.textContent = formatDate(data.date) || "";
 
     if (imageEl) {
-        const imgUrl = (data.immagini && data.immagini !== "") ? data.immagini[0] : "../assets/default-polaroid.jpg";
+        let imgUrl = "../assets/default-polaroid.jpg";
+        if (data.immagini && data.immagini.length > 0) {
+            imgUrl = data.immagini[0];
+        } else if (data.image) {
+            imgUrl = data.image;
+        }
         imageEl.src = imgUrl;
     }
 
@@ -399,3 +404,5 @@ function initializeDetailHandlers(overlay, data) {
         });
     }
 }
+
+

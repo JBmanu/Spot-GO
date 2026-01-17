@@ -204,12 +204,14 @@ async function fetchPolaroidData() {
     if (!polaroids || polaroids.length === 0) return [];
 
     return Promise.all(polaroids.map(async (p) => {
-        let subtitle = formatDate(p.date) || "";
+        let dateStr = formatDate(p.date) || "";
+        let spotName = "";
+
         if (p.idLuogo) {
             try {
                 const spot = await getSpotById(p.idLuogo);
                 if (spot?.nome) {
-                    subtitle = `${spot.nome} - ${subtitle}`;
+                    spotName = spot.nome;
                 }
             } catch (e) {
                 console.error("Error fetching spot info for polaroid:", e);
@@ -219,7 +221,8 @@ async function fetchPolaroidData() {
         return {
             id: p.id,
             title: p.title || "Senza Titolo",
-            subtitle: subtitle,
+            spotName: spotName || "Posizione sconosciuta",
+            dateStr: dateStr,
             image: (p.immagini && p.immagini.length > 0) ? p.immagini[0] : "",
             date: p.date,
             idLuogo: p.idLuogo,
@@ -431,11 +434,13 @@ function showDeleteConfirmation(item) {
 
 function fillPolaroidContent(node, item) {
     const titleEl = node.querySelector('[data-slot="title"]');
-    const subtitleEl = node.querySelector('[data-slot="subtitle"]');
+    const spotNameEl = node.querySelector('[data-slot="spot-name"]');
+    const dateEl = node.querySelector('[data-slot="date"]');
     const imageContainer = node.querySelector('.profile-polaroid-image');
 
     if (titleEl) titleEl.textContent = item.title;
-    if (subtitleEl) subtitleEl.textContent = item.subtitle;
+    if (spotNameEl) spotNameEl.textContent = item.spotName;
+    if (dateEl) dateEl.textContent = item.dateStr;
 
     if (imageContainer) {
         const bgImage = item.image ? `url('${item.image}')` : `url('${DEFAULT_POLAROID_IMG}')`;
