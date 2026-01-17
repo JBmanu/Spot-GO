@@ -85,13 +85,7 @@ function mountViewAllPolaroidsOverlay(main, { html, returnViewKey }) {
     overlay.dataset.overlayView = OVERLAY_ID;
     if (returnViewKey) overlay.dataset.returnView = String(returnViewKey);
     overlay.innerHTML = html;
-    overlay.style.position = "absolute";
-    overlay.style.top = "0";
-    overlay.style.left = "0";
-    overlay.style.width = "100%";
-    overlay.style.height = "100%";
-    overlay.style.zIndex = "50";
-    overlay.style.backgroundColor = "var(--bg-color)";
+    overlay.classList.add("overlay-full-page");
 
     main.appendChild(overlay);
     state.overlay = overlay;
@@ -278,12 +272,13 @@ export async function loadViewAllPolaroids(returnViewKey = null) {
         hideAllSectionViewsForAlbum(main);
         pushViewAllPolaroidsHistoryState(returnViewKey);
 
-        state.overlay.classList.remove("view-all-saved-enter");
+        state.overlay.classList.remove("page-slide-in");
         void state.overlay.offsetWidth;
-        state.overlay.classList.add("view-all-saved-enter");
+        state.overlay.classList.add("page-slide-in");
 
 
         showViewAllPolaroidsHeader();
+
 
         setupBackButton({
             fallback: async () => {

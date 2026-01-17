@@ -288,10 +288,6 @@
         @apply text-sm text-gray-500 flex justify-between items-center gap-2;
     }
 
-    .view-all-saved-enter {
-        animation: slideInRight 0.3s ease-out forwards;
-    }
-
     .timeline-header {
         @apply sticky top-0 z-10 py-2 px-1 mb-2 border-b;
         backdrop-filter: blur(8px);
@@ -303,17 +299,6 @@
     }
 
 
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
 
     .profile-carousel-counter {
         @apply text-center text-sm font-semibold;
