@@ -104,7 +104,7 @@ async function initializeMap() {
     initializeCategoryFilters();
     initializeNewSpotButton();
 
-    await loadSearchBar();
+    loadSearchBar(); // await
     await loadMap();
     await loadSpotsDependentObjects();
 
