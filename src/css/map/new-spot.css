@@ -3,4 +3,21 @@
     .new-spot-map {
         @apply w-full h-[240px];
     }
+
+    .time-range {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .time-block {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .time-block input {
+        width: 42px;
+        text-align: center;
+    }
 }

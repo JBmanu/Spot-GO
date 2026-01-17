@@ -21,7 +21,7 @@
         </div>
 
         <div class="add-polaroid-input-group">
-            <label for="new-spot-desc" class="input-label">Descrizione</label>
+            <label for="new-spot-desc" class="input-label">Descrizione *</label>
             <textarea id="new-spot-desc" name="description" class="polaroid-input glass-strong"
                 placeholder="Descrivi brevemente lo spot..." rows="3" maxlength="500"></textarea>
         </div>
@@ -30,7 +30,7 @@
       <!-- CATEGORIA / PREZZO / ORARI -->
       <section class="space-y-4">
         <div class="add-polaroid-input-group">
-            <label for="new-spot-category" class="input-label">Spot</label>
+            <label for="new-spot-category" class="input-label">Categoria *</label>
             <select id="new-spot-category" name="category" class="polaroid-input glass-strong" required>
                 <option value="">Seleziona una categoria...</option>
                 <option value="culture">Cultura</option>
@@ -44,7 +44,7 @@
         <div class="add-polaroid-input-group" id="price-section-food">
             <label for="new-spot-price-food" class="input-label">Spesa media</label>
             <input type="text" id="new-spot-price-food" name="price_food" class="polaroid-input glass-strong"
-                placeholder="0.0" inputmode="decimal" required maxlength="50" />
+                placeholder="0.00" inputmode="decimal" required maxlength="50" />
         </div>
 
         <!-- ALTRE CATEGORIE -->
@@ -58,24 +58,24 @@
               aria-selected="true"
               data-auth-tab="free"
             >
-              Gratuito
+              <p class="input-label">Gratuito</p>
             </button>
             <button
-              class="auth-switch-btn new-spot-switch-btn"
+              class="auth-switch-btn new-spot-switch-btn space-y-4"
               type="button"
               role="tab"
               aria-selected="false"
               data-auth-tab="price"
             >
-              <div class="add-polaroid-input-group">
+              <div class="add-polaroid-input-group" style="text-align: left;">
                 <label for="new-spot-price-intero" class="input-label">Intero</label>
                 <input type="text" id="new-spot-price-intero" name="price_intero" class="polaroid-input glass-strong"
-                    placeholder="0.0" inputmode="decimal" required maxlength="50" />
+                    placeholder="0.00" inputmode="decimal" required maxlength="50" />
               </div>
-              <div class="add-polaroid-input-group">
+              <div class="add-polaroid-input-group" style="text-align: left;">
                 <label for="new-spot-price-ridotto" class="input-label">Ridotto</label>
                 <input type="text" id="new-spot-price-ridotto" name="price_ridotto" class="polaroid-input glass-strong"
-                    placeholder="0.0" inputmode="decimal" required maxlength="50" />
+                    placeholder="0.00" inputmode="decimal" required maxlength="50" />
               </div>
             </button>
             <div class="auth-slider new-spot-slider"></div>
@@ -83,10 +83,28 @@
         </div>
 
         <!-- ORARI -->
-        <div class="flex flex-wrap items-center gap-3">
-          <label class="font-bold">Orario di apertura</label>
+        <div class="add-polaroid-input-group">
+          <label for="price-section-other" class="input-label">Orario di apertura</label>
 
-          <select
+          <div class="time-range">
+            <!-- INIZIO -->
+            <div class="time-block">
+              <input id="start-h" type="text" inputmode="numeric" maxlength="2" placeholder="HH">
+              <span>:</span>
+              <input id="start-m" type="text" inputmode="numeric" maxlength="2" placeholder="MM">
+            </div>
+
+            <span class="arrow">→</span>
+
+            <!-- FINE -->
+            <div class="time-block">
+              <input id="end-h" type="text" inputmode="numeric" maxlength="2" placeholder="HH">
+              <span>:</span>
+              <input id="end-m" type="text" inputmode="numeric" maxlength="2" placeholder="MM">
+            </div>
+          </div>
+
+          <!-- <select
             id="new-spot-open-time"
             name="open_time"
             class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]"
@@ -98,7 +116,7 @@
             id="new-spot-close-time"
             name="close_time"
             class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[80px]"
-          >
+          > -->
             <option></option>
           </select>
         </div>
@@ -122,17 +140,13 @@
       <!-- RECENSIONE -->
       <section class="space-y-3">
         <div class="flex items-center justify-between">
-          <label class="font-bold text-lg">Recensione</label>
-          <div class="flex gap-1 text-2xl rating-container">
-            <!-- [dynamic] star rating -->
+          <div class="spot-reviews">
+              <span class="glass-strong p-1.5 rounded-2xl">
+                  <button type="button" id="new-spot-review-btn" class="spot-add-review-button glass-light" aria-label="Scrivi una recensione">
+                      Aggiungi una recensione
+                  </button>
+              </span>
           </div>
-        </div>
-
-        <textarea
-          name="review"
-          rows="3"
-          class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
-        ></textarea>
       </section>
 
       <footer class="add-polaroid-footer">
