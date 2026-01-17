@@ -1,5 +1,5 @@
-import {initializeBottomSheet} from "../ui/bottomSheet.js";
-import {initializeBottomSheetFilters} from "./bottomSheetFilters.js";
+import { initializeBottomSheet } from "../ui/bottomSheet.js";
+import { initializeBottomSheetFilters } from "./bottomSheetFilters.js";
 
 
 async function loadTemplate(path) {
@@ -18,17 +18,19 @@ async function loadTemplate(path) {
 
 export class SearchSystem {
     constructor({
-                    placeholder = "Cerca...",
-                    onSearch = () => {
-                    },
-                    onFocus = () => {
-                    },
-                    onBlur = () => {
-                    },
-                    onFiltersApply = () => {
-                    },
-
-                }) {
+        placeholder = "Cerca...",
+        onSearch = () => {
+        },
+        onFocus = () => {
+        },
+        onBlur = () => {
+        },
+        onFiltersApply = () => {
+        },
+        overlayMode = "hidden",
+        enableFilters = false,
+        filterConfig = null
+    }) {
         this.placeholder = placeholder;
         this.onSearch = onSearch;
         this.onFocus = onFocus;
@@ -131,7 +133,7 @@ export class SearchSystem {
                 }
 
                 input.focus();
-                input.dispatchEvent(new Event("input", {bubbles: true}));
+                input.dispatchEvent(new Event("input", { bubbles: true }));
             });
         });
 
@@ -216,7 +218,7 @@ export class SearchSystem {
     }
 
     showKeyboard() {
-        const {keyboard, overlay, searchBar} = this.elements;
+        const { keyboard, overlay, searchBar } = this.elements;
         if (!keyboard || !overlay) return;
 
         keyboard.classList.add("keyboard-visible");
@@ -234,7 +236,7 @@ export class SearchSystem {
     }
 
     hideKeyboard() {
-        const {keyboard, overlay} = this.elements;
+        const { keyboard, overlay } = this.elements;
         if (!keyboard || !overlay) return;
 
         keyboard.classList.remove("keyboard-visible");
