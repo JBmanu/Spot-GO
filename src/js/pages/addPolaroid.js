@@ -1,44 +1,15 @@
 import { getSpots, addPolaroidToDatabase } from "../database.js";
+import { closeModal, openModal } from "../common/modalView.js";
 
-let modalElement = null;
-let isModalOpen = false;
 let selectedImage = null;
 let updateSubmitButtonFn = null;
 
 export async function openAddPolaroidModal() {
-    if (isModalOpen) return;
-
-    if (!modalElement) {
-        const response = await fetch("../html/common-pages/add-polaroid.html");
-        if (!response.ok) return;
-
-        const html = await response.text();
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = html;
-        modalElement = tempDiv.firstElementChild;
-
-        const phoneScreen = document.querySelector(".phone-screen");
-        if (!phoneScreen) return;
-        phoneScreen.appendChild(modalElement);
-
-        initializeAddPolaroid(modalElement);
-    }
-
-    isModalOpen = true;
-    modalElement.style.display = "flex";
-    requestAnimationFrame(() => {
-        modalElement.classList.add("active");
-    });
-
-    const mainContainer = document.getElementById("main");
-    if (mainContainer) {
-        mainContainer.style.overflow = "hidden";
-    }
-
-    await loadSpotsIntoDropdown();
+    const modalElement = await openModal("../html/common-pages/add-polaroid.html", ".phone-screen", initializeAddPolaroid);
+    await loadSpotsIntoDropdown(modalElement);
 }
 
-async function loadSpotsIntoDropdown() {
+async function loadSpotsIntoDropdown(modalElement) {
     const locationSelect = modalElement.querySelector("#polaroid-location");
     if (!locationSelect) return;
 
@@ -61,14 +32,7 @@ async function loadSpotsIntoDropdown() {
 }
 
 export function closeAddPolaroidModal() {
-    if (!isModalOpen || !modalElement) return;
-
-    isModalOpen = false;
-    modalElement.classList.remove("active");
-
-    setTimeout(() => {
-        modalElement.style.display = "none";
-
+    closeModal(modalElement => {
         const form = modalElement.querySelector("#add-polaroid-form");
         if (form) {
             form.reset();
@@ -84,12 +48,7 @@ export function closeAddPolaroidModal() {
                 updateSubmitButtonFn();
             }
         }
-
-        const mainContainer = document.getElementById("main");
-        if (mainContainer) {
-            mainContainer.style.overflow = "";
-        }
-    }, 300);
+    });
 }
 
 function initializeAddPolaroid(wrapperEl) {

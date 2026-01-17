@@ -1,0 +1,68 @@
+ @layer components {
+
+  .share-polaroid-modal-overlay{
+    z-index: 2000;
+    padding: calc(var(--spacing) * 4);
+  }
+
+  .share-polaroid-modal {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    border-radius: var(--radius-4xl);
+    opacity: 0%;
+    max-width: 540px;
+    max-height: 85%;
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+  }
+
+   .share-polaroid-modal-overlay.active .share-polaroid-modal {
+    opacity: 100%;
+    transform: translateY(0) scale(1);
+  }
+
+  .friends-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .receiver-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+
+  .receiver-checkbox :checked {}
+
+  .share-send-btn, .share-close-btn {
+    background: #0084ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .share-send-btn:hover {
+    background: #0073e6;
+  }
+
+  .share-polaroid-preview {
+    @apply relative rounded-xl p-4 space-y-3 isolate overflow-hidden z-20 shrink-0 shadow-none snap-center;
+    border: 1px solid rgba(152, 152, 152, 0.462);
+    background: linear-gradient(135deg, rgba(255, 255, 255, var(--glass-sheet-a)), rgba(255, 255, 255, var(--glass-sheet-b)));
+    margin: 20px 60px 20px;
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.14), 0 10px 26px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.26);
+  }
+
+  .share-action {
+
+  }
+
+}
