@@ -1,6 +1,6 @@
 <section data-section-view="new-spot" class="max-w-md mx-auto min-h-screen flex flex-col font-sans text-black">
   <form id="new-spot-form" class="space-y-6">
-    <div class="p-4">
+    <div class="p-4 space-y-4">
       <!-- POSIZIONE -->
       <section>
         <label class="block font-bold mb-2">
@@ -14,114 +14,72 @@
 
       <!-- NOME / DESCRIZIONE -->
       <section class="space-y-4">
-        <div>
-          <label for="new-spot-name" class="block font-bold mb-1">
-            Nome dello Spot *
-          </label>
-          <input
-            id="new-spot-name"
-            name="name"
-            type="text"
-            required
-            class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
-          />
+        <div class="add-polaroid-input-group">
+            <label for="new-spot-name" class="input-label">Nome *</label>
+            <input type="text" id="new-spot-name" name="name" class="polaroid-input glass-strong"
+                placeholder="Es. Bosco Imboscato" required maxlength="50" />
         </div>
 
-        <div>
-          <label for="new-spot-desc" class="block font-bold mb-1">
-            Descrizione *
-          </label>
-          <textarea
-            id="new-spot-desc"
-            name="description"
-            rows="3"
-            required
-            class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
-          ></textarea>
+        <div class="add-polaroid-input-group">
+            <label for="new-spot-desc" class="input-label">Descrizione</label>
+            <textarea id="new-spot-desc" name="description" class="polaroid-input glass-strong"
+                placeholder="Descrivi brevemente lo spot..." rows="3" maxlength="500"></textarea>
         </div>
       </section>
 
       <!-- CATEGORIA / PREZZO / ORARI -->
       <section class="space-y-4">
-
-        <div class="flex items-center gap-3">
-          <label for="new-spot-category" class="font-bold">
-            Categoria *
-          </label>
-          <select
-            id="new-spot-category"
-            name="category"
-            required
-            class="border-2 border-black rounded-xl px-3 py-1 bg-white min-w-[100px]"
-          >
-            <option value="culture">Cultura</option>
-            <option value="food">Cibo</option>
-            <option value="nature">Natura</option>
-            <option value="mystery">Mistero</option>
-          </select>
+        <div class="add-polaroid-input-group">
+            <label for="new-spot-category" class="input-label">Spot</label>
+            <select id="new-spot-category" name="category" class="polaroid-input glass-strong" required>
+                <option value="">Seleziona una categoria...</option>
+                <option value="culture">Cultura</option>
+                <option value="food">Cibo</option>
+                <option value="nature">Natura</option>
+                <option value="mystery">Mistero</option>
+            </select>
         </div>
 
         <!-- FOOD -->
-        <div id="price-section-food" class="flex items-center gap-3">
-          <label for="new-spot-price-food" class="font-bold">
-            Spesa media
-          </label>
-          <input
-            id="new-spot-price-food"
-            name="price_food"
-            type="text"
-            inputmode="decimal"
-            placeholder="0.00"
-            class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
-          />
+        <div class="add-polaroid-input-group" id="price-section-food">
+            <label for="new-spot-price-food" class="input-label">Spesa media</label>
+            <input type="text" id="new-spot-price-food" name="price_food" class="polaroid-input glass-strong"
+                placeholder="0.0" inputmode="decimal" required maxlength="50" />
         </div>
 
         <!-- ALTRE CATEGORIE -->
-        <div id="price-section-other" class="auth-switch glass-strong" role="tablist" aria-label="Prezzo">
-
-          <button
-            class="auth-switch-btn new-spot-switch-btn is-active"
-            type="button"
-            role="tab"
-            aria-selected="true"
-            data-auth-tab="free"
-          >
-            Gratuito
-          </button>
-
-          <button
-            class="auth-switch-btn new-spot-switch-btn"
-            type="button"
-            role="tab"
-            aria-selected="false"
-            data-auth-tab="price"
-          >
-            <div class="flex items-center gap-3">
-              <label for="new-spot-price-intero">Intero</label>
-              <input
-                id="new-spot-price-intero"
-                name="price_intero"
-                type="text"
-                inputmode="decimal"
-                placeholder="0.00"
-                class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
-              />
-            </div>
-
-            <div class="flex items-center gap-3">
-              <label for="new-spot-price-ridotto">Ridotto</label>
-              <input
-                id="new-spot-price-ridotto"
-                name="price_ridotto"
-                type="text"
-                inputmode="decimal"
-                placeholder="0.00"
-                class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
-              />
-            </div>
-          </button>
-
-          <div class="auth-slider new-spot-slider"></div>
+        <div class="add-polaroid-input-group" id="price-section-other">
+          <label for="price-section-other" class="input-label">Prezzo</label>
+          <div class="auth-switch glass-strong" role="tablist" aria-label="Prezzo">
+            <button
+              class="auth-switch-btn new-spot-switch-btn is-active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              data-auth-tab="free"
+            >
+              Gratuito
+            </button>
+            <button
+              class="auth-switch-btn new-spot-switch-btn"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              data-auth-tab="price"
+            >
+              <div class="add-polaroid-input-group">
+                <label for="new-spot-price-intero" class="input-label">Intero</label>
+                <input type="text" id="new-spot-price-intero" name="price_intero" class="polaroid-input glass-strong"
+                    placeholder="0.0" inputmode="decimal" required maxlength="50" />
+              </div>
+              <div class="add-polaroid-input-group">
+                <label for="new-spot-price-ridotto" class="input-label">Ridotto</label>
+                <input type="text" id="new-spot-price-ridotto" name="price_ridotto" class="polaroid-input glass-strong"
+                    placeholder="0.0" inputmode="decimal" required maxlength="50" />
+              </div>
+            </button>
+            <div class="auth-slider new-spot-slider"></div>
+          </div>
         </div>
 
         <!-- ORARI -->
@@ -147,18 +105,17 @@
       </section>
 
       <!-- IMMAGINE -->
-      <section class="text-center">
-        <h3 class="text-xl font-bold mb-4">Immagine *</h3>
-
-        <!-- qui probabilmente userai un input file nascosto -->
-        <div class="flex justify-center gap-4">
-          <button type="button" class="flex items-center gap-2 border-2 border-black rounded-xl px-4 py-2 font-bold">
-            Scatta
-          </button>
-
-          <button type="button" class="flex items-center gap-2 border-2 border-black rounded-xl px-4 py-2 font-bold">
-            Scegli
-          </button>
+      <section>
+        <div class="add-polaroid-image-upload glass-strong">
+            <input type="file" id="polaroid-image-input" accept="image/*" class="polaroid-image-input" />
+            <label for="polaroid-image-input" class="polaroid-image-label">
+                <div class="polaroid-upload-placeholder">
+                    <img src="../../assets/icons/profile/Add Image.svg" alt="Carica immagine"
+                        class="upload-icon" />
+                    <span class="upload-text">Carica foto</span>
+                </div>
+                <div class="polaroid-image-preview" id="polaroid-image-preview"></div>
+            </label>
         </div>
       </section>
 
@@ -177,14 +134,21 @@
           class="w-full p-3 border-2 border-black rounded-xl focus:outline-none"
         ></textarea>
       </section>
+
+      <footer class="add-polaroid-footer">
+        <p class="add-polaroid-help-text" id="polaroid-help-text">
+          Carica una foto e completa tutti i campi
+        </p>
+        <button type="submit" id="add-spot-button" class="submit-polaroid-btn glass-btn-primary">Aggiungi spot</button>
+      </footer>
     </div>
     
-        <!-- SUBMIT -->
-      <div class="spot-detail-actions glass-strong">
-        <button type="sumbit" id="add-spot-button"
-            class="spot-detail-action-button glass spot-detail-share-button">
-            Aggiungi
-        </button>
-      </div>
+    <!-- SUBMIT -->
+    <!-- <div class="spot-detail-actions glass-strong">
+      <button type="sumbit" id="add-spot-button"
+          class="spot-detail-action-button glass spot-detail-share-button">
+          Aggiungi
+      </button>
+    </div> -->
   </form>
 </section>
