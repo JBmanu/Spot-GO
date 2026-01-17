@@ -8,6 +8,7 @@ import {seedBadges} from "./db/seed/badgeSeed.js";
 import {seedDiscounts} from "./db/seed/discountSeed.js";
 import {seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
 import {getCurrentUser} from "../database.js";
+import {loadDailyMissions} from "./loader/dailyMissionLoader.js";
 
 let isInitialized = false;
 
@@ -22,6 +23,7 @@ export async function initializeGoals() {
 
     // Loader
     await missionsLoad();
+    await loadDailyMissions();
 
     // Interaction
     await initializeSpotsMissions();

@@ -1,6 +1,14 @@
-﻿
-export async function loadDailyMissions() {
+﻿import {missionTemplatesByType} from "../db/missionTemplateConnector.js";
+import {TYPE_MISSION} from "../db/seed/missionTemplateSeed.js";
 
+export async function loadDailyMissions() {
+    const dailyMissions = await missionTemplatesByType(TYPE_MISSION.DAILY);
+    dailyMissions.forEach(mission => createMissionTemplate(
+        mission.Name,
+        mission.Description,
+        mission.Reward.Experience ?? 0,
+        0,
+        -1));
 }
 
 function createMissionTemplate(title, description, exp, progress, allProgress) {

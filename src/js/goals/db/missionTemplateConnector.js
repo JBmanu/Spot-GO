@@ -52,12 +52,9 @@ export async function missionTemplates() {
 }
 
 export async function missionTemplate(id) {
-    const ref = doc(db, MISSION_TEMPLATE_COLLECTION, id);
-    const snap = await getDoc(ref);
-    return snap.exists() ? {id: snap.id, ...snap.data()} : null;
+    return (await missionTemplates())?.filter(mission => mission.id === id)[0];
 }
 
 export async function missionTemplatesByType(type) {
-    const missionTemplates = missionTemplates();
-    return missionTemplates.filter(mission => mission.Type === type);
+    return (await missionTemplates())?.filter(mission => mission.Type === type);
 }

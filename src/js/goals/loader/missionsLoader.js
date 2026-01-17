@@ -11,14 +11,14 @@ export async function missionsLoad() {
             100)
     }
 
-    for (let i = 0; i < 2; i++) {
-        generateDailyMissions(
-            "Daily Mission",
-            "Complete daily activities",
-            50,
-            i,
-            2)
-    }
+    // for (let i = 0; i < 2; i++) {
+    //     generateDailyMissions(
+    //         "Daily Mission",
+    //         "Complete daily activities",
+    //         50,
+    //         i,
+    //         2)
+    // }
     for (let i = 0; i < 3; i++) {
         generateThemeMissions(
             "Theme Mission",
