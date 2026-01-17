@@ -4,27 +4,70 @@
         @apply glass-medium relative rounded-2xl shadow px-2 py-2;
     }
 
-    .community-search-wrapper, #community-section-selector {
-        position: sticky;
+    .community-search-wrapper, #community-section-selector, .chat-header {
+        position: sticky !important;
         top: 0;
         z-index: 1;
     }
 
-    #community-section-selector button, .follow-btn {
-        padding: 1em;
-        transition: transform 0.3s ease;
+    .community-section {
+        height: 70vh;
     }
 
-    #community-section-selector button:hover, .follow-btn:hover {
-        transform: scale(1.1);
+    /* community-slide-down.css */
+    @keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
     }
 
-    .follow-btn {
-        
+    @keyframes slideOutUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
     }
 
     .community-section {
-        height: 70vh;
+    position: relative;
+    opacity: 1;
+    pointer-events: auto;
+    }
+
+    .community-section:not(.hidden) {
+    animation: slideInDown 0.3s ease forwards;
+    }
+
+    .community-section.hidden {
+    animation: slideOutUp 0.3s ease forwards;
+    pointer-events: none;
+    }
+
+    .community-section[data-updated]:not(.hidden) {
+    animation: slideInDown 0.3s ease forwards;
+    }
+
+    .community-section.hidden[data-updated] {
+    animation: slideOutUp 0.3s ease forwards;
+    }
+
+    /* Aggiungi nel CSS */
+    @keyframes refreshSlideIn {
+    from { opacity: 0; transform: translateY(-100%); }
+    to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .community-section.refresh {
+    animation: refreshSlideIn 0.3s ease forwards;
     }
 
     #community-main-body {
@@ -33,11 +76,32 @@
     }
     
     .community-suggest-card {
-        justify-content: space-evenly;
+        justify-content: center;
         flex-direction: column;
         width: 230px;
-        aspect-ratio: 1 / 0.8;
         border: 4px solid rgba(152, 152, 152, 0.4);
+    }
+
+    .community-suggest-card button {
+        min-height: 50px;      /* Altezza minima touch-friendly */
+        min-width: 120px;      /* Larghezza minima */
+        font-size: 16px;
+        box-sizing: border-box; /* Padding incluso nelle dimensioni */
+        display: flex;
+        align-items: center;
+        border-top: 10px;
+        justify-content: center;
+        border-radius: 12px;     /* Bordi arrotondati card-style */
+        background-color: var(--color-secondary_color);
+        border: solid transparent;
+    }
+
+    .community-suggest-card button p {
+        font-weight: 500;
+    }
+
+    .community-suggest-card .card-actions-container {
+        margin: 12px 0;
     }
 
     #community-suggested-wrapper {
@@ -96,6 +160,11 @@
         border-style: none;
         background-image: none;
         padding: calc(var(--spacing) * 0);
+        transition: transform 0.3s ease;
+    }
+
+    .comm-button-action-icon:hover {
+        transform: scale(1.1);
     }
 
     .comm-button-action-icon>img {
@@ -130,7 +199,7 @@
     #chat-container {
         width: 100%;
         height: 100%;
-        background: var(--color-main_paper);
+        /* background: var(--color-main_paper); */
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -168,11 +237,14 @@
     }
 
     .chat-header {
+        @apply glass-medium relative rounded-2xl shadow px-2 py-2;
         padding: 1rem;
-        border-bottom: 1px solid #eee;
-        text-align: center;
-        font-weight: 600;
         background: var(--color-surface);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 12px;
     }
 
     .messages-container {
@@ -231,30 +303,75 @@
         border: 1px solid rgba(152, 152, 152, 0.4);
     }
 
-    .chat-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
     .close-btn {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--color-text);
-      padding: 0;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--color-text);
+        padding: 0;
+        height: calc(var(--spacing) * 11);
+        width: calc(var(--spacing) * 11);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        transition: all 0.2s ease;
+        border-radius: var(--radius-2xl);
+        transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
+        transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+        transition-duration: var(--tw-duration, var(--default-transition-duration));
+        --tw-duration: 200ms;
+        transition-duration: 200ms;
+        --tw-ease: var(--ease-out);
+        transition-timing-function: var(--ease-out);
+        background: rgba(255, 255, 255, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        box-shadow: 0 14px 26px rgba(0, 0, 0, 0.12), 0 1px 0 rgba(255, 255, 255, 0.55) inset;
     }
 
     .close-btn:hover {
-      color: var(--color-primary);
+        color: var(--color-primary);
+        background: rgba(255, 152, 0, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
     }
 
+    /* AVATAR + INFO USER - Aggiungi al tuo CSS esistente */
+    .chat-header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+    }
+
+    .chat-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        background: var(--color-surface);
+    }
+
+    .chat-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .chat-user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    #user-chat-name {
+        margin: 0;
+        font-size: 15pt;
+        font-weight: 600;
+        color: var(--color-gray-600);
+        line-height: 1.2;
+    }
 
     /* Pagina nessun risultato */
     .empty-state {
