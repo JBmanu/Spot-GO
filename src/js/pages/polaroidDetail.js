@@ -88,7 +88,7 @@ function closeDetailOverlay(main) {
     return closeOverlayAndReveal({ overlay });
 }
 
-export async function openPolaroidDetail(polaroidData) {
+export async function openPolaroidDetail(polaroidData, options = {}) {
     try {
         state.currentPolaroid = polaroidData;
         const main = getMain();
@@ -118,6 +118,11 @@ export async function openPolaroidDetail(polaroidData) {
         updateDetailHeader(polaroidData);
         await populatePolaroidDetail(polaroidData, overlay);
         initializeDetailHandlers(overlay, polaroidData);
+
+        if (options.startInEditMode) {
+            state.isEditing = false;
+            toggleEditMode(overlay, polaroidData);
+        }
 
     } catch (err) {
         console.error("openPolaroidDetail error:", err);
@@ -153,9 +158,6 @@ async function populatePolaroidDetail(data, overlay) {
 
     const dateEl = overlay.querySelector('[data-field="date"]');
     const imageEl = overlay.querySelector('[data-field="image"]');
-    const spotInfoSection = overlay.querySelector('[data-section="spot-info"]');
-    const spotNameEl = overlay.querySelector('[data-field="spot-name"]');
-    const spotAddressEl = overlay.querySelector('[data-field="spot-address"]');
     const diarySection = overlay.querySelector('[data-section="diary"]');
     const diaryEl = overlay.querySelector('[data-field="diary"]');
 
@@ -164,7 +166,12 @@ async function populatePolaroidDetail(data, overlay) {
     if (dateEl) dateEl.textContent = formatDate(data.date) || "";
 
     if (imageEl) {
-        const imgUrl = (data.immagini && data.immagini !== "") ? data.immagini[0] : "../assets/default-polaroid.jpg";
+        let imgUrl = "../assets/default-polaroid.jpg";
+        if (data.immagini && data.immagini.length > 0) {
+            imgUrl = data.immagini[0];
+        } else if (data.image) {
+            imgUrl = data.image;
+        }
         imageEl.src = imgUrl;
     }
 
@@ -400,3 +407,5 @@ function initializeDetailHandlers(overlay, data) {
         });
     }
 }
+
+

@@ -32,14 +32,13 @@
     }
 
     .keyboard {
-        @apply sticky bottom-0 left-0 right-0 transition-transform duration-300 ease-out;
+        @apply fixed bottom-0 left-0 right-0 transition-transform duration-300 ease-out;
         background: rgba(209, 213, 219, 0.95);
         z-index: 1000;
         display: none;
-        pointer-events: none;
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
-        box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .keyboard.keyboard-visible {
@@ -74,7 +73,13 @@
     }
 
     /* Keyboard Keys */
-    .kb-key, .kb-shift, .kb-backspace, .kb-numbers, .kb-emoji, .kb-space, .kb-close {
+    .kb-key,
+    .kb-shift,
+    .kb-backspace,
+    .kb-numbers,
+    .kb-emoji,
+    .kb-space,
+    .kb-close {
         @apply transition-all duration-75 active:scale-95 font-normal;
         -webkit-user-select: none;
         user-select: none;
@@ -89,12 +94,18 @@
         @apply bg-[#d1d5db];
     }
 
-    .kb-shift, .kb-backspace, .kb-numbers, .kb-emoji {
+    .kb-shift,
+    .kb-backspace,
+    .kb-numbers,
+    .kb-emoji {
         @apply w-[42px] h-[42px] bg-[#acb3bb] rounded-[5px] flex items-center justify-center text-[17px];
         box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
     }
 
-    .kb-shift:active, .kb-backspace:active, .kb-numbers:active, .kb-emoji:active {
+    .kb-shift:active,
+    .kb-backspace:active,
+    .kb-numbers:active,
+    .kb-emoji:active {
         @apply bg-white;
     }
 
@@ -114,6 +125,10 @@
 
     .kb-close:active {
         @apply bg-[#0056b3];
+    }
+
+    .keyboard-overlay-hidden {
+        display: none !important;
     }
 
 }

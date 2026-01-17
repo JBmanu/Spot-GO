@@ -211,6 +211,10 @@
         @apply p-0 snap-x snap-mandatory;
     }
 
+    #view-all-polaroids-list {
+        @apply relative z-10;
+    }
+
     .profile-carousel-hit {
         @apply absolute top-0 bottom-0 w-16 border-0 bg-transparent z-30 cursor-pointer;
     }
@@ -245,7 +249,7 @@
     }
 
     .profile-polaroid {
-        @apply glass-modal relative rounded-xl p-4 space-y-3 isolate overflow-hidden z-20 w-[380px] shrink-0 shadow-none snap-center;
+        @apply glass-modal relative rounded-xl p-4 space-y-3 isolate z-20 w-[380px] shrink-0 shadow-none snap-center;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid rgba(152, 152, 152, 0.4);
     }
@@ -281,7 +285,34 @@
     }
 
     .profile-polaroid-subtitle {
-        @apply text-sm text-gray-500;
+        @apply text-sm text-gray-500 flex justify-between items-center gap-2;
+    }
+
+    .view-all-saved-enter {
+        animation: slideInRight 0.3s ease-out forwards;
+    }
+
+    .timeline-header {
+        @apply sticky top-0 z-10 py-2 px-1 mb-2 border-b;
+        backdrop-filter: blur(8px);
+        border-color: rgba(152, 152, 152, 0.2);
+    }
+
+    .timeline-section {
+        @apply relative;
+    }
+
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
     }
 
     .profile-carousel-counter {

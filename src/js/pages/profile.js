@@ -1,7 +1,8 @@
-import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPolaroids, getSpotById, getCurrentUser } from "../database.js";
+import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPolaroids, getSpotById, getCurrentUser, deletePolaroid } from "../database.js";
 import { openAddPolaroidModal } from "./addPolaroid.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
 import { formatDate } from "../common/datetime.js";
+import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",
@@ -11,15 +12,15 @@ const AVATAR_MAP = {
     "DEFAULT": "default.svg"
 };
 
-const TEMPLATE_PATH = "../html/common-pages/spot-templates.html";
-const DEFAULT_POLAROID_IMG = "../assets/default-polaroid.jpg";
-
 let loadViewAllSaved;
-let cachedPolaroidTemplate = null;
+let loadViewAllPolaroids;
 
 const profileDepsReady = Promise.all([
     import("./viewAllSaved.js").then((m) => {
         loadViewAllSaved = m.loadViewAllSaved;
+    }),
+    import("./viewAllPolaroids.js").then((m) => {
+        loadViewAllPolaroids = m.loadViewAllPolaroids;
     }),
 ]).catch((err) => {
     console.error("Error loading profile dependencies:", err);
@@ -139,6 +140,14 @@ function setupProfileEventListeners(container) {
         }
     }
 
+    const openAlbumButton = container.querySelector(".profile-album-btn");
+    if (openAlbumButton) {
+        if (openAlbumButton.dataset.bound !== "true") {
+            openAlbumButton.dataset.bound = "true";
+            openAlbumButton.addEventListener("click", handleOpenAlbumClick);
+        }
+    }
+
     if (container.dataset.liveUpdatesBound !== "true") {
         container.dataset.liveUpdatesBound = "true";
 
@@ -171,12 +180,23 @@ async function handleAddPolaroidClick(e) {
     await openAddPolaroidModal();
 }
 
+async function handleOpenAlbumClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof loadViewAllPolaroids !== "function") {
+        console.error("loadViewAllPolaroids is not available");
+        return;
+    }
+    await loadViewAllPolaroids("profile");
+}
+
 async function initializePolaroidCarousel() {
     const container = document.getElementById("polaroid-carousel-container");
     if (!container) return;
 
     try {
-        const polaroidData = await fetchPolaroidData();
+        const polaroidData = await fetchFormattedUserPolaroids();
 
         if (!polaroidData || polaroidData.length === 0) {
             renderEmptyCarousel(container);
@@ -193,54 +213,6 @@ async function initializePolaroidCarousel() {
 
     } catch (err) {
         console.error("Error initializing polaroid carousel:", err);
-    }
-}
-
-async function fetchPolaroidData() {
-    const user = await getCurrentUser();
-    if (!user) return [];
-
-    const polaroids = await getUserPolaroids(user.id);
-    if (!polaroids || polaroids.length === 0) return [];
-
-    return Promise.all(polaroids.map(async (p) => {
-        let subtitle = formatDate(p.date) || "";
-        if (p.idLuogo) {
-            try {
-                const spot = await getSpotById(p.idLuogo);
-                if (spot?.nome) {
-                    subtitle = `${spot.nome} - ${subtitle}`;
-                }
-            } catch (e) {
-                console.error("Error fetching spot info for polaroid:", e);
-            }
-        }
-
-        return {
-            id: p.id,
-            title: p.title || "Senza Titolo",
-            subtitle: subtitle,
-            image: (p.immagini && p.immagini.length > 0) ? p.immagini[0] : "",
-            date: p.date,
-            idLuogo: p.idLuogo,
-            diary: p.diary || ""
-        };
-    }));
-}
-
-async function getPolaroidTemplate() {
-    if (cachedPolaroidTemplate) return cachedPolaroidTemplate;
-
-    try {
-        const response = await fetch(TEMPLATE_PATH);
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        cachedPolaroidTemplate = doc.querySelector('[data-template="polaroid-template"]');
-        return cachedPolaroidTemplate;
-    } catch (err) {
-        console.error("Failed to fetch polaroid template:", err);
-        return null;
     }
 }
 
@@ -267,13 +239,111 @@ function renderCarouselItems(container, items, template) {
         const polaroidEl = clone.querySelector('.profile-polaroid');
         if (polaroidEl) {
             polaroidEl.addEventListener('click', (e) => {
-                if (e.target.closest('.profile-polaroid-menu')) return;
+                if (e.target.closest('.polaroid-menu-wrapper') || e.target.closest('.polaroid-menu-dropdown') || e.target.closest('.profile-polaroid-menu')) return;
                 e.preventDefault();
                 openPolaroidDetail(item);
             });
+
+            const menuBtn = clone.querySelector('.profile-polaroid-menu');
+            const menuDropdown = clone.querySelector('.polaroid-menu-dropdown');
+
+            if (menuBtn && menuDropdown) {
+                menuBtn.addEventListener('click', (e) => {
+                    console.log("Menu button clicked");
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const isVisible = menuDropdown.classList.contains("opacity-100");
+
+                    document.querySelectorAll('.polaroid-menu-dropdown.opacity-100').forEach(el => {
+                        if (el !== menuDropdown) {
+                            el.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
+                            el.classList.add("opacity-0", "scale-95", "pointer-events-none");
+
+                            const parentCard = el.closest('.profile-polaroid');
+                            if (parentCard) parentCard.style.zIndex = "";
+                        }
+                    });
+
+                    if (isVisible) {
+                        menuDropdown.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
+                        menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
+                        if (polaroidEl) polaroidEl.style.zIndex = "";
+                    } else {
+                        menuDropdown.classList.remove("opacity-0", "scale-95", "pointer-events-none");
+                        menuDropdown.classList.add("opacity-100", "scale-100", "pointer-events-auto");
+
+                        if (polaroidEl) polaroidEl.style.zIndex = "100";
+                    }
+                });
+
+                const editBtn = menuDropdown.querySelector('[data-action="edit-polaroid"]');
+                if (editBtn) {
+                    editBtn.addEventListener('click', (e) => {
+                        console.log("Edit action clicked");
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        menuDropdown.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
+                        menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
+                        if (polaroidEl) polaroidEl.style.zIndex = "";
+
+                        openPolaroidDetail(item, { startInEditMode: true });
+                    });
+                }
+
+                const shareBtn = menuDropdown.querySelector('[data-action="share-polaroid"]');
+                if (shareBtn) {
+                    shareBtn.addEventListener('click', (e) => {
+                        console.log("Share action clicked");
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        menuDropdown.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
+                        menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
+                        if (polaroidEl) polaroidEl.style.zIndex = "";
+
+                        if (navigator.share) {
+                            navigator.share({
+                                title: item.title || 'Polaroid',
+                                text: item.diary || 'Guarda questa polaroid su Spot GO!',
+                                url: window.location.href
+                            }).catch(console.error);
+                        } else {
+                            alert("Condivisione non supportata su questo browser");
+                        }
+                    });
+                }
+
+                const deleteBtn = menuDropdown.querySelector('[data-action="delete-polaroid"]');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', (e) => {
+                        console.log("Delete action clicked");
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        menuDropdown.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
+                        menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
+                        if (polaroidEl) polaroidEl.style.zIndex = "";
+
+                        showDeleteConfirmation(item);
+                    });
+                }
+            }
         }
 
         track.appendChild(clone);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.polaroid-menu-wrapper')) {
+            document.querySelectorAll('.polaroid-menu-dropdown.opacity-100').forEach(el => {
+                el.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
+                el.classList.add("opacity-0", "scale-95", "pointer-events-none");
+
+                const parentCard = el.closest('.profile-polaroid');
+                if (parentCard) parentCard.style.zIndex = "";
+            });
+        }
     });
 
     container.appendChild(track);
@@ -281,60 +351,59 @@ function renderCarouselItems(container, items, template) {
     setupCarouselControls(track, items.length);
 }
 
-function fillPolaroidContent(node, item) {
-    const titleEl = node.querySelector('[data-slot="title"]');
-    const subtitleEl = node.querySelector('[data-slot="subtitle"]');
-    const imageContainer = node.querySelector('.profile-polaroid-image');
+function showDeleteConfirmation(item) {
+    const modal = document.getElementById("polaroid-delete-modal");
+    if (!modal) return;
 
-    if (titleEl) titleEl.textContent = item.title;
-    if (subtitleEl) subtitleEl.textContent = item.subtitle;
+    const confirmBtn = modal.querySelector("#delete-modal-confirm");
+    const cancelBtn = modal.querySelector("#delete-modal-cancel");
 
-    if (imageContainer) {
-        const bgImage = item.image ? `url('${item.image}')` : `url('${DEFAULT_POLAROID_IMG}')`;
-        const imgUrl = item.image || DEFAULT_POLAROID_IMG;
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    const newCancelBtn = cancelBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+    cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
 
-        if (imageContainer.tagName === 'IMG') {
-            imageContainer.src = imgUrl;
-        } else {
-            imageContainer.style.backgroundImage = bgImage;
+    const closeModal = () => {
+        modal.classList.remove("active");
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 300);
+    };
+
+    newCancelBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeModal();
+    });
+
+    newConfirmBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try {
+            await deletePolaroid(item.id);
+            closeModal();
+            initializePolaroidCarousel();
+
+            const user = await getCurrentUser();
+            if (user) updateUserCounters(user.username);
+        } catch (err) {
+            console.error("Error deleting polaroid:", err);
+            alert("Errore durante l'eliminazione.");
+            closeModal();
         }
-    }
+    });
+
+    modal.style.display = "flex";
+    requestAnimationFrame(() => {
+        modal.classList.add("active");
+    });
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
 }
 
 function setupCarouselControls(track, totalItems) {
     track.dataset.currentIndex = "0";
     updateCarouselCounter(totalItems, 1);
-
-    const btnLeft = document.querySelector(".profile-carousel-hit--left");
-    const btnRight = document.querySelector(".profile-carousel-hit--right");
-
-    const scrollToIndex = (index) => {
-        const children = track.children;
-        if (!children.length) return;
-        const safeIndex = Math.min(Math.max(index, 0), children.length - 1);
-        const target = children[safeIndex];
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        }
-    };
-
-    if (btnLeft) {
-        btnLeft.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const current = parseInt(track.dataset.currentIndex || "0", 10);
-            scrollToIndex(current - 1);
-        };
-    }
-
-    if (btnRight) {
-        btnRight.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const current = parseInt(track.dataset.currentIndex || "0", 10);
-            scrollToIndex(current + 1);
-        };
-    }
 
     const updateCounterOnScroll = () => {
         if (!track.isConnected) return;
@@ -375,3 +444,4 @@ function updateCarouselCounter(total, current) {
         counter.textContent = total > 0 ? `${current}/${total}` : "0/0";
     }
 }
+
