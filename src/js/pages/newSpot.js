@@ -2,6 +2,7 @@ import { loadComponentAsDocument } from "../createComponent";
 import { USER_PROTO_POSITION } from "../common";
 import { createStarRating } from "../createComponent";
 import { insertNewSpot, getCurrentUser } from "../database";
+import { initializeTimeRangeControl } from "../common/timeRange";
 
 let __newSpotPageHtml = null;
 let newSpotSection;
@@ -91,7 +92,7 @@ export async function openNewSpotPage() {
     loadMap();
     initializePriceTab();
     initializeCategorySelector();
-    initializeHoursRangeControl();
+    initializeTimeRange();
     initializeAddSpotButton();
 
     // Bottone indietro
@@ -214,78 +215,6 @@ function initializePriceTab() {
     document.getElementById('new-spot-price-food').addEventListener('input', validatePriceInputField);
     document.getElementById('new-spot-price-intero').addEventListener('input', validatePriceInputField);
     document.getElementById('new-spot-price-ridotto').addEventListener('input', validatePriceInputField);
-}
-
-function initializeHoursRangeControl() {
-const sh = document.getElementById("start-h");
-  const sm = document.getElementById("start-m");
-  const eh = document.getElementById("end-h");
-  const em = document.getElementById("end-m");
-
-  // ===== UTIL =====
-  const onlyNumbers = (el, max) => {
-    el.value = el.value.replace(/\D/g, "");
-    if (el.value !== "" && Number(el.value) > max) {
-      el.value = max.toString();
-    }
-  };
-
-  const pad = (v) => v.toString().padStart(2, "0");
-
-  const getMinutes = (h, m) => Number(h) * 60 + Number(m);
-
-  // ===== AUTO SET END TIME =====
-  const autoSetEndTime = () => {
-    if (sh.value.length === 2 && sm.value.length === 2) {
-      let startMinutes = getMinutes(sh.value, sm.value);
-      let endMinutes = startMinutes + 60;
-
-      if (endMinutes >= 1440) endMinutes = 1439;
-
-      eh.value = pad(Math.floor(endMinutes / 60));
-      em.value = pad(endMinutes % 60);
-    }
-  };
-
-  // ===== VALIDAZIONE END > START =====
-  const validateEnd = () => {
-    if (
-      sh.value.length === 2 &&
-      sm.value.length === 2 &&
-      eh.value.length === 2 &&
-      em.value.length === 2
-    ) {
-      const start = getMinutes(sh.value, sm.value);
-      const end = getMinutes(eh.value, em.value);
-
-      if (end <= start) {
-        eh.value = "";
-        em.value = "";
-      }
-    }
-  };
-
-  // ===== EVENTI =====
-  sh.addEventListener("input", () => {
-    onlyNumbers(sh, 23);
-    if (sh.value.length === 2) sm.focus();
-  });
-
-  sm.addEventListener("input", () => {
-    onlyNumbers(sm, 59);
-    if (sm.value.length === 2) autoSetEndTime();
-  });
-
-  eh.addEventListener("input", () => {
-    onlyNumbers(eh, 23);
-    if (eh.value.length === 2) em.focus();
-    validateEnd();
-  });
-
-  em.addEventListener("input", () => {
-    onlyNumbers(em, 59);
-    validateEnd();
-  });
 }
 
 function switchToTab(tab) {
@@ -413,6 +342,11 @@ async function readNewSpotDataFromFields() {
         immagine,
         idCreatore
     };
+}
+
+function initializeTimeRange() {
+    const timeRangeEl = document.getElementById('new-spot-time-range');
+    initializeTimeRangeControl(timeRangeEl);
 }
 
 async function addNewSpotAndClose() {
