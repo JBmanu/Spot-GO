@@ -1,22 +1,25 @@
 <!-- Modal -->
 <div class="share-polaroid-modal-overlay glass-overlay active" id="share-polaroid-modal">
     <div class="share-polaroid-modal glass-modal">
+      <h2>Condividi polaroid</h2>
       <article class="share-polaroid-preview">
         <div class="profile-polaroid-image-container share">
             <div class="profile-polaroid-image">
-                <img class="cardboard-image" src="">
+                <img class="cardboard-image">
             </div>
         </div>
         <div class="profile-polaroid-text">
-            <h2 class="profile-polaroid-title">Cartolina dal Colosseo</h2>
-            <p class="profile-polaroid-subtitle">13/01/2026</p>
+            <h2 class="profile-polaroid-title share-view">Titolo</h2>
+            <p class="profile-polaroid-subtitle share-view">-/-/-</p>
         </div>
       </article>
-    <div id="sendto-list" class="vertical-carousel-track" role="list">
-    </div>
+    <section class="vertical-list-wrapper">
+        <div id="sendto-list" class="vertical-carousel-track" role="list">
+        </div>
+    </section>
     <div id="share-actions">
-       <button id="share-close-btn" class="share-close-btn">annulla</button>
-      <button id="share-send-btn" class="share-send-btn">Invia</button>
+       <button id="share-close-btn" class="glass-btn-secondary">annulla</button>
+      <button id="share-send-btn" class="glass-btn-primary">Invia</button>
     </div>
    
   </div>

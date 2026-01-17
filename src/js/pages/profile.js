@@ -304,7 +304,7 @@ function renderCarouselItems(container, items, template) {
                         if (polaroidEl) polaroidEl.style.zIndex = "";
                         
                         const user = await getCurrentUser();
-                        await sharePolaroidModal(itemData.id, user.id);
+                        await sharePolaroidModal(itemData, user.id);
                     });
                 }
 

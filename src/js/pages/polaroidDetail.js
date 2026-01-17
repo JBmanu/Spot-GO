@@ -307,7 +307,7 @@ function initializeDetailHandlers(overlay, data) {
                 //     alert("Condivisione non supportata su questo browser");
                 // }
 
-                await sharePolaroidModal(data.id, "userd");
+                await sharePolaroidModal(data, "userd");
             });
         }
 
