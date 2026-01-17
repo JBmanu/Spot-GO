@@ -2,13 +2,13 @@
 import {initializeSpotsMissions} from "./interaction/spotsMissions.js";
 import {initializeTypeMissions} from "./interaction/typeMissions.js";
 import {initializeCompletable} from "./interaction/missionCompletable.js";
-import {missionsLoad} from "./loader/missionsLoader.js";
+import {missionsLoad} from "./loader/spotMissionLoader.js";
 import {initializedAllSpotsMissions} from "./interaction/allSpotsMissions.js";
 import {seedBadges} from "./db/seed/badgeSeed.js";
 import {seedDiscounts} from "./db/seed/discountSeed.js";
 import {seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
 import {getCurrentUser} from "../database.js";
-import {loadDailyMissions} from "./loader/dailyMissionLoader.js";
+import {loadDailyMissions} from "./loader/missionLoader.js";
 
 let isInitialized = false;
 

@@ -11,30 +11,6 @@ export async function missionsLoad() {
             100)
     }
 
-    // for (let i = 0; i < 2; i++) {
-    //     generateDailyMissions(
-    //         "Daily Mission",
-    //         "Complete daily activities",
-    //         50,
-    //         i,
-    //         2)
-    // }
-    for (let i = 0; i < 3; i++) {
-        generateThemeMissions(
-            "Theme Mission",
-            "Complete daily activities",
-            100,
-            i,
-            3)
-    }
-    for (let i = 0; i < 4; i++) {
-        generateLevelMissions(
-            "Level Mission",
-            "Complete daily activities",
-            150,
-            i,
-            4)
-    }
 }
 
 // Generate active spot missions
