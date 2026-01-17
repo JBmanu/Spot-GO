@@ -11,7 +11,10 @@ export async function openModal(htmlPath, parentSelector, initPageContent) {
     const html = await response.text();
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
-    modalElement = tempDiv.firstElementChild;
+    // Prendi il primo elemento renderizzato, ignorando script, link e altri tag non visibili
+    modalElement = Array.from(tempDiv.children).find(el => 
+        !['SCRIPT', 'LINK', 'STYLE', 'META'].includes(el.tagName)
+    );
 
     const parentNode = document.querySelector(parentSelector);
     if (!parentNode) return;
