@@ -89,7 +89,7 @@ function mountOverlay(main, { html, returnViewKey }) {
     overlay.dataset.overlayView = OVERLAY_ID;
     if (returnViewKey) overlay.dataset.returnView = String(returnViewKey);
     overlay.innerHTML = html;
-    overlay.style.position = "relative";
+    overlay.classList.add("overlay-full-page");
 
     main.appendChild(overlay);
     state.overlay = overlay;
@@ -320,11 +320,14 @@ export async function loadViewAllSaved(returnViewKey = null) {
         hideAllSectionViews(main);
         pushHistoryState(returnViewKey);
 
-        main.classList.remove("view-all-saved-enter");
-        void main.offsetWidth;
-        main.classList.add("view-all-saved-enter");
+        if (state.overlay) {
+            state.overlay.classList.remove("page-slide-in");
+            void state.overlay.offsetWidth;
+            state.overlay.classList.add("page-slide-in");
+        }
 
         showViewAllSavedHeader();
+
 
         setupBackButton({
             fallback: async () => {
@@ -373,9 +376,11 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
     pushHistoryState(returnViewKey);
 
-    main.classList.remove("view-all-saved-enter");
-    void main.offsetWidth;
-    main.classList.add("view-all-saved-enter");
+    if (overlay) {
+        overlay.classList.remove("page-slide-in");
+        void overlay.offsetWidth;
+        overlay.classList.add("page-slide-in");
+    }
 
     showViewAllSavedHeader();
 
