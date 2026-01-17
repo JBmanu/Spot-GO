@@ -78,10 +78,11 @@ function makeCardInfo(data) {
     container.appendChild(avatar);
     container.appendChild(userInfo);
     container.addEventListener('click', async () => {
-        await openModal("../html/profile.html", ".phone-screen", async (modalElement) => {
-            //TODO: implements generic function in  order to use it to see other users and also current logged one
-                await initializeProfileData(modalElement, userId)
-            });
+        console.log("TODO");
+        // await openModal("../html/profile.html", ".phone-screen", async (modalElement) => {
+        //     //TODO: implements generic function in  order to use it to see other users and also current logged one
+        //         await initializeProfileData(modalElement, userId)
+        //     });
     });
 
     return container;
@@ -91,19 +92,20 @@ function makeFriendActionContainer(data) {
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
 
-    if (data.followingBack == true || data.followingBack == null) {
-        const messageButton = document.createElement("button");
-        messageButton.setAttribute("type", "button");
-        messageButton.setAttribute("class", "comm-button-action-icon");
-        messageButton.setAttribute("alt", "Invia messaggio");
-        messageButton.setAttribute("aria-label", "Invia messaggio");
-        const messageIcon = document.createElement("img");
-        messageIcon.src = "assets/icons/community/message.svg";
-        messageButton.appendChild(messageIcon);
-        messageButton.addEventListener('click', async () => {
-            await fetchFriendMessages(data);
-        });
+    const messageButton = document.createElement("button");
+    messageButton.setAttribute("type", "button");
+    messageButton.setAttribute("class", "comm-button-action-icon");
+    messageButton.setAttribute("alt", "Invia messaggio");
+    messageButton.setAttribute("aria-label", "Invia messaggio");
+    const messageIcon = document.createElement("img");
+    messageIcon.src = "assets/icons/community/message.svg";
+    messageButton.appendChild(messageIcon);
+    messageButton.addEventListener('click', async () => {
+        await fetchFriendMessages(data);
+    });
+    actionsContainer.appendChild(messageButton);
 
+    if (data.followingBack == true || data.followingBack == null) {
         const removeButton = document.createElement("button");
         removeButton.setAttribute("type", "button");
         removeButton.setAttribute("class", "comm-button-action-icon");
@@ -113,8 +115,6 @@ function makeFriendActionContainer(data) {
         removeIcon.src = "assets/icons/community/delete.svg";
         removeButton.appendChild(removeIcon);
         removeButton.addEventListener('click', () => removeFollower(data.id, data.username));
-
-        actionsContainer.appendChild(messageButton);
         actionsContainer.appendChild(removeButton);
     } else {
         const followIcon = document.createElement("img");
