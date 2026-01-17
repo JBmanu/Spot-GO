@@ -3,6 +3,8 @@ import {fetchFriendMessages} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
+import { openModal } from "../../common/modalView.js";
+import {initializeProfileData} from "../profile.js";
 
 export function makeSelectableCard(data) {
     return makeGenericCard(data, checkboxAction(data));
@@ -75,6 +77,13 @@ function makeCardInfo(data) {
     container.className = "flex flex-row items-center";
     container.appendChild(avatar);
     container.appendChild(userInfo);
+    container.addEventListener('click', async () => {
+        await openModal("../html/profile.html", ".phone-screen", async (modalElement) => {
+            //TODO: implements generic function in  order to use it to see other users and also current logged one
+                await initializeProfileData(modalElement, userId)
+            });
+    });
+
     return container;
 }
 

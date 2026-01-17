@@ -48,7 +48,7 @@ export async function reloadProfileHeader() {
 
 window.reloadProfileHeader = reloadProfileHeader;
 
-async function initializeProfileData(container) {
+export async function initializeProfileData(container) {
     await profileDepsReady;
 
     await profileDepsReady;

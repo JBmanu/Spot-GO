@@ -3,7 +3,7 @@ let modalElement = null;
 let isModalOpen = false;
 
 export async function openModal(htmlPath, parentSelector, initPageContent) {
-    if (isModalOpen) return;
+    reset();
 
     const response = await fetch(htmlPath);
     if (!response.ok) return;
@@ -21,7 +21,11 @@ export async function openModal(htmlPath, parentSelector, initPageContent) {
     parentNode.appendChild(modalElement);
 
     initPageContent(modalElement);
+    showModal();
+    return modalElement;
+}
 
+function showModal() {
     isModalOpen = true;
     modalElement.style.display = "flex";
     requestAnimationFrame(() => {
@@ -32,7 +36,20 @@ export async function openModal(htmlPath, parentSelector, initPageContent) {
     if (mainContainer) {
         mainContainer.style.overflow = "hidden";
     }
-    return modalElement;
+}
+
+function reset() {
+    const mainContainer = document.getElementById("main");
+    if (mainContainer) {
+        mainContainer.style.overflow = "";
+    }
+    isModalOpen = false;
+    if (modalElement !== null) {
+        modalElement.classList.remove("active");
+        modalElement.style.display = "none";
+        modalElement.remove();
+        modalElement = null;
+    } 
 }
 
 /**
