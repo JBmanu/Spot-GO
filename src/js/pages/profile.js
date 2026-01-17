@@ -303,8 +303,7 @@ function renderCarouselItems(container, items, template) {
                         menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
                         if (polaroidEl) polaroidEl.style.zIndex = "";
                         
-                        const user = await getCurrentUser();
-                        await sharePolaroidModal(itemData.id, user.id);
+                        await sharePolaroidModal(itemData);
                     });
                 }
 

@@ -296,18 +296,7 @@ function initializeDetailHandlers(overlay, data) {
             shareBtn.addEventListener("click", async (e) => {
                 e.stopPropagation();
                 closeMenu();
-
-                // if (navigator.share) {
-                //     navigator.share({
-                //         title: data.title || 'Polaroid',
-                //         text: data.diary || 'Guarda questa polaroid su Spot GO!',
-                //         url: window.location.href
-                //     }).catch(console.error);
-                // } else {
-                //     alert("Condivisione non supportata su questo browser");
-                // }
-
-                await sharePolaroidModal(data.id, "userd");
+                await sharePolaroidModal(data);
             });
         }
 

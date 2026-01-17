@@ -122,6 +122,7 @@
 
     .community-card {
         @apply flex justify-between rounded-2xl border bg-main_paper p-2;
+        align-items: center;
         padding-left: 1rem;
         padding-right: 1rem;
         border-radius: var(--radius-2xl);

@@ -1,15 +1,16 @@
-import { getCurrentUser, getFollowingUser } from "../database.js";
+import { getCurrentUser, getFollowingUser, shareCardboard } from "../database.js";
 import { closeModal, openModal } from "../common/modalView.js";
 import { showsItemsInContainer } from "./community/communityUtility.js";
 import { makeSelectableCard } from "./community/cardsFactory.js";
+import { formatDate } from "../common/datetime.js";
 
-export async function sharePolaroidModal(polaroidData, userId) {
+export async function sharePolaroidModal(polaroidData) {
     await openModal("../html/common-pages/share-polaroid-modal.html", ".phone-screen", (modalElement) => {
-        initializeSharePolaroid(modalElement, polaroidData, userId);
+        initializeSharePolaroid(modalElement, polaroidData);
     });
 }
 
-export async function initializeSharePolaroid(modalElement, polaroidData, userId) {    
+export async function initializeSharePolaroid(modalElement, polaroidData) {    
     const friendsList = modalElement.querySelector("#sendto-list");
     const sendButton = modalElement.querySelector("#share-send-btn");
     const closeButton = modalElement.querySelector("#share-close-btn");
@@ -17,7 +18,15 @@ export async function initializeSharePolaroid(modalElement, polaroidData, userId
     closeButton.addEventListener('click', async () => {
         await closeModal(console.log("onclose modal"));
     });
-    
+
+    const image = modalElement.querySelector(".cardboard-image");
+    const title = modalElement.querySelector(".profile-polaroid-title.share-view");
+    const date = modalElement.querySelector(".profile-polaroid-subtitle.share-view");
+
+    image.src = polaroidData.immagini?.[0] || '';
+    title.textContent = polaroidData.title || '';
+    date.textContent = polaroidData.timestamp ? formatDate(polaroidData.timestamp) : 'Nessuna data';
+
     try {
         // Carica la lista degli amici
         const user = await getCurrentUser();
@@ -35,11 +44,8 @@ export async function initializeSharePolaroid(modalElement, polaroidData, userId
         sendButton.addEventListener("click", async (e) => {
             e.preventDefault();
             const selectedFriends = Array.from(
-                modalElement.querySelectorAll(".friend-checkbox:checked")
-            ).map(checkbox => ({
-                id: checkbox.dataset.friendId,
-                email: checkbox.dataset.friendEmail
-            }));
+                modalElement.querySelectorAll(".receiver-checkbox:checked")
+            ).map(checkbox => checkbox.dataset.friendIdMail);
 
             if (selectedFriends.length === 0) {
                 alert("Seleziona almeno un amico");
@@ -47,10 +53,13 @@ export async function initializeSharePolaroid(modalElement, polaroidData, userId
             }
 
             try {
-                // TODO: Implementa la logica di invio del polaroid agli amici selezionati
-                console.log("Polaroid condiviso con:", selectedFriends);
-                alert("Polaroid condiviso con successo!");
-                closeModal();
+                const res = await shareCardboard(polaroidData.id, selectedFriends);
+                if (res.success) {
+                    closeModal();
+                } else {
+                    console.log("Errore:", res.descr);
+                    alert(res.descr);
+                }
             } catch (error) {
                 console.error("Errore durante la condivisione:", error);
                 alert("Errore durante la condivisione");

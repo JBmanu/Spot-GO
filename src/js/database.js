@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId, orderBy } from "firebase/firestore";
+import { serverTimestamp, collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId, orderBy } from "firebase/firestore";
 import { db, auth } from "./firebase.js";
 import { distanceFromUserToSpot } from "./common.js";
 
@@ -454,6 +454,40 @@ export async function getCartolinaById(cardBoardId) {
         return null;
     }
 }
+
+/**
+ * Condividi cartolina con gli id-utenti forniti.
+ */
+export async function shareCardboard(cardBoardId, receiverIds) {
+    const user = await getCurrentUser();
+    const sendTime = serverTimestamp();
+    const message = {
+            mittente: user.email,
+            testo: "",
+            timestamp: sendTime,
+            cartolinaRef: cardBoardId
+    };
+
+    try {
+        // Per ogni destinatario, aggiungi il messaggio nella rispettiva chat
+        const promises = receiverIds.map(async (toId) => {
+            const chatId = makeChatId(user.email, toId);
+            // Aggiungi il messaggio nella sottocollezione 'messaggi'
+            await addDoc(collection(db, 'Chat', chatId, 'messaggi'), message);
+        });
+        
+        // Attendi che tutti i messaggi siano stati inviati
+        await Promise.all(promises);
+        
+        console.log(`Cartolina condivisa con ${receiverIds.length} destinatari`);
+        return { success: true, descr: "" };
+    } catch (error) {
+        console.error("Errore durante la condivisione:", error);
+        return { success: false, error: error};
+    }
+}
+
+
 
 /**
  * Helper generico per recuperare items da una collezione.
