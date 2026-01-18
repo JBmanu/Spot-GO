@@ -1,5 +1,5 @@
 import { addReviewToDatabase } from "../database.js";
-import { closeModal, openModal } from "../common/modalView.js";
+import { closeModal, openModal } from "../common/modalViewStack.js";
 
 let currentSpotId = null;
 let onReviewComplete = null;

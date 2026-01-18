@@ -44,7 +44,7 @@ export async function loadProfileOverview(wrapper) {
     if (!wrapper) return;
 
     const user = await getCurrentUser();
-    await initializeProfileData(wrapper, user);
+    await initializeProfileData(wrapper, user, "profile");
 }
 
 window.reloadProfile = async function () {
@@ -62,7 +62,7 @@ export async function reloadProfileHeader() {
 
 window.reloadProfileHeader = reloadProfileHeader;
 
-async function initializeProfileData(container, userData) {
+async function initializeProfileData(container, userData, sectionView) {
     await profileDepsReady;
 
     await profileDepsReady;
@@ -73,7 +73,7 @@ async function initializeProfileData(container, userData) {
 
     await updateUserCounters(userData.username);
 
-    setupProfileEventListeners(container);
+    setupProfileEventListeners(container, userData, sectionView);
 
     await initializePolaroidCarousel(document, userData);
 }
@@ -132,7 +132,7 @@ async function updateUserCounters(username) {
     }
 }
 
-function setupProfileEventListeners(container) {
+function setupProfileEventListeners(container, userData, sectionView) {
     const savedSpotsButton = container.querySelector("#profile-saved-spots-button");
     if (savedSpotsButton) {
         if (savedSpotsButton.dataset.bound !== "true") {
@@ -155,7 +155,7 @@ function setupProfileEventListeners(container) {
     if (openAlbumButton) {
         if (openAlbumButton.dataset.bound !== "true") {
             openAlbumButton.dataset.bound = "true";
-            openAlbumButton.addEventListener("click", handleOpenAlbumClick);
+            openAlbumButton.addEventListener("click", e => handleOpenAlbumClick(e, sectionView, userData));
         }
     }
 
@@ -215,7 +215,7 @@ async function handleAddPolaroidClick(e) {
     await openAddPolaroidModal();
 }
 
-async function handleOpenAlbumClick(e) {
+async function handleOpenAlbumClick(e, returnViewKey, userData) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -223,7 +223,7 @@ async function handleOpenAlbumClick(e) {
         console.error("loadViewAllPolaroids is not available");
         return;
     }
-    await loadViewAllPolaroids("profile");
+    await loadViewAllPolaroids(returnViewKey, userData);
 }
 
 async function handleReviewsClick(e) {
@@ -515,11 +515,15 @@ export async function initializeReadOnlyProfileData(modalElement, userData) {
         modalElement.querySelector(className).remove();
     });
     modalElement.classList.add("profile-overview-modal-content");
-    await initializeProfileData(modalElement, userData);
+    await initializeProfileData(modalElement, userData, "community");
 
     const menuButtons = modalElement.querySelectorAll(".polaroid-menu-wrapper");
     menuButtons.forEach(btn => btn.remove());
 
     const openAlbumButton = modalElement.querySelector(".profile-album-btn");
-    openAlbumButton.addEventListener("click", () => {console.log("Open Album");});
+    openAlbumButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Open Album");
+    });
 }

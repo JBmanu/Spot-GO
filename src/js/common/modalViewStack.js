@@ -23,6 +23,7 @@ export async function openModal(htmlPath, parentSelector, initPageContent) {
 
     initPageContent(modalElement[modalOpenCount]);
     showModal();
+    console.log("MOdal counter:", modalOpenCount);
     return modalElement[modalOpenCount];
 }
 
@@ -76,5 +77,6 @@ export async function closeModal(onCloseAction) {
         modalElement[modalOpenCount].remove();
         modalElement[modalOpenCount] = null;
         modalOpenCount = modalOpenCount - 1 >= 0 ? modalOpenCount - 1 : 0;
+        console.log("MOdal counter:", modalOpenCount);
     }, 200);
 }

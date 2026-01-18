@@ -1,5 +1,5 @@
 import { getCurrentUser,getAllUsers, shareCardboard } from "../database.js";
-import { closeModal, openModal } from "../common/modalView.js";
+import { closeModal, openModal } from "../common/modalViewStack.js";
 import { showsItemsInContainer } from "./community/communityUtility.js";
 import { makeSelectableCard } from "./community/cardsFactory.js";
 import { formatDate } from "../common/datetime.js";
