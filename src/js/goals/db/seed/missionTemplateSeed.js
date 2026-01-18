@@ -1,4 +1,12 @@
-import {clearMissionTemplates, createMissionTemplate} from "../db/missionTemplateConnector.js";
+import {clearMissionTemplates, createMissionTemplate} from "../missionTemplateConnector.js";
+
+export const MISSION_TYPE = {
+    SPOT: "spot",
+    DAILY: "daily",
+    THEME: "theme",
+    LEVEL: "level"
+}
+
 
 const MISSION_TEMPLATES = [
     // 🏞 SPOT
@@ -9,7 +17,7 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "fai_foto",
         Target: 1,
-        Rewards: { Experience: 20, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 20, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Scrivi una recensione allo spot",
@@ -18,7 +26,7 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "scrivi_recensione",
         Target: 1,
-        Rewards: { Experience: 30, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 30, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Crea una polaroid dello spot",
@@ -27,63 +35,63 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "crea_polaroid",
         Target: 1,
-        Rewards: { Experience: 40, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 40, BadgeId: null, DiscountId: null }
     },
 
     // 📅 GIORNALIERE
     {
         Name: "Completa il check-in giornaliero",
         Description: "Passa a salutare e inizia la giornata!",
-        Type: "daily",
+        Type: MISSION_TYPE.DAILY,
         Category: null,
         Action: "login",
         Target: 1,
-        Rewards: { Experience: 10, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 10, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Scatta una foto oggi",
         Description: "Mostraci cosa hai scoperto in giro!",
-        Type: "daily",
+        Type: MISSION_TYPE.DAILY,
         Category: null,
         Action: "fai_foto",
         Target: 1,
-        Rewards: { Experience: 20, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 20, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Scrivi una recensione oggi",
         Description: "Condividi emozioni a parole!",
-        Type: "daily",
+        Type: MISSION_TYPE.DAILY,
         Category: null,
         Action: "scrivi_recensione",
         Target: 1,
-        Rewards: { Experience: 20, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 20, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Crea una polaroid oggi",
         Description: "Crea un ricordo unico della giornata!",
-        Type: "daily",
+        Type: MISSION_TYPE.DAILY,
         Category: null,
         Action: "crea_polaroid",
         Target: 1,
-        Rewards: { Experience: 30, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 30, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Completa tutte le missioni giornaliere",
         Description: "Tieni il ritmo, oggi le fai tutte!",
-        Type: "daily",
+        Type: MISSION_TYPE.DAILY,
         Category: null,
         Action: "completa_missioni",
         Target: 4,
-        Rewards: { Experience: 60, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 60, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Condividi una polaroid oggi",
         Description: "Diffondi bellezza, ispira gli altri!",
-        Type: "daily",
+        Type: MISSION_TYPE.DAILY,
         Category: null,
         Action: "condividi_polaroid",
         Target: 1,
-        Rewards: { Experience: 25, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 25, BadgeId: null, DiscountId: null }
     },
 
     // 🎭 PER TEMA
@@ -91,80 +99,80 @@ const MISSION_TEMPLATES = [
     {
         Name: "Fotografa luoghi naturalistici",
         Description: "La natura è la tua modella speciale!",
-        Type: "theme",
+        Type: MISSION_TYPE.THEME,
         Category: "natura",
         Action: "fai_foto_categoria",
         Target: 3,
-        Rewards: { Experience: 40, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 40, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Recensisci luoghi immersi nella natura",
         Description: "Fai respirare le tue parole!",
-        Type: "theme",
+        Type: MISSION_TYPE.THEME,
         Category: "natura",
         Action: "scrivi_recensione_categoria",
         Target: 2,
-        Rewards: { Experience: 60, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 60, BadgeId: null, DiscountId: null }
     },
 
     // CIBO
     {
         Name: "Scatta foto di locali e ristoranti",
         Description: "Prima si mangia con gli occhi!",
-        Type: "theme",
+        Type: MISSION_TYPE.THEME,
         Category: "cibo",
         Action: "fai_foto_categoria",
         Target: 3,
-        Rewards: { Experience: 40, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 40, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Recensisci posti dove mangiare",
         Description: "Consiglia dove regalarsi un sorriso (e un piatto)!",
-        Type: "theme",
+        Type: MISSION_TYPE.THEME,
         Category: "cibo",
         Action: "scrivi_recensione_categoria",
         Target: 2,
-        Rewards: { Experience: 60, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 60, BadgeId: null, DiscountId: null }
     },
 
     // CULTURA
     {
         Name: "Fotografa arte e cultura",
         Description: "Trasforma l’arte in pixel!",
-        Type: "theme",
+        Type: MISSION_TYPE.THEME,
         Category: "cultura",
         Action: "fai_foto_categoria",
         Target: 3,
-        Rewards: { Experience: 40, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 40, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Recensisci musei o luoghi culturali",
         Description: "Parlaci del tuo viaggio nel sapere!",
-        Type: "theme",
+        Type: MISSION_TYPE.THEME,
         Category: "cultura",
         Action: "scrivi_recensione_categoria",
         Target: 2,
-        Rewards: { Experience: 60, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 60, BadgeId: null, DiscountId: null }
     },
 
     // MISTERO
     {
         Name: "Fotografa luoghi misteriosi",
         Description: "Affronta l’ignoto e scatta!",
-        Type: "theme",
+        Type: MISSION_TYPE.THEME,
         Category: "mistero",
         Action: "fai_foto_categoria",
         Target: 3,
-        Rewards: { Experience: 40, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 40, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Scrivi recensioni su posti enigmatici",
         Description: "Svela segreti con le tue parole!",
-        Type: "theme",
+        Type: MISSION_TYPE.THEME,
         Category: "mistero",
         Action: "scrivi_recensione_categoria",
         Target: 2,
-        Rewards: { Experience: 60, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 60, BadgeId: null, DiscountId: null }
     },
 
     // 🆙 LIVELLO
@@ -175,7 +183,7 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "raggiungi_livello",
         Target: 5,
-        Rewards: { Experience: 100, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 100, BadgeId: null, DiscountId: null }
     },
     {
         Name: "Ottieni 3 badge",
@@ -184,7 +192,7 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "ottieni_badge",
         Target: 3,
-        Rewards: { Experience: 150, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 150, BadgeId: null, DiscountId: null }
     }
 ];
 

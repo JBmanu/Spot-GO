@@ -1,13 +1,14 @@
 ﻿import {initializeMissionsBar} from "./interaction/missionsTypeBar.js";
 import {initializeSpotsMissions} from "./interaction/spotsMissions.js";
 import {initializeTypeMissions} from "./interaction/typeMissions.js";
-import {generateCompletable} from "./interaction/missionCompletable.js";
-import {generateMissions} from "./generateMissions.js";
+import {initializeCompletable} from "./interaction/missionCompletable.js";
+import {missionsLoad} from "./loader/spotMissionLoader.js";
 import {initializedAllSpotsMissions} from "./interaction/allSpotsMissions.js";
-import {seedBadges} from "./loader/badgeLoader.js";
-import {seedDiscounts} from "./loader/discountLoader.js";
-import {seedMissionTemplates} from "./loader/missionTemplateLoader.js";
+import {seedBadges} from "./db/seed/badgeSeed.js";
+import {seedDiscounts} from "./db/seed/discountSeed.js";
+import {seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
 import {getCurrentUser} from "../database.js";
+import {loadDailyMissions} from "./loader/missionLoader.js";
 
 let isInitialized = false;
 
@@ -15,20 +16,21 @@ export async function initializeGoals() {
     if (isInitialized) return;
     isInitialized = true;
 
-    // DB
+    // Seed DB
     await seedBadges();
     await seedDiscounts();
     await seedMissionTemplates();
 
-    // Generate
-    await generateMissions();
-    await generateCompletable();
+    // Loader
+    await missionsLoad();
+    await loadDailyMissions();
 
     // Interaction
     await initializeSpotsMissions();
     await initializedAllSpotsMissions();
     await initializeMissionsBar();
     await initializeTypeMissions();
+    await initializeCompletable();
 
     // Test
     // const missionDataId = await createMissionData("Scatta una foto :) ...", "Spot", "Foto");

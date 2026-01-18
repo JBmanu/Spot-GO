@@ -1,7 +1,6 @@
-import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPolaroids, getSpotById, getCurrentUser, deletePolaroid } from "../database.js";
+import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getCurrentUser, deletePolaroid } from "../database.js";
 import { openAddPolaroidModal } from "./addPolaroid.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
-import { formatDate } from "../common/datetime.js";
 import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
 
@@ -15,6 +14,9 @@ const AVATAR_MAP = {
 
 let loadViewAllSaved;
 let loadViewAllPolaroids;
+let loadViewAllReviews;
+let loadViewAllBadges;
+let loadViewAllAddedSpots;
 
 const profileDepsReady = Promise.all([
     import("./viewAllSaved.js").then((m) => {
@@ -22,6 +24,15 @@ const profileDepsReady = Promise.all([
     }),
     import("./viewAllPolaroids.js").then((m) => {
         loadViewAllPolaroids = m.loadViewAllPolaroids;
+    }),
+    import("./viewAllReviews.js").then((m) => {
+        loadViewAllReviews = m.loadViewAllReviews;
+    }),
+    import("./viewAllBadges.js").then((m) => {
+        loadViewAllBadges = m.loadViewAllBadges;
+    }),
+    import("./viewAllAddedSpots.js").then((m) => {
+        loadViewAllAddedSpots = m.loadViewAllAddedSpots;
     }),
 ]).catch((err) => {
     console.error("Error loading profile dependencies:", err);
@@ -79,8 +90,7 @@ function updateProfileHeader(user) {
         name: document.getElementById("profile-name"),
         username: document.getElementById("profile-username"),
         email: document.getElementById("profile-email"),
-        avatar: document.getElementById("profile-avatar"),
-        backButton: document.getElementById("header-back-button")
+        avatar: document.getElementById("profile-avatar")
     };
 
     if (elements.name) elements.name.textContent = profileData.name;
@@ -149,6 +159,30 @@ function setupProfileEventListeners(container) {
         }
     }
 
+    const reviewsButton = container.querySelector("#profile-reviews-button");
+    if (reviewsButton) {
+        if (reviewsButton.dataset.bound !== "true") {
+            reviewsButton.dataset.bound = "true";
+            reviewsButton.addEventListener("click", handleReviewsClick);
+        }
+    }
+
+    const visitedSpotsButton = container.querySelector("#profile-visited-spots-button");
+    if (visitedSpotsButton) {
+        if (visitedSpotsButton.dataset.bound !== "true") {
+            visitedSpotsButton.dataset.bound = "true";
+            visitedSpotsButton.addEventListener("click", handleBadgesClick);
+        }
+    }
+
+    const createdSpotsButton = container.querySelector("#profile-created-spots-button");
+    if (createdSpotsButton) {
+        if (createdSpotsButton.dataset.bound !== "true") {
+            createdSpotsButton.dataset.bound = "true";
+            createdSpotsButton.addEventListener("click", handleCreatedSpotsClick);
+        }
+    }
+
     if (container.dataset.liveUpdatesBound !== "true") {
         container.dataset.liveUpdatesBound = "true";
 
@@ -190,6 +224,39 @@ async function handleOpenAlbumClick(e) {
         return;
     }
     await loadViewAllPolaroids("profile");
+}
+
+async function handleReviewsClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof loadViewAllReviews !== "function") {
+        console.error("loadViewAllReviews is not available");
+        return;
+    }
+    await loadViewAllReviews("profile");
+}
+
+async function handleBadgesClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof loadViewAllBadges !== "function") {
+        console.error("loadViewAllBadges is not available");
+        return;
+    }
+    await loadViewAllBadges("profile");
+}
+
+async function handleCreatedSpotsClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof loadViewAllCreatedSpots !== "function" && typeof loadViewAllAddedSpots !== "function") {
+        console.error("loadViewAllAddedSpots is not available");
+        return;
+    }
+    await loadViewAllAddedSpots("profile");
 }
 
 async function initializePolaroidCarousel(parentDocument, userData) {
@@ -302,7 +369,7 @@ function renderCarouselItems(container, items, template) {
                         menuDropdown.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
                         menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
                         if (polaroidEl) polaroidEl.style.zIndex = "";
-                        
+
                         await sharePolaroidModal(itemData);
                     });
                 }
