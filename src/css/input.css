@@ -22,6 +22,8 @@
 
 @import "./pages/profile.css";
 
+@import "./pages/view-all-reviews.css";
+
 @import "./map/map.css";
 
 @import "./pages/spot-cards.css";
