@@ -6,11 +6,11 @@ export async function loadSpotMissions() {
         generateAllSpots('.all-spots-missions-ctn', "Luogo luogoso", "Cibo", i, 3)
     }
 
-
     const missions = await missionTemplatesByType(MISSION_TYPE.SPOT)
     missions.forEach(mission =>
         generateSpotMissions(
             '.missions-spot',
+            mission.id,
             mission.Name,
             mission.Description,
             100))
@@ -51,7 +51,7 @@ function generateAllSpots(selector, title, category, progress, allProgress) {
                 </div>
             </div>
             <!-- Missions -->
-            <div class="vertical-ctn-g2 missions-spot" data-carousel-type="vertical" data-size="mm">
+            <div class="vertical-ctn-g2 missions-spot pt-0" data-carousel-type="vertical" data-size="mm">
             
             </div>          
         </div>`;
@@ -59,11 +59,11 @@ function generateAllSpots(selector, title, category, progress, allProgress) {
 }
 
 // Generate spot missions
-function generateSpotMissions(selectors, title, description, exp) {
+function generateSpotMissions(selectors, id, title, description, exp) {
     const missionCtns = document.querySelectorAll(selectors);
     missionCtns.forEach(ctn => {
         ctn.innerHTML +=
-            `<button class="between-ctn interactive spot-mission completable card">
+            `<button class="between-ctn interactive spot-mission completable card" db-id="${id}">
                 <!-- Left -->
                 <div class="vertical-ctn-g1">
                     <!-- Title -->
