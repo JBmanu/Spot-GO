@@ -137,6 +137,8 @@ export function initializeAddReview(wrapperEl) {
                 onReviewComplete();
             }
 
+            document.dispatchEvent(new CustomEvent("review:changed"));
+
             closeAddReviewModal();
 
         } catch (err) {
