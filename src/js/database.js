@@ -235,7 +235,7 @@ export async function getAllUsers() {
                 email: data.email || "-",
                 username: data.username || "-"
             }
-    ));
+        ));
 }
 
 /**
@@ -416,6 +416,8 @@ function makeChatId(str1, str2) {
 export async function getFilteredSpots(categories = [], searchText = "", filters = null) {
     let spots = await getSpots();
 
+    spots = spots.filter(spot => spot.posizione && spot.posizione.coord1 != null && spot.posizione.coord2 != null);
+
     if (categories && categories.length > 0) {
         spots = spots.filter(spot => categories.includes(spot.idCategoria));
     }
@@ -477,10 +479,10 @@ export async function shareCardboard(cardBoardId, receiverIds) {
     const user = await getCurrentUser();
     const sendTime = serverTimestamp();
     const message = {
-            mittente: user.email,
-            testo: "",
-            timestamp: sendTime,
-            cartolinaRef: cardBoardId
+        mittente: user.email,
+        testo: "",
+        timestamp: sendTime,
+        cartolinaRef: cardBoardId
     };
 
     try {
@@ -490,15 +492,15 @@ export async function shareCardboard(cardBoardId, receiverIds) {
             // Aggiungi il messaggio nella sottocollezione 'messaggi'
             await addDoc(collection(db, 'Chat', chatId, 'messaggi'), message);
         });
-        
+
         // Attendi che tutti i messaggi siano stati inviati
         await Promise.all(promises);
-        
+
         console.log(`Cartolina condivisa con ${receiverIds.length} destinatari`);
         return { success: true, descr: "" };
     } catch (error) {
         console.error("Errore durante la condivisione:", error);
-        return { success: false, error: error};
+        return { success: false, error: error };
     }
 }
 
