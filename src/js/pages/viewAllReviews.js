@@ -299,7 +299,7 @@ export async function loadViewAllReviews(returnViewKey = null) {
     if (!html) return;
 
     const overlay = mountOverlay(main, { html, returnViewKey });
-    
+
     pushHistoryState(returnViewKey);
 
     if (overlay) {

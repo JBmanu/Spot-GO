@@ -1,43 +1,42 @@
 import {showConfirmModal} from "../../ui/confirmModal.js";
-import {fetchFriendMessages} from "../community/chat.js";
+import {openChat} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
-import { openModal } from "../../common/modalView.js";
-import {initializeProfileData} from "../profile.js";
+import { openModal, closeModal } from "../../common/modalViewStack.js";
+import {initializeReadOnlyProfileData} from "../profile.js";
 
-export function makeSelectableCard(data) {
-    return makeGenericCard(data, checkboxAction(data));
+export function makeSelectableCard(userData) {
+    return makeGenericCard(userData, checkboxAction(userData));
 }
 
-function checkboxAction(data) {
-    // <input type="checkbox" class="receiver-checkbox checked" data-friend-id-mail="teo@gmail.com">
+function checkboxAction(userData) {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.className = 'receiver-checkbox checked';
-    checkbox.setAttribute('data-friend-id-mail', data.id);
+    checkbox.setAttribute('data-friend-id-mail', userData.id);
     return checkbox;
 }
 
-function makeGenericCard(data, actionContainer) {
+function makeGenericCard(userData, actionContainer) {
     const article = document.createElement("article");
     article.className = "community-card";
     article.setAttribute("role", "listitem");
-    article.setAttribute("data-user-id", data.id);
-    article.appendChild(makeCardInfo(data));
+    article.setAttribute("data-user-id", userData.id);
+    article.appendChild(makeCardInfo(userData));
     article.appendChild(actionContainer);
     return article;
 }
 
-export function makeSuggestedCard(data) {
+export function makeSuggestedCard(userData) {
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
     const followsText = document.createElement("p");
-    const addButton = followActionBtn(data.id, followsText);
+    const addButton = followActionBtn(userData.id, followsText);
     followsText.textContent = "Segui";
     actionsContainer.appendChild(addButton);
 
-    const card = makeGenericCard(data, actionsContainer)
+    const card = makeGenericCard(userData, actionsContainer)
     card.classList.add("community-suggest-card", "carousel-horizontal_item");
     return card;
 }
@@ -46,17 +45,17 @@ export function makeSuggestedCard(data) {
  * Generate HTML follow list item given follow data.
  * Returns an article child.
  */
-export function makeFriendCard(data) {
-    return makeGenericCard(data, makeFriendActionContainer(data));
+export function makeFriendCard(userData) {
+    return makeGenericCard(userData, makeFriendActionContainer(userData));
 }
 
-function makeCardInfo(data) {
+function makeCardInfo(userData) {
 
     const avatar = document.createElement("div");
     avatar.className = "user-avatar";
 
     const avatarImage = document.createElement("img");
-    avatarImage.src = `../assets/icons/login-signup/${AVATAR_MAP[data.username] || AVATAR_MAP.DEFAULT}`;
+    avatarImage.src = `../assets/icons/login-signup/${AVATAR_MAP[userData.username] || AVATAR_MAP.DEFAULT}`;
     //avatar.textContent = data.username.substring(0, 2);
     avatar.appendChild(avatarImage);
 
@@ -65,30 +64,58 @@ function makeCardInfo(data) {
 
     const name = document.createElement("h3");
     name.className = "text-xl font-bold";
-    name.textContent = data.username;
+    name.textContent = userData.username;
     userInfo.appendChild(name);
 
     const username = document.createElement("p");
     username.className = "italic";
-    username.innerHTML = `<span>@</span>${data.username}`;
+    username.innerHTML = `<span>@</span>${userData.username}`;
     userInfo.appendChild(username);
 
     const container = document.createElement("div");
     container.className = "flex flex-row items-center";
     container.appendChild(avatar);
     container.appendChild(userInfo);
-    container.addEventListener('click', async () => {
-        console.log("TODO");
-        // await openModal("../html/profile.html", ".phone-screen", async (modalElement) => {
-        //     //TODO: implements generic function in  order to use it to see other users and also current logged one
-        //         await initializeProfileData(modalElement, userId)
-        //     });
-    });
-
+    container.addEventListener('click', async () => await showUserProfileOverview(userData));
     return container;
 }
 
-function makeFriendActionContainer(data) {
+async function showUserProfileOverview(userData) {
+    const parentNode = document.querySelector("#community-main-body");
+    const overviewName = "community-user-profile-overview";
+
+     // Creo un wrapper cosi posso definire uno stile specifico del conteitore della pagina utente.
+    // const wrapperDiv = document.createElement('div');
+    // wrapperDiv.id = childNodeName;
+    // wrapperDiv.className = "profile-overview-modal";
+    
+    const modalWrapper = document.createElement('div');
+    modalWrapper.id = overviewName;
+    modalWrapper.className = "profile-overview-modal-wrapper";
+    parentNode.appendChild(modalWrapper);
+
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'glass-close-btn';
+    closeButton.classList.add("close-btn");
+    closeButton.setAttribute('aria-label', 'Chiudi');
+    closeButton.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    `;
+    closeButton.addEventListener("click", () => {
+        closeModal();
+        modalWrapper.remove();
+    });
+    modalWrapper.appendChild(closeButton);
+
+    await openModal("../html/profile.html", `#${overviewName}`, async (modalElement) => {
+            await initializeReadOnlyProfileData(modalElement, userData);
+        });
+}
+
+function makeFriendActionContainer(userData) {
     const actionsContainer = document.createElement("div");
     actionsContainer.className = "card-actions-container";
 
@@ -101,11 +128,11 @@ function makeFriendActionContainer(data) {
     messageIcon.src = "assets/icons/community/message.svg";
     messageButton.appendChild(messageIcon);
     messageButton.addEventListener('click', async () => {
-        await fetchFriendMessages(data);
+        await openChat(userData);
     });
     actionsContainer.appendChild(messageButton);
 
-    if (data.followingBack == true || data.followingBack == null) {
+    if (userData.followingBack == true || userData.followingBack == null) {
         const removeButton = document.createElement("button");
         removeButton.setAttribute("type", "button");
         removeButton.setAttribute("class", "comm-button-action-icon");
@@ -114,12 +141,12 @@ function makeFriendActionContainer(data) {
         const removeIcon = document.createElement("img");
         removeIcon.src = "assets/icons/community/delete.svg";
         removeButton.appendChild(removeIcon);
-        removeButton.addEventListener('click', () => removeFollower(data.id, data.username));
+        removeButton.addEventListener('click', () => removeFollower(userData.id, userData.username));
         actionsContainer.appendChild(removeButton);
     } else {
         const followIcon = document.createElement("img");
         followIcon.src = "assets/icons/community/add_user.svg";
-        const iconBtn = followActionBtn(data.id, followIcon);
+        const iconBtn = followActionBtn(userData.id, followIcon);
         actionsContainer.appendChild(iconBtn);
     }
     return actionsContainer;

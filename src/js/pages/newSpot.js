@@ -1,8 +1,8 @@
-import { loadComponentAsDocument } from "../createComponent";
+import { createTimeRange, loadComponentAsDocument } from "../createComponent";
 import { USER_PROTO_POSITION } from "../common";
 import { createStarRating } from "../createComponent";
 import { insertNewSpot, getCurrentUser } from "../database";
-import { initializeTimeRangeControl, validateTimeRange, readTimeRangeValues } from "../common/timeRange";
+import { readTimeRangeValues, validateTimeRangesWithCrossIntersections } from "../common/timeRange";
 
 let __newSpotPageHtml = null;
 let newSpotSection;
@@ -11,6 +11,7 @@ let spotPositionMarker;
 let selectedSpotPosition = null;
 let otherPriceDisplayMode;
 let foodPriceDisplayMode;
+let selectedImagePath;
 let imageController;
 
 async function getNewSpotPageHtml() {
@@ -221,6 +222,8 @@ function initializePriceTab() {
     document.getElementById('new-spot-price-food').addEventListener('input', validatePriceInputField);
     document.getElementById('new-spot-price-intero').addEventListener('input', validatePriceInputField);
     document.getElementById('new-spot-price-ridotto').addEventListener('input', validatePriceInputField);
+
+    setupPriceLogic();
 }
 
 function switchToTab(tab) {
@@ -256,6 +259,7 @@ function initializeImageInput() {
 
         selectedImage = file;
 
+        // Aggiorna l'anteprima con il file selezionato
         const reader = new FileReader();
         reader.onload = (event) => {
             imagePreview.style.backgroundImage = `url(${event.target.result})`;
@@ -266,6 +270,8 @@ function initializeImageInput() {
 
     return {
         getImage: () => selectedImage,
+        // restituisce direttamente il path relativo per Firestore
+        getImagePath: () => selectedImage ? `/db/img/${selectedImage.name}` : null,
         resetImage: () => {
             selectedImage = null;
             imageInput.value = "";
@@ -327,6 +333,73 @@ function setupNewSpotFormValidation() {
     update(); // stato iniziale
 }
 
+const parsePrice = (v) => {
+    if (!v) return null;
+    const n = Number(v.replace(",", "."));
+    return Number.isFinite(n) ? n : null;
+};
+
+function syncPriceFieldsState(form) {
+    const freeTabActive = form
+        .querySelector('[data-auth-tab="free"]')
+        ?.classList.contains("is-active");
+
+    const interoInput = form.querySelector("#new-spot-price-intero");
+    const ridottoInput = form.querySelector("#new-spot-price-ridotto");
+
+    if (!interoInput || !ridottoInput) return;
+
+    // ===== GRATUITO ATTIVO =====
+    if (freeTabActive) {
+        interoInput.value = "";
+        ridottoInput.value = "";
+
+        interoInput.disabled = true;
+        ridottoInput.disabled = true;
+        return;
+    }
+
+    // ===== NON GRATUITO =====
+    interoInput.disabled = false;
+
+    const interoValue = parsePrice(interoInput.value);
+
+    if (interoValue > 0) {
+        ridottoInput.disabled = false;
+    } else {
+        ridottoInput.value = "";
+        ridottoInput.disabled = true;
+    }
+}
+
+function setupPriceLogic() {
+    const form = document.getElementById("new-spot-form");
+    if (!form) return;
+
+    const interoInput = form.querySelector("#new-spot-price-intero");
+    const ridottoInput = form.querySelector("#new-spot-price-ridotto");
+    const priceTabs = form.querySelectorAll("[data-auth-tab]");
+
+    interoInput?.addEventListener("input", () => {
+        syncPriceFieldsState(form);
+    });
+
+    ridottoInput?.addEventListener("input", () => {
+        // nulla di speciale, validato altrove
+    });
+
+    priceTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            // lo switch del tab avviene già altrove
+            // qui reagiamo solo al nuovo stato
+            setTimeout(() => syncPriceFieldsState(form), 0);
+        });
+    });
+
+    // stato iniziale
+    syncPriceFieldsState(form);
+}
+
 function validateNewSpotForm() {
     const form = document.getElementById("new-spot-form");
     if (!form) return false;
@@ -362,23 +435,31 @@ function validateNewSpotForm() {
             ?.classList.contains("is-active");
 
         if (!freeTabActive) {
-            const prezzoIntero =
-                form.querySelector("#new-spot-price-intero")?.value.trim();
-            const prezzoRidotto =
-                form.querySelector("#new-spot-price-ridotto")?.value.trim();
+            const prezzoIntero = parsePrice(
+                form.querySelector("#new-spot-price-intero")?.value.trim()
+            );
 
-            if (!prezzoIntero && !prezzoRidotto) {
+            const prezzoRidotto = parsePrice(
+                form.querySelector("#new-spot-price-ridotto")?.value.trim()
+            );
+
+            // almeno uno dei due deve esserci
+            if (prezzoIntero <= 0 && prezzoRidotto <= 0) {
+                return false;
+            }
+
+            // ridotto ammesso solo se intero > 0
+            if (prezzoRidotto > 0 && prezzoIntero <= 0) {
                 return false;
             }
         }
     }
 
     // ===== ORARI =====
-    const timeRangeEl = form.querySelector(".time-range");
-    if (timeRangeEl && !validateTimeRange(timeRangeEl)) {
+    const timeRangeElList = form.querySelectorAll(".time-range");
+    if (!validateTimeRangesWithCrossIntersections(timeRangeElList)) {
         return false;
     }
-
     return true;
 }
 
@@ -402,13 +483,8 @@ async function readNewSpotDataFromFields() {
 
     const indirizzo = "";
 
-    const openTime = form.elements["open_time"]?.value;
-    const closeTime = form.elements["close_time"]?.value;
-
-    const orari =
-        openTime && closeTime
-            ? [{ inizio: openTime, fine: closeTime }]
-            : [];
+    const timeRangeElList = form.querySelectorAll(".time-range");
+    const orari = readTimeRangeValues(timeRangeElList);
 
     const costo = [];
 
@@ -423,9 +499,6 @@ async function readNewSpotDataFromFields() {
         const prezzoInteroRaw = form.elements["price_intero"]?.value;
         const prezzoRidottoRaw = form.elements["price_ridotto"]?.value;
         const prezzoFoodRaw = form.elements["price_food"]?.value;
-
-        const parsePrice = (v) =>
-            v ? Number(v.replace(",", ".")) : null;
 
         const prezzoFood = parsePrice(prezzoFoodRaw);
         const prezzoIntero = parsePrice(prezzoInteroRaw);
@@ -444,12 +517,10 @@ async function readNewSpotDataFromFields() {
         }
     }
 
-    const immagine = "/db/img/placeholder.jpg";
+    const immagine = imageController.getImagePath();
 
-    const ratingStars = form.querySelectorAll(".rating-container .star.active");
-    const valutazione = ratingStars.length || null;
-
-    const recensione = form.elements["review"]?.value.trim() || null;
+    const valutazione = null;
+    const recensione = null;
 
     if (!nome || !descrizione || !idCategoria || !posizione) {
         throw new Error("Compila tutti i campi obbligatori");
@@ -471,12 +542,26 @@ async function readNewSpotDataFromFields() {
 }
 
 function initializeTimeRange() {
-    const timeRangeEl = document.getElementById('new-spot-time-range');
-    initializeTimeRangeControl(timeRangeEl);
+    instantiateTimeRange();
+
+    const newTimeRangeBtn = document.getElementById('new-time-range-btn');
+    newTimeRangeBtn.removeEventListener('click', instantiateTimeRange);
+    newTimeRangeBtn.addEventListener('click', instantiateTimeRange);
 }
 
-async function addNewSpotAndClose() {
-    const spot = await readNewSpotDataFromFields();
-    const spotId = await insertNewSpot(spot);
+async function instantiateTimeRange() {
+    const timeRangeEl = await createTimeRange();
+    document.getElementById('new-time-range-btn').before(timeRangeEl);
+}
+
+async function addNewSpotAndClose(e) {
+    e.preventDefault();
+    try {
+        const spot = await readNewSpotDataFromFields();
+        const spotId = await insertNewSpot(spot);
+    } catch (err) {
+        console.error("Errore inserimento Luogo:", err);
+        throw err;
+    }
     console.log("Inserito nuovo spot");
 }

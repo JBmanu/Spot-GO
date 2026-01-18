@@ -43,7 +43,8 @@ export async function loadProfileOverview(wrapper) {
 
     if (!wrapper) return;
 
-    await initializeProfileData(wrapper);
+    const user = await getCurrentUser();
+    await initializeProfileData(wrapper, user, "profile");
 }
 
 window.reloadProfile = async function () {
@@ -61,21 +62,20 @@ export async function reloadProfileHeader() {
 
 window.reloadProfileHeader = reloadProfileHeader;
 
-export async function initializeProfileData(container) {
+async function initializeProfileData(container, userData, sectionView) {
     await profileDepsReady;
 
     await profileDepsReady;
 
-    const user = await getCurrentUser();
-    if (!user) return;
+    if (!userData) return;
 
-    updateProfileHeader(user);
+    updateProfileHeader(userData);
 
-    await updateUserCounters(user.username);
+    await updateUserCounters(userData.username);
 
-    setupProfileEventListeners(container);
+    setupProfileEventListeners(container, userData, sectionView);
 
-    await initializePolaroidCarousel();
+    await initializePolaroidCarousel(document, userData);
 }
 
 function updateProfileHeader(user) {
@@ -132,7 +132,7 @@ async function updateUserCounters(username) {
     }
 }
 
-function setupProfileEventListeners(container) {
+function setupProfileEventListeners(container, userData, sectionView) {
     const savedSpotsButton = container.querySelector("#profile-saved-spots-button");
     if (savedSpotsButton) {
         if (savedSpotsButton.dataset.bound !== "true") {
@@ -155,7 +155,7 @@ function setupProfileEventListeners(container) {
     if (openAlbumButton) {
         if (openAlbumButton.dataset.bound !== "true") {
             openAlbumButton.dataset.bound = "true";
-            openAlbumButton.addEventListener("click", handleOpenAlbumClick);
+            openAlbumButton.addEventListener("click", e => handleOpenAlbumClick(e, sectionView, userData));
         }
     }
 
@@ -187,12 +187,12 @@ function setupProfileEventListeners(container) {
         container.dataset.liveUpdatesBound = "true";
 
         document.addEventListener("polaroid:added", () => {
-            initializePolaroidCarousel();
+            initializePolaroidCarousel(document);
             getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
         });
 
         document.addEventListener("polaroid:deleted", () => {
-            initializePolaroidCarousel();
+            initializePolaroidCarousel(document);
             getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
         });
     }
@@ -215,7 +215,7 @@ async function handleAddPolaroidClick(e) {
     await openAddPolaroidModal();
 }
 
-async function handleOpenAlbumClick(e) {
+async function handleOpenAlbumClick(e, returnViewKey, userData) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -223,7 +223,7 @@ async function handleOpenAlbumClick(e) {
         console.error("loadViewAllPolaroids is not available");
         return;
     }
-    await loadViewAllPolaroids("profile");
+    await loadViewAllPolaroids(returnViewKey, userData);
 }
 
 async function handleReviewsClick(e) {
@@ -259,12 +259,12 @@ async function handleCreatedSpotsClick(e) {
     await loadViewAllAddedSpots("profile");
 }
 
-async function initializePolaroidCarousel() {
-    const container = document.getElementById("polaroid-carousel-container");
+async function initializePolaroidCarousel(parentDocument, userData) {
+    const container = parentDocument.getElementById("polaroid-carousel-container");
     if (!container) return;
 
     try {
-        const polaroidData = await fetchFormattedUserPolaroids();
+        const polaroidData = await fetchFormattedUserPolaroids(userData);
 
         if (!polaroidData || polaroidData.length === 0) {
             renderEmptyCarousel(container);
@@ -440,7 +440,7 @@ function showDeleteConfirmation(item) {
         try {
             await deletePolaroid(item.id);
             closeModal();
-            initializePolaroidCarousel();
+            initializePolaroidCarousel(document);
 
             const user = await getCurrentUser();
             if (user) updateUserCounters(user.username);
@@ -505,3 +505,25 @@ function updateCarouselCounter(total, current) {
     }
 }
 
+/**
+ * Read only profile data init. Some element are removed.
+ */
+export async function initializeReadOnlyProfileData(modalElement, userData) {
+    if (!modalElement) return;
+    const classItemToRemove = [".profile-data-section", ".profile-diary-add-btn"];
+    classItemToRemove.forEach(className => {
+        modalElement.querySelector(className).remove();
+    });
+    modalElement.classList.add("profile-overview-modal-content");
+    await initializeProfileData(modalElement, userData, "community");
+
+    const menuButtons = modalElement.querySelectorAll(".polaroid-menu-wrapper");
+    menuButtons.forEach(btn => btn.remove());
+
+    const openAlbumButton = modalElement.querySelector(".profile-album-btn");
+    openAlbumButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Open Album");
+    });
+}

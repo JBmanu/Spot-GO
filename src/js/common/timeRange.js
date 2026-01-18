@@ -112,18 +112,98 @@ export function validateTimeRange(timeRangeEl) {
     return values.every(isTwoDigits);
 }
 
-export function readTimeRangeValues(timeRangeEl) {
-    if (!validateTimeRange(timeRangeEl)) return [];
+export function readTimeRangeValues(timeRangeElList) {
+    if (!timeRangeElList) return [];
 
-    const sh = timeRangeEl.querySelector("#start-h").value;
-    const sm = timeRangeEl.querySelector("#start-m").value;
-    const eh = timeRangeEl.querySelector("#end-h").value;
-    const em = timeRangeEl.querySelector("#end-m").value;
+    let list;
 
-    return [
-        {
+    // NodeList o HTMLCollection
+    if (typeof timeRangeElList.length === "number") {
+        list = Array.from(timeRangeElList);
+    }
+    // singolo HTMLElement
+    else if (timeRangeElList instanceof Element) {
+        list = [timeRangeElList];
+    }
+    // array vero
+    else if (Array.isArray(timeRangeElList)) {
+        list = timeRangeElList;
+    }
+    // qualunque altra cosa, ignora
+    else {
+        return [];
+    }
+
+    const ranges = [];
+
+    for (const timeRangeEl of list) {
+        if (!validateTimeRange(timeRangeEl)) continue;
+
+        const sh = timeRangeEl.querySelector("#start-h")?.value ?? "";
+        const sm = timeRangeEl.querySelector("#start-m")?.value ?? "";
+        const eh = timeRangeEl.querySelector("#end-h")?.value ?? "";
+        const em = timeRangeEl.querySelector("#end-m")?.value ?? "";
+
+        // tutti vuoti → sempre aperto
+        if (!sh && !sm && !eh && !em) continue;
+
+        // parziale → invalido
+        if (!sh || !sm || !eh || !em) continue;
+
+        ranges.push({
             inizio: `${sh}:${sm}`,
             fine: `${eh}:${em}`
+        });
+    }
+
+    return ranges;
+}
+
+function toMinutes(hhmm) {
+    const [h, m] = hhmm.split(":").map(Number);
+    return h * 60 + m;
+};
+
+function rangesOverlap(a, b) {
+    // [a.start, a.end) ∩ [b.start, b.end)
+    return a.start < b.end && b.start < a.end;
+};
+
+export function validateTimeRangesWithCrossIntersections(timeRangeElList) {
+    let timeRangeRes = true;
+    const ranges = [];
+
+    // ===== VALIDAZIONE SINGOLA + LETTURA =====
+    for (const timeRangeEl of timeRangeElList) {
+        if (!validateTimeRange(timeRangeEl)) {
+            timeRangeRes = false;
+            break;
         }
-    ];
+
+        const sh = timeRangeEl.querySelector("#start-h")?.value;
+        const sm = timeRangeEl.querySelector("#start-m")?.value;
+        const eh = timeRangeEl.querySelector("#end-h")?.value;
+        const em = timeRangeEl.querySelector("#end-m")?.value;
+
+        // range vuoto → sempre aperto → ignoriamo nel confronto
+        if (!sh || !sm || !eh || !em) continue;
+
+        const start = toMinutes(`${sh}:${sm}`);
+        const end = toMinutes(`${eh}:${em}`);
+
+        ranges.push({ start, end });
+    }
+
+    // se una singola validazione è fallita
+    if (!timeRangeRes) return false;
+
+    // ===== 2. CONTROLLO INTERSEZIONI =====
+    for (let i = 0; i < ranges.length; i++) {
+        for (let j = i + 1; j < ranges.length; j++) {
+            if (rangesOverlap(ranges[i], ranges[j])) {
+                return false;
+            }
+        }
+    }
+    return true;
 }

@@ -242,7 +242,7 @@ async function closeViewAllPolaroidsAndRestore() {
     clearViewAllPolaroidsHistoryState();
 }
 
-export async function loadViewAllPolaroids(returnViewKey = null) {
+export async function loadViewAllPolaroids(returnViewKey = null, userData) {
     const main = getViewAllPolaroidsMain();
     if (!main) return;
 
@@ -273,7 +273,7 @@ export async function loadViewAllPolaroids(returnViewKey = null) {
         };
 
         const container = state.overlay.querySelector("#view-all-polaroids-list");
-        const polaroids = await fetchFormattedUserPolaroids();
+        const polaroids = await fetchFormattedUserPolaroids(userData);
         await renderViewAllPolaroidsGrid(container, polaroids || []);
         return;
     }
@@ -287,7 +287,7 @@ export async function loadViewAllPolaroids(returnViewKey = null) {
 
     const container = overlay.querySelector("#view-all-polaroids-list");
 
-    let allPolaroids = await fetchFormattedUserPolaroids();
+    let allPolaroids = await fetchFormattedUserPolaroids(userData);
 
     const placeholder = overlay.querySelector("#search-bar-placeholder");
     if (placeholder) {

@@ -38,6 +38,8 @@
 
 @import "./common/share-polaroid-modal.css";
 
+@import "./common/user-profile-overview.css";
+
 @import "./map/new-spot.css";
 
 @import "./goals/goals.css";

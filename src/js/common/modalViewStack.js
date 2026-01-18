@@ -1,9 +1,9 @@
 
-let modalElement = null;
-let isModalOpen = false;
+let modalElement = [];
+let modalOpenCount = 0;
 
 export async function openModal(htmlPath, parentSelector, initPageContent) {
-    reset();
+    // reset();
 
     const response = await fetch(htmlPath);
     if (!response.ok) return;
@@ -11,25 +11,26 @@ export async function openModal(htmlPath, parentSelector, initPageContent) {
     const html = await response.text();
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
+    modalOpenCount += 1;
     // Prendi il primo elemento renderizzato, ignorando script, link e altri tag non visibili
-    modalElement = Array.from(tempDiv.children).find(el =>
+    modalElement[modalOpenCount] = Array.from(tempDiv.children).find(el =>
         !['SCRIPT', 'LINK', 'STYLE', 'META'].includes(el.tagName)
     );
 
     const parentNode = document.querySelector(parentSelector);
     if (!parentNode) return;
-    parentNode.appendChild(modalElement);
+    parentNode.appendChild(modalElement[modalOpenCount]);
 
-    initPageContent(modalElement);
+    initPageContent(modalElement[modalOpenCount]);
     showModal();
-    return modalElement;
+    console.log("MOdal counter:", modalOpenCount);
+    return modalElement[modalOpenCount];
 }
 
 function showModal() {
-    isModalOpen = true;
-    modalElement.style.display = "flex";
+    modalElement[modalOpenCount].style.display = "flex";
     requestAnimationFrame(() => {
-        modalElement.classList.add("active");
+        modalElement[modalOpenCount].classList.add("active");
     });
 
     const mainContainer = document.getElementById("main");
@@ -43,12 +44,11 @@ function reset() {
     if (mainContainer) {
         mainContainer.style.overflow = "";
     }
-    isModalOpen = false;
-    if (modalElement !== null) {
-        modalElement.classList.remove("active");
-        modalElement.style.display = "none";
-        modalElement.remove();
-        modalElement = null;
+    if (modalElement[modalOpenCount] !== null) {
+        modalElement[modalOpenCount].classList.remove("active");
+        modalElement[modalOpenCount].style.display = "none";
+        modalElement[modalOpenCount].remove();
+        modalElement[modalOpenCount] = null;
     }
 }
 
@@ -58,24 +58,25 @@ function reset() {
  * @returns nothing
  */
 export async function closeModal(onCloseAction) {
-    if (!isModalOpen || !modalElement) return;
+    if (!modalOpenCount || !modalElement) return;
 
-    isModalOpen = false;
-    modalElement.classList.remove("active");
-    modalElement.classList.add("page-fade-out");
+    modalElement[modalOpenCount].classList.remove("active");
+    modalElement[modalOpenCount].classList.add("page-fade-out");
 
     setTimeout(async () => {
-        modalElement.style.display = "none";
-        modalElement.classList.remove("page-fade-out");
+        modalElement[modalOpenCount].style.display = "none";
+        modalElement[modalOpenCount].classList.remove("page-fade-out");
 
         if (onCloseAction) {
-            await onCloseAction(modalElement);
+            await onCloseAction(modalElement[modalOpenCount]);
         }
         const mainContainer = document.getElementById("main");
         if (mainContainer) {
             mainContainer.style.overflow = "";
         }
-        modalElement.remove();
-        modalElement = null;
+        modalElement[modalOpenCount].remove();
+        modalElement[modalOpenCount] = null;
+        modalOpenCount = modalOpenCount - 1 >= 0 ? modalOpenCount - 1 : 0;
+        console.log("MOdal counter:", modalOpenCount);
     }, 200);
 }

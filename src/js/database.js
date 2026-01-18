@@ -624,8 +624,13 @@ export function pickRating(spot) {
 }
 
 export async function insertNewSpot(spot) {
-    const docRef = await addDoc(collection(db, "Luogo"), spot);
-    return docRef.id;
+    try {
+        const docRef = await addDoc(collection(db, "Luogo"), spot);
+        return docRef.id;
+    } catch (err) {
+        console.error("Errore inserimento Luogo:", err);
+        throw err;
+    }
 }
 
 /**
