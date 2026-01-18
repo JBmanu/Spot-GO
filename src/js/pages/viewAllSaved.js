@@ -4,7 +4,7 @@ import { getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt } from "../d
 import { distanceFromUserToSpot, formatDistance } from "../common.js";
 import { goBack, setupBackButton, closeOverlay } from "../common/back.js";
 import { initializeVerticalCarousel } from "../common/carousels.js";
-import { createSearchBarWithKeyboard } from "../createComponent.js";
+import { SearchSystem } from "../common/SearchSystem.js";
 
 const OVERLAY_ID = "view-all-saved";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -89,7 +89,7 @@ function mountOverlay(main, { html, returnViewKey }) {
     overlay.dataset.overlayView = OVERLAY_ID;
     if (returnViewKey) overlay.dataset.returnView = String(returnViewKey);
     overlay.innerHTML = html;
-    overlay.style.position = "relative";
+    overlay.classList.add("overlay-full-page");
 
     main.appendChild(overlay);
     state.overlay = overlay;
@@ -320,11 +320,14 @@ export async function loadViewAllSaved(returnViewKey = null) {
         hideAllSectionViews(main);
         pushHistoryState(returnViewKey);
 
-        main.classList.remove("view-all-saved-enter");
-        void main.offsetWidth;
-        main.classList.add("view-all-saved-enter");
+        if (state.overlay) {
+            state.overlay.classList.remove("page-slide-in");
+            void state.overlay.offsetWidth;
+            state.overlay.classList.add("page-slide-in");
+        }
 
         showViewAllSavedHeader();
+
 
         setupBackButton({
             fallback: async () => {
@@ -347,26 +350,37 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
     const placeholder = overlay.querySelector("#search-bar-placeholder");
     if (placeholder) {
-        const {
-            searchBarEl,
-            keyboardEl,
-            overlayEl
-        } = await createSearchBarWithKeyboard("Cerca...", (value) => filterSpotCards(overlay, value));
+        const track = overlay.querySelector(".view-all-saved-track") || overlay.querySelector("#view-all-saved-list");
+
+        const searchSystem = new SearchSystem({
+            placeholder: "Cerca...",
+            onSearch: (value) => filterSpotCards(overlay, value),
+            enableFilters: true,
+            onFiltersApply: (filters) => {
+            }
+        });
+
+        const { searchBarEl, keyboardEl, overlayEl } = await searchSystem.init();
+
         placeholder.replaceWith(searchBarEl);
         main.appendChild(keyboardEl);
         overlay.appendChild(overlayEl);
+
+
+        if (searchSystem.elements.bottomSheet) overlay.appendChild(searchSystem.elements.bottomSheet);
+        if (searchSystem.elements.bottomSheetOverlay) overlay.appendChild(searchSystem.elements.bottomSheetOverlay);
+
         state.keyboardEl = keyboardEl;
         state.overlayEl = overlayEl;
-
-        state.overlayEl.classList.remove("keyboard-overlay");
-        state.overlayEl.classList.add("keyboard-overlay-view-all");
     }
 
     pushHistoryState(returnViewKey);
 
-    main.classList.remove("view-all-saved-enter");
-    void main.offsetWidth;
-    main.classList.add("view-all-saved-enter");
+    if (overlay) {
+        overlay.classList.remove("page-slide-in");
+        void overlay.offsetWidth;
+        overlay.classList.add("page-slide-in");
+    }
 
     showViewAllSavedHeader();
 

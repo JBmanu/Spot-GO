@@ -5,7 +5,7 @@
       <section>
         <label class="block font-bold mb-2">
           Posizione:
-          <span class="font-normal" id="spot-position"></span>
+          <span class="font-normal" id="spot-position">- : -</span>
         </label>
         <div id="new-spot-map-container" class="mt-2 px-3">
           <div id="new-spot-map" class="new-spot-map"></div>
@@ -86,7 +86,7 @@
         <div class="add-polaroid-input-group">
           <label for="price-section-other" class="input-label">Orario di apertura</label>
 
-          <div class="time-range">
+          <div class="time-range polaroid-input glass-strong" id ="new-spot-time-range">
             <!-- INIZIO -->
             <div class="time-block">
               <input id="start-h" type="text" inputmode="numeric" maxlength="2" placeholder="HH">
@@ -124,29 +124,17 @@
 
       <!-- IMMAGINE -->
       <section>
-        <div class="add-polaroid-image-upload glass-strong">
-            <input type="file" id="polaroid-image-input" accept="image/*" class="polaroid-image-input" />
-            <label for="polaroid-image-input" class="polaroid-image-label">
+        <div class="add-polaroid-image-upload glass-strong" id="new-spot-image-wrapper">
+            <input type="file" id="new-spot-image-input" accept="image/*" class="polaroid-image-input" />
+            <label for="new-spot-image-input" class="polaroid-image-label">
                 <div class="polaroid-upload-placeholder">
                     <img src="../../assets/icons/profile/Add Image.svg" alt="Carica immagine"
                         class="upload-icon" />
                     <span class="upload-text">Carica foto</span>
                 </div>
-                <div class="polaroid-image-preview" id="polaroid-image-preview"></div>
+                <div class="polaroid-image-preview" id="new-spot-image-preview"></div>
             </label>
         </div>
-      </section>
-
-      <!-- RECENSIONE -->
-      <section class="space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="spot-reviews">
-              <span class="glass-strong p-1.5 rounded-2xl">
-                  <button type="button" id="new-spot-review-btn" class="spot-add-review-button glass-light" aria-label="Scrivi una recensione">
-                      Aggiungi una recensione
-                  </button>
-              </span>
-          </div>
       </section>
 
       <footer class="add-polaroid-footer">

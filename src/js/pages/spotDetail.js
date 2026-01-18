@@ -31,11 +31,14 @@ function getMain() {
 
 function getActiveSectionKey(main) {
     if (!main) return "homepage";
+
+    const overlay = main.querySelector('[data-overlay-view]:not([hidden])');
+    if (overlay && overlay.dataset.overlayView !== "spot-detail") {
+        return overlay.dataset.overlayView;
+    }
+
     const visible = main.querySelector('[data-section-view]:not([hidden])');
     if (visible) return (visible?.dataset.sectionView || "homepage").trim();
-
-    const overlay = main.querySelector('[data-overlay-view]');
-    if (overlay) return overlay.dataset.overlayView;
 
     return "homepage";
 }
@@ -71,8 +74,6 @@ function removeHeaderBookmarkButton() {
 
 async function exitDetailFlow(main) {
     if (!main) return;
-    main.classList.add("spot-detail-exit");
-    await new Promise(r => setTimeout(r, 250));
     closeDetailOverlay(main);
 }
 
@@ -123,13 +124,13 @@ async function loadSpotDetail(spotId) {
         overlay.dataset.overlayView = "spot-detail";
         overlay.dataset.returnView = returnSection;
         overlay.innerHTML = state.templateCache;
+        overlay.classList.add("overlay-full-page");
 
         overlay.onClose = removeHeaderBookmarkButton;
 
         main.querySelectorAll("[data-section-view], [data-overlay-view]").forEach((el) => (el.hidden = true));
         main.appendChild(overlay);
-
-        main.classList.add("spot-detail-enter");
+        overlay.classList.add("page-slide-in");
         main.classList.remove("spot-detail-exit");
 
         const wrapper = overlay.querySelector(".spot-detail-wrapper");

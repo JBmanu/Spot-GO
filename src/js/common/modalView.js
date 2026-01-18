@@ -12,7 +12,7 @@ export async function openModal(htmlPath, parentSelector, initPageContent) {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
     // Prendi il primo elemento renderizzato, ignorando script, link e altri tag non visibili
-    modalElement = Array.from(tempDiv.children).find(el => 
+    modalElement = Array.from(tempDiv.children).find(el =>
         !['SCRIPT', 'LINK', 'STYLE', 'META'].includes(el.tagName)
     );
 
@@ -49,12 +49,12 @@ function reset() {
         modalElement.style.display = "none";
         modalElement.remove();
         modalElement = null;
-    } 
+    }
 }
 
 /**
  * Close modal view after execution of onCloseAction
- * @param {Async function with action to do before closing modal modalElement => void} onCloseAction 
+ * @param {Async function with action to do before closing modal modalElement => void} onCloseAction
  * @returns nothing
  */
 export async function closeModal(onCloseAction) {
@@ -62,9 +62,12 @@ export async function closeModal(onCloseAction) {
 
     isModalOpen = false;
     modalElement.classList.remove("active");
+    modalElement.classList.add("page-fade-out");
 
     setTimeout(async () => {
         modalElement.style.display = "none";
+        modalElement.classList.remove("page-fade-out");
+
         if (onCloseAction) {
             await onCloseAction(modalElement);
         }
@@ -74,5 +77,5 @@ export async function closeModal(onCloseAction) {
         }
         modalElement.remove();
         modalElement = null;
-    }, 300);
+    }, 200);
 }

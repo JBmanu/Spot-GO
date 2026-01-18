@@ -55,14 +55,66 @@ export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
 
     const returnKey = returnViewKey || ov.dataset.returnView || null;
 
+    // Check for Slide Animation first
+    if (ov.classList.contains("page-slide-in")) {
+        ov.classList.remove("page-slide-in");
+        ov.classList.add("page-slide-out");
+
+        // Reveal background IMMEDIATELY so we can see it during slide-out
+        if (returnKey && main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
+            const returnOverlay = main.querySelector(`[data-overlay-view="${returnKey}"]`);
+            returnOverlay.hidden = false;
+        } else {
+            showOnlySectionView(main, returnKey);
+        }
+
+        // Delay cleanup until animation ends (300ms)
+        setTimeout(() => {
+            if (typeof ov.onClose === 'function') ov.onClose();
+
+            try {
+                ov.remove();
+            } catch (_) {
+                if (ov.parentNode) ov.parentNode.removeChild(ov);
+            }
+
+            // Re-verify UI state after removal
+            if (!returnKey || !main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
+                const shown = showOnlySectionView(main, returnKey) || "homepage";
+                resetHeaderBaseForSection(shown);
+                activateToolbar(shown);
+                document.dispatchEvent(new CustomEvent("section:revealed", { detail: { section: shown } }));
+            }
+
+            main.classList.remove("spot-detail-enter", "spot-detail-exit");
+            main.removeAttribute("data-category");
+
+        }, 300);
+
+        return returnKey || "homepage";
+    }
+
     if (typeof ov.onClose === 'function') {
         ov.onClose();
     }
 
-    try {
-        ov.remove();
-    } catch (_) {
-        if (ov.parentNode) ov.parentNode.removeChild(ov);
+    if (ov.classList.contains("page-fade-in") || ov.dataset.animateExit === "true" || ov.classList.contains("overlay-full-page") || ov.dataset.overlayView) {
+        ov.classList.remove("page-fade-in");
+        ov.classList.add("page-fade-out");
+
+        setTimeout(() => {
+            try {
+                ov.remove();
+            } catch (_) {
+                if (ov.parentNode) ov.parentNode.removeChild(ov);
+            }
+        }, 200);
+    } else {
+        try {
+            ov.remove();
+        } catch (_) {
+            if (ov.parentNode) ov.parentNode.removeChild(ov);
+        }
     }
 
     if (returnKey && main.querySelector(`[data-overlay-view="${returnKey}"]`)) {

@@ -1,5 +1,5 @@
 import { goBack, setupBackButton, closeOverlay } from "../common/back.js";
-import { createSearchBarWithKeyboard } from "../createComponent.js";
+import { SearchSystem } from "../common/SearchSystem.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
 import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
 
@@ -85,13 +85,7 @@ function mountViewAllPolaroidsOverlay(main, { html, returnViewKey }) {
     overlay.dataset.overlayView = OVERLAY_ID;
     if (returnViewKey) overlay.dataset.returnView = String(returnViewKey);
     overlay.innerHTML = html;
-    overlay.style.position = "absolute";
-    overlay.style.top = "0";
-    overlay.style.left = "0";
-    overlay.style.width = "100%";
-    overlay.style.height = "100%";
-    overlay.style.zIndex = "50";
-    overlay.style.backgroundColor = "var(--bg-color)";
+    overlay.classList.add("overlay-full-page");
 
     main.appendChild(overlay);
     state.overlay = overlay;
@@ -278,12 +272,13 @@ export async function loadViewAllPolaroids(returnViewKey = null) {
         hideAllSectionViewsForAlbum(main);
         pushViewAllPolaroidsHistoryState(returnViewKey);
 
-        state.overlay.classList.remove("view-all-saved-enter");
+        state.overlay.classList.remove("page-slide-in");
         void state.overlay.offsetWidth;
-        state.overlay.classList.add("view-all-saved-enter");
+        state.overlay.classList.add("page-slide-in");
 
 
         showViewAllPolaroidsHeader();
+
 
         setupBackButton({
             fallback: async () => {
@@ -312,22 +307,22 @@ export async function loadViewAllPolaroids(returnViewKey = null) {
 
     const placeholder = overlay.querySelector("#search-bar-placeholder");
     if (placeholder) {
-        const {
-            searchBarEl,
-            keyboardEl,
-            overlayEl
-        } = await createSearchBarWithKeyboard("Cerca nel tuo album...", (value) => {
-            renderViewAllPolaroidsGrid(container, allPolaroids, value);
+        const searchSystem = new SearchSystem({
+            placeholder: "Cerca nel tuo album...",
+            onSearch: (value) => {
+                renderViewAllPolaroidsGrid(container, allPolaroids, value);
+            },
+
         });
+
+        const { searchBarEl, keyboardEl, overlayEl } = await searchSystem.init();
+
         placeholder.replaceWith(searchBarEl);
         main.appendChild(keyboardEl);
         overlay.appendChild(overlayEl);
+
         state.keyboardEl = keyboardEl;
         state.overlayEl = overlayEl;
-
-        state.overlayEl.classList.remove("keyboard-overlay");
-        state.overlayEl.classList.add("keyboard-overlay-view-all");
-        state.overlayEl.classList.add("keyboard-overlay-hidden");
     }
 
     pushViewAllPolaroidsHistoryState(returnViewKey);

@@ -2,14 +2,16 @@ import { loadComponentAsDocument } from "../createComponent";
 import { USER_PROTO_POSITION } from "../common";
 import { createStarRating } from "../createComponent";
 import { insertNewSpot, getCurrentUser } from "../database";
+import { initializeTimeRangeControl, validateTimeRange, readTimeRangeValues } from "../common/timeRange";
 
 let __newSpotPageHtml = null;
 let newSpotSection;
 let map;
 let spotPositionMarker;
-let selectedSpotPosition = [0,0];
+let selectedSpotPosition = null;
 let otherPriceDisplayMode;
 let foodPriceDisplayMode;
+let imageController;
 
 async function getNewSpotPageHtml() {
     if (__newSpotPageHtml) return __newSpotPageHtml;
@@ -91,8 +93,12 @@ export async function openNewSpotPage() {
     loadMap();
     initializePriceTab();
     initializeCategorySelector();
-    initializeHoursRangeControl();
+    initializeTimeRange();
+    imageController = initializeImageInput();
     initializeAddSpotButton();
+    setupNewSpotFormValidation();
+
+    selectedSpotPosition = null;
 
     // Bottone indietro
     const backBtn = document.querySelector("[data-back]");
@@ -142,7 +148,7 @@ async function loadMap() {
     // Aggiunta posizione corrente dell'utente (simulata)
     L.marker(USER_PROTO_POSITION, {
         icon: L.icon({
-            iconUrl: '../../assets/icons/map/Arrow.png',
+            iconUrl: '../../assets/icons/map/Navigation.svg',
             iconSize: [40, 40],
             iconAnchor: [20, 40]
         }),
@@ -171,6 +177,7 @@ async function loadMap() {
         .addTo(map);
 
       newSpotSection.querySelector('#spot-position').textContent = `${lat.toFixed(4)} : ${lng.toFixed(4)}`;
+      validateNewSpotForm();
     });
 
 }
@@ -216,78 +223,6 @@ function initializePriceTab() {
     document.getElementById('new-spot-price-ridotto').addEventListener('input', validatePriceInputField);
 }
 
-function initializeHoursRangeControl() {
-const sh = document.getElementById("start-h");
-  const sm = document.getElementById("start-m");
-  const eh = document.getElementById("end-h");
-  const em = document.getElementById("end-m");
-
-  // ===== UTIL =====
-  const onlyNumbers = (el, max) => {
-    el.value = el.value.replace(/\D/g, "");
-    if (el.value !== "" && Number(el.value) > max) {
-      el.value = max.toString();
-    }
-  };
-
-  const pad = (v) => v.toString().padStart(2, "0");
-
-  const getMinutes = (h, m) => Number(h) * 60 + Number(m);
-
-  // ===== AUTO SET END TIME =====
-  const autoSetEndTime = () => {
-    if (sh.value.length === 2 && sm.value.length === 2) {
-      let startMinutes = getMinutes(sh.value, sm.value);
-      let endMinutes = startMinutes + 60;
-
-      if (endMinutes >= 1440) endMinutes = 1439;
-
-      eh.value = pad(Math.floor(endMinutes / 60));
-      em.value = pad(endMinutes % 60);
-    }
-  };
-
-  // ===== VALIDAZIONE END > START =====
-  const validateEnd = () => {
-    if (
-      sh.value.length === 2 &&
-      sm.value.length === 2 &&
-      eh.value.length === 2 &&
-      em.value.length === 2
-    ) {
-      const start = getMinutes(sh.value, sm.value);
-      const end = getMinutes(eh.value, em.value);
-
-      if (end <= start) {
-        eh.value = "";
-        em.value = "";
-      }
-    }
-  };
-
-  // ===== EVENTI =====
-  sh.addEventListener("input", () => {
-    onlyNumbers(sh, 23);
-    if (sh.value.length === 2) sm.focus();
-  });
-
-  sm.addEventListener("input", () => {
-    onlyNumbers(sm, 59);
-    if (sm.value.length === 2) autoSetEndTime();
-  });
-
-  eh.addEventListener("input", () => {
-    onlyNumbers(eh, 23);
-    if (eh.value.length === 2) em.focus();
-    validateEnd();
-  });
-
-  em.addEventListener("input", () => {
-    onlyNumbers(em, 59);
-    validateEnd();
-  });
-}
-
 function switchToTab(tab) {
     const switchButtons = document.querySelectorAll('.new-spot-switch-btn');
     const slider = document.querySelector('.new-spot-slider');
@@ -301,6 +236,52 @@ function switchToTab(tab) {
     });
 
     if (slider) slider.style.left = tab === 'free' ? '1%' : '51%';
+}
+
+function initializeImageInput() {
+    const wrapperEl = document.getElementById('new-spot-image-wrapper');
+    const imageInput = wrapperEl.querySelector("#new-spot-image-input");
+    const imagePreview = wrapperEl.querySelector("#new-spot-image-preview");
+
+    let selectedImage = null;
+
+    if (!imageInput || !imagePreview) {
+        console.warn("Image input o preview non trovati");
+        return;
+    }
+
+    imageInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith("image/")) return;
+
+        selectedImage = file;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            imagePreview.style.backgroundImage = `url(${event.target.result})`;
+            imagePreview.classList.add("active");
+        };
+        reader.readAsDataURL(file);
+    });
+
+    return {
+        getImage: () => selectedImage,
+        resetImage: () => {
+            selectedImage = null;
+            imageInput.value = "";
+            imagePreview.classList.remove("active");
+            imagePreview.style.backgroundImage = "";
+        }
+    };
+}
+
+async function imageToUrlPath(image) {
+    const reader = new FileReader();
+    const imageDataUrl = await new Promise((resolve) => {
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(image);
+    });
+    return imageDataUrl;
 }
 
 function validatePriceInputField(e) {
@@ -325,6 +306,80 @@ function validatePriceInputField(e) {
     value = value.replace(",", ".");
 
     e.target.value = value;
+}
+
+function setupNewSpotFormValidation() {
+    const form = document.getElementById("new-spot-form");
+    const submitBtn = document.getElementById("add-spot-button");
+
+    if (!form || !submitBtn) return;
+
+    const update = () => {
+        submitBtn.disabled = !validateNewSpotForm();
+        submitBtn.classList.toggle("opacity-50", submitBtn.disabled);
+        submitBtn.classList.toggle("cursor-not-allowed", submitBtn.disabled);
+    };
+
+    // input + change coprono quasi tutto
+    form.addEventListener("input", update);
+    form.addEventListener("change", update);
+
+    update(); // stato iniziale
+}
+
+function validateNewSpotForm() {
+    const form = document.getElementById("new-spot-form");
+    if (!form) return false;
+
+    // ===== CAMPI BASE =====
+    const nome = form.querySelector("#new-spot-name")?.value.trim();
+    const descrizione = form.querySelector("#new-spot-desc")?.value.trim();
+    const categoria = form.querySelector("#new-spot-category")?.value;
+
+    const posizioneValida =
+        Array.isArray(selectedSpotPosition) &&
+        selectedSpotPosition.length === 2;
+
+    if (!nome || !descrizione || !categoria || !posizioneValida) {
+        return false;
+    }
+
+    // ===== IMMAGINE =====
+    const imageInput = form.querySelector("#new-spot-image-input");
+    const imageValida =
+        imageInput &&
+        imageInput.files &&
+        imageInput.files.length > 0;
+
+    if (!imageValida) {
+        return false;
+    }
+
+    // ===== PREZZO =====
+    if (categoria !== "food") {
+        const freeTabActive = form
+            .querySelector('[data-auth-tab="free"]')
+            ?.classList.contains("is-active");
+
+        if (!freeTabActive) {
+            const prezzoIntero =
+                form.querySelector("#new-spot-price-intero")?.value.trim();
+            const prezzoRidotto =
+                form.querySelector("#new-spot-price-ridotto")?.value.trim();
+
+            if (!prezzoIntero && !prezzoRidotto) {
+                return false;
+            }
+        }
+    }
+
+    // ===== ORARI =====
+    const timeRangeEl = form.querySelector(".time-range");
+    if (timeRangeEl && !validateTimeRange(timeRangeEl)) {
+        return false;
+    }
+
+    return true;
 }
 
 async function readNewSpotDataFromFields() {
@@ -413,6 +468,11 @@ async function readNewSpotDataFromFields() {
         immagine,
         idCreatore
     };
+}
+
+function initializeTimeRange() {
+    const timeRangeEl = document.getElementById('new-spot-time-range');
+    initializeTimeRangeControl(timeRangeEl);
 }
 
 async function addNewSpotAndClose() {
