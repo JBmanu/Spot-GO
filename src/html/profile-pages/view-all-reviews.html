@@ -7,4 +7,18 @@
 
         <script type="module" src="../../../js/pages/viewAllReviews.js"></script>
     </section>
+
+    <div id="review-delete-modal" class="navigation-modal-overlay glass-overlay" style="display: none;">
+        <div class="navigation-modal glass-modal glass-modal-opaque">
+            <h3 class="navigation-modal-title">Elimina Recensione</h3>
+            <p class="navigation-modal-text">Sei sicuro di voler eliminare questa recensione? L'azione è irreversibile.
+            </p>
+
+            <div class="navigation-modal-actions">
+                <button type="button" class="nav-modal-btn cancel" id="delete-review-modal-cancel">Annulla</button>
+                <button type="button" class="nav-modal-btn confirm delete-confirm"
+                    id="delete-review-modal-confirm">Elimina</button>
+            </div>
+        </div>
+    </div>
 </div>

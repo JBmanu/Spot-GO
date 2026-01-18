@@ -232,6 +232,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!shown) return;
         currentSection = shown;
 
+        if (titleEl && SECTION_CONFIG[shown]) {
+            titleEl.textContent = SECTION_CONFIG[shown].title;
+        }
+
         if (shown === "homepage" && handlers.homepage.init) {
             const homeWrapper = main.querySelector('[data-section-view="homepage"]');
             await handlers.homepage.init(homeWrapper || document);

@@ -132,17 +132,14 @@ const BADGES_TO_CREATE = [
     }
 ];
 
-/**
- * Bulk-create core badges in Firestore
- */
+export let createdBadgeIds = [];
+
 export async function seedBadges() {
     await clearBadges();
-    console.log(`Creating ${BADGES_TO_CREATE.length} badges...`);
-
     for (const badge of BADGES_TO_CREATE) {
         const id = await createBadge(badge);
-        // console.log(`✔ Badge created: ${badge.Name} (${id})`);
+        createdBadgeIds.push(id);
     }
 
-    console.log("🎉 Badge seeding done!");
+    console.log("🎉 " + BADGES_TO_CREATE.length + "Badge seeding done!");
 }

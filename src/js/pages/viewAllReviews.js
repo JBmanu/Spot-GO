@@ -1,4 +1,5 @@
-import { getCurrentUser, getReviews, getSpotById } from "../database.js";
+import { getCurrentUser, getReviews, getSpotById, deleteReview } from "../database.js";
+import { openEditReviewModal } from "./addReview.js";
 
 const OVERLAY_ID = "view-all-reviews";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -11,16 +12,6 @@ const state = {
 
 function getMain() {
     return document.getElementById("main");
-}
-
-function getOverlay() {
-    const main = getMain();
-    if (!main) return null;
-
-    if (state.overlay && !main.contains(state.overlay)) state.overlay = null;
-    state.overlay = state.overlay || main.querySelector(OVERLAY_SELECTOR) || null;
-
-    return state.overlay;
 }
 
 async function fetchOverlayHtml() {
@@ -143,9 +134,7 @@ async function getReviewTemplate() {
     }
 }
 
-/**
- * Creates a review card element
- */
+
 async function createReviewCard(review) {
     const spot = await getSpotById(review.idLuogo);
     const spotName = spot?.nome || "Spot sconosciuto";
@@ -153,25 +142,25 @@ async function createReviewCard(review) {
     const template = await getReviewTemplate();
     if (!template) {
         console.error("Review card template not found");
-        return document.createElement("div"); // Fallback
+        return document.createElement("div");
     }
 
     const clone = template.content.cloneNode(true);
     const card = clone.querySelector(".review-card");
 
-    // Title
+
     const titleEl = card.querySelector('[data-field="title"]');
     if (titleEl) titleEl.textContent = spotName;
 
-    // Rating
+
     const ratingEl = card.querySelector('[data-field="rating"]');
     if (ratingEl) ratingEl.textContent = review.valuation ? Number(review.valuation).toFixed(1) : "-";
 
-    // Description
+
     const descEl = card.querySelector('[data-field="description"]');
     if (descEl) descEl.textContent = review.description || "Nessuna descrizione";
 
-    // Date
+
     const dateEl = card.querySelector('[data-field="date"]');
     if (dateEl) {
         try {
@@ -182,7 +171,82 @@ async function createReviewCard(review) {
         }
     }
 
+
+    const editBtn = card.querySelector('[data-action="edit-review"]');
+    if (editBtn) {
+        editBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            openEditReviewModal(
+                review.id,
+                review.idLuogo,
+                review.valuation || 0,
+                review.description || "",
+                async () => {
+                    await populateReviews();
+                }
+            );
+        });
+    }
+
+    const deleteBtn = card.querySelector('[data-action="delete-review"]');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            showDeleteConfirmation(review);
+        });
+    }
+
     return card;
+}
+
+function showDeleteConfirmation(review) {
+    const modal = document.getElementById("review-delete-modal");
+    if (!modal) return;
+
+    const confirmBtn = modal.querySelector("#delete-review-modal-confirm");
+    const cancelBtn = modal.querySelector("#delete-review-modal-cancel");
+
+
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    const newCancelBtn = cancelBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+    cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+    const closeModal = () => {
+        modal.classList.remove("active");
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 300);
+    };
+
+    newCancelBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeModal();
+    });
+
+    newConfirmBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try {
+            await deleteReview(review.id);
+            await populateReviews();
+        } catch (err) {
+            console.error("Error deleting review:", err);
+            alert("Errore durante l'eliminazione.");
+            closeModal();
+        }
+    });
+
+    modal.style.display = "flex";
+    requestAnimationFrame(() => {
+        modal.classList.add("active");
+    });
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
 }
 
 
@@ -193,7 +257,7 @@ async function populateReviews() {
     const listContainer = document.getElementById("view-all-reviews-list");
     if (!listContainer) return;
 
-    listContainer.innerHTML = '<div class="flex justify-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div></div>'; // Loading
+    listContainer.innerHTML = '<div class="flex justify-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div></div>';
 
     const reviews = await getReviews(currentUser.username);
 
@@ -210,7 +274,7 @@ async function populateReviews() {
         return;
     }
 
-    // Sort by timestamp desc
+
     reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
     for (const review of reviews) {

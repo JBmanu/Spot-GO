@@ -2,13 +2,13 @@
 import {initializeSpotsMissions} from "./interaction/spotsMissions.js";
 import {initializeTypeMissions} from "./interaction/typeMissions.js";
 import {initializeCompletable} from "./interaction/missionCompletable.js";
-import {missionsLoad} from "./loader/spotMissionLoader.js";
+import {loadSpotMissions} from "./loader/spotMissionLoader.js";
 import {initializedAllSpotsMissions} from "./interaction/allSpotsMissions.js";
 import {seedBadges} from "./db/seed/badgeSeed.js";
 import {seedDiscounts} from "./db/seed/discountSeed.js";
 import {seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
-import {getCurrentUser} from "../database.js";
-import {loadDailyMissions} from "./loader/missionLoader.js";
+import {loadMissions} from "./loader/missionLoader.js";
+import {seedUserMissionProgress} from "./db/seed/userMissionProgressSeed.js";
 
 let isInitialized = false;
 
@@ -20,10 +20,11 @@ export async function initializeGoals() {
     await seedBadges();
     await seedDiscounts();
     await seedMissionTemplates();
+    await seedUserMissionProgress();
 
     // Loader
-    await missionsLoad();
-    await loadDailyMissions();
+    await loadSpotMissions();
+    await loadMissions();
 
     // Interaction
     await initializeSpotsMissions();
@@ -40,9 +41,3 @@ export async function initializeGoals() {
     console.log("Goals module initialized");
 }
 
-// Verifica se l'utente è autenticato, altrimenti logga un errore.
-export async function isAuthenticatedUser() {
-    const user = await getCurrentUser();
-    if (!user) console.error("Utente non autenticato");
-    return user
-}

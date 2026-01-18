@@ -1,8 +1,4 @@
-import {addDoc, collection, doc, getDoc} from "firebase/firestore";
-import {db} from "../../firebase.js";
-
-
-import {isAuthenticatedUser} from "../goals.js";
+import {clearDocuments, createDocument, documentFromId, isAuthenticatedUser} from "./goalsConnector.js";
 
 const USER_MISSION_PROGRESS_COLLECTION = "UserMissionProgress";
 
@@ -10,25 +6,20 @@ export async function createUserMissionProgress(data) {
     const user = await isAuthenticatedUser();
     if (!user) return null;
 
-    try {
-        const docRef =
-            await addDoc(collection(db, USER_MISSION_PROGRESS_COLLECTION), {
-                UserId: user.UserId,
-                MissionTemplateId: data.MissionTemplateId,
-                PlaceId: data.PlaceId ?? "",
-                Current: data.Current ?? 0,
-                IsCompleted: data.IsCompleted ?? false,
-                IsActive: data.IsActive ?? true
-            });
-        return docRef.id;
-    } catch (error) {
-        console.error("Error adding document: ", error);
-        return null;
-    }
+    return await createDocument(USER_MISSION_PROGRESS_COLLECTION, {
+        UserId: data.UserId ?? "",
+        PlaceId: data.PlaceId ?? "",
+        MissionTemplateId: data.MissionTemplateId ?? "",
+        Current: 0,
+        IsCompleted: false,
+        IsActive: true
+    });
+}
+
+export async function clearUserMissionProgress() {
+    await clearDocuments(USER_MISSION_PROGRESS_COLLECTION)
 }
 
 export async function userMissionProgress(id) {
-    const ref = doc(db, USER_MISSION_PROGRESS_COLLECTION, id);
-    const snap = await getDoc(ref);
-    return snap.exists() ? {id: snap.id, ...snap.data()} : null;
+    return await documentFromId(USER_MISSION_PROGRESS_COLLECTION, id)
 }

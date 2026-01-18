@@ -1,26 +1,20 @@
-export async function missionsLoad() {
+import {missionTemplatesByType} from "../db/missionTemplateConnector.js";
+import {MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
+
+export async function loadSpotMissions() {
     for (let i = 0; i < 20; i++) {
         generateAllSpots('.all-spots-missions-ctn', "Luogo luogoso", "Cibo", i, 3)
     }
 
-    for (let i = 0; i < 3; i++) {
+    const missions = await missionTemplatesByType(MISSION_TYPE.SPOT)
+    missions.forEach(mission =>
         generateSpotMissions(
             '.missions-spot',
-            "Scatta la foto",
-            "Usa quella fotocamera del cellulare, ora!",
-            100)
-    }
-
+            mission.id,
+            mission.Name,
+            mission.Description,
+            100))
 }
-
-// Generate active spot missions
-// function generateActiveSpotMissions() {
-//     generateSpotMissions(
-//         '.missions-spot',
-//         "Scatta la foto",
-//         "Usa quella fotocamera del cellulare, ora!",
-//         100)
-// }
 
 // Generate spots
 function generateAllSpots(selector, title, category, progress, allProgress) {
@@ -54,15 +48,10 @@ function generateAllSpots(selector, title, category, progress, allProgress) {
                             ${progress}/${allProgress}
                         </span>
                     </div>
-                    <!-- Arrow -->
-<!--                    <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"-->
-<!--                        viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">-->
-<!--                        <path d="m6 9 6 6 6-6"/>-->
-<!--                    </svg>-->
                 </div>
             </div>
             <!-- Missions -->
-            <div class="vertical-ctn-g2 missions-spot" data-carousel-type="vertical" data-size="mm">
+            <div class="vertical-ctn-g2 missions-spot pt-0" data-carousel-type="vertical" data-size="mm">
             
             </div>          
         </div>`;
@@ -70,17 +59,17 @@ function generateAllSpots(selector, title, category, progress, allProgress) {
 }
 
 // Generate spot missions
-function generateSpotMissions(selectors, title, description, exp) {
+function generateSpotMissions(selectors, id, title, description, exp) {
     const missionCtns = document.querySelectorAll(selectors);
     missionCtns.forEach(ctn => {
         ctn.innerHTML +=
-            `<button class="between-ctn interactive spot-mission completable card">
+            `<button class="between-ctn interactive spot-mission completable card" db-id="${id}">
                 <!-- Left -->
                 <div class="vertical-ctn-g1">
                     <!-- Title -->
                     <h3 class="flex items-start font-semibold text-gray-800"> ${title} </h3>
                     <!-- Description -->
-                    <p class="text-xs text-gray-600"> ${description} </p>
+                    <p class="text-xs text-gray-600">${description}</p>
                 </div>
                 <!-- Reward -->
                 <div class="center-ctn">
@@ -89,67 +78,4 @@ function generateSpotMissions(selectors, title, description, exp) {
                 </div>
             </button>`;
     })
-}
-
-// Generate Daily missions
-function generateDailyMissions(title, description, exp, progress, allProgress) {
-    const dailyCtn = document.querySelectorAll('.missions-card');
-    dailyCtn[0].innerHTML +=
-        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card">
-            <!-- Lato sinistro -->
-            <div class="space-y-1">
-                <h3 class="text-sm font-semibold text-gray-800">${title}</h3>
-                <p class="text-xs text-gray-600">${description}</p>
-                <div class="flex items-center gap-1 text-xs text-gray-700">
-                    <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
-                    <span>+${exp} XP</span>
-                </div>
-            </div>
-            <!-- Lato destro -->
-            <div class="center-ctn">
-                <span class="text-lg font-medium text-gray-500">${progress} / ${allProgress}</span>
-            </div>
-        </div>`;
-}
-
-// Generate Theme missions
-function generateThemeMissions(title, description, exp, progress, allProgress) {
-    const themeCtn = document.querySelectorAll('.missions-card');
-    themeCtn[1].innerHTML +=
-        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card">
-            <!-- Lato sinistro -->
-            <div class="space-y-1">
-                <h3 class="text-sm font-semibold text-gray-800">${title}</h3>
-                <p class="text-xs text-gray-600">${description}</p>
-                <div class="flex items-center gap-1 text-xs text-gray-700">
-                    <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
-                    <span>+${exp} XP</span>
-                </div>
-            </div>
-            <!-- Lato destro -->
-            <div class="center-ctn">
-                <span class="text-lg font-medium text-gray-500">${progress} / ${allProgress}</span>
-            </div>
-        </div>`;
-}
-
-// Generate Level missions
-function generateLevelMissions(title, description, exp, progress, allProgress) {
-    const levelCtn = document.querySelectorAll('.missions-card');
-    levelCtn[2].innerHTML +=
-        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card">
-            <!-- Lato sinistro -->
-            <div class="space-y-1">
-                <h3 class="text-sm font-semibold text-gray-800">${title}</h3>
-                <p class="text-xs text-gray-600">${description}</p>
-                <div class="flex items-center gap-1 text-xs text-gray-700">
-                    <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt="Reward Icon"/>
-                    <span>+${exp} XP</span>
-                </div>
-            </div>
-            <!-- Lato destro -->
-            <div class="center-ctn">
-                <span class="text-lg font-medium text-gray-500">${progress} / ${allProgress}</span>
-            </div>
-        </div>`;
 }

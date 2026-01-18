@@ -1,6 +1,7 @@
 import { initializeBottomSheet } from "./ui/bottomSheet.js";
 import { initializeBottomSheetFilters } from "./common/bottomSheetFilters.js";
 import { initializeStarRating } from "./common/starRating.js";
+import { initializeTimeRangeControl } from "./common/timeRange.js";
 
 export async function loadComponentAsDocument(path) {
     try {
@@ -225,4 +226,19 @@ export async function createStarRating() {
     initializeStarRating(starRatingEl);
 
     return starRatingEl;
+}
+
+export async function createTimeRange() {
+    const timeRangeDoc = await loadComponentAsDocument("../html/common-components/time-range/time-range.html");
+
+    const timeRangeEl = timeRangeDoc.body.firstElementChild;
+
+    if (!timeRangeEl) {
+        console.warn("TimeRange: elementi mancanti");
+        return timeRangeEl;
+    }
+
+    initializeTimeRangeControl(timeRangeEl);
+
+    return timeRangeEl;
 }

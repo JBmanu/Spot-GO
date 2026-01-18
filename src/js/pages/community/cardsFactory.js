@@ -3,7 +3,7 @@ import {openChat} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
-import { openModal, closeModal } from "../../common/modalViewStack.js";
+import { openModal, closeModal } from "../../common/modalView.js";
 import {initializeReadOnlyProfileData} from "../profile.js";
 
 export function makeSelectableCard(userData) {

@@ -1,50 +1,56 @@
 @layer components {
 
-    /* Review Cards */
     .review-card {
-        @apply glass-backdrop-medium p-4 rounded-xl flex flex-col gap-2 transition-all duration-300;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        @apply glass-backdrop-medium rounded-xl border border-white/30 transition-all duration-300;
+        @apply flex flex-col pt-4 overflow-hidden relative;
     }
 
     .review-card:active {
-        transform: scale(0.98);
-        background: rgba(255, 255, 255, 0.75);
+        @apply scale-[0.98] bg-white/75;
     }
 
-    .review-card-header {
-        @apply flex items-center justify-between;
-    }
-
-    .review-card-title {
-        @apply font-bold text-gray-700 text-base truncate pr-2;
+    .review-card-header-row {
+        @apply flex items-center justify-center w-full relative px-4 mb-2;
     }
 
     .review-card-rating {
-        @apply flex items-center gap-1.5 px-3 py-1.5 rounded-2xl relative overflow-hidden;
-        background: linear-gradient(135deg, rgba(255, 251, 235, 0.8), rgba(254, 243, 199, 0.6));
-        border: 1px solid rgba(251, 191, 36, 0.3);
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        @apply flex items-center gap-1;
     }
 
     .review-card-rating-text {
-        @apply text-sm font-black text-yellow-800 tracking-wide;
+        @apply font-bold text-lg;
     }
 
-    .review-card-rating-icon {
-        @apply w-3.5 h-3.5;
-        filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.2));
+    .review-card-actions {
+        @apply flex gap-2 absolute right-3;
+    }
+
+    .review-card-action-btn {
+        @apply glass-backdrop-medium w-12 h-12 flex items-center justify-center rounded-[15px] transition-transform active:scale-95;
+    }
+
+    .review-card-action-icon {
+        @apply w-7 h-7;
+    }
+
+    .review-card-content {
+        @apply flex flex-col px-4 pb-4 text-left;
+    }
+
+    .review-card-title {
+        @apply font-semibold text-base mb-2 mt-2 truncate w-full;
     }
 
     .review-card-body {
-        @apply text-sm text-gray-600 leading-relaxed line-clamp-3;
+        @apply text-sm text-gray-700 line-clamp-4;
     }
 
     .review-card-footer {
-        @apply flex justify-end mt-1;
+        @apply mt-auto px-4 pb-3 flex justify-end;
     }
 
     .review-card-date {
-        @apply text-[10px] text-gray-400 font-medium uppercase tracking-wide;
+        @apply text-[10px] text-gray-400;
     }
 
 }

@@ -105,15 +105,14 @@ const DISCOUNTS_TO_CREATE = [
     }
 ];
 
-/**
- * 📌 Crea tutti gli sconti in Firestore
- */
+export let createdDiscountIds = [];
+
 export async function seedDiscounts() {
     await clearDiscounts();
-    console.log(`Creazione di ${DISCOUNTS_TO_CREATE.length} sconti...`);
     for (const discount of DISCOUNTS_TO_CREATE) {
         const id = await createDiscount(discount);
+        createdDiscountIds.push(id);
     }
 
-    console.log("🎉 Creazione sconti completata!");
+    console.log("🎉 Creazione " + DISCOUNTS_TO_CREATE.length + "sconti completata!");
 }

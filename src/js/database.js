@@ -138,6 +138,38 @@ export async function addReviewToDatabase(spotId, { rating, description }) {
 }
 
 /**
+ * Aggiorna una recensione esistente.
+ */
+export async function updateReview(reviewId, { rating, description }) {
+    try {
+        const docRef = doc(db, "Recensione", reviewId);
+        await updateDoc(docRef, {
+            valuation: Number(rating),
+            description: description,
+            timestamp: new Date().toISOString()
+        });
+        console.log(`Recensione ${reviewId} aggiornata`);
+    } catch (err) {
+        console.error("Errore aggiornamento recensione:", err);
+        throw err;
+    }
+}
+
+/**
+ * Elimina una recensione.
+ */
+export async function deleteReview(reviewId) {
+    try {
+        const docRef = doc(db, "Recensione", reviewId);
+        await deleteDoc(docRef);
+        console.log(`Recensione ${reviewId} eliminata`);
+    } catch (err) {
+        console.error("Errore eliminazione recensione:", err);
+        throw err;
+    }
+}
+
+/**
  * Recupera gli spot creati da un utente.
  */
 export async function getCreatedSpots(userId) {
@@ -592,8 +624,13 @@ export function pickRating(spot) {
 }
 
 export async function insertNewSpot(spot) {
-    const docRef = await addDoc(collection(db, "Luogo"), spot);
-    return docRef.id;
+    try {
+        const docRef = await addDoc(collection(db, "Luogo"), spot);
+        return docRef.id;
+    } catch (err) {
+        console.error("Errore inserimento Luogo:", err);
+        throw err;
+    }
 }
 
 /**
