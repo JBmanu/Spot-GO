@@ -1,5 +1,5 @@
 import { getSpots, addPolaroidToDatabase } from "../database.js";
-import { closeModal, openModal } from "../common/modalViewStack.js";
+import { closeModal, openModal } from "../common/modalView.js";
 
 let selectedImage = null;
 let updateSubmitButtonFn = null;
