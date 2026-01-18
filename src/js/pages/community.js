@@ -27,7 +27,11 @@ async function configureKeyboard() {
     //Estrai nodo input
     const searchInput = searchBarEl.querySelector("#view-all-saved-search");
     // Sostituisci l'input mio con quello estratto e associato alla keyboard
-    document.getElementById("community-search-input").replaceWith(searchInput);
+    const oldInput = document.getElementById("community-search-input");
+    // oldInput.replaceWith(searchInput);
+    if (oldInput) {
+        oldInput.replaceWith(searchInput);
+    }
     communityPage.appendChild(keyboardEl);
     keyboardSetted = true;
 }
