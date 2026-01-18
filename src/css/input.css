@@ -22,6 +22,8 @@
 
 @import "./pages/profile.css";
 
+@import "./pages/view-all-reviews.css";
+
 @import "./map/map.css";
 
 @import "./pages/spot-cards.css";
@@ -35,6 +37,8 @@
 @import "./common/add-polaroid-modal.css";
 
 @import "./common/share-polaroid-modal.css";
+
+@import "./common/user-profile-overview.css";
 
 @import "./map/new-spot.css";
 

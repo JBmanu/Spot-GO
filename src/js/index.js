@@ -2,8 +2,8 @@ import { PATHS } from "./paths.js";
 import {
     activateToolbar,
     resetHeaderBaseForSection,
-    closeOverlayAndReveal,
-} from "./common/back.js";
+} from "./common/navigation.js";
+import { closeOverlayAndReveal } from "./common/back.js";
 import "./common/carousels.js";
 import { auth } from "./firebase.js";
 

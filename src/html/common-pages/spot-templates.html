@@ -147,6 +147,23 @@
     </div>
 </template>
 
+<!-- Template User Review (For Profile) -->
+<template data-template="user-review-card-template">
+    <div class="review-card">
+        <div class="review-card-header">
+            <h3 class="review-card-title" data-field="title"></h3>
+            <div class="review-card-rating">
+                <img src="../../assets/icons/profile/Star.svg" class="review-card-rating-icon" alt="Star">
+                <span class="review-card-rating-text" data-field="rating"></span>
+            </div>
+        </div>
+        <p class="review-card-body" data-field="description"></p>
+        <div class="review-card-footer">
+            <span class="review-card-date" data-field="date"></span>
+        </div>
+    </div>
+</template>
+
 <!-- Template Polaroid -->
 <template data-template="polaroid-template">
     <article class="carousel-horizontal_item profile-polaroid polaroid-template">

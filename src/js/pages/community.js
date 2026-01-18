@@ -32,9 +32,11 @@ async function configureKeyboard() {
     keyboardSetted = true;
 }
 
+let currentTab = null;
+
 function initTabSelector(userId) {
     const searchbarInput = document.getElementById("view-all-saved-search");
-    const body = document.getElementById("community-main-body");
+    const tabSelector = document.getElementById("community-section-selector");
     const btnCloseSearch = document.getElementById("community-close-search-btn");
     const btnFollows = document.getElementById("community-tab-follows");
     const btnFollowers = document.getElementById("community-tab-followers");
@@ -45,9 +47,12 @@ function initTabSelector(userId) {
     const followersSection = document.getElementById("community-followers-section");
 
     const buttons = [btnFollows, btnFollowers, btnSearch];
-    const sections = [followsSection, followersSection];
+    const sections = [followsSection, followersSection, searchsection];
+
+    currentTab = followsSection;
 
     btnFollows.addEventListener('click', async () => {
+        currentTab = followsSection;
         hideAll(sections);
         unselectAllButton(buttons);
         btnFollows.classList.add('active-community-tab');
@@ -56,6 +61,7 @@ function initTabSelector(userId) {
     });
 
     btnFollowers.addEventListener('click', async () => {
+        currentTab = followersSection;
         unselectAllButton(buttons);
         hideAll(sections);
         btnFollowers.classList.add('active-community-tab');
@@ -63,10 +69,9 @@ function initTabSelector(userId) {
     });
 
     btnSearch.addEventListener('click', () => {
-        console.log("Open search modal");
-        const searchsection = document.getElementById("community-search-section");
+        hideAll(sections);
+        tabSelector.classList.add('hidden');
         searchsection.classList.remove('hidden');
-        body.classList.add('hidden');
     });
 
     btnCloseSearch.addEventListener('click', ()=> {
@@ -74,7 +79,8 @@ function initTabSelector(userId) {
         const resultsDiv = document.getElementById("community-results-container");
         resultsDiv.innerHTML = '';
         searchsection.classList.add('hidden');
-        body.classList.remove('hidden');
+        tabSelector.classList.remove('hidden');
+        currentTab.classList.remove('hidden');
     });
 }
 
@@ -120,5 +126,3 @@ async function loadFollowers(userId) {
         showsItemsInContainer(followers, 'followers', "community-followers-container", data => makeFriendCard(data));
     });
 }
-
-

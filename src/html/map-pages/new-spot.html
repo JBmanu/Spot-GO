@@ -1,4 +1,5 @@
-<section data-section-view="new-spot" class="max-w-md mx-auto min-h-screen flex flex-col font-sans text-black">
+<section data-section-view="new-spot" data-return-section="map"
+  class="max-w-md mx-auto min-h-screen flex flex-col font-sans text-black main-page-background">
   <form id="new-spot-form" class="space-y-6">
     <div class="p-4 space-y-4">
       <!-- POSIZIONE -->
@@ -15,29 +16,29 @@
       <!-- NOME / DESCRIZIONE -->
       <section class="space-y-4">
         <div class="add-polaroid-input-group">
-            <label for="new-spot-name" class="input-label">Nome *</label>
-            <input type="text" id="new-spot-name" name="name" class="polaroid-input glass-strong"
-                placeholder="Es. Bosco Imboscato" required maxlength="50" />
+          <label for="new-spot-name" class="input-label">Nome *</label>
+          <input type="text" id="new-spot-name" name="name" class="polaroid-input glass-strong"
+            placeholder="Es. Bosco Imboscato" required maxlength="50" />
         </div>
 
         <div class="add-polaroid-input-group">
-            <label for="new-spot-desc" class="input-label">Descrizione *</label>
-            <textarea id="new-spot-desc" name="description" class="polaroid-input glass-strong"
-                placeholder="Descrivi brevemente lo spot..." rows="3" maxlength="500"></textarea>
+          <label for="new-spot-desc" class="input-label">Descrizione *</label>
+          <textarea id="new-spot-desc" name="description" class="polaroid-input glass-strong"
+            placeholder="Descrivi brevemente lo spot..." rows="3" maxlength="500"></textarea>
         </div>
       </section>
 
       <!-- CATEGORIA / PREZZO / ORARI -->
       <section class="space-y-4">
         <div class="add-polaroid-input-group">
-            <label for="new-spot-category" class="input-label">Categoria *</label>
-            <select id="new-spot-category" name="category" class="polaroid-input glass-strong" required>
-                <option value="">Seleziona una categoria...</option>
-                <option value="culture">Cultura</option>
-                <option value="food">Cibo</option>
-                <option value="nature">Natura</option>
-                <option value="mystery">Mistero</option>
-            </select>
+          <label for="new-spot-category" class="input-label">Categoria *</label>
+          <select id="new-spot-category" name="category" class="polaroid-input glass-strong" required>
+            <option value="">Seleziona una categoria...</option>
+            <option value="culture">Cultura</option>
+            <option value="food">Cibo</option>
+            <option value="nature">Natura</option>
+            <option value="mystery">Mistero</option>
+          </select>
         </div>
 
         <!-- FOOD -->
@@ -51,22 +52,12 @@
         <div class="add-polaroid-input-group" id="price-section-other">
           <label for="price-section-other" class="input-label">Prezzo</label>
           <div class="auth-switch glass-strong" role="tablist" aria-label="Prezzo">
-            <button
-              class="auth-switch-btn new-spot-switch-btn is-active"
-              type="button"
-              role="tab"
-              aria-selected="true"
-              data-auth-tab="free"
-            >
+            <button class="auth-switch-btn new-spot-switch-btn is-active" type="button" role="tab" aria-selected="true"
+              data-auth-tab="free">
               <p class="input-label">Gratuito</p>
             </button>
-            <button
-              class="auth-switch-btn new-spot-switch-btn space-y-4"
-              type="button"
-              role="tab"
-              aria-selected="false"
-              data-auth-tab="price"
-            >
+            <button class="auth-switch-btn new-spot-switch-btn space-y-4" type="button" role="tab" aria-selected="false"
+              data-auth-tab="price">
               <div class="add-polaroid-input-group" style="text-align: left;">
                 <label for="new-spot-price-intero" class="input-label">Intero</label>
                 <input type="text" id="new-spot-price-intero" name="price_intero" class="polaroid-input glass-strong"
@@ -92,15 +83,14 @@
       <!-- IMMAGINE -->
       <section>
         <div class="add-polaroid-image-upload glass-strong" id="new-spot-image-wrapper">
-            <input type="file" id="new-spot-image-input" accept="image/*" class="polaroid-image-input" />
-            <label for="new-spot-image-input" class="polaroid-image-label">
-                <div class="polaroid-upload-placeholder">
-                    <img src="../../assets/icons/profile/Add Image.svg" alt="Carica immagine"
-                        class="upload-icon" />
-                    <span class="upload-text">Carica foto</span>
-                </div>
-                <div class="polaroid-image-preview" id="new-spot-image-preview"></div>
-            </label>
+          <input type="file" id="new-spot-image-input" accept="image/*" class="polaroid-image-input" />
+          <label for="new-spot-image-input" class="polaroid-image-label">
+            <div class="polaroid-upload-placeholder">
+              <img src="../../assets/icons/profile/Add Image.svg" alt="Carica immagine" class="upload-icon" />
+              <span class="upload-text">Carica foto</span>
+            </div>
+            <div class="polaroid-image-preview" id="new-spot-image-preview"></div>
+          </label>
         </div>
       </section>
 
@@ -111,7 +101,7 @@
         <button type="submit" id="add-spot-button" class="submit-polaroid-btn glass-btn-primary">Aggiungi spot</button>
       </footer>
     </div>
-    
+
     <!-- SUBMIT -->
     <!-- <div class="spot-detail-actions glass-strong">
       <button type="sumbit" id="add-spot-button"

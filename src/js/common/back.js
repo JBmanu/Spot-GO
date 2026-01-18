@@ -1,50 +1,4 @@
-export function showOnlySectionView(main, viewKey) {
-    if (!main) return null;
-
-    const views = Array.from(main.children).filter(
-        (el) => el && el.nodeType === 1 && el.hasAttribute("data-section-view")
-    );
-
-    if (!views.length) return null;
-
-    const key = viewKey != null ? String(viewKey) : "";
-    let target = key ? views.find((v) => String(v.dataset.sectionView) === key) : null;
-
-    if (!target) target = views[0];
-
-    views.forEach((v) => (v.hidden = v !== target));
-    return String(target.dataset.sectionView || null);
-}
-
-export function resetHeaderBaseForSection(sectionKey) {
-    const headerLeftLogo = document.querySelector(".header-left-logo");
-    const headerLogoText = document.getElementById("header-logo-text");
-    const headerTitle = document.getElementById("header-title");
-
-    if (headerLeftLogo?.querySelector("#header-back-button")) {
-        headerLeftLogo.innerHTML =
-            `<img src="../../assets/images/LogoNoText.svg" alt="Logo" class="w-[60px] h-auto block">`;
-    }
-
-    const isHome = String(sectionKey) === "homepage";
-
-    if (headerLogoText) headerLogoText.style.display = isHome ? "" : "none";
-    if (headerTitle) headerTitle.classList.toggle("hidden", isHome);
-}
-
-export function activateToolbar(activeSection = null) {
-    const toolbar = document.querySelector(".app-toolbar");
-    if (!toolbar) return;
-
-    toolbar.querySelectorAll("button[data-section]").forEach((btn) => {
-        btn.removeAttribute("aria-current");
-    });
-
-    if (activeSection) {
-        const btn = toolbar.querySelector(`button[data-section="${activeSection}"]`);
-        if (btn) btn.setAttribute("aria-current", "page");
-    }
-}
+import { showOnlySectionView, resetHeaderBaseForSection, activateToolbar } from "./navigation.js";
 
 export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
     const main = document.getElementById("main");
@@ -55,12 +9,10 @@ export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
 
     const returnKey = returnViewKey || ov.dataset.returnView || null;
 
-    // Check for Slide Animation first
-    if (ov.classList.contains("page-slide-in")) {
+    if (ov.classList.contains("page-slide-in") || ov.classList.contains("overlay-full-page")) {
         ov.classList.remove("page-slide-in");
         ov.classList.add("page-slide-out");
 
-        // Reveal background IMMEDIATELY so we can see it during slide-out
         if (returnKey && main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
             const returnOverlay = main.querySelector(`[data-overlay-view="${returnKey}"]`);
             returnOverlay.hidden = false;
@@ -68,7 +20,6 @@ export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
             showOnlySectionView(main, returnKey);
         }
 
-        // Delay cleanup until animation ends (300ms)
         setTimeout(() => {
             if (typeof ov.onClose === 'function') ov.onClose();
 
@@ -78,16 +29,12 @@ export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
                 if (ov.parentNode) ov.parentNode.removeChild(ov);
             }
 
-            // Re-verify UI state after removal
             if (!returnKey || !main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
                 const shown = showOnlySectionView(main, returnKey) || "homepage";
                 resetHeaderBaseForSection(shown);
                 activateToolbar(shown);
                 document.dispatchEvent(new CustomEvent("section:revealed", { detail: { section: shown } }));
             }
-
-            main.classList.remove("spot-detail-enter", "spot-detail-exit");
-            main.removeAttribute("data-category");
 
         }, 300);
 
@@ -98,7 +45,7 @@ export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
         ov.onClose();
     }
 
-    if (ov.classList.contains("page-fade-in") || ov.dataset.animateExit === "true" || ov.classList.contains("overlay-full-page") || ov.dataset.overlayView) {
+    if (ov.classList.contains("page-fade-in") || ov.dataset.animateExit === "true") {
         ov.classList.remove("page-fade-in");
         ov.classList.add("page-fade-out");
 
@@ -128,9 +75,6 @@ export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
     resetHeaderBaseForSection(shown);
     activateToolbar(shown);
 
-    main.classList.remove("spot-detail-enter", "spot-detail-exit");
-    main.removeAttribute("data-category");
-
     document.dispatchEvent(
         new CustomEvent("section:revealed", { detail: { section: shown } })
     );
@@ -138,11 +82,33 @@ export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
     return shown;
 }
 
-export function closeOverlay(overlay) {
-    return closeOverlayAndReveal({ overlay });
-}
-
 export function goBack({ fallback } = {}) {
+    const main = document.getElementById("main");
+
+    if (main) {
+        const visibleSections = Array.from(main.querySelectorAll('[data-section-view]'))
+            .filter(el => el.style.display !== 'none' && !el.hidden);
+
+        for (const section of visibleSections) {
+            const returnTo = section.dataset.returnSection;
+            if (returnTo) {
+                section.style.display = 'none';
+                section.hidden = true;
+
+                const returnSection = main.querySelector(`[data-section-view="${returnTo}"]`);
+                if (returnSection) {
+                    returnSection.style.display = '';
+                    returnSection.hidden = false;
+                }
+
+                resetHeaderBaseForSection(returnTo);
+                activateToolbar(returnTo);
+
+                return;
+            }
+        }
+    }
+
     const overlay = document.querySelector('[data-overlay-view]');
     if (overlay) {
         closeOverlayAndReveal({ overlay });
@@ -165,7 +131,7 @@ export function goBack({ fallback } = {}) {
     window.location.href = "/";
 }
 
-export function setupBackButton({ fallback } = {}) {
+function setupBackButton({ fallback } = {}) {
     const buttons = document.querySelectorAll("[data-back]");
     buttons.forEach((btn) => {
         if (btn.dataset.bound === "true") return;
@@ -176,5 +142,50 @@ export function setupBackButton({ fallback } = {}) {
             e.stopPropagation();
             goBack({ fallback });
         });
+    });
+}
+
+if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setupBackButton());
+    } else {
+        setupBackButton();
+    }
+
+    const observer = new MutationObserver((mutations) => {
+        let shouldSetup = false;
+
+        for (const mutation of mutations) {
+            if (mutation.type === 'childList') {
+                for (const node of mutation.addedNodes) {
+                    if (node.nodeType === 1) {
+                        if (node.hasAttribute?.('data-back') || node.querySelector?.('[data-back]')) {
+                            shouldSetup = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (shouldSetup) break;
+        }
+
+        if (shouldSetup) {
+            setupBackButton();
+        }
+    });
+
+    observer.observe(document.body || document.documentElement, {
+        childList: true,
+        subtree: true
+    });
+
+    window.addEventListener("popstate", (event) => {
+        const overlay = document.querySelector('[data-overlay-view]');
+        const currentState = event.state || {};
+        if (overlay && !overlay.hidden) {
+            if (currentState.overlay !== overlay.dataset.overlayView) {
+                closeOverlayAndReveal({ overlay });
+            }
+        }
     });
 }

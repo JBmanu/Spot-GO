@@ -1,7 +1,6 @@
-import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPolaroids, getSpotById, getCurrentUser, deletePolaroid } from "../database.js";
+import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getCurrentUser, deletePolaroid } from "../database.js";
 import { openAddPolaroidModal } from "./addPolaroid.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
-import { formatDate } from "../common/datetime.js";
 import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
 
@@ -15,6 +14,9 @@ const AVATAR_MAP = {
 
 let loadViewAllSaved;
 let loadViewAllPolaroids;
+let loadViewAllReviews;
+let loadViewAllBadges;
+let loadViewAllAddedSpots;
 
 const profileDepsReady = Promise.all([
     import("./viewAllSaved.js").then((m) => {
@@ -22,6 +24,15 @@ const profileDepsReady = Promise.all([
     }),
     import("./viewAllPolaroids.js").then((m) => {
         loadViewAllPolaroids = m.loadViewAllPolaroids;
+    }),
+    import("./viewAllReviews.js").then((m) => {
+        loadViewAllReviews = m.loadViewAllReviews;
+    }),
+    import("./viewAllBadges.js").then((m) => {
+        loadViewAllBadges = m.loadViewAllBadges;
+    }),
+    import("./viewAllAddedSpots.js").then((m) => {
+        loadViewAllAddedSpots = m.loadViewAllAddedSpots;
     }),
 ]).catch((err) => {
     console.error("Error loading profile dependencies:", err);
@@ -32,7 +43,8 @@ export async function loadProfileOverview(wrapper) {
 
     if (!wrapper) return;
 
-    await initializeProfileData(wrapper);
+    const user = await getCurrentUser();
+    await initializeProfileData(wrapper, user, "profile");
 }
 
 window.reloadProfile = async function () {
@@ -50,21 +62,20 @@ export async function reloadProfileHeader() {
 
 window.reloadProfileHeader = reloadProfileHeader;
 
-export async function initializeProfileData(container) {
+async function initializeProfileData(container, userData, sectionView) {
     await profileDepsReady;
 
     await profileDepsReady;
 
-    const user = await getCurrentUser();
-    if (!user) return;
+    if (!userData) return;
 
-    updateProfileHeader(user);
+    updateProfileHeader(userData);
 
-    await updateUserCounters(user.username);
+    await updateUserCounters(userData.username);
 
-    setupProfileEventListeners(container);
+    setupProfileEventListeners(container, userData, sectionView);
 
-    await initializePolaroidCarousel();
+    await initializePolaroidCarousel(document, userData);
 }
 
 function updateProfileHeader(user) {
@@ -79,8 +90,7 @@ function updateProfileHeader(user) {
         name: document.getElementById("profile-name"),
         username: document.getElementById("profile-username"),
         email: document.getElementById("profile-email"),
-        avatar: document.getElementById("profile-avatar"),
-        backButton: document.getElementById("header-back-button")
+        avatar: document.getElementById("profile-avatar")
     };
 
     if (elements.name) elements.name.textContent = profileData.name;
@@ -122,7 +132,7 @@ async function updateUserCounters(username) {
     }
 }
 
-function setupProfileEventListeners(container) {
+function setupProfileEventListeners(container, userData, sectionView) {
     const savedSpotsButton = container.querySelector("#profile-saved-spots-button");
     if (savedSpotsButton) {
         if (savedSpotsButton.dataset.bound !== "true") {
@@ -145,7 +155,31 @@ function setupProfileEventListeners(container) {
     if (openAlbumButton) {
         if (openAlbumButton.dataset.bound !== "true") {
             openAlbumButton.dataset.bound = "true";
-            openAlbumButton.addEventListener("click", handleOpenAlbumClick);
+            openAlbumButton.addEventListener("click", e => handleOpenAlbumClick(e, sectionView, userData));
+        }
+    }
+
+    const reviewsButton = container.querySelector("#profile-reviews-button");
+    if (reviewsButton) {
+        if (reviewsButton.dataset.bound !== "true") {
+            reviewsButton.dataset.bound = "true";
+            reviewsButton.addEventListener("click", handleReviewsClick);
+        }
+    }
+
+    const visitedSpotsButton = container.querySelector("#profile-visited-spots-button");
+    if (visitedSpotsButton) {
+        if (visitedSpotsButton.dataset.bound !== "true") {
+            visitedSpotsButton.dataset.bound = "true";
+            visitedSpotsButton.addEventListener("click", handleBadgesClick);
+        }
+    }
+
+    const createdSpotsButton = container.querySelector("#profile-created-spots-button");
+    if (createdSpotsButton) {
+        if (createdSpotsButton.dataset.bound !== "true") {
+            createdSpotsButton.dataset.bound = "true";
+            createdSpotsButton.addEventListener("click", handleCreatedSpotsClick);
         }
     }
 
@@ -153,12 +187,12 @@ function setupProfileEventListeners(container) {
         container.dataset.liveUpdatesBound = "true";
 
         document.addEventListener("polaroid:added", () => {
-            initializePolaroidCarousel();
+            initializePolaroidCarousel(document);
             getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
         });
 
         document.addEventListener("polaroid:deleted", () => {
-            initializePolaroidCarousel();
+            initializePolaroidCarousel(document);
             getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
         });
     }
@@ -181,7 +215,7 @@ async function handleAddPolaroidClick(e) {
     await openAddPolaroidModal();
 }
 
-async function handleOpenAlbumClick(e) {
+async function handleOpenAlbumClick(e, returnViewKey, userData) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -189,15 +223,48 @@ async function handleOpenAlbumClick(e) {
         console.error("loadViewAllPolaroids is not available");
         return;
     }
-    await loadViewAllPolaroids("profile");
+    await loadViewAllPolaroids(returnViewKey, userData);
 }
 
-async function initializePolaroidCarousel() {
-    const container = document.getElementById("polaroid-carousel-container");
+async function handleReviewsClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof loadViewAllReviews !== "function") {
+        console.error("loadViewAllReviews is not available");
+        return;
+    }
+    await loadViewAllReviews("profile");
+}
+
+async function handleBadgesClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof loadViewAllBadges !== "function") {
+        console.error("loadViewAllBadges is not available");
+        return;
+    }
+    await loadViewAllBadges("profile");
+}
+
+async function handleCreatedSpotsClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof loadViewAllCreatedSpots !== "function" && typeof loadViewAllAddedSpots !== "function") {
+        console.error("loadViewAllAddedSpots is not available");
+        return;
+    }
+    await loadViewAllAddedSpots("profile");
+}
+
+async function initializePolaroidCarousel(parentDocument, userData) {
+    const container = parentDocument.getElementById("polaroid-carousel-container");
     if (!container) return;
 
     try {
-        const polaroidData = await fetchFormattedUserPolaroids();
+        const polaroidData = await fetchFormattedUserPolaroids(userData);
 
         if (!polaroidData || polaroidData.length === 0) {
             renderEmptyCarousel(container);
@@ -302,7 +369,7 @@ function renderCarouselItems(container, items, template) {
                         menuDropdown.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
                         menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
                         if (polaroidEl) polaroidEl.style.zIndex = "";
-                        
+
                         await sharePolaroidModal(itemData);
                     });
                 }
@@ -373,7 +440,7 @@ function showDeleteConfirmation(item) {
         try {
             await deletePolaroid(item.id);
             closeModal();
-            initializePolaroidCarousel();
+            initializePolaroidCarousel(document);
 
             const user = await getCurrentUser();
             if (user) updateUserCounters(user.username);
@@ -438,3 +505,25 @@ function updateCarouselCounter(total, current) {
     }
 }
 
+/**
+ * Read only profile data init. Some element are removed.
+ */
+export async function initializeReadOnlyProfileData(modalElement, userData) {
+    if (!modalElement) return;
+    const classItemToRemove = [".profile-data-section", ".profile-diary-add-btn"];
+    classItemToRemove.forEach(className => {
+        modalElement.querySelector(className).remove();
+    });
+    modalElement.classList.add("profile-overview-modal-content");
+    await initializeProfileData(modalElement, userData, "community");
+
+    const menuButtons = modalElement.querySelectorAll(".polaroid-menu-wrapper");
+    menuButtons.forEach(btn => btn.remove());
+
+    const openAlbumButton = modalElement.querySelector(".profile-album-btn");
+    openAlbumButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Open Album");
+    });
+}

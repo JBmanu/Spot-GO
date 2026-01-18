@@ -1,11 +1,10 @@
-import { initializeBookmarks, syncAllBookmarks } from "../common/bookmark.js";
 import { initializeSpotClickHandlers } from "./spotDetail.js";
-import { getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt } from "../database.js";
+import { getCurrentUser, getCreatedSpots, getSpots, getCategoryNameIt } from "../database.js";
 import { distanceFromUserToSpot, formatDistance } from "../common.js";
 import { initializeVerticalCarousel } from "../common/carousels.js";
 import { SearchSystem } from "../common/SearchSystem.js";
 
-const OVERLAY_ID = "view-all-saved";
+const OVERLAY_ID = "view-all-created";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
 
 const state = {
@@ -35,7 +34,7 @@ function getOverlay() {
 async function fetchOverlayHtml() {
     if (state.htmlCache) return state.htmlCache;
 
-    const res = await fetch("../html/homepage-pages/view-all/view-all-saved.html");
+    const res = await fetch("../html/profile-pages/view-all-added-spots.html");
     if (!res.ok) return null;
 
     state.htmlCache = await res.text();
@@ -50,7 +49,7 @@ function resolveReturnViewKey(main) {
     return activeView?.getAttribute("data-section-view") || activeView?.id || null;
 }
 
-function showViewAllSavedHeader() {
+function showViewAllHeader() {
     const logo = document.querySelector(".header-left-logo");
     const logoText = document.getElementById("header-logo-text");
     const title = document.getElementById("header-title");
@@ -64,7 +63,7 @@ function showViewAllSavedHeader() {
     }
     if (logoText) logoText.style.display = "none";
     if (title) {
-        title.textContent = "I tuoi Spot Salvati";
+        title.textContent = "I tuoi Spot Creati";
         title.classList.remove("hidden");
     }
 }
@@ -128,13 +127,11 @@ function clearHistoryState() {
     }
 }
 
-
-
-function renderEmptySavedMessage(container) {
+function renderEmptyMessage(container) {
     const p = document.createElement("p");
-    p.dataset.emptySaved = "true";
+    p.dataset.emptyMsg = "true";
     p.className = "text-center text-text_color/60 py-8";
-    p.textContent = "Nessuno spot salvato";
+    p.textContent = "Nessuno spot creato";
     container.appendChild(p);
 }
 
@@ -146,7 +143,6 @@ function filterSpotCards(root, query) {
         const spotId = (card.getAttribute("data-spot-id") || "").trim();
         if (!spotId) {
             card.style.display = "none";
-            card.style.zIndex = "998";
             return;
         }
 
@@ -155,13 +151,11 @@ function filterSpotCards(root, query) {
 
         if (!searchQuery) {
             card.style.display = "";
-            card.style.zIndex = "998";
             return;
         }
 
         const matches = title.includes(searchQuery);
         card.style.display = matches ? "" : "none";
-        card.style.zIndex = matches ? "1001" : "998";
     });
 }
 
@@ -208,26 +202,25 @@ function renderSpotCard(template, spot, categoryCache) {
     return cardNode;
 }
 
-
-
-async function populateViewAllSavedSpots({ preserveDom = false } = {}) {
+async function populateViewAllCreatedSpots({ preserveDom = false } = {}) {
     const currentUser = await getCurrentUser();
     if (!currentUser) return;
 
     const root = getOverlay();
     if (!root) return;
 
-    const savedContainer = root.querySelector("#view-all-saved-list");
-    if (!savedContainer) return;
+    const containerDiv = root.querySelector("#view-all-created-list");
+    if (!containerDiv) return;
 
-    const track = savedContainer.querySelector(".carousel-vertical_track") || savedContainer.querySelector(".carousel-vertical-track") || savedContainer;
+    const track = containerDiv.querySelector(".carousel-vertical_track") || containerDiv.querySelector(".carousel-vertical-track") || containerDiv;
 
-    track.querySelectorAll("[data-empty-saved]").forEach((el) => el.remove());
+    track.querySelectorAll("[data-empty-msg]").forEach((el) => el.remove());
 
-    const relations = (await getSavedSpots(currentUser.username)) || [];
-    if (relations.length === 0) {
+    const createdRelations = (await getCreatedSpots(currentUser.username)) || [];
+
+    if (createdRelations.length === 0) {
         track.querySelectorAll('[data-slot="spot"]').forEach((el) => el.remove());
-        renderEmptySavedMessage(track);
+        renderEmptyMessage(track);
         return;
     }
 
@@ -244,7 +237,7 @@ async function populateViewAllSavedSpots({ preserveDom = false } = {}) {
     }
 
     const allSpots = (await getSpots()) || [];
-    const neededIds = new Set(relations.map((r) => String(r.idLuogo)).filter(Boolean));
+    const neededIds = new Set(createdRelations.map((r) => String(r.idLuogo)).filter(Boolean));
 
     const spotsToShow = allSpots
         .filter((s) => neededIds.has(String(s.id)))
@@ -270,7 +263,7 @@ async function populateViewAllSavedSpots({ preserveDom = false } = {}) {
     for (const [, leftover] of existingCards) leftover.remove();
 }
 
-async function closeViewAllSavedAndRestore() {
+async function closeViewAllAndRestore() {
     const main = getMain();
     if (!main) return;
 
@@ -288,7 +281,7 @@ async function closeViewAllSavedAndRestore() {
     clearHistoryState();
 }
 
-export async function loadViewAllSaved(returnViewKey = null) {
+export async function loadViewAllAddedSpots(returnViewKey = null) {
     const main = getMain();
     if (!main) return;
 
@@ -314,17 +307,13 @@ export async function loadViewAllSaved(returnViewKey = null) {
             state.overlay.classList.add("page-slide-in");
         }
 
-        showViewAllSavedHeader();
+        showViewAllHeader();
 
-
-        // Cleanup logic attached to the overlay
         state.overlay.onClose = async () => {
-            await closeViewAllSavedAndRestore();
+            await closeViewAllAndRestore();
         };
 
-        await populateViewAllSavedSpots({ preserveDom: true });
-        initializeBookmarks();
-        await syncAllBookmarks();
+        await populateViewAllCreatedSpots({ preserveDom: true });
         return;
     }
 
@@ -335,14 +324,11 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
     const placeholder = overlay.querySelector("#search-bar-placeholder");
     if (placeholder) {
-        const track = overlay.querySelector(".view-all-saved-track") || overlay.querySelector("#view-all-saved-list");
-
         const searchSystem = new SearchSystem({
             placeholder: "Cerca...",
             onSearch: (value) => filterSpotCards(overlay, value),
             enableFilters: true,
-            onFiltersApply: (filters) => {
-            }
+            onFiltersApply: (filters) => { }
         });
 
         const { searchBarEl, keyboardEl, overlayEl } = await searchSystem.init();
@@ -350,7 +336,6 @@ export async function loadViewAllSaved(returnViewKey = null) {
         placeholder.replaceWith(searchBarEl);
         main.appendChild(keyboardEl);
         overlay.appendChild(overlayEl);
-
 
         if (searchSystem.elements.bottomSheet) overlay.appendChild(searchSystem.elements.bottomSheet);
         if (searchSystem.elements.bottomSheetOverlay) overlay.appendChild(searchSystem.elements.bottomSheetOverlay);
@@ -367,12 +352,12 @@ export async function loadViewAllSaved(returnViewKey = null) {
         overlay.classList.add("page-slide-in");
     }
 
-    showViewAllSavedHeader();
+    showViewAllHeader();
 
     if (!state.initialized) {
         initializeSpotClickHandlers();
-        initializeVerticalCarousel(overlay.querySelector("#view-all-saved-list"), { cardSelector: '[data-slot="spot"]' });
-        const track = overlay.querySelector("#view-all-saved-list .carousel-vertical-track");
+        initializeVerticalCarousel(overlay.querySelector("#view-all-created-list"), { cardSelector: '[data-slot="spot"]' });
+        const track = overlay.querySelector("#view-all-created-list .carousel-vertical-track");
         if (track) {
             track.style.gap = "0";
             track.style.padding = "0";
@@ -381,12 +366,9 @@ export async function loadViewAllSaved(returnViewKey = null) {
         state.initialized = true;
     }
 
-    await populateViewAllSavedSpots({ preserveDom: true });
-    initializeBookmarks();
-    await syncAllBookmarks();
+    await populateViewAllCreatedSpots({ preserveDom: true });
 
-    // Cleanup logic attached to the overlay
     overlay.onClose = async () => {
-        await closeViewAllSavedAndRestore();
+        await closeViewAllAndRestore();
     };
 }

@@ -3,9 +3,9 @@ import {formatDate} from "../../common/datetime.js";
 import {openPolaroidDetail} from "../polaroidDetail.js"
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
 
-export async function fetchFriendMessages(followingData) {
+export async function openChat(userData) {
     const userMail = await getCurrentUser();
-    const messagesData = await pullMessages(userMail.email, followingData.email);
+    const messagesData = await pullMessages(userMail.email, userData.email);
     const messagesPromise = messagesData.map(async msg => {
         const cartolina =  await getCartolinaById(msg.ref);
         return {
@@ -14,17 +14,15 @@ export async function fetchFriendMessages(followingData) {
         }
     });
     const messages = await Promise.all(messagesPromise);
-    renderMessages(followingData, messages);
+    renderMessages(userData, messages);
 }
 
 function hideCommunityMainSections() {
     document.getElementById("community-main-body").classList.add('hidden');
-    document.getElementById("community-suggested-wrapper").classList.add('hidden');
 }
 
 function showCommunityMainSections() {
     document.getElementById("community-main-body").classList.remove('hidden');
-    document.getElementById("community-suggested-wrapper").classList.remove('hidden');
 }
 
 function renderMessages(userData, messages) {

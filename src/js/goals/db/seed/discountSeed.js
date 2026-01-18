@@ -1,4 +1,4 @@
-import {clearDiscounts, createDiscount} from "../db/discountConnector.js"; // importa la tua funzione
+import {clearDiscounts, createDiscount} from "../discountConnector.js"; // importa la tua funzione
 
 // 🎫 Sconti catalogo ITALIANI / EMILIA-ROMAGNA
 const DISCOUNTS_TO_CREATE = [
