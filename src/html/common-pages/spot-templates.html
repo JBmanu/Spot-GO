@@ -150,14 +150,29 @@
 <!-- Template User Review (For Profile) -->
 <template data-template="user-review-card-template">
     <div class="review-card">
-        <div class="review-card-header">
-            <h3 class="review-card-title" data-field="title"></h3>
+        <div class="review-card-header-row">
             <div class="review-card-rating">
-                <img src="../../assets/icons/profile/Star.svg" class="review-card-rating-icon" alt="Star">
+                <img src="../../assets/icons/profile/Star.svg" class="w-5 h-5" alt="Star">
                 <span class="review-card-rating-text" data-field="rating"></span>
             </div>
+
+            <div class="review-card-actions">
+                <button type="button" data-action="edit-review" class="review-card-action-btn"
+                    aria-label="Modifica recensione">
+                    <img src="../../assets/icons/menu/Modify.svg" alt="Modifica" class="review-card-action-icon">
+                </button>
+                <button type="button" data-action="delete-review" class="review-card-action-btn"
+                    aria-label="Elimina recensione">
+                    <img src="../../assets/icons/menu/Delete.svg" alt="Elimina" class="review-card-action-icon">
+                </button>
+            </div>
         </div>
-        <p class="review-card-body" data-field="description"></p>
+
+        <div class="review-card-content">
+            <h3 class="review-card-title" data-field="title"></h3>
+            <p class="review-card-body" data-field="description">
+            </p>
+        </div>
         <div class="review-card-footer">
             <span class="review-card-date" data-field="date"></span>
         </div>
