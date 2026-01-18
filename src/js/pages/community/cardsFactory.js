@@ -1,10 +1,10 @@
 import {showConfirmModal} from "../../ui/confirmModal.js";
-import {fetchFriendMessages} from "../community/chat.js";
+import {openChat} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
-import { openModal } from "../../common/modalView.js";
-import {initializeProfileData} from "../profile-read-only.js";
+import { openModal, closeModal } from "../../common/modalView.js";
+import {initializeReadOnlyProfileData} from "../profile.js";
 
 export function makeSelectableCard(userData) {
     return makeGenericCard(userData, checkboxAction(userData));
@@ -76,14 +76,43 @@ function makeCardInfo(userData) {
     container.className = "flex flex-row items-center";
     container.appendChild(avatar);
     container.appendChild(userInfo);
-    container.addEventListener('click', async () => {
-        await openModal("../html/profile.html", ".phone-screen", async (modalElement) => {
-            //TODO: implements generic function in  order to use it to see other users and also current logged one
-                await initializeProfileData(modalElement, userData);
-            });
-    });
-
+    container.addEventListener('click', async () => await showUserProfileOverview(userData));
     return container;
+}
+
+async function showUserProfileOverview(userData) {
+    const parentNode = document.querySelector("#community-main-body");
+    const overviewName = "community-user-profile-overview";
+
+     // Creo un wrapper cosi posso definire uno stile specifico del conteitore della pagina utente.
+    // const wrapperDiv = document.createElement('div');
+    // wrapperDiv.id = childNodeName;
+    // wrapperDiv.className = "profile-overview-modal";
+    
+    const modalWrapper = document.createElement('div');
+    modalWrapper.id = overviewName;
+    modalWrapper.className = "profile-overview-modal-wrapper";
+    parentNode.appendChild(modalWrapper);
+
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'glass-close-btn';
+    closeButton.classList.add("close-btn");
+    closeButton.setAttribute('aria-label', 'Chiudi');
+    closeButton.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    `;
+    closeButton.addEventListener("click", () => {
+        closeModal();
+        modalWrapper.remove();
+    });
+    modalWrapper.appendChild(closeButton);
+
+    await openModal("../html/profile.html", `#${overviewName}`, async (modalElement) => {
+            await initializeReadOnlyProfileData(modalElement, userData);
+        });
 }
 
 function makeFriendActionContainer(userData) {
@@ -99,7 +128,7 @@ function makeFriendActionContainer(userData) {
     messageIcon.src = "assets/icons/community/message.svg";
     messageButton.appendChild(messageIcon);
     messageButton.addEventListener('click', async () => {
-        await fetchFriendMessages(userData);
+        await openChat(userData);
     });
     actionsContainer.appendChild(messageButton);
 
