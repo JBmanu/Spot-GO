@@ -32,7 +32,7 @@ function renderHeaderForNewSpotPage() {
         headerLeftLogo.innerHTML = `
       <button
         type="button"
-        id="header-back-button"
+        id="back-button"
         data-back
         aria-label="Torna indietro"
         class="flex items-center justify-center w-10 h-10"

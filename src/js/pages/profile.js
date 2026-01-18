@@ -1,7 +1,6 @@
-import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getUserPolaroids, getSpotById, getCurrentUser, deletePolaroid } from "../database.js";
+import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getCurrentUser, deletePolaroid } from "../database.js";
 import { openAddPolaroidModal } from "./addPolaroid.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
-import { formatDate } from "../common/datetime.js";
 import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
 
@@ -79,8 +78,7 @@ function updateProfileHeader(user) {
         name: document.getElementById("profile-name"),
         username: document.getElementById("profile-username"),
         email: document.getElementById("profile-email"),
-        avatar: document.getElementById("profile-avatar"),
-        backButton: document.getElementById("header-back-button")
+        avatar: document.getElementById("profile-avatar")
     };
 
     if (elements.name) elements.name.textContent = profileData.name;
@@ -302,7 +300,7 @@ function renderCarouselItems(container, items, template) {
                         menuDropdown.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
                         menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
                         if (polaroidEl) polaroidEl.style.zIndex = "";
-                        
+
                         await sharePolaroidModal(itemData);
                     });
                 }

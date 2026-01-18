@@ -2,7 +2,6 @@ import { initializeBookmarks, syncAllBookmarks } from "../common/bookmark.js";
 import { initializeSpotClickHandlers } from "./spotDetail.js";
 import { getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt } from "../database.js";
 import { distanceFromUserToSpot, formatDistance } from "../common.js";
-import { goBack, setupBackButton, closeOverlay } from "../common/back.js";
 import { initializeVerticalCarousel } from "../common/carousels.js";
 import { SearchSystem } from "../common/SearchSystem.js";
 
@@ -58,7 +57,7 @@ function showViewAllSavedHeader() {
 
     if (logo) {
         logo.innerHTML = `
-            <button type="button" id="header-back-button" data-back aria-label="Torna indietro"
+            <button type="button" id="back-button" data-back aria-label="Torna indietro"
                 class="flex items-center justify-center w-10 h-10">
                 <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
             </button>`;
@@ -129,17 +128,7 @@ function clearHistoryState() {
     }
 }
 
-function attachPopHandler() {
-    if (state.popHandler) window.removeEventListener("popstate", state.popHandler);
 
-    state.popHandler = () => {
-        const overlay = getOverlay();
-        if (!overlay || overlay.hidden) return;
-        goBack();
-    };
-
-    window.addEventListener("popstate", state.popHandler);
-}
 
 function renderEmptySavedMessage(container) {
     const p = document.createElement("p");
@@ -286,7 +275,6 @@ async function closeViewAllSavedAndRestore() {
     if (!main) return;
 
     const overlay = main.querySelector(OVERLAY_SELECTOR);
-    if (overlay) closeOverlay(overlay);
 
     if (state.keyboardEl && main.contains(state.keyboardEl)) {
         main.removeChild(state.keyboardEl);
@@ -329,13 +317,10 @@ export async function loadViewAllSaved(returnViewKey = null) {
         showViewAllSavedHeader();
 
 
-        setupBackButton({
-            fallback: async () => {
-                await closeViewAllSavedAndRestore();
-            },
-        });
-
-        attachPopHandler();
+        // Cleanup logic attached to the overlay
+        state.overlay.onClose = async () => {
+            await closeViewAllSavedAndRestore();
+        };
 
         await populateViewAllSavedSpots({ preserveDom: true });
         initializeBookmarks();
@@ -400,11 +385,8 @@ export async function loadViewAllSaved(returnViewKey = null) {
     initializeBookmarks();
     await syncAllBookmarks();
 
-    setupBackButton({
-        fallback: async () => {
-            await closeViewAllSavedAndRestore();
-        },
-    });
-
-    attachPopHandler();
+    // Cleanup logic attached to the overlay
+    overlay.onClose = async () => {
+        await closeViewAllSavedAndRestore();
+    };
 }

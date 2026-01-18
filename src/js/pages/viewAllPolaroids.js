@@ -1,4 +1,3 @@
-import { goBack, setupBackButton, closeOverlay } from "../common/back.js";
 import { SearchSystem } from "../common/SearchSystem.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
 import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
@@ -54,7 +53,7 @@ function showViewAllPolaroidsHeader() {
 
     if (logo) {
         logo.innerHTML = `
-            <button type="button" id="header-back-button" data-back aria-label="Torna indietro"
+            <button type="button" id="back-button" data-back aria-label="Torna indietro"
                 class="flex items-center justify-center w-10 h-10">
                 <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
             </button>`;
@@ -125,17 +124,7 @@ function clearViewAllPolaroidsHistoryState() {
     }
 }
 
-function attachViewAllPolaroidsPopHandler() {
-    if (state.popHandler) window.removeEventListener("popstate", state.popHandler);
 
-    state.popHandler = () => {
-        const overlay = getViewAllPolaroidsOverlay();
-        if (!overlay || overlay.hidden) return;
-        goBack();
-    };
-
-    window.addEventListener("popstate", state.popHandler);
-}
 
 function renderViewAllPolaroidsEmptyMessage(container) {
     container.innerHTML = `
@@ -240,7 +229,6 @@ async function closeViewAllPolaroidsAndRestore() {
     if (!main) return;
 
     const overlay = main.querySelector(OVERLAY_SELECTOR);
-    if (overlay) closeOverlay(overlay);
 
     if (state.keyboardEl && main.contains(state.keyboardEl)) {
         main.removeChild(state.keyboardEl);
@@ -279,14 +267,10 @@ export async function loadViewAllPolaroids(returnViewKey = null) {
 
         showViewAllPolaroidsHeader();
 
-
-        setupBackButton({
-            fallback: async () => {
-                await closeViewAllPolaroidsAndRestore();
-            },
-        });
-
-        attachViewAllPolaroidsPopHandler();
+        // Cleanup logic attached to the overlay
+        state.overlay.onClose = async () => {
+            await closeViewAllPolaroidsAndRestore();
+        };
 
         const container = state.overlay.querySelector("#view-all-polaroids-list");
         const polaroids = await fetchFormattedUserPolaroids();
@@ -327,13 +311,10 @@ export async function loadViewAllPolaroids(returnViewKey = null) {
 
     pushViewAllPolaroidsHistoryState(returnViewKey);
 
-    setupBackButton({
-        fallback: async () => {
-            await closeViewAllPolaroidsAndRestore();
-        },
-    });
-
-    attachViewAllPolaroidsPopHandler();
+    // Cleanup logic attached to the overlay
+    overlay.onClose = async () => {
+        await closeViewAllPolaroidsAndRestore();
+    };
 
     await renderViewAllPolaroidsGrid(container, allPolaroids || []);
     state.initialized = true;

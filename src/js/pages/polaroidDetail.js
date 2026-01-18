@@ -1,5 +1,4 @@
 import { getSpotById, updatePolaroid, deletePolaroid } from "../database.js";
-import { closeOverlayAndReveal } from "../common/back.js";
 import { formatDate } from "../common/datetime.js";
 import { openSpotDetailById } from "./spotDetail.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
@@ -67,26 +66,7 @@ function getDetailOverlay(main) {
     return main?.querySelector('[data-overlay-view="polaroid-detail"]') || null;
 }
 
-async function exitDetailFlow(main) {
-    if (!main) return;
-    main.classList.add("spot-detail-exit");
-    await new Promise(r => setTimeout(r, 250));
-    closeDetailOverlay(main);
-}
 
-function closeDetailOverlay(main) {
-    if (!main) return null;
-    const overlay = getDetailOverlay(main);
-    if (!overlay) return null;
-
-    const backButton = document.getElementById("header-back-button");
-    if (backButton) {
-        const newBtn = backButton.cloneNode(true);
-        backButton.parentNode.replaceChild(newBtn, backButton);
-    }
-
-    return closeOverlayAndReveal({ overlay });
-}
 
 export async function openPolaroidDetail(polaroidData, options = {}) {
     try {
@@ -109,11 +89,9 @@ export async function openPolaroidDetail(polaroidData, options = {}) {
         overlay.dataset.returnView = returnSection;
         overlay.innerHTML = state.templateCache;
 
+        overlay.classList.add("overlay-full-page", "page-slide-in");
         main.querySelectorAll("[data-section-view], [data-overlay-view]").forEach((el) => (el.hidden = true));
         main.appendChild(overlay);
-
-        main.classList.add("spot-detail-enter");
-        main.classList.remove("spot-detail-exit");
 
         updateDetailHeader(polaroidData);
         await populatePolaroidDetail(polaroidData, overlay);
@@ -136,7 +114,7 @@ function updateDetailHeader(data) {
 
     if (headerLeftLogo) {
         headerLeftLogo.innerHTML = `
-            <button type="button" id="header-back-button" aria-label="Torna indietro"
+            <button type="button" id="back-button" data-back aria-label="Torna indietro"
                 class="flex items-center justify-center w-10 h-10">
                 <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
             </button>
@@ -225,24 +203,7 @@ async function populatePolaroidDetail(data, overlay) {
 
 
 function initializeDetailHandlers(overlay, data) {
-    const backButton = document.getElementById("header-back-button");
-    if (backButton) {
-        const newBtn = backButton.cloneNode(true);
-        backButton.parentNode.replaceChild(newBtn, backButton);
 
-        newBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const main = getMain();
-
-            await exitDetailFlow(main);
-
-            const returnViewId = overlay.dataset.returnView;
-            if (returnViewId === "profile" || document.querySelector('[data-section-view="profile"]:not([hidden])')) {
-                if (window.reloadProfileHeader) window.reloadProfileHeader();
-            }
-        });
-    }
 
     const editBtn = overlay.querySelector('[data-action="edit-polaroid"]');
     if (editBtn) {
@@ -334,9 +295,6 @@ function initializeDetailHandlers(overlay, data) {
                 try {
                     await deletePolaroid(data.id);
                     closeModal();
-
-                    const main = getMain();
-                    await exitDetailFlow(main);
 
                     const returnViewId = overlay.dataset.returnView;
                     if (returnViewId === "profile" || document.querySelector('[data-section-view="profile"]:not([hidden])')) {

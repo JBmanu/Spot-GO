@@ -13,7 +13,6 @@ import {
     getReviewsForSpot,
 } from "../database.js";
 import { formatRatingAsText } from "../common/fitText.js";
-import { closeOverlayAndReveal } from "../common/back.js";
 import { initializeHorizontalCarousel } from "../common/carousels.js";
 import { setReviewSpotId, openAddReviewModal } from "./addReview.js";
 import { distanceFromUserToSpot, formatDistance } from "../common.js";
@@ -72,20 +71,7 @@ function removeHeaderBookmarkButton() {
     btn.removeAttribute("data-saved");
 }
 
-async function exitDetailFlow(main) {
-    if (!main) return;
-    closeDetailOverlay(main);
-}
 
-function closeDetailOverlay(main) {
-    if (!main) return null;
-    const overlay = getDetailOverlay(main);
-    if (!overlay) return null;
-
-    const shown = closeOverlayAndReveal({ overlay });
-    removeHeaderBookmarkButton();
-    return shown;
-}
 
 export function initializeSpotClickHandlers(scopeEl = document) {
     const root = scopeEl === document ? document.getElementById("main") : scopeEl;
@@ -153,7 +139,7 @@ function updateDetailHeader(spotData) {
 
     if (headerLeftLogo) {
         headerLeftLogo.innerHTML = `
-            <button type="button" id="header-back-button" aria-label="Torna indietro"
+            <button type="button" id="back-button" data-back aria-label="Torna indietro"
                 class="flex items-center justify-center w-10 h-10">
                 <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
             </button>
@@ -313,28 +299,16 @@ function setupToolbarNavigation() {
         const btn = e.target.closest("button[data-section]");
         if (!btn || btn.hasAttribute("disabled") || btn.getAttribute("aria-disabled") === "true") return;
 
-        const main = getMain();
-        if (getDetailOverlay(main)) await exitDetailFlow(main);
+
     });
 }
 
 function initializeDetailHandlers(overlayEl) {
-    const backButton = document.getElementById("header-back-button");
-    if (backButton) {
-        backButton.addEventListener("click", async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const main = getMain();
-            if (!main) return;
+    const shown = getActiveSectionKey(getMain()) || "homepage";
+    const scope = getSectionWrapper(getMain(), shown) || document;
+    syncBookmarksUI(scope).catch(() => { });
+    initializeBookmarks(scope);
 
-            await exitDetailFlow(main);
-
-            const shown = getActiveSectionKey(main) || "homepage";
-            const scope = getSectionWrapper(main, shown) || document;
-            syncBookmarksUI(scope).catch(() => { });
-            initializeBookmarks(scope);
-        });
-    }
 
     const missionsToggle = overlayEl?.querySelector("#spot-missions-toggle") || document.getElementById("spot-missions-toggle");
     if (missionsToggle) {
