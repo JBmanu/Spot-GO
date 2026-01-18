@@ -6,8 +6,8 @@ const TEMPLATE_PATH = "../html/common-pages/spot-templates.html";
 
 let cachedPolaroidTemplate = null;
 
-export async function fetchFormattedUserPolaroids() {
-    const user = await getCurrentUser();
+export async function fetchFormattedUserPolaroids(userData) {
+    const user = userData || await getCurrentUser();
     if (!user) return [];
 
     const polaroids = await getUserPolaroids(user.id);
