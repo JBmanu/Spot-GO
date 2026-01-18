@@ -1,4 +1,4 @@
-export async function generateMissions() {
+export async function missionsLoad() {
     for (let i = 0; i < 20; i++) {
         generateAllSpots('.all-spots-missions-ctn', "Luogo luogoso", "Cibo", i, 3)
     }
@@ -11,30 +11,6 @@ export async function generateMissions() {
             100)
     }
 
-    for (let i = 0; i < 2; i++) {
-        generateDailyMissions(
-            "Daily Mission",
-            "Complete daily activities",
-            50,
-            i,
-            2)
-    }
-    for (let i = 0; i < 3; i++) {
-        generateThemeMissions(
-            "Theme Mission",
-            "Complete daily activities",
-            100,
-            i,
-            3)
-    }
-    for (let i = 0; i < 4; i++) {
-        generateLevelMissions(
-            "Level Mission",
-            "Complete daily activities",
-            150,
-            i,
-            4)
-    }
 }
 
 // Generate active spot missions

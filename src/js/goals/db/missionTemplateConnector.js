@@ -37,8 +37,24 @@ export async function createMissionTemplate(data) {
     }
 }
 
+export async function missionTemplates() {
+    try {
+        const querySnapshot = await getDocs(collection(db, MISSION_TEMPLATE_COLLECTION));
+        const missionTemplates = [];
+        querySnapshot.forEach((doc) => {
+            missionTemplates.push({id: doc.id, ...doc.data()});
+        });
+        return missionTemplates;
+    } catch (e) {
+        console.error("Error getting mission templates: ", e);
+        return [];
+    }
+}
+
 export async function missionTemplate(id) {
-    const ref = doc(db, MISSION_TEMPLATE_COLLECTION, id);
-    const snap = await getDoc(ref);
-    return snap.exists() ? {id: snap.id, ...snap.data()} : null;
+    return (await missionTemplates())?.filter(mission => mission.id === id)[0];
+}
+
+export async function missionTemplatesByType(type) {
+    return (await missionTemplates())?.filter(mission => mission.Type === type);
 }

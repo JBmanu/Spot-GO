@@ -1,4 +1,4 @@
-import {clearBadges, createBadge} from "../db/badgeConnector.js";
+import {clearBadges, createBadge} from "../badgeConnector.js";
 
 // 🎯 Badge catalogo in ITALIANO
 const BADGES_TO_CREATE = [
