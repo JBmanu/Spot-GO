@@ -1,4 +1,5 @@
 import {clearMissionTemplates, createMissionTemplate} from "../missionTemplateConnector.js";
+import {createdBadgeIds} from "./badgeSeed.js";
 
 export const MISSION_TYPE = {
     SPOT: "spot",
@@ -6,7 +7,6 @@ export const MISSION_TYPE = {
     THEME: "theme",
     LEVEL: "level"
 }
-
 
 const MISSION_TEMPLATES = [
     // 🏞 SPOT
@@ -17,7 +17,7 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "fai_foto",
         Target: 1,
-        Reward: { Experience: 20, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 20, BadgeId: createdBadgeIds[0], DiscountId: null }
     },
     {
         Name: "Scrivi una recensione allo spot",
@@ -26,7 +26,7 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "scrivi_recensione",
         Target: 1,
-        Reward: { Experience: 30, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 30, BadgeId: createdBadgeIds[1], DiscountId: null }
     },
     {
         Name: "Crea una polaroid dello spot",
@@ -35,7 +35,7 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "crea_polaroid",
         Target: 1,
-        Reward: { Experience: 40, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 40, BadgeId: createdBadgeIds[2], DiscountId: null }
     },
 
     // 📅 GIORNALIERE
@@ -46,7 +46,7 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "login",
         Target: 1,
-        Reward: { Experience: 10, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 10, BadgeId: createdBadgeIds[4], DiscountId: null }
     },
     {
         Name: "Scatta una foto oggi",
@@ -76,15 +76,6 @@ const MISSION_TEMPLATES = [
         Reward: { Experience: 30, BadgeId: null, DiscountId: null }
     },
     {
-        Name: "Completa tutte le missioni giornaliere",
-        Description: "Tieni il ritmo, oggi le fai tutte!",
-        Type: MISSION_TYPE.DAILY,
-        Category: null,
-        Action: "completa_missioni",
-        Target: 4,
-        Reward: { Experience: 60, BadgeId: null, DiscountId: null }
-    },
-    {
         Name: "Condividi una polaroid oggi",
         Description: "Diffondi bellezza, ispira gli altri!",
         Type: MISSION_TYPE.DAILY,
@@ -92,6 +83,15 @@ const MISSION_TEMPLATES = [
         Action: "condividi_polaroid",
         Target: 1,
         Reward: { Experience: 25, BadgeId: null, DiscountId: null }
+    },
+    {
+        Name: "Completa tutte le missioni giornaliere",
+        Description: "Tieni il ritmo, oggi le fai tutte!",
+        Type: MISSION_TYPE.DAILY,
+        Category: null,
+        Action: "completa_missioni",
+        Target: 4,
+        Reward: { Experience: 60, BadgeId: createdBadgeIds[5], DiscountId: null }
     },
 
     // 🎭 PER TEMA
@@ -103,7 +103,7 @@ const MISSION_TEMPLATES = [
         Category: "natura",
         Action: "fai_foto_categoria",
         Target: 3,
-        Reward: { Experience: 40, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 40, BadgeId: createdBadgeIds[8], DiscountId: null }
     },
     {
         Name: "Recensisci luoghi immersi nella natura",
@@ -112,7 +112,7 @@ const MISSION_TEMPLATES = [
         Category: "natura",
         Action: "scrivi_recensione_categoria",
         Target: 2,
-        Reward: { Experience: 60, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 60, BadgeId: createdBadgeIds[8], DiscountId: null }
     },
 
     // CIBO
@@ -123,7 +123,7 @@ const MISSION_TEMPLATES = [
         Category: "cibo",
         Action: "fai_foto_categoria",
         Target: 3,
-        Reward: { Experience: 40, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 40, BadgeId: createdBadgeIds[7], DiscountId: null }
     },
     {
         Name: "Recensisci posti dove mangiare",
@@ -132,7 +132,7 @@ const MISSION_TEMPLATES = [
         Category: "cibo",
         Action: "scrivi_recensione_categoria",
         Target: 2,
-        Reward: { Experience: 60, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 60, BadgeId: createdBadgeIds[7], DiscountId: null }
     },
 
     // CULTURA
@@ -143,7 +143,7 @@ const MISSION_TEMPLATES = [
         Category: "cultura",
         Action: "fai_foto_categoria",
         Target: 3,
-        Reward: { Experience: 40, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 40, BadgeId: createdBadgeIds[9], DiscountId: null }
     },
     {
         Name: "Recensisci musei o luoghi culturali",
@@ -152,7 +152,7 @@ const MISSION_TEMPLATES = [
         Category: "cultura",
         Action: "scrivi_recensione_categoria",
         Target: 2,
-        Reward: { Experience: 60, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 60, BadgeId: createdBadgeIds[9], DiscountId: null }
     },
 
     // MISTERO
@@ -183,7 +183,7 @@ const MISSION_TEMPLATES = [
         Category: null,
         Action: "raggiungi_livello",
         Target: 5,
-        Reward: { Experience: 100, BadgeId: null, DiscountId: null }
+        Reward: { Experience: 100, BadgeId: createdBadgeIds[11], DiscountId: null }
     },
     {
         Name: "Ottieni 3 badge",
@@ -196,11 +196,14 @@ const MISSION_TEMPLATES = [
     }
 ];
 
+let createdMissionTemplateIds = [];
+
 export async function seedMissionTemplates() {
     await clearMissionTemplates()
-    console.log(`Creazione di ${MISSION_TEMPLATES.length} missioni...`);
     for (const mission of MISSION_TEMPLATES) {
         const id = await createMissionTemplate(mission);
+        createdMissionTemplateIds.push(id);
     }
-    console.log("🎉 Fine!");
+
+    console.log("🎉 Creazione " + MISSION_TEMPLATES.length + "mission template completata!");
 }

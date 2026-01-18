@@ -1,4 +1,4 @@
-import {clearDocuments, createDocument, documentFromId, documents, documentsFiltered} from "./goalsConnector.js";
+import {clearDocuments, createDocument, documentFromId, documentsFiltered} from "./goalsConnector.js";
 
 const MISSION_TEMPLATE_COLLECTION = "MissionTemplate";
 

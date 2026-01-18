@@ -1,5 +1,12 @@
 import {addDoc, collection, deleteDoc, getDocs} from "firebase/firestore";
 import {db} from "../../firebase.js";
+import {getCurrentUser} from "../../database.js";
+
+export async function isAuthenticatedUser() {
+    const user = await getCurrentUser();
+    if (!user) console.error("Utente non autenticato");
+    return user
+}
 
 export async function createDocument(collectionName, data) {
     try {
@@ -17,7 +24,7 @@ export async function clearDocuments(collectionName) {
         const querySnapshot = await getDocs(collection(db, collectionName));
         const deletions = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
         await Promise.all(deletions);
-        console.log("All documents " + collectionName + "cleared.");
+        console.log("All documents " + collectionName + " cleared.");
     } catch (e) {
         console.error("Error clearing " + collectionName + ": ", e);
     }
