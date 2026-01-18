@@ -1,26 +1,21 @@
 import { createTimeRange, loadComponentAsDocument } from "../createComponent";
 import { USER_PROTO_POSITION } from "../common";
-import { createStarRating } from "../createComponent";
 import { insertNewSpot, getCurrentUser } from "../database";
 import { readTimeRangeValues, validateTimeRangesWithCrossIntersections } from "../common/timeRange";
 
-let __newSpotPageHtml = null;
 let newSpotSection;
 let map;
 let spotPositionMarker;
 let selectedSpotPosition = null;
 let otherPriceDisplayMode;
 let foodPriceDisplayMode;
-let selectedImagePath;
 let imageController;
 
 async function getNewSpotPageHtml() {
-    if (__newSpotPageHtml) return __newSpotPageHtml;
-
     const res = await fetch("../html/map-pages/new-spot.html");
     if (!res.ok) return null;
 
-    __newSpotPageHtml = await res.text();
+    const __newSpotPageHtml = await res.text();
     return __newSpotPageHtml;
 }
 
@@ -61,6 +56,9 @@ function showSection(viewName) {
 }
 
 async function ensureNewSpotPageInDom() {
+    const oldSection = document.querySelector('[data-section-view="new-spot"]');
+    if (oldSection) oldSection.remove();
+
     newSpotSection = document.querySelector('[data-section-view="new-spot"]');
     if (newSpotSection) return newSpotSection;
 
@@ -81,6 +79,13 @@ async function ensureNewSpotPageInDom() {
 export async function openNewSpotPage() {
     const newSpotSection = await ensureNewSpotPageInDom();
     if (!newSpotSection) return;
+
+    map = null;
+    spotPositionMarker = null;
+    selectedSpotPosition = null;
+    otherPriceDisplayMode = null;
+    foodPriceDisplayMode = null;
+    imageController = null;
 
     // Nasconde mappa
     hideSection("map");
