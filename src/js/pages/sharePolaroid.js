@@ -1,4 +1,4 @@
-import { getCurrentUser, getFollowingUser, shareCardboard } from "../database.js";
+import { getCurrentUser,getAllUsers, shareCardboard } from "../database.js";
 import { closeModal, openModal } from "../common/modalView.js";
 import { showsItemsInContainer } from "./community/communityUtility.js";
 import { makeSelectableCard } from "./community/cardsFactory.js";
@@ -30,7 +30,7 @@ export async function initializeSharePolaroid(modalElement, polaroidData) {
     try {
         // Carica la lista degli amici
         const user = await getCurrentUser();
-        const follows = await getFollowingUser(user.email);
+        const follows = await getAllUsers();//getFollowingUser(user.email);
 
          // Popola la lista dei seguiti
         showsItemsInContainer(follows, "follows", "sendto-list", data => makeSelectableCard(data));

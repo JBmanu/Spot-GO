@@ -224,6 +224,21 @@ export async function searchUser(searchId) {
 }
 
 /**
+ * Recupera tutti gli utenti registrati.
+ */
+export async function getAllUsers() {
+    return getItems("Utente", null,
+        (id, data) => (
+            {
+                id: id,
+                livello: data.livello || "-",
+                email: data.email || "-",
+                username: data.username || "-"
+            }
+    ));
+}
+
+/**
  * Recupera gli utenti seguiti
  */
 export async function getFollowingUser(userId) {
