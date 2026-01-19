@@ -55,17 +55,29 @@ export async function openChat(userData) {
         hideCommunityMainSections();
     }
 
+    const avatarImg = document.getElementById('chat-header-avatar');
+    const userName = document.getElementById('chat-header-name');
+
+    if (avatarImg) {
+        avatarImg.src = `../assets/icons/login-signup/${AVATAR_MAP[userData.username] || AVATAR_MAP.DEFAULT}`;
+        avatarImg.alt = userData.username;
+    }
+    if (userName) {
+        userName.textContent = userData.username;
+    }
+
+    if (chatContainer) {
+        chatContainer.classList.remove('hidden-chat');
+        hideCommunityMainSections();
+    }
+
     updateChatHeader(userData);
     history.pushState({ chatOpen: true }, "");
 
-    if (messagesContainer) {
-        messagesContainer.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-40 gap-3 opacity-60">
-                <div class="w-8 h-8 border-4 border-primary_color border-t-transparent rounded-full animate-spin"></div>
-                <p class="text-sm font-medium text-gray-500">Caricamento messaggi...</p>
-            </div>
-        `;
-    }
+    const loader = document.getElementById('chat-loader');
+    if (loader) loader.classList.remove('hidden');
+
+    if (messagesContainer) messagesContainer.innerHTML = '';
 
     try {
         const userMail = await getCurrentUser();
@@ -79,9 +91,13 @@ export async function openChat(userData) {
         });
         const messages = await Promise.all(messagesPromise);
 
+        if (loader) loader.classList.add('hidden');
+
         renderMessages(userData, messages);
     } catch (error) {
         console.error("Errore caricamento chat:", error);
+
+        if (loader) loader.classList.add('hidden');
         if (messagesContainer) {
             messagesContainer.innerHTML = '<p class="text-center text-red-500 p-4">Errore durante il caricamento dei messaggi.</p>';
         }
@@ -103,17 +119,9 @@ function updateChatHeader(userData) {
     }
 
     if (headerLogoText) headerLogoText.style.display = "none";
-
+    
     if (headerTitle) {
-        headerTitle.innerHTML = `
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full overflow-hidden border border-gray-200">
-                    <img src="../assets/icons/login-signup/${AVATAR_MAP[userData.username] || AVATAR_MAP.DEFAULT}"
-                         alt="Avatar" class="w-full h-full object-cover">
-                </div>
-                <span class="text-base font-semibold text-gray-800">${userData.username}</span>
-            </div>
-        `;
+        headerTitle.textContent = "Chat";
         headerTitle.classList.remove("hidden");
     }
 }
