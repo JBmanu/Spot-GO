@@ -288,6 +288,10 @@ async function initializePolaroidCarousel(container, userData) {
     
     if (!carouselContainer) return;
 
+    // Determina se siamo dentro un overlay (per il back button)
+    const isOverlay = container && container.nodeType !== 9 && container.dataset?.overlayView;
+    const returnViewKey = isOverlay ? container.dataset.overlayView : null;
+
     try {
         const polaroidData = await fetchFormattedUserPolaroids(userData);
 
@@ -302,7 +306,7 @@ async function initializePolaroidCarousel(container, userData) {
             return;
         }
 
-        renderCarouselItems(carouselContainer, polaroidData, template);
+        renderCarouselItems(carouselContainer, polaroidData, template, returnViewKey);
 
     } catch (err) {
         console.error("Error initializing polaroid carousel:", err);

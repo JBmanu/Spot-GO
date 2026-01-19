@@ -77,7 +77,8 @@ export async function openPolaroidDetail(polaroidData, options = {}) {
         const main = getMain();
         if (!main) return;
 
-        const returnSection = getActiveSectionKey(main);
+        // Usa il returnViewKey fornito, altrimenti rileva la sezione attiva
+        const returnSection = options.returnViewKey || getActiveSectionKey(main);
         const existing = getDetailOverlay(main);
         if (existing) existing.remove();
 

@@ -6,6 +6,7 @@ import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
 import {initializeReadOnlyProfileData} from "../profile.js";
 import { closeOverlayAndReveal } from "../../common/back.js";
 import { makeProfileIdsUnique } from "./profileIdModifier.js";
+import {openPolaroidDetail} from "../polaroidDetail.js";
 
 export function makeSelectableCard(userData) {
     return makeGenericCard(userData, checkboxAction(userData));
@@ -113,13 +114,12 @@ async function showUserProfileOverview(userData) {
 
         main.appendChild(overlay);
 
-        // makeProfileIdsUnique(overlay);
-
-        // 5. Inizializza il profilo read-only (prima di rinominare gli ID)
-        await initializeReadOnlyProfileData(overlay, userData);
-
-        // 6. Setup header con back button (PRIMA di rinominare gli ID)
         setupReadOnlyProfileHeader(overlay);
+
+        // 5. Inizializza il profilo read-only 
+        await initializeReadOnlyProfileData(overlay, userData);
+        makeProfileIdsUnique(overlay);
+
 
     } catch (err) {
         console.error("Error loading user profile:", err);
@@ -140,6 +140,21 @@ function setupReadOnlyProfileHeader(overlay) {
 
     // Aggiungi handler di cleanup quando l'overlay viene chiuso
     overlay.onClose = () => {
+        // Chiudi anche il dettaglio della polaroid se è aperto
+        const main = document.getElementById("main");
+        if (main) {
+            const polaroidDetail = main.querySelector('[data-overlay-view="polaroid-detail"]');
+            if (polaroidDetail) {
+                try {
+                    polaroidDetail.remove();
+                } catch (_) {
+                    if (polaroidDetail.parentNode) {
+                        polaroidDetail.parentNode.removeChild(polaroidDetail);
+                    }
+                }
+            }
+        }
+
         try {
             if (overlay.parentNode) {
                 overlay.remove();
@@ -158,6 +173,21 @@ function setupReadOnlyProfileHeader(overlay) {
         backBtn.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
+            
+            // Chiudi il dettaglio della polaroid se è aperto
+            const main = document.getElementById("main");
+            if (main) {
+                const polaroidDetail = main.querySelector('[data-overlay-view="polaroid-detail"]');
+                if (polaroidDetail) {
+                    try {
+                        polaroidDetail.remove();
+                    } catch (_) {
+                        if (polaroidDetail.parentNode) {
+                            polaroidDetail.parentNode.removeChild(polaroidDetail);
+                        }
+                    }
+                }
+            }
             
             // Chiudi l'overlay (che triggeha onClose e rimuove dal DOM)
             closeOverlayAndReveal({ 
