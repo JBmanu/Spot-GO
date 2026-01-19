@@ -9,16 +9,18 @@ const SPOTS = ["8ncqBKHfbPWlQsFc7pvT", "G84q6lO8V2f1smPhjQk0", "qK5b57dBndsW77oU
 
 export async function seedUserMissionProgress() {
     const length = (await documents("UserMissionProgress")).length
+    const users = (await getAllUsers())
+
     console.log("length user mission progress:", length)
 
     await clearUserMissionProgress()
-    await seedSpotMissionsForUser()
+    await seedSpotMissionsForUser(users)
+    await seedMissionsForUser(users)
     console.log("🎉 Creazione user mission progress completata!");
 }
 
-async function seedSpotMissionsForUser() {
+async function seedSpotMissionsForUser(users) {
     const spotMissions = await missionTemplatesByType(MISSION_TYPE.SPOT)
-    const users = (await getAllUsers())
     let oneActivePerUser = true;
 
     for (let usersKey of users) {
@@ -35,6 +37,20 @@ async function seedSpotMissionsForUser() {
             oneActivePerUser = false;
         }
     }
+}
 
+async function seedMissionsForUser(users) {
+    const typeMissions = [MISSION_TYPE.DAILY, MISSION_TYPE.THEME, MISSION_TYPE.LEVEL]
 
+    for (let typeMission of typeMissions) {
+        const missions = await missionTemplatesByType(typeMission)
+        for (let usersKey of users) {
+            for (let mission of missions) {
+                await createUserMissionProgress({
+                    UserId: usersKey.id,
+                    MissionTemplateId: mission.id,
+                })
+            }
+        }
+    }
 }

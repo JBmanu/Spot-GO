@@ -1,4 +1,4 @@
-import {addDoc, collection, deleteDoc, doc, getDocs} from "firebase/firestore";
+import {addDoc, collection, deleteDoc, doc, getDoc, getDocs} from "firebase/firestore";
 import {db} from "../../firebase.js";
 import {getCurrentUser} from "../../database.js";
 
@@ -45,7 +45,21 @@ export async function documents(collectionName) {
 }
 
 export async function buildDocumentRef(collectionName, id) {
-    return (await doc(db, collectionName, id));
+    try {
+        return (await doc(db, collectionName, id));
+    } catch (e) {
+        console.error("Error building document ref for " + collectionName + " with id " + id + ": ", e);
+        return null;
+    }
+}
+
+export async function loadDocumentRef(documentRef) {
+    try {
+        return (await getDoc(documentRef));
+    } catch (e) {
+        console.error("Error loading document " + documentRef.id ?? "NONE" + "ref: ", e);
+        return null;
+    }
 }
 
 export async function documentsFiltered(collectionName, filterFn) {
