@@ -1,4 +1,4 @@
-import { getSpotById, updatePolaroid, deletePolaroid } from "../database.js";
+import { getSpotById, updatePolaroid, deletePolaroid, getCurrentUser } from "../database.js";
 import { formatDate } from "../common/datetime.js";
 import { openSpotDetailById } from "./spotDetail.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
@@ -71,9 +71,10 @@ function getDetailOverlay(main) {
 
 export async function openPolaroidDetail(polaroidData, options = {}) {
     try {
+        const loggedUser = await getCurrentUser();
         state.currentPolaroid = polaroidData;
-        state.readOnly = polaroidData.idUtente != options.currentUserMail;
-        console.log("readonly", state.readOnly, polaroidData.idUtente, options.currentUserMail);
+        state.readOnly = polaroidData.idUtente != loggedUser.email;
+        console.log("readonly", state.readOnly, polaroidData.idUtente, loggedUser.email);
         const main = getMain();
         if (!main) return;
 

@@ -36,6 +36,7 @@ export async function fetchFormattedUserPolaroids(userData) {
             image: (p.immagini && p.immagini.length > 0) ? p.immagini[0] : "",
             date: p.date,
             idLuogo: p.idLuogo,
+            idUtente: p.idUtente,
             diary: p.diary || ""
         };
     }));

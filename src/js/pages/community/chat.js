@@ -130,7 +130,7 @@ export async function openChat(userData) {
 
         if (loader) loader.classList.add('hidden');
 
-        renderMessages(currentUser.email, messages);
+        renderMessages(messages);
     } catch (error) {
         console.error("Errore caricamento chat:", error);
 
@@ -171,7 +171,7 @@ function showCommunityMainSections() {
     document.getElementById("community-main-body").classList.remove('hidden');
 }
 
-function renderMessages(currentUserMail, messages) {
+function renderMessages(messages) {
     hideCommunityMainSections();
     const chatContainer = document.getElementById('chat-container');
     chatContainer.classList.remove('hidden-chat');
@@ -216,7 +216,7 @@ function renderMessages(currentUserMail, messages) {
 
                 if (article) {
                     article.addEventListener('click', (e) => {
-                        openPolaroidDetail(msg.cartolina, {currentUserMail: currentUserMail});
+                        openPolaroidDetail(msg.cartolina);
                     });
                 }
 
