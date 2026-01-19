@@ -66,7 +66,7 @@ function getVisibleSectionKey(mainEl) {
 
 function closeAnyOverlay(main) {
     const overlay = main.querySelector("[data-overlay-view]");
-    if (overlay) closeOverlayAndReveal({ overlay });
+    if (overlay) closeOverlayAndReveal({ overlay, skipReveal: true });
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

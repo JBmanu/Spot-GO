@@ -195,6 +195,14 @@ function setupProfileEventListeners(container, userData, sectionView) {
             initializePolaroidCarousel(document);
             getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
         });
+
+        document.addEventListener("bookmark:changed", () => {
+            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+        });
+
+        document.addEventListener("review:changed", () => {
+            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+        });
     }
 }
 

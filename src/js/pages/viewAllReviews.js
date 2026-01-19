@@ -232,6 +232,8 @@ function showDeleteConfirmation(review) {
         try {
             await deleteReview(review.id);
             await populateReviews();
+            document.dispatchEvent(new CustomEvent("review:changed"));
+            closeModal();
         } catch (err) {
             console.error("Error deleting review:", err);
             alert("Errore durante l'eliminazione.");

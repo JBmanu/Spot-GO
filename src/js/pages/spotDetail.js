@@ -298,8 +298,6 @@ function setupToolbarNavigation() {
     toolbar.addEventListener("click", async (e) => {
         const btn = e.target.closest("button[data-section]");
         if (!btn || btn.hasAttribute("disabled") || btn.getAttribute("aria-disabled") === "true") return;
-
-
     });
 }
 
@@ -330,7 +328,12 @@ function initializeDetailHandlers(overlayEl) {
             if (!state.spotData?.id) return;
 
             setReviewSpotId(state.spotData.id, async () => {
-                await renderSpotReviews(state.spotData.id, overlayEl);
+                const updatedSpot = await getSpotById(state.spotData.id);
+                if (updatedSpot) {
+                    state.spotData = updatedSpot;
+                    await populateSpotDetail(updatedSpot, overlayEl);
+                    updateDetailHeader(updatedSpot);
+                }
             });
 
             await openAddReviewModal();

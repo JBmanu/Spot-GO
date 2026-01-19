@@ -1,6 +1,6 @@
 import { showOnlySectionView, resetHeaderBaseForSection, activateToolbar } from "./navigation.js";
 
-export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
+export function closeOverlayAndReveal({ overlay, returnViewKey, skipReveal = false } = {}) {
     const main = document.getElementById("main");
     if (!main) return null;
 
@@ -13,11 +13,13 @@ export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
         ov.classList.remove("page-slide-in");
         ov.classList.add("page-slide-out");
 
-        if (returnKey && main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
-            const returnOverlay = main.querySelector(`[data-overlay-view="${returnKey}"]`);
-            returnOverlay.hidden = false;
-        } else {
-            showOnlySectionView(main, returnKey);
+        if (!skipReveal) {
+            if (returnKey && main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
+                const returnOverlay = main.querySelector(`[data-overlay-view="${returnKey}"]`);
+                returnOverlay.hidden = false;
+            } else {
+                showOnlySectionView(main, returnKey);
+            }
         }
 
         setTimeout(() => {
@@ -29,7 +31,7 @@ export function closeOverlayAndReveal({ overlay, returnViewKey } = {}) {
                 if (ov.parentNode) ov.parentNode.removeChild(ov);
             }
 
-            if (!returnKey || !main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
+            if (!skipReveal && (!returnKey || !main.querySelector(`[data-overlay-view="${returnKey}"]`))) {
                 const shown = showOnlySectionView(main, returnKey) || "homepage";
                 resetHeaderBaseForSection(shown);
                 activateToolbar(shown);
