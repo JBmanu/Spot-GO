@@ -4,6 +4,7 @@ import { getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt } from "../d
 import { distanceFromUserToSpot, formatDistance } from "../common.js";
 import { initializeVerticalCarousel } from "../common/carousels.js";
 import { SearchSystem } from "../common/SearchSystem.js";
+import { goBack } from "../common/back.js";
 
 const OVERLAY_ID = "view-all-saved";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -61,6 +62,15 @@ function showViewAllSavedHeader() {
                 class="flex items-center justify-center w-10 h-10">
                 <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
             </button>`;
+
+        const backBtn = logo.querySelector("#back-button");
+        if (backBtn) {
+            backBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goBack();
+            });
+        }
     }
     if (logoText) logoText.style.display = "none";
     if (title) {
