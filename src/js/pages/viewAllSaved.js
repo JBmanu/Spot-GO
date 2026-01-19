@@ -5,6 +5,7 @@ import { distanceFromUserToSpot, formatDistance } from "../common.js";
 import { initializeVerticalCarousel } from "../common/carousels.js";
 import { SearchSystem } from "../common/SearchSystem.js";
 import { goBack } from "../common/back.js";
+import { attachSimulatedKeyboard, removeSimulatedKeyboard } from "../common/keyboardUtils.js";
 
 const OVERLAY_ID = "view-all-saved";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -138,8 +139,6 @@ function clearHistoryState() {
     }
 }
 
-
-
 function renderEmptySavedMessage(container) {
     const p = document.createElement("p");
     p.dataset.emptySaved = "true";
@@ -218,8 +217,6 @@ function renderSpotCard(template, spot, categoryCache) {
     return cardNode;
 }
 
-
-
 async function populateViewAllSavedSpots({ preserveDom = false } = {}) {
     const currentUser = await getCurrentUser();
     if (!currentUser) return;
@@ -286,9 +283,7 @@ async function closeViewAllSavedAndRestore() {
 
     const overlay = main.querySelector(OVERLAY_SELECTOR);
 
-    if (state.keyboardEl && main.contains(state.keyboardEl)) {
-        main.removeChild(state.keyboardEl);
-    }
+    removeSimulatedKeyboard();
     if (state.overlayEl && overlay && overlay.contains(state.overlayEl)) {
         overlay.removeChild(state.overlayEl);
     }
@@ -326,8 +321,6 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
         showViewAllSavedHeader();
 
-
-        // Cleanup logic attached to the overlay
         state.overlay.onClose = async () => {
             await closeViewAllSavedAndRestore();
         };
@@ -358,7 +351,9 @@ export async function loadViewAllSaved(returnViewKey = null) {
         const { searchBarEl, keyboardEl, overlayEl } = await searchSystem.init();
 
         placeholder.replaceWith(searchBarEl);
-        main.appendChild(keyboardEl);
+
+        attachSimulatedKeyboard(keyboardEl);
+
         overlay.appendChild(overlayEl);
 
 
@@ -395,7 +390,6 @@ export async function loadViewAllSaved(returnViewKey = null) {
     initializeBookmarks();
     await syncAllBookmarks();
 
-    // Cleanup logic attached to the overlay
     overlay.onClose = async () => {
         await closeViewAllSavedAndRestore();
     };
