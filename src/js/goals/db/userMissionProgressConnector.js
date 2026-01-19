@@ -6,8 +6,8 @@ import {
     documents,
     isAuthenticatedUser
 } from "./goalsConnector.js";
+import {getDoc, Timestamp} from "firebase/firestore";
 import {MISSION_TEMPLATE_COLLECTION} from "./missionTemplateConnector.js";
-import {getDoc} from "firebase/firestore";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
 
 const USER_MISSION_PROGRESS_COLLECTION = "UserMissionProgress";
@@ -26,7 +26,8 @@ export async function createUserMissionProgress(data) {
         MissionTemplateRef: missionTemplateRef ?? "",
         Current: data.Current ?? 0,
         IsCompleted: data.IsCompleted ?? false,
-        IsActive: data.IsActive ?? true
+        IsActive: data.IsActive ?? true,
+        CreatedAt: Timestamp.fromDate(new Date())
     });
 }
 
@@ -44,8 +45,8 @@ export async function userMissionProgresses() {
         const missionTemplateDocument = await getDoc(mission.MissionTemplateRef)
 
         detailedMissions.push({
-            user: userDocument.data() ?? "",
-            place: placeDocument.data() ?? "",
+            user: {id: userDocument.id, ...userDocument.data() ?? ""},
+            place: {id: placeDocument.id, ...placeDocument.data() ?? ""},
             missionTemplate: missionTemplateDocument.data() ?? "",
             missionProgress: mission,
         })
@@ -68,6 +69,12 @@ export async function activeSpotMissionProgressByUser() {
     return (await spotMissionProgressByUser()).filter(data => data.missionProgress.IsActive)
 }
 
-export async function InactiveSpotMissionProgressByUser() {
-    return (await spotMissionProgressByUser()).filter(data => !data.missionProgress.IsActive)
+export async function inactiveSpotMissionsProgressByUser() {
+    const inactiveSpotMissions = (await spotMissionProgressByUser()).filter(data => !data.missionProgress.IsActive)
+    return inactiveSpotMissions.reduce((acc, mission) => {
+        const placeId = mission.place.id;
+        const group = acc.find(g => g.place.id === placeId);
+        group ? group.missions.push(mission) : acc.push({place: mission.place, missions: [mission]})
+        return acc;
+    }, [])
 }
