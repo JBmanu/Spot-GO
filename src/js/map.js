@@ -101,6 +101,14 @@ const MAP_TILE_SERVERS = {
 };
 
 async function initializeMap() {
+    if (map) {
+        const mapSection = document.querySelector('[data-section-view="map"]');
+        if (mapSection && syncBookmarksUI) {
+            await syncBookmarksUI(mapSection).catch(() => { });
+        }
+        return;
+    }
+
     initializeCategoryFilters();
     initializeNewSpotButton();
 
