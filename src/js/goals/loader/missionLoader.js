@@ -19,6 +19,7 @@ export async function loadMissions() {
                 mission.missionTemplate,
                 mission.missionProgress.Current));
     }
+    console.log("Missions loaded successfully.");
 }
 
 function createMissionTemplate(indexCtn, id, missionTemplate, progress) {

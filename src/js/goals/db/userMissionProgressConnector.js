@@ -4,9 +4,11 @@ import {
     createDocument,
     documentFromId,
     documents,
-    isAuthenticatedUser, loadDocumentRef
+    EMPTY_VALUE,
+    isAuthenticatedUser,
+    loadDocumentRef
 } from "./goalsConnector.js";
-import {getDoc, Timestamp} from "firebase/firestore";
+import {Timestamp} from "firebase/firestore";
 import {MISSION_TEMPLATE_COLLECTION} from "./missionTemplateConnector.js";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
 
@@ -21,9 +23,9 @@ export async function createUserMissionProgress(data) {
     const missionTemplateRef = await buildDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId);
 
     return await createDocument(USER_MISSION_PROGRESS_COLLECTION, {
-        UserRef: userRef ?? "",
-        PlaceRef: placeRef ?? "",
-        MissionTemplateRef: missionTemplateRef ?? "",
+        UserRef: userRef,
+        PlaceRef: placeRef,
+        MissionTemplateRef: missionTemplateRef,
         Current: data.Current ?? 0,
         IsCompleted: data.IsCompleted ?? false,
         IsActive: data.IsActive ?? true,
@@ -40,14 +42,17 @@ export async function userMissionProgresses() {
     const detailedMissions = []
 
     for (let mission of userMissions) {
-        const userDocument = await loadDocumentRef(mission.UserRef)
-        const placeDocument = await loadDocumentRef(mission.PlaceRef)
+        let userDocument = await loadDocumentRef(mission.UserRef)
+        let placeDocument = await loadDocumentRef(mission.PlaceRef)
         const missionTemplateDocument = await loadDocumentRef(mission.MissionTemplateRef)
 
+        userDocument = userDocument === EMPTY_VALUE ? null : userDocument;
+        placeDocument = placeDocument === EMPTY_VALUE ? null : placeDocument;
+
         detailedMissions.push({
-            user: {id: userDocument?.id, ...userDocument?.data() ?? ""},
-            place: {id: placeDocument?.id, ...placeDocument?.data() ?? ""},
-            missionTemplate: missionTemplateDocument.data() ?? "",
+            user: {id: userDocument?.id, ...userDocument.data()},
+            place: {id: placeDocument?.id, ...placeDocument?.data()},
+            missionTemplate: missionTemplateDocument.data(),
             missionProgress: mission,
         })
     }

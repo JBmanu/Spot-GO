@@ -2,7 +2,7 @@ import {getAllUsers} from "../../../database.js";
 import {missionTemplatesByType} from "../missionTemplateConnector.js";
 import {MISSION_TYPE} from "./missionTemplateSeed.js";
 import {clearUserMissionProgress, createUserMissionProgress} from "../userMissionProgressConnector.js";
-import {documents} from "../goalsConnector.js";
+import {documents, EMPTY_VALUE} from "../goalsConnector.js";
 
 const SPOTS = ["8ncqBKHfbPWlQsFc7pvT", "G84q6lO8V2f1smPhjQk0", "qK5b57dBndsW77oUhGbD"]
 
