@@ -5,59 +5,100 @@
         <button class="filters-reset-btn">Reset Filtri</button>
     </div>
 
-    <div class="filters-scroll-area">
-
-        <!-- ORARIO DI APERTURA -->
-        <div class="filter-section">
-            <h3 class="filter-section-label">Orario di Apertura</h3>
-
-            <div class="filter-flex-start">
-                <span class="filter-item-text">Aperto ora</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" name="open_now">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-
-            <div class="filter-datetime-row">
-                <span>Aperto il</span>
-                <input type="date" class="input-pill input-date">
-                <span>alle</span>
-                <input type="time" class="input-pill input-time">
-            </div>
-        </div>
+    <div class="filters-scroll-area space-y-4">
 
         <!-- DISTANZA -->
-        <div class="filter-section">
+        <!-- <div class="filter-section">
             <div class="filter-row-between">
-                <h3 class="filter-section-label" style="margin-bottom: 0;">Distanza</h3>
+                <label class="filter-section-label input-label" style="margin-bottom: 0;">Distanza</label>
                 <span class="distance-value">5 km</span>
             </div>
             <input type="range" class="distance-range" min="0" max="20" step="0.1" value="15">
+        </div> -->
+        <div class="filter-section modern-range">
+            <div class="filter-row-between">
+                <label class="filter-section-label input-label">Distanza</label>
+                <span id="range-value" class="distance-value">15 km</span>
+            </div>
+            <div class="range-container">
+                <input type="range" class="distance-range" id="distance-slider" min="0" max="20" step="0.1" value="15">
+            </div>
+        </div>
+
+        <!-- ORARIO DI APERTURA -->
+        <div class="add-polaroid-input-group">
+            <label for="new-spot-time-range" class="input-label">Fascia oraria</label>
+            <div class="time-range polaroid-input glass-strong" id="new-spot-time-range">
+                <!-- INIZIO -->
+                <div class="time-block">
+                    <label for="start-h" class="input-label">Da:</label>
+                    <!-- <div class="time-block"> -->
+                    <input id="start-h" type="text" inputmode="numeric" maxlength="2" placeholder="HH">
+                    <span>:</span>
+                    <input id="start-m" type="text" inputmode="numeric" maxlength="2" placeholder="MM">
+                    <!-- </div> -->
+                </div>
+
+                <img src="../../assets/icons/map/ArrowRight.svg" alt="Carica immagine" style="width: 20px;" />
+
+                <!-- FINE -->
+                <div class="time-block">
+                    <label for="end-h" class="input-label">A:</label>
+                    <input id="end-h" type="text" inputmode="numeric" maxlength="2" placeholder="HH">
+                    <span>:</span>
+                    <input id="end-m" type="text" inputmode="numeric" maxlength="2" placeholder="MM">
+                </div>
+            </div>
         </div>
 
         <!-- RATING -->
-        <div class="filter-section rating-container">
-            <h3 class="filter-section-label">Rating minimo</h3>
-            <!-- [dynamic] star rating -->
+        <div class="add-polaroid-input-group">
+            <label for="new-spot-star-rating" class="input-label">Valutazione minima</label>
+            <div class="star-rating-input star-rating-filters" id="new-spot-star-rating">
+                <button type="button" class="star-btn star-btn-filters active" data-value="1">
+                    <img src="../../assets/icons/homepage/Star.svg" alt="1 stella" />
+                </button>
+                <button type="button" class="star-btn star-btn-filters active" data-value="2">
+                    <img src="../../assets/icons/homepage/Star.svg" alt="2 stelle" />
+                </button>
+                <button type="button" class="star-btn star-btn-filters active" data-value="3">
+                    <img src="../../assets/icons/homepage/Star.svg" alt="3 stelle" />
+                </button>
+                <button type="button" class="star-btn star-btn-filters" data-value="4">
+                    <img src="../../assets/icons/homepage/Star.svg" alt="4 stelle" />
+                </button>
+                <button type="button" class="star-btn star-btn-filters" data-value="5">
+                    <img src="../../assets/icons/homepage/Star.svg" alt="5 stelle" />
+                </button>
+            </div>
         </div>
 
         <!-- STATO -->
-        <div class="filter-section">
-            <h3 class="filter-section-label">Stato</h3>
-            <div class="chips-container chips-multi">
-                <button class="filter-button-status" data-value="visited">Visitato</button>
-                <button class="filter-button-status" data-value="new">Nuovo per me</button>
-                <button class="filter-button-status" data-value="saved">Salvato</button>
+        <div class="add-polaroid-input-group">
+            <label for="new-spot-time-range" class="input-label">Stato</label>
+            <div id="filter-status-container" class="home-chips-row" role="group" aria-label="Filtri categoria">
+                <button class="home-chip" type="button" data-category="visitato" aria-pressed="false">
+                    <img src="../assets/icons/homepage/Fast%20Food.svg" alt="Icona Cibo" class="icon-mini" />
+                    Visitato
+                </button>
+                <button class="home-chip" type="button" data-category="salvato" aria-pressed="false">
+                    <img src="../assets/icons/homepage/Cathedral.svg" alt="Icona Cultura" class="icon-mini" />
+                    Salvato
+                </button>
+                <button class="home-chip" type="button" data-category="creato" aria-pressed="false">
+                    <img src="../assets/icons/homepage/Oak%20Tree.svg" alt="Icona Natura" class="icon-mini" />
+                    Creato da me
+                </button>
             </div>
         </div>
 
     </div>
 
     <!-- FOOTER -->
-    <div class="filters-footer">
-        <button class="filter-button-footer">Annulla</button>
-        <button class="filter-button-footer">Applica Filtri</button>
+    <div class="navigation-modal-actions separator-top">
+        <button type="button" class="nav-modal-btn cancel" id="filters-cancel">Annulla</button>
+        <button type="button" class="nav-modal-btn confirm delete-confirm"
+            id="filters-apply">Applica Filtri</button>
     </div>
 
 </div>
