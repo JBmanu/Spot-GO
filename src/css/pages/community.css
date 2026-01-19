@@ -84,12 +84,13 @@
         border-top: 10px;
         justify-content: center;
         border-radius: 12px;     /* Bordi arrotondati card-style */
-        background-color: var(--color-secondary_color);
+        background-color: var(--color-primary_color);
         border: solid transparent;
     }
 
     .community-suggest-card button p {
         font-weight: 500;
+        color: aliceblue;
     }
 
     .community-suggest-card .card-actions-container {

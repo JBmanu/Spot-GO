@@ -26,7 +26,7 @@ export async function loadCommunityData(arg) {
 async function configureKeyboard() {
     // Bind search bar and keyboard to search section.
     const {searchBarEl, keyboardEl, overlayEl} = await createSearchBarWithKeyboard("Cerca utente", onValueChangeSearch);
-    const communityPage = document.querySelector(".app-toolbar");//querySelector('[data-section-view="community"]');
+    const communityPage = document.querySelector(".app-toolbar");
     //Estrai nodo input
     const searchInput = searchBarEl.querySelector("#view-all-saved-search");
     // Sostituisci l'input mio con quello estratto e associato alla keyboard

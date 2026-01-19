@@ -3,8 +3,9 @@ import {openChat} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
-import { openModal, closeModal } from "../../common/modalView.js";
 import {initializeReadOnlyProfileData} from "../profile.js";
+import { closeOverlayAndReveal } from "../../common/back.js";
+import { makeProfileIdsUnique } from "./profileIdModifier.js";
 
 export function makeSelectableCard(userData) {
     return makeGenericCard(userData, checkboxAction(userData));
@@ -81,33 +82,112 @@ function makeCardInfo(userData) {
 }
 
 async function showUserProfileOverview(userData) {
-    const parentNode = document.querySelector("#community-main-body");
-    const overviewName = "community-user-profile-overview";
-    
-    const modalWrapper = document.createElement('div');
-    modalWrapper.id = overviewName;
-    modalWrapper.className = "profile-overview-modal-wrapper";
-    parentNode.appendChild(modalWrapper);
+    const main = document.getElementById("main");
+    if (!main) return;
 
-    const closeButton = document.createElement('button');
-    closeButton.type = 'button';
-    closeButton.className = 'glass-close-btn';
-    closeButton.classList.add("close-btn");
-    closeButton.setAttribute('aria-label', 'Chiudi');
-    closeButton.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none">
-            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
+    try {
+        // 1. Fetch HTML del profilo
+        const res = await fetch("../html/profile.html");
+        if (!res.ok) return;
+        
+        const html = await res.text();
+
+        // 2. Chiudi overlay precedente se esiste (per navigare tra profili)
+        const existingOverlay = main.querySelector('[data-overlay-view="community-user-profile"]');
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
+
+        // 3. Nascondi la sezione community (come fanno gli altri overlay)
+        const communitySection = main.querySelector('[data-section-view="community"]');
+        if (communitySection) {
+            communitySection.hidden = true;
+        }
+
+        // 4. Crea nuovo overlay con data-overlay-view univoco
+        const overlay = document.createElement("div");
+        overlay.dataset.overlayView = "community-user-profile";
+        overlay.dataset.returnView = "community";  // Torna a community
+        overlay.classList.add("page-slide-in");    // Animazione slide
+        overlay.innerHTML = html;
+
+        main.appendChild(overlay);
+
+        // makeProfileIdsUnique(overlay);
+
+        // 5. Inizializza il profilo read-only (prima di rinominare gli ID)
+        await initializeReadOnlyProfileData(overlay, userData);
+
+        // 6. Setup header con back button (PRIMA di rinominare gli ID)
+        setupReadOnlyProfileHeader(overlay);
+
+    } catch (err) {
+        console.error("Error loading user profile:", err);
+    }
+}
+
+function setupReadOnlyProfileHeader(overlay) {
+    const headerLeftLogo = document.querySelector(".header-left-logo");
+    if (!headerLeftLogo) return;
+
+    // Sostituisci il logo con back button
+    headerLeftLogo.innerHTML = `
+        <button type="button" id="back-button" data-back aria-label="Torna indietro"
+            class="flex items-center justify-center w-10 h-10">
+            <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
+        </button>
     `;
-    closeButton.addEventListener("click", () => {
-        closeModal();
-        modalWrapper.remove();
-    });
-    modalWrapper.appendChild(closeButton);
 
-    await openModal("../html/profile.html", `#${overviewName}`, async (modalElement) => {
-            await initializeReadOnlyProfileData(modalElement, userData);
+    // Aggiungi handler di cleanup quando l'overlay viene chiuso
+    overlay.onClose = () => {
+        try {
+            if (overlay.parentNode) {
+                overlay.remove();
+            }
+        } catch (_) {
+            // Fallback se remove() non funziona
+            if (overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+            }
+        }
+    };
+
+    // Aggiungi event listener al back button
+    const backBtn = headerLeftLogo.querySelector("#back-button");
+    if (backBtn) {
+        backBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Chiudi l'overlay (che triggeha onClose e rimuove dal DOM)
+            closeOverlayAndReveal({ 
+                overlay,
+                returnViewKey: "community" 
+            });
+            
+            // Extra: assicura rimozione dopo l'animazione
+            setTimeout(() => {
+                if (overlay.parentNode) {
+                    try {
+                        overlay.remove();
+                    } catch (_) {
+                        overlay.parentNode.removeChild(overlay);
+                    }
+                }
+            }, 350);
         });
+    }
+
+    // Nascondi logo testo
+    const logoText = overlay.querySelector("#header-logo-text");
+    if (logoText) logoText.style.display = "none";
+
+    // Mostra titolo
+    const title = overlay.querySelector("#header-title");
+    if (title) {
+        title.textContent = "Profilo Utente";
+        title.classList.remove("hidden");
+    }
 }
 
 function makeFriendActionContainer(userData) {
