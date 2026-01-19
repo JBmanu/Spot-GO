@@ -13,6 +13,7 @@ import { initFitText } from "../../common/fitText.js";
 import {
     resetCategoryFilter,
     setupCategoryFilter,
+    getActiveCategories,
 } from "../../common/categoryFilter.js";
 import { loadViewAllSaved } from "../viewAllSaved.js";
 import { autoInitializeCarousels, initializeHorizontalCarousel } from "../../common/carousels.js";
@@ -91,8 +92,14 @@ async function refreshSavedSection() {
     const track = savedRoot.querySelector(".carousel-horizontal_track") || savedRoot;
     const prevScroll = track.scrollLeft;
 
+    const categoryContainer = document.getElementById("home-categories-container");
+    const activeCategories = categoryContainer ? getActiveCategories(categoryContainer) : [];
+
     try {
-        await populateSavedSpots({ containerId: "home-saved-container" });
+        await populateSavedSpots({
+            containerId: "home-saved-container",
+            categories: activeCategories
+        });
 
         if (!savedRoot.dataset.carouselType) savedRoot.dataset.carouselType = "horizontal";
         initializeHorizontalCarousel(savedRoot, { cardSelector: ".spot-card-saved" });
