@@ -1,10 +1,11 @@
 @layer components {
 
-    #chat-container {
-        @apply w-full h-full flex flex-col justify-center items-center text-center fixed top-0 left-0 right-0 bottom-0 z-20 pointer-events-auto;
+    .chat-view-overlay {
+        @apply w-full flex flex-col text-center fixed top-0 left-0 right-0 bottom-0 z-50 pointer-events-auto;
+        overflow-y: auto;
     }
 
-    #chat-container.hidden-chat {
+    .chat-view-overlay.hidden-chat {
         animation: slideOut 0.3s ease forwards;
     }
 
@@ -30,141 +31,114 @@
     }
 
     .messages-container {
-        flex: 1;
-        overflow-y: auto;
-        padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .message {
-        display: flex;
-        gap: 0.75rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .message.sent {
-        justify-content: flex-end;
+        @apply flex flex-col w-full p-4 gap-4 flex-1;
     }
 
     .message-bubble {
-        max-width: 75%;
-        width: 60%;
-        background: var(--color-secondary_color);
+        @apply flex flex-col w-auto max-w-[85%] h-auto self-start shadow-sm relative overflow-hidden mb-4;
         padding: 0.75rem;
-        border-radius: 12px;
-        word-wrap: break-word;
-        font-size: 14px;
-    }
+        border-radius: 18px;
+        border-bottom-left-radius: 2px;
 
-    .message.sent .message-bubble {
-        background: var(--color-accent_color);
-        filter: saturate(0.8);
+        background-color: rgba(102, 217, 178, 0.4);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-top: 1px solid rgba(255, 255, 255, 0.4);
+
+        box-shadow:
+            0 8px 24px -4px rgba(28, 124, 84, 0.1),
+            inset 0 1px 1px rgba(255, 255, 255, 0.9);
+
         color: white;
     }
 
-    .datetime-message {
-        font-size: 10pt;
-        text-align: left;
-        margin-top: 10px;
-        display: flex;
-        justify-content: right;
+    .message-bubble.sent {
+        @apply self-end;
+        border-radius: 18px;
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 2px;
+
+        background-color: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(20px);
+
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-top: 1px solid rgba(255, 255, 255, 0.9);
+
+        box-shadow:
+            0 8px 24px -4px rgba(0, 0, 0, 0.1),
+            inset 0 1px 1px rgba(255, 255, 255, 0.9);
+
+        color: var(--color-gray-800);
     }
 
-    .community-chat-polaroid {
-        @apply relative rounded-xl p-4 space-y-3 isolate overflow-hidden z-20 shrink-0 shadow-none snap-center;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        border: 1px solid rgba(152, 152, 152, 0.4);
+    .chat-date-separator {
+        @apply flex items-center justify-center w-full gap-4 my-6 text-xs font-medium text-gray-500 uppercase tracking-widest;
     }
 
-    .cardboard-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
+    .chat-date-separator::before,
+    .chat-date-separator::after {
+        content: '';
+        @apply flex-1 border-t border-gray-300;
     }
 
-    .chat-header-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex: 1;
+    .chat-polaroid-card {
+        @apply relative p-3 space-y-0 h-full isolate overflow-visible z-20 shrink-0 cursor-pointer;
+        width: 280px;
+        background: #fdfbf7;
+        border-radius: 2px;
+        box-shadow:
+            0 -3px 8px -1px rgba(0, 0, 0, 0.08),
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06),
+            0 10px 15px -3px rgba(0, 0, 0, 0.1),
+            0 0 1px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+        transform: rotate(-1deg);
+        padding-bottom: 3.5rem;
     }
 
-    .chat-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        overflow: hidden;
-        flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    .chat-polaroid-card::before {
+        content: '';
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-1deg);
+        width: 40px;
+        height: 35px;
+        background-color: rgba(0, 255, 4, 0.8);
+        border-radius: 1px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        z-index: 25;
+        pointer-events: none;
+        opacity: 0.9;
     }
 
-    .chat-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+    .chat-polaroid-card:active {
+        transform: scale(0.98);
     }
 
-    .chat-user-info {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
+    .chat-polaroid-image-container {
+        @apply w-full aspect-square overflow-hidden relative shadow-inner;
+        border-radius: 1px;
     }
 
-    #user-chat-name {
-        margin: 0;
-        font-size: 15pt;
-        font-weight: 600;
-        color: var(--color-gray-600);
-        line-height: 1.2;
+    .chat-polaroid-image {
+        @apply w-full h-full object-cover;
+        filter: contrast(1.05) saturate(1.05);
     }
 
-    .empty-state {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 200px;
-        width: 100%;
-        padding: 40px 20px;
+    .chat-polaroid-content {
+        @apply px-1 absolute bottom-2 left-0 right-0 text-center;
     }
 
-    .empty-state-content {
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .empty-state-emoji {
-        font-size: 4rem;
-        line-height: 1;
-        animation: gentle-bounce 2s ease-in-out infinite;
-    }
-
-    .empty-state-text {
-        font-size: 1rem;
-        color: #666;
-        margin: 0;
-        font-weight: 500;
-    }
-
-    @keyframes gentle-bounce {
-
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-10px);
-        }
+    .chat-polaroid-title {
+        @apply text-base font-medium text-gray-700 truncate text-center;
+        font-family: 'Caveat', 'Indie Flower', 'Courier New', cursive;
+        transform: rotate(-0.5deg);
     }
 
     .chat-user-header {
-        @apply flex flex-row items-center justify-center gap-4 py-2 glass-backdrop-light w-full;
+        @apply flex flex-row items-center justify-center gap-4 py-2 glass-backdrop-light w-full sticky top-0 z-50 shrink-0 rounded-b-3xl;
     }
 
     .chat-header-avatar-container {
@@ -176,7 +150,7 @@
     }
 
     .chat-loader {
-        @apply flex flex-col items-center justify-center h-40 gap-3 opacity-60;
+        @apply flex flex-col items-center justify-center h-40 gap-3 opacity-60 m-auto;
     }
 
     .chat-loader-spinner {
