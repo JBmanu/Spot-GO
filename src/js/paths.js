@@ -3,6 +3,7 @@ export const PATHS = {
         homepage: "../html/homepage.html",
         map: "../html/map.html",
         community: "../html/community-pages/community.html",
+        chat: "../html/community-pages/chat.html",
         goals: "../html/goals.html",
         profile: "../html/profile.html",
         login: "../html/login.html",
