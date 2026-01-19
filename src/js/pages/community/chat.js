@@ -117,8 +117,8 @@ export async function openChat(userData) {
     if (messagesContainer) messagesContainer.innerHTML = '';
 
     try {
-        const userMail = await getCurrentUser();
-        const messagesData = await pullMessages(userMail.email, userData.email);
+        const currentUser = await getCurrentUser();
+        const messagesData = await pullMessages(currentUser.email, userData.email);
         const messagesPromise = messagesData.map(async msg => {
             const cartolina = await getCartolinaById(msg.ref);
             return {
@@ -130,7 +130,7 @@ export async function openChat(userData) {
 
         if (loader) loader.classList.add('hidden');
 
-        renderMessages(userData, messages);
+        renderMessages(currentUser.email, messages);
     } catch (error) {
         console.error("Errore caricamento chat:", error);
 
@@ -171,7 +171,7 @@ function showCommunityMainSections() {
     document.getElementById("community-main-body").classList.remove('hidden');
 }
 
-function renderMessages(userData, messages) {
+function renderMessages(currentUserMail, messages) {
     hideCommunityMainSections();
     const chatContainer = document.getElementById('chat-container');
     chatContainer.classList.remove('hidden-chat');
@@ -216,7 +216,7 @@ function renderMessages(userData, messages) {
 
                 if (article) {
                     article.addEventListener('click', (e) => {
-                        openPolaroidDetail(msg.cartolina);
+                        openPolaroidDetail(msg.cartolina, {currentUserMail: currentUserMail});
                     });
                 }
 

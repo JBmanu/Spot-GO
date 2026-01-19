@@ -83,11 +83,6 @@ function makeCardInfo(userData) {
 async function showUserProfileOverview(userData) {
     const parentNode = document.querySelector("#community-main-body");
     const overviewName = "community-user-profile-overview";
-
-     // Creo un wrapper cosi posso definire uno stile specifico del conteitore della pagina utente.
-    // const wrapperDiv = document.createElement('div');
-    // wrapperDiv.id = childNodeName;
-    // wrapperDiv.className = "profile-overview-modal";
     
     const modalWrapper = document.createElement('div');
     modalWrapper.id = overviewName;
