@@ -1,5 +1,4 @@
 import { getCurrentUser, getCartolinaById, pullMessages } from "../../database.js";
-import { formatDate } from "../../common/datetime.js";
 import { openPolaroidDetail } from "../polaroidDetail.js"
 import { AVATAR_MAP } from "../../common/avatarImagePaths.js";
 import { resetHeaderBaseForSection } from "../../common/navigation.js";
@@ -7,10 +6,29 @@ import { PATHS } from "../../paths.js";
 
 let chatTemplateCache = null;
 
+
+async function loadSharedTemplates() {
+    if (document.getElementById("shared-spot-templates-container")) return;
+    try {
+        const res = await fetch(PATHS.html.spotTemplates);
+        if (!res.ok) throw new Error("Failed to load templates");
+        const html = await res.text();
+        const container = document.createElement("div");
+        container.id = "shared-spot-templates-container";
+        container.style.display = "none";
+        container.innerHTML = html;
+        document.body.appendChild(container);
+    } catch (err) {
+        console.error("Error loading shared templates:", err);
+    }
+}
+
 async function loadChatView() {
     if (document.getElementById('chat-container')) return;
 
     try {
+        await loadSharedTemplates();
+
         if (!chatTemplateCache) {
             console.log("Fetching chat template from:", PATHS.html.chat);
             const res = await fetch(PATHS.html.chat);
@@ -44,6 +62,24 @@ async function loadChatView() {
     }
 }
 
+
+export function closeChat({ animated = true } = {}) {
+    const chatContainer = document.getElementById('chat-container');
+    if (chatContainer && !chatContainer.classList.contains('hidden-chat')) {
+        showCommunityMainSections();
+        chatContainer.classList.add('hidden-chat');
+
+        if (!animated) {
+            chatContainer.style.display = 'none';
+        }
+
+        resetHeaderBaseForSection('community');
+        if (history.state && history.state.chatOpen) {
+            history.back();
+        }
+    }
+}
+
 export async function openChat(userData) {
     await loadChatView();
 
@@ -52,6 +88,7 @@ export async function openChat(userData) {
 
     if (chatContainer) {
         chatContainer.classList.remove('hidden-chat');
+        chatContainer.style.display = '';
         hideCommunityMainSections();
     }
 
@@ -119,7 +156,7 @@ function updateChatHeader(userData) {
     }
 
     if (headerLogoText) headerLogoText.style.display = "none";
-    
+
     if (headerTitle) {
         headerTitle.textContent = "Chat";
         headerTitle.classList.remove("hidden");
@@ -142,51 +179,55 @@ function renderMessages(userData, messages) {
     const messagesContainer = document.getElementById('messagesContainer');
     messagesContainer.innerHTML = '';
     if (messages.length > 0) {
-        messages.forEach(msg => {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${msg.isMittente ? 'sent' : ''}`;
+        let lastDateStr = '';
 
-            const msgDateTime = new Date(msg.timestamp.seconds * 1000)
-                .toLocaleDateString('it-IT', {
-                    minute: '2-digit',
-                    hour: '2-digit',
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: '2-digit'
-                });
+        messages.forEach(msg => {
+            const msgDateObj = new Date(msg.timestamp.seconds * 1000);
+
+            const dateStr = msgDateObj.toLocaleDateString('it-IT', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            if (dateStr !== lastDateStr) {
+                const separator = document.createElement('div');
+                separator.className = 'chat-date-separator';
+                separator.textContent = dateStr;
+                messagesContainer.appendChild(separator);
+                lastDateStr = dateStr;
+            }
 
             const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            bubble.innerHTML =
-                `<article class="community-chat-polaroid" >
-                <button
-                        type="button"
-                        class="profile-polaroid-menu"
-                        aria-label="Menu polaroid">
-                    ⋮
-                </button>
-                <div class="profile-polaroid-image-container">
-                    <div class="profile-polaroid-image">
-                        <img class="cardboard-image" src="${msg.cartolina.immagini[0]}">
-                    </div>
-                </div>
-                <div class="profile-polaroid-text">
-                    <h2 class="profile-polaroid-title">${msg.cartolina.title}</h2>
-                    <p class="profile-polaroid-subtitle">${formatDate(msg.cartolina.date)}</p>
-                </div>
-            </article>
-            <div class='datetime-message'><p>${msgDateTime}</p></div>`;
-            const article = bubble.querySelector('.community-chat-polaroid');
-            if (article) {
-                article.addEventListener('click', (e) => {
-                    if (e.target.closest('.profile-polaroid-menu')) {
-                        return;
-                    }
-                    openPolaroidDetail(msg.cartolina);
-                });
+            bubble.className = `message-bubble ${msg.isMittente ? 'sent' : ''}`;
+
+            const template = document.querySelector('[data-template="chat-polaroid-template"]');
+            if (template) {
+                const clone = template.content.cloneNode(true);
+                const article = clone.querySelector('.chat-polaroid-card');
+
+                const img = clone.querySelector('[data-field="image"]');
+                if (img && msg.cartolina.immagini && msg.cartolina.immagini.length > 0) {
+                    img.src = msg.cartolina.immagini[0];
+                }
+
+                const title = clone.querySelector('[data-field="title"]');
+                if (title) title.textContent = msg.cartolina.title;
+
+                if (article) {
+                    article.addEventListener('click', (e) => {
+                        openPolaroidDetail(msg.cartolina);
+                    });
+                }
+
+                bubble.appendChild(clone);
+
+            } else {
+                console.warn("Template chat-polaroid-template not found, fallback to legacy html");
+                bubble.innerHTML = `<p style="color:red">Template Error</p>`;
             }
-            msgDiv.appendChild(bubble);
-            messagesContainer.appendChild(msgDiv);
+
+            messagesContainer.appendChild(bubble);
         });
     } else {
         messagesContainer.innerHTML = '<p class="text-lg text-gray-500 text-center">Non hai ancora condiviso nessuna cartolina 🖼️</p>';;

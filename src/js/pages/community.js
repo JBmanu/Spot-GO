@@ -3,12 +3,15 @@ import {searchUser, getCurrentUser, getFollowingUser, getFollowersUser, getSugge
 import {makeFriendCard, makeSuggestedCard} from '../pages/community/cardsFactory.js'
 import {createSearchBarWithKeyboard} from '../createComponent.js';
 import {showsItemsInContainer} from './community/communityUtility.js'
+import { closeChat } from './community/chat.js';
 let keyboardSetted = false;
 
-export async function loadCommunityData() {
+export async function loadCommunityData(arg) {
     const user = await getCurrentUser();
     if (!user) return;
     const loggedUser = await getCurrentUser();
+    closeChat({ animated: false });
+
     await Promise.all([
         loadFollowing(loggedUser.email),
         loadFollowers(loggedUser.email),
