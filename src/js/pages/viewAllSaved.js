@@ -18,6 +18,7 @@ const state = {
     classicCardTplLoaded: false,
     keyboardEl: null,
     overlayEl: null,
+    revealHandler: null,
 };
 
 function getMain() {
@@ -290,6 +291,11 @@ async function closeViewAllSavedAndRestore() {
     state.keyboardEl = null;
     state.overlayEl = null;
 
+    if (state.revealHandler) {
+        document.removeEventListener("overlay:revealed", state.revealHandler);
+        state.revealHandler = null;
+    }
+
     clearHistoryState();
 }
 
@@ -393,4 +399,20 @@ export async function loadViewAllSaved(returnViewKey = null) {
     overlay.onClose = async () => {
         await closeViewAllSavedAndRestore();
     };
+
+    if (!state.revealHandler) {
+        state.revealHandler = (e) => {
+            if (e.detail?.overlayId === OVERLAY_ID) {
+                try {
+                    showViewAllSavedHeader();
+                    const currentOverlay = getOverlay();
+                    const currentReturnKey = currentOverlay ? currentOverlay.dataset.returnView : null;
+                    if (currentReturnKey) pushHistoryState(currentReturnKey);
+                } catch (err) {
+                    console.error("Error in view-all-saved reveal handler:", err);
+                }
+            }
+        };
+        document.addEventListener("overlay:revealed", state.revealHandler);
+    }
 }
