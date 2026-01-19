@@ -1,21 +1,41 @@
 @layer components {
 
     .floating-toolbar {
-        @apply glass-medium relative rounded-2xl shadow px-2 py-2;
+        @apply glass-medium rounded-2xl shadow px-2 py-2;
     }
 
-    .community-search-wrapper, #community-section-selector, .chat-header {
-        position: sticky !important;
+    .chat-header {
+        position: sticky;
         top: 0;
         z-index: 1;
     }
 
     .community-section {
-        height: 70vh;
+        height: 412px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow-y: scroll;
     }
 
-    /* community-slide-down.css */
-    @keyframes slideInDown {
+    .community-section:not(.hidden) {
+    animation: slideInDown 0.3s ease forwards;
+    }
+
+    .community-section.hidden {
+    animation: slideOutUp 0.3s ease forwards;
+    pointer-events: none;
+    }
+
+    .community-section[data-updated]:not(.hidden) {
+    animation: slideInDown 0.3s ease forwards;
+    }
+
+    .community-section.hidden[data-updated] {
+    animation: slideOutUp 0.3s ease forwards;
+    }
+        /* community-slide-down.css */
+    /* @keyframes slideInDown {
     from {
         opacity: 0;
         transform: translateY(-100%);
@@ -35,30 +55,7 @@
         opacity: 0;
         transform: translateY(-100%);
     }
-    }
-
-    .community-section {
-    position: relative;
-    opacity: 1;
-    pointer-events: auto;
-    }
-
-    .community-section:not(.hidden) {
-    animation: slideInDown 0.3s ease forwards;
-    }
-
-    .community-section.hidden {
-    animation: slideOutUp 0.3s ease forwards;
-    pointer-events: none;
-    }
-
-    .community-section[data-updated]:not(.hidden) {
-    animation: slideInDown 0.3s ease forwards;
-    }
-
-    .community-section.hidden[data-updated] {
-    animation: slideOutUp 0.3s ease forwards;
-    }
+    } */
 
     /* Aggiungi nel CSS */
     @keyframes refreshSlideIn {
@@ -69,16 +66,12 @@
     .community-section.refresh {
     animation: refreshSlideIn 0.3s ease forwards;
     }
-
-    #community-main-body {
-        display: flex;
-        flex-direction: column;
-    }
     
     .community-suggest-card {
         flex-direction: column;
         width: 280px;
         max-height: 160px;
+        margin: 0 !important;
     }
 
     .community-suggest-card button {
@@ -104,11 +97,8 @@
     }
 
     #community-suggested-wrapper {
-        position: sticky;
-        bottom: 0;
-        z-index: 1;
         padding: 12px;
-        max-height: 250px;
+        max-height: 235px;
     }
 
     #community-suggested-wrapper > h2 {
@@ -132,6 +122,13 @@
         border-bottom: 4px solid rgba(var(--hp-cat-nature), 0.40);
         box-shadow: 0 4px 24px 0 rgba(15, 23, 42, 0.10), 0 1.5px 3px 0 rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.18);
     }
+
+    .user-card-username {
+        font-style: italic;
+        font-size: var(--text-xs);
+    }
+
+    .community-card
 
     .card-actions-container {
         @apply flex justify-center items-center gap-[22px];

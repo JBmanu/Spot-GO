@@ -68,7 +68,7 @@ function makeCardInfo(userData) {
     userInfo.appendChild(name);
 
     const username = document.createElement("p");
-    username.className = "italic";
+    username.className = "user-card-username";
     username.innerHTML = `<span>@</span>${userData.username}`;
     userInfo.appendChild(username);
 

@@ -18,11 +18,22 @@
 </section>
 
 <div id="community-main-body">
+  <!-- Barra di ricerca -->
+    <div class="px-2 py-2 flex items-center gap-2">
+      <div class="relative flex-1 flex items-center min-h-13">
+          <input type="text" id="community-search-input" placeholder="Cerca Utente" class="w-full px-4 py-2.5 pl-10 rounded-xl border border-border_color bg-main_paper text-text_color placeholder-text_color/50 focus:outline-none focus:border-primary_color focus:ring-1 focus:ring-primary_color/50" style="font-family: 'Montserrat', sans-serif;">
+          <svg class="absolute left-3 w-5 h-5 text-text_color/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+      </div>
+  </div>
   <!-- Selettore tab -->
-  <div id="community-section-selector" class="mx-4 my-0 p-4">
-      <div id="tab-bar" class="glass-medium relative rounded-2xl shadow px-2 py-2">
+  <div id="community-section-selector" class="mx-4 my-0">
+      <div id="tab-bar" class="glass-medium interactive">
+          <div class="glass-strong interactive missions-type-indicator" style="width: 156.319px; height: 67.9861px; left: 8.05382px;"></div>
+
           <!-- BOTTONI -->
-          <div class="relative z-10 flex justify-between min-h-13">
+          <div class="flex justify-around relative z-10 min-h-13">
               <!-- Seguiti -->
               <button id="community-tab-follows" class="active-community-tab">
                   <span>Seguiti</span>
@@ -31,14 +42,11 @@
               <button id="community-tab-followers">
                   <span>Seguaci</span>
               </button>
-              <!-- Cerca -->
-              <button id="community-tab-search">
-                  <span>Cerca</span>
-              </button>
           </div>
       </div>
   </div>
-  <div class="flex flex-col space-y-3">
+  <!-- Contenitore corpo tab -->
+  <div class="">
       <!-- Tab Seguiti -->
     <section id="community-follows-section" class="community-section">
       <div id="community-follows-container" class="vertical-carousel-track" role="list">
@@ -51,28 +59,9 @@
         <!-- Followers cards list -->
       </div>
     </section>
-    <section id="community-search-section" class="hidden">
-      <div class="community-search-wrapper mx-4 my-0 p-4">
-        <div class="glass-medium relative rounded-2xl shadow px-2 py-2 flex items-center gap-2">
-            <div class="relative flex-1 flex items-center min-h-13">
-                <input type="text" id="community-search-input" placeholder="Cerca Utente" class="w-full px-4 py-2.5 pl-10 rounded-xl border border-border_color bg-main_paper text-text_color placeholder-text_color/50 focus:outline-none focus:border-primary_color focus:ring-1 focus:ring-primary_color/50" style="font-family: 'Montserrat', sans-serif;">
-                <svg class="absolute left-3 w-5 h-5 text-text_color/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-            </div>
-            <button type="button" id="community-close-search-btn" class="flex items-center justify-center w-11 h-11 rounded-xl border border-border_color bg-main_paper hover:bg-main_paper/80 transition-colors" aria-label="Annulla ricerca">
-                <img src="../../../assets/icons/community/close-search.svg" alt="Chiudi ricerca" class="w-6 h-6">
-            </button>
-        </div>
-      </div>
-      <!-- Tab risultati -->
-      <section id="community-results-section" class="community-section">
-        <div id="community-results-container" class="vertical-carousel-track" role="list">
-      </section>
-    </section>
   </div>
       <!-- Suggeriti -->
-  <section id="community-suggested-wrapper" class="glass-medium ">
+  <section id="community-suggested-wrapper">
     <h2>Suggeriti</h2>
     <div id="community-suggested-container" class="carousel-horizontal_track" data-drag-init="1" style="overflow-x: auto; display: flex; flex-direction: row; touch-action: pan-y;">
       <!-- Article list cards -->

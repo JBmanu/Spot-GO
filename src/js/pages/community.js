@@ -23,7 +23,7 @@ export async function loadCommunityData() {
 async function configureKeyboard() {
     // Bind search bar and keyboard to search section.
     const {searchBarEl, keyboardEl, overlayEl} = await createSearchBarWithKeyboard("Cerca utente", onValueChangeSearch);
-    const communityPage = document.querySelector('[data-section-view="community"]');
+    const communityPage = document.querySelector(".app-toolbar");//querySelector('[data-section-view="community"]');
     //Estrai nodo input
     const searchInput = searchBarEl.querySelector("#view-all-saved-search");
     // Sostituisci l'input mio con quello estratto e associato alla keyboard
@@ -36,27 +36,16 @@ async function configureKeyboard() {
     keyboardSetted = true;
 }
 
-let currentTab = null;
 
 function initTabSelector(userId) {
-    const searchbarInput = document.getElementById("view-all-saved-search");
-    const tabSelector = document.getElementById("community-section-selector");
-    const btnCloseSearch = document.getElementById("community-close-search-btn");
     const btnFollows = document.getElementById("community-tab-follows");
     const btnFollowers = document.getElementById("community-tab-followers");
-    const btnSearch = document.getElementById("community-tab-search");
-
-    const searchsection = document.getElementById("community-search-section");
     const followsSection = document.getElementById("community-follows-section");
     const followersSection = document.getElementById("community-followers-section");
-
-    const buttons = [btnFollows, btnFollowers, btnSearch];
-    const sections = [followsSection, followersSection, searchsection];
-
-    currentTab = followsSection;
+    const buttons = [btnFollows, btnFollowers];
+    const sections = [followsSection, followersSection];
 
     btnFollows.addEventListener('click', async () => {
-        currentTab = followsSection;
         hideAll(sections);
         unselectAllButton(buttons);
         btnFollows.classList.add('active-community-tab');
@@ -65,43 +54,20 @@ function initTabSelector(userId) {
     });
 
     btnFollowers.addEventListener('click', async () => {
-        currentTab = followersSection;
         unselectAllButton(buttons);
         hideAll(sections);
         btnFollowers.classList.add('active-community-tab');
         followersSection.classList.remove('hidden');
     });
 
-    btnSearch.addEventListener('click', () => {
-        hideAll(sections);
-        tabSelector.classList.add('hidden');
-        searchsection.classList.remove('hidden');
-    });
-
-    btnCloseSearch.addEventListener('click', ()=> {
-        searchbarInput.value = '';
-        const resultsDiv = document.getElementById("community-results-container");
-        resultsDiv.innerHTML = '';
-        searchsection.classList.add('hidden');
-        tabSelector.classList.remove('hidden');
-        currentTab.classList.remove('hidden');
-    });
 }
 
 function onValueChangeSearch(value) {
-    searchUser(value).then(results =>
-        getCurrentUser().then(loggedUser =>
-            getFollowingUser(loggedUser.email).then(followings => {
-                const followingIds = followings.map(f => f.email);
-                const finalRes = results.map(usr => {
-                    return {
-                        ...usr,
-                        followingBack: followingIds.includes(usr.email)
-                    }
-                });
-                showsItemsInContainer(finalRes, "results", "community-results-container", data => makeFriendCard(data));
-            })
-        ));
+    getCurrentUser().then(u => {
+        loadSuggested(u.id, value);
+        loadFollowing(u.id, value);
+        loadFollowers(u.id, value);
+    });
 
 }
 
@@ -113,20 +79,54 @@ function unselectAllButton(buttons) {
     buttons.forEach(b => b.classList.remove('active-community-tab'));
 }
 
-async function loadFollowing(userId) {
-    getFollowingUser(userId).then(follows => 
-        showsItemsInContainer(follows, 'follows', 'community-follows-container', data => makeFriendCard(data))
+async function loadFollowing(userId, searchTerm = null) {
+    getFollowingUser(userId).then(follows =>
+        showsItemsInContainer(
+            searchUsersByName(follows, searchTerm), 
+            'follows', 
+            'community-follows-container', 
+            data => makeFriendCard(data)
+        )
     );
 }
 
-async function loadSuggested(userId) {
+async function loadSuggested(userId, searchTerm = null) {
     getSuggestedFollows(userId).then(suggested => 
-        showsItemsInContainer(suggested, 'suggested', "community-suggested-container", data => makeSuggestedCard(data))
+        showsItemsInContainer(
+            searchUsersByName(suggested, searchTerm), 
+            'suggested', 
+            "community-suggested-container", 
+            data => makeSuggestedCard(data)
+        )
     );
 }
 
-async function loadFollowers(userId) {
+async function loadFollowers(userId, searchTerm = null) {
     getFollowersUser(userId).then(followers => {
-        showsItemsInContainer(followers, 'followers', "community-followers-container", data => makeFriendCard(data));
+        showsItemsInContainer(
+            searchUsersByName(followers, searchTerm), 
+            'followers', 
+            "community-followers-container", 
+            data => makeFriendCard(data)
+        );
     });
+}
+
+
+function searchUsersByName(users, searchString) {
+    if (!searchString || searchString.trim() === '') {
+        return users;
+    }
+    
+    const search = searchString.toLowerCase().trim();
+    
+    const startsWith = users.filter(u => 
+        u.username?.toLowerCase().startsWith(search)
+    );
+    const contains = users.filter(u => 
+        u.username?.toLowerCase().includes(search) && 
+        !u.username?.toLowerCase().startsWith(search)
+    );
+    
+    return [...startsWith, ...contains];
 }
