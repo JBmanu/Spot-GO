@@ -1,4 +1,4 @@
-import {addDoc, collection, deleteDoc, getDocs} from "firebase/firestore";
+import {addDoc, collection, deleteDoc, doc, getDocs} from "firebase/firestore";
 import {db} from "../../firebase.js";
 import {getCurrentUser} from "../../database.js";
 
@@ -44,10 +44,13 @@ export async function documents(collectionName) {
     }
 }
 
+export async function buildDocumentRef(collectionName, id) {
+    return (await doc(db, collectionName, id));
+}
+
 export async function documentsFiltered(collectionName, filterFn) {
     return (await documents(collectionName)).filter(filterFn);
 }
-
 
 export async function documentFromId(collectionName, id) {
     return (await documentsFiltered(collectionName, document => document.id === id))[0];

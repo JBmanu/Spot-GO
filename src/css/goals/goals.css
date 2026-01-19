@@ -67,7 +67,7 @@
 
     .missions-spot {
         /*sono classi suggerite da chat(ma non vanno): will-change-opacity will-change-filter*/
-        @apply overflow-hidden max-h-0 opacity-0 scale-95 blur-sm px-1
+        @apply overflow-hidden max-h-0 pt-0 opacity-0 scale-95 blur-sm px-1
         transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
         will-change-transform
     }

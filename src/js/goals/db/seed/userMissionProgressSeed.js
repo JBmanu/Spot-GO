@@ -19,16 +19,22 @@ export async function seedUserMissionProgress() {
 async function seedSpotMissionsForUser() {
     const spotMissions = await missionTemplatesByType(MISSION_TYPE.SPOT)
     const users = (await getAllUsers())
+    let oneActivePerUser = true;
 
-    for (let post of SPOTS) {
-        for (let usersKey of users) {
+    for (let usersKey of users) {
+        oneActivePerUser = true;
+        for (let post of SPOTS) {
             for (let spotMission of spotMissions) {
                 await createUserMissionProgress({
                     UserId: usersKey.id,
                     PlaceId: post,
-                    MissionTemplateId: spotMission.id
+                    MissionTemplateId: spotMission.id,
+                    IsActive: oneActivePerUser
                 })
             }
+            oneActivePerUser = false;
         }
     }
+
+
 }
