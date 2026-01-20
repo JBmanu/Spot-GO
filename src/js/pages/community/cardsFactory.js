@@ -5,7 +5,6 @@ import {loadCommunityData} from '../community.js'
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
 import {initializeReadOnlyProfileData} from "../profile.js";
 import { closeOverlayAndReveal } from "../../common/back.js";
-import { makeProfileIdsUnique } from "./profileIdModifier.js";
 import {openPolaroidDetail} from "../polaroidDetail.js";
 
 export function makeSelectableCard(userData) {
@@ -107,6 +106,8 @@ async function showUserProfileOverview(userData) {
 
         // 4. Crea nuovo overlay con data-overlay-view univoco
         const overlay = document.createElement("div");
+        //qunado apre l'album usa questo per nascondere la pagina profilo
+        overlay.dataset.sectionView="community-profile"; 
         overlay.dataset.overlayView = "community-user-profile";
         overlay.dataset.returnView = "community";  // Torna a community
         overlay.classList.add("page-slide-in");    // Animazione slide
@@ -118,8 +119,6 @@ async function showUserProfileOverview(userData) {
 
         // 5. Inizializza il profilo read-only 
         await initializeReadOnlyProfileData(overlay, userData);
-        makeProfileIdsUnique(overlay);
-
 
     } catch (err) {
         console.error("Error loading user profile:", err);

@@ -62,7 +62,7 @@ export async function reloadProfileHeader() {
 
 window.reloadProfileHeader = reloadProfileHeader;
 
-async function initializeProfileData(container, userData, sectionView) {
+async function initializeProfileData(container, userData) {
     await profileDepsReady;
 
     if (!userData) return;
@@ -71,7 +71,7 @@ async function initializeProfileData(container, userData, sectionView) {
 
     await updateUserCounters(userData.username, container);
 
-    setupProfileEventListeners(container, userData, sectionView);
+    setupProfileEventListeners(container, userData);
 
     await initializePolaroidCarousel(container, userData);
 }
@@ -144,7 +144,7 @@ async function updateUserCounters(username, container) {
     }
 }
 
-function setupProfileEventListeners(container, userData, sectionView) {
+function setupProfileEventListeners(container, userData) {
     const savedSpotsButton = container.querySelector("#profile-saved-spots-button");
     if (savedSpotsButton) {
         if (savedSpotsButton.dataset.bound !== "true") {
@@ -166,7 +166,7 @@ function setupProfileEventListeners(container, userData, sectionView) {
     if (openAlbumButton) {
         if (openAlbumButton.dataset.bound !== "true") {
             openAlbumButton.dataset.bound = "true";
-            openAlbumButton.addEventListener("click", e => handleOpenAlbumClick(e, sectionView, userData));
+            openAlbumButton.addEventListener("click", e => handleOpenAlbumClick(e, userData));
         }
     }
 
@@ -234,7 +234,7 @@ async function handleAddPolaroidClick(e) {
     await openAddPolaroidModal();
 }
 
-async function handleOpenAlbumClick(e, returnViewKey, userData) {
+async function handleOpenAlbumClick(e, userData) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -242,7 +242,7 @@ async function handleOpenAlbumClick(e, returnViewKey, userData) {
         console.error("loadViewAllPolaroids is not available");
         return;
     }
-    await loadViewAllPolaroids(returnViewKey, userData);
+    await loadViewAllPolaroids(userData);
 }
 
 async function handleReviewsClick(e) {
@@ -570,7 +570,7 @@ export async function initializeReadOnlyProfileData(modalElement, userData) {
     }
 
     modalElement.classList.add("profile-overview-modal-content");
-    await initializeProfileData(modalElement, userData, "community");
+    await initializeProfileData(modalElement, userData);
 
     // Rimuovi menu buttons dalle polaroid (non cliccabili in read-only)
     const menuButtons = modalElement.querySelectorAll(".polaroid-menu-wrapper");

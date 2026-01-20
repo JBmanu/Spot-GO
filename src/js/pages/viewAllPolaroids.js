@@ -67,7 +67,11 @@ function showViewAllPolaroidsHeader() {
 }
 
 function hideAllSectionViewsForAlbum(main) {
-    main.querySelectorAll("[data-section-view]").forEach((el) => (el.hidden = true));
+    main.querySelectorAll("[data-section-view]").forEach((el) => {
+         el.hidden = true;
+        console.log(el.getAttribute("data-section-view"));
+    }
+    );
 }
 
 function mountViewAllPolaroidsOverlay(main, { html, returnViewKey }) {
@@ -238,11 +242,11 @@ async function closeViewAllPolaroidsAndRestore() {
     clearViewAllPolaroidsHistoryState();
 }
 
-export async function loadViewAllPolaroids(returnViewKey = null, userData) {
+export async function loadViewAllPolaroids(userData) {
     const main = getViewAllPolaroidsMain();
     if (!main) return;
 
-    returnViewKey = returnViewKey || resolveViewAllPolaroidsReturnKey(main);
+    const returnViewKey = resolveViewAllPolaroidsReturnKey(main);
 
     if (state.overlay && !main.contains(state.overlay)) {
         state.overlay = null;
