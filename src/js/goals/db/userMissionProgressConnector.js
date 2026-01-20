@@ -1,5 +1,5 @@
 import {
-    buildDocumentRef,
+    createDocumentRef,
     clearDocuments,
     createDocument,
     documentFromId,
@@ -21,9 +21,9 @@ export async function createUserMissionProgress(data) {
 
     const [userRes, placeRes, templateRes] =
         await runAllAsyncSafe(
-            () => buildDocumentRef("Utente", data.UserId),
-            () => buildDocumentRef("Luogo", data.PlaceId),
-            () => buildDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId)
+            () => createDocumentRef("Utente", data.UserId),
+            () => createDocumentRef("Luogo", data.PlaceId),
+            () => createDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId)
         )
 
     const userRef = userRes.value;

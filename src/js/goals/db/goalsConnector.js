@@ -39,6 +39,16 @@ export async function createDocument(collectionName, data) {
     }
 }
 
+export async function createDocumentRef(collectionName, id) {
+    if (hasInvalid(collectionName, id)) return EMPTY_VALUE;
+    try {
+        return (await doc(db, collectionName, id));
+    } catch (e) {
+        console.error("Error building document ref for " + collectionName + " with id " + id + ": ", e);
+        return EMPTY_VALUE;
+    }
+}
+
 export async function documents(collectionName) {
     if (hasInvalid(collectionName)) return [];
     try {
@@ -51,16 +61,6 @@ export async function documents(collectionName) {
     } catch (e) {
         console.error("Error getting collection " + collectionName + ": ", e);
         return [];
-    }
-}
-
-export async function buildDocumentRef(collectionName, id) {
-    if (hasInvalid(collectionName, id)) return EMPTY_VALUE;
-    try {
-        return (await doc(db, collectionName, id));
-    } catch (e) {
-        console.error("Error building document ref for " + collectionName + " with id " + id + ": ", e);
-        return EMPTY_VALUE;
     }
 }
 
