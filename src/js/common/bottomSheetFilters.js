@@ -1,12 +1,18 @@
 import { closeBottomSheet } from "../ui/bottomSheet";
 import { initializeTimeRangeControl } from "./timeRange";
+import { resetStatusFilter, setupStatusFilter, getActiveStatusFilters } from "./spotStatusFilter";
 
 // --- STATO DEFAULT ---
 const defaultFilters = {
     distanceKm: null,
     startTime: null,
     endTime: null,
-    rating: 0
+    rating: 0,
+    status: {
+        visited: false,
+        saved: false,
+        mine: false
+    }
 };
 
 export async function initializeBottomSheetFilters({
@@ -128,6 +134,10 @@ export async function initializeBottomSheetFilters({
 
     resetBtn.addEventListener('click', resetFiltersUI);
 
+    // STATO
+    const statusContainer = filtersEl.querySelector("#filter-status-container");
+    initializeStatusFilters(statusContainer);
+
     // CANCEL / APPLY
     const cancelBtn = filtersEl.querySelector('#filters-cancel');
     const applyBtn = filtersEl.querySelector('#filters-apply');
@@ -137,11 +147,16 @@ export async function initializeBottomSheetFilters({
     });
 
     applyBtn.addEventListener('click', () => {
+        const statusFilters = statusContainer 
+            ? getActiveStatusFilters(statusContainer) 
+            : { visited: false, saved: false, mine: false };
+
         const filters = {
             distanceKm: Number(distanceSlider.dataset.realValue),
             startTime: readTime(startH, startM),
             endTime: readTime(endH, endM),
-            rating: currentRating
+            rating: currentRating,
+            status: statusFilters
         };
 
         updateFiltersBadge(
@@ -154,6 +169,18 @@ export async function initializeBottomSheetFilters({
     });
 
     resetFiltersUI();
+}
+
+function initializeStatusFilters(statusContainer) {
+    if (!statusContainer) return;
+
+    // Reset visivo e dello stato interno all'avvio
+    resetStatusFilter(statusContainer);
+
+    // Configurazione dei listener
+    setupStatusFilter(statusContainer, {
+        onChange: () => {}
+    });
 }
 
 function updateFiltersBadge(buttonEl, activeCount) {

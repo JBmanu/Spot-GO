@@ -524,8 +524,7 @@ async function readNewSpotDataFromFields() {
 
     const immagine = imageController.getImagePath();
 
-    const valutazione = null;
-    const recensione = null;
+    const valutazione = 4.5;
 
     if (!nome || !descrizione || !idCategoria || !posizione) {
         throw new Error("Compila tutti i campi obbligatori");
@@ -540,7 +539,6 @@ async function readNewSpotDataFromFields() {
         orari,
         costo,
         valutazione,
-        recensione,
         immagine,
         idCreatore
     };
