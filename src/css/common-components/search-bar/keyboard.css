@@ -56,6 +56,10 @@
         gap: 6px;
     }
 
+    .keyboard-row-numbers {
+        @apply px-px;
+    }
+
     .keyboard-row-first {
         @apply px-[3px];
     }

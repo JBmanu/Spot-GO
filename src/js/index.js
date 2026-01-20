@@ -167,9 +167,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.navigateToSection = navigateTo;
 
     function showOnly(activeSection) {
-        for (const [section, { el }] of sectionState.entries()) {
-            el.hidden = section !== activeSection;
-        }
+        const allSections = main.querySelectorAll('[data-section-view]');
+        allSections.forEach((el) => {
+            const isTarget = el.dataset.sectionView === activeSection;
+            el.hidden = !isTarget;
+            if (isTarget) {
+                el.style.display = "";
+            } else {
+                el.style.display = "none";
+            }
+        });
+
         activateToolbar(activeSection);
         currentSection = activeSection;
 

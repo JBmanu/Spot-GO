@@ -1,5 +1,19 @@
 <div id="view-all-saved-keyboard" style="z-index: 1000; transform: translateY(100%);">
     <div class="keyboard-container">
+        <!-- Riga Numeri -->
+        <div class="keyboard-row keyboard-row-numbers">
+            <button class="kb-key" data-key="1">1</button>
+            <button class="kb-key" data-key="2">2</button>
+            <button class="kb-key" data-key="3">3</button>
+            <button class="kb-key" data-key="4">4</button>
+            <button class="kb-key" data-key="5">5</button>
+            <button class="kb-key" data-key="6">6</button>
+            <button class="kb-key" data-key="7">7</button>
+            <button class="kb-key" data-key="8">8</button>
+            <button class="kb-key" data-key="9">9</button>
+            <button class="kb-key" data-key="0">0</button>
+        </div>
+
         <!-- Prima riga -->
         <div class="keyboard-row keyboard-row-first">
             <button class="kb-key" data-key="q">Q</button>
@@ -31,7 +45,7 @@
         <div class="keyboard-row keyboard-row-third">
             <button class="kb-shift" data-key="shift">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 3L3 11h4v6h6v-6h4L10 3z" fill="black"/>
+                    <path d="M10 3L3 11h4v6h6v-6h4L10 3z" fill="black" />
                 </svg>
             </button>
             <button class="kb-key" data-key="z">Z</button>
@@ -43,14 +57,16 @@
             <button class="kb-key" data-key="m">M</button>
             <button class="kb-backspace" id="kb-backspace" data-key="backspace">
                 <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 4L2 10l6 6M4 10h18" stroke="black" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M8 4L2 10l6 6M4 10h18" stroke="black" stroke-width="2" stroke-linecap="round" />
                 </svg>
             </button>
         </div>
 
         <!-- Quarta riga -->
         <div class="keyboard-row keyboard-row-fourth">
-            <button class="kb-numbers" data-key="123">123</button>
+            <button class="kb-alt"
+                style="width: 42px; height: 42px; background: #acb3bb; border-radius: 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 0 rgba(0,0,0,0.3); font-size: 14px;"
+                data-key="alt">#+=</button>
             <button class="kb-emoji" data-key="emoji">😊</button>
             <button class="kb-space" data-key=" ">spazio</button>
             <button class="kb-close" id="kb-close" data-key="close">Fine</button>

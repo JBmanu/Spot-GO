@@ -65,8 +65,6 @@ window.reloadProfileHeader = reloadProfileHeader;
 async function initializeProfileData(container, userData, sectionView) {
     await profileDepsReady;
 
-    await profileDepsReady;
-
     if (!userData) return;
 
     updateProfileHeader(userData, container);

@@ -1,6 +1,6 @@
 import {clearDocuments, createDocument, documentFromId, documentsFiltered} from "./goalsConnector.js";
 
-const MISSION_TEMPLATE_COLLECTION = "MissionTemplate";
+export const MISSION_TEMPLATE_COLLECTION = "MissionTemplate";
 
 export async function createMissionTemplate(data) {
     return await createDocument(MISSION_TEMPLATE_COLLECTION, {
