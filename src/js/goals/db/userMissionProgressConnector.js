@@ -46,14 +46,11 @@ export async function userMissionProgresses() {
         let placeDocument = await loadDocumentRef(mission.PlaceRef)
         const missionTemplateDocument = await loadDocumentRef(mission.MissionTemplateRef)
 
-        userDocument = userDocument === EMPTY_VALUE ? null : userDocument;
-        placeDocument = placeDocument === EMPTY_VALUE ? null : placeDocument;
-
         detailedMissions.push({
-            user: {id: userDocument?.id, ...userDocument.data()},
-            place: {id: placeDocument?.id, ...placeDocument?.data()},
-            missionTemplate: missionTemplateDocument.data(),
-            missionProgress: mission,
+            user: userDocument !== EMPTY_VALUE && {id: userDocument.id, ...userDocument.data()},
+            place: placeDocument !== EMPTY_VALUE && {id: placeDocument.id, ...placeDocument.data()},
+            template: missionTemplateDocument.data(),
+            progress: mission,
         })
     }
 
@@ -67,16 +64,16 @@ export async function userMissionProgress(id) {
 export async function missionsProgressByUserAnd(type) {
     const user = (await isAuthenticatedUser())
     return (await userMissionProgresses())
-        .filter(data => data.user.email === user.id && data.missionTemplate.Type === type)
+        .filter(data => data.user.id === user.id && data.template.Type === type)
 }
 
 export async function activeSpotMissionProgressByUser() {
-    return (await missionsProgressByUserAnd(MISSION_TYPE.SPOT)).filter(data => data.missionProgress.IsActive)
+    return (await missionsProgressByUserAnd(MISSION_TYPE.SPOT)).filter(data => data.progress.IsActive)
 }
 
 export async function inactiveSpotMissionsProgressByUser() {
     const inactiveSpotMissions = (await missionsProgressByUserAnd(MISSION_TYPE.SPOT))
-        .filter(data => !data.missionProgress.IsActive)
+        .filter(data => !data.progress.IsActive)
     return inactiveSpotMissions.reduce((acc, mission) => {
         const placeId = mission.place.id;
         const group = acc.find(g => g.place.id === placeId);

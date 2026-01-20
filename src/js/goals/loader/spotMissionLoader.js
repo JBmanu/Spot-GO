@@ -5,7 +5,7 @@ import {
 
 export async function loadSpotMissions() {
     const activeSpotMissions = await activeSpotMissionProgressByUser()
-    const countCompletedMissions = activeSpotMissions.filter(mission => mission.missionProgress.IsCompleted)
+    const countCompletedMissions = activeSpotMissions.filter(mission => mission.progress.IsCompleted)
     console.log("Loaded active spot missions: " + activeSpotMissions)
 
     generateActiveSpotMissions(
@@ -19,7 +19,7 @@ export async function loadSpotMissions() {
 
     inactiveSpotMissions.forEach(inactiveSpotMissions => {
         console.log("Place " + inactiveSpotMissions.place.nome + " inactive spot missions: " + inactiveSpotMissions.missions.length)
-        const countCompletedMissions = inactiveSpotMissions.missions.filter(mission => mission.missionProgress.IsCompleted)
+        const countCompletedMissions = inactiveSpotMissions.missions.filter(mission => mission.progress.IsCompleted)
         generateInactiveSpotMissions(
             inactiveSpotMissions.place,
             countCompletedMissions.length,
@@ -73,8 +73,8 @@ function generateActiveSpotMissions(place, progress, missions) {
     const missionCtn = spotCard.querySelector('.missions-spot');
     missions.forEach(mission => generateSpotMissions(
         missionCtn,
-        mission.missionProgress.id,
-        mission.missionTemplate))
+        mission.progress.id,
+        mission.template))
 }
 
 // Generate spots
@@ -120,8 +120,8 @@ function generateInactiveSpotMissions(place, progress, missions) {
     const missionCtn = spotCard.querySelector('.missions-spot');
     missions.forEach(mission => generateSpotMissions(
         missionCtn,
-        mission.missionProgress.id,
-        mission.missionTemplate))
+        mission.progress.id,
+        mission.template))
 }
 
 // Generate spot missions

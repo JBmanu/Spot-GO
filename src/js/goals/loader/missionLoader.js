@@ -16,8 +16,8 @@ export async function loadMissions() {
             createMissionTemplate(
                 containerIndex,
                 mission.id,
-                mission.missionTemplate,
-                mission.missionProgress.Current));
+                mission.template,
+                mission.progress.Current));
     }
     console.log("Missions loaded successfully.");
 }
