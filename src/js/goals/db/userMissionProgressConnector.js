@@ -11,6 +11,7 @@ import {
 import {Timestamp} from "firebase/firestore";
 import {MISSION_TEMPLATE_COLLECTION} from "./missionTemplateConnector.js";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
+import {runAllAsyncSafe} from "../utils.js";
 
 const USER_MISSION_PROGRESS_COLLECTION = "UserMissionProgress";
 
@@ -18,9 +19,16 @@ export async function createUserMissionProgress(data) {
     const user = await isAuthenticatedUser();
     if (!user) return null;
 
-    const userRef = await buildDocumentRef("Utente", data.UserId);
-    const placeRef = await buildDocumentRef("Luogo", data.PlaceId);
-    const missionTemplateRef = await buildDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId);
+    const [userRes, placeRes, templateRes] =
+        await runAllAsyncSafe(
+            () => buildDocumentRef("Utente", data.UserId),
+            () => buildDocumentRef("Luogo", data.PlaceId),
+            () => buildDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId)
+        )
+
+    const userRef = userRes.value;
+    const placeRef = placeRes.value;
+    const missionTemplateRef = templateRes.value;
 
     return await createDocument(USER_MISSION_PROGRESS_COLLECTION, {
         UserRef: userRef,
@@ -42,9 +50,17 @@ export async function userMissionProgresses() {
     const detailedMissions = []
 
     for (let mission of userMissions) {
-        let userDocument = await loadDocumentRef(mission.UserRef)
-        let placeDocument = await loadDocumentRef(mission.PlaceRef)
-        const missionTemplateDocument = await loadDocumentRef(mission.MissionTemplateRef)
+
+        const [userRef, placeRef, templateRef] =
+            await runAllAsyncSafe(
+                () => loadDocumentRef(mission.UserRef),
+                () => loadDocumentRef(mission.PlaceRef),
+                () => loadDocumentRef(mission.MissionTemplateRef)
+            )
+
+        const userDocument = userRef.value;
+        const placeDocument = placeRef.value;
+        const missionTemplateDocument = templateRef.value;
 
         detailedMissions.push({
             user: userDocument !== EMPTY_VALUE && {id: userDocument.id, ...userDocument.data()},

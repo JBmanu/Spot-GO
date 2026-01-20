@@ -14,3 +14,4 @@ export async function runAllAsyncSafe(...functions) {
 
     return await Promise.all(promises);
 }
+
