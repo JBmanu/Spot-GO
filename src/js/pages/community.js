@@ -20,7 +20,7 @@ export async function loadCommunityData(arg) {
     if (keyboardSetted !== true) {
         await configureKeyboard();
     }
-    initTabSelector(loggedUser.email);
+    initTabSelector();
 }
 
 async function configureKeyboard() {
@@ -40,29 +40,38 @@ async function configureKeyboard() {
 }
 
 
-function initTabSelector(userId) {
-    const btnFollows = document.getElementById("community-tab-follows");
-    const btnFollowers = document.getElementById("community-tab-followers");
-    const followsSection = document.getElementById("community-follows-section");
-    const followersSection = document.getElementById("community-followers-section");
-    const buttons = [btnFollows, btnFollowers];
-    const sections = [followsSection, followersSection];
+function initTabSelector() {
+    const tabs = {
+        "follows": {
+        button: document.getElementById("community-tab-follows"),
+        section: document.getElementById("community-follows-section"),
+        sliderPosition: '1%'
+        },
+        "followers": {
+        button: document.getElementById("community-tab-followers"),
+        section: document.getElementById("community-followers-section"),
+        sliderPosition: '51%'
+        }
+    };
 
-    btnFollows.addEventListener('click', async () => {
-        hideAll(sections);
-        unselectAllButton(buttons);
-        btnFollows.classList.add('active-community-tab');
-        followsSection.classList.remove('hidden');
-        await loadFollowing(userId);
+    const slider = document.querySelector('.community-slider');
+    const switchToTab = (tabName) => {
+        const selectedTab = tabs[tabName];
+        
+        Object.values(tabs).forEach(tab => {
+            tab.button.classList.remove('is-active');
+            tab.section.classList.add('hidden');
+        });
+
+        selectedTab.button.classList.add('is-active');
+        selectedTab.section.classList.remove('hidden');
+        
+        if (slider) slider.style.left = selectedTab.sliderPosition;
+    };
+
+    Object.entries(tabs).forEach(([tabName, tab]) => {
+        tab.button.addEventListener('click', () => switchToTab(tabName));
     });
-
-    btnFollowers.addEventListener('click', async () => {
-        unselectAllButton(buttons);
-        hideAll(sections);
-        btnFollowers.classList.add('active-community-tab');
-        followersSection.classList.remove('hidden');
-    });
-
 }
 
 function onValueChangeSearch(value) {
@@ -71,15 +80,6 @@ function onValueChangeSearch(value) {
         loadFollowing(u.id, value);
         loadFollowers(u.id, value);
     });
-
-}
-
-function hideAll(nodes) {
-    nodes.forEach(b => b.classList.add('hidden'));
-}
-
-function unselectAllButton(buttons) {
-    buttons.forEach(b => b.classList.remove('active-community-tab'));
 }
 
 async function loadFollowing(userId, searchTerm = null) {

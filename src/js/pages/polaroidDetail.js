@@ -74,7 +74,7 @@ export async function openPolaroidDetail(polaroidData, options = {}) {
         const loggedUser = await getCurrentUser();
         state.currentPolaroid = polaroidData;
         state.readOnly = polaroidData.idUtente != loggedUser.email;
-        console.log("readonly", state.readOnly, polaroidData.idUtente, loggedUser.email);
+
         const main = getMain();
         if (!main) return;
 

@@ -12,23 +12,18 @@
     </div>
   </div>
   <!-- Selettore tab -->
-  <div id="community-section-selector" class="mx-4 my-0">
-    <div id="tab-bar" class="glass-medium interactive">
-      <div class="glass-strong interactive missions-type-indicator"
-        style="width: 156.319px; height: 67.9861px; left: 8.05382px;"></div>
-
+  <div id="community-section-selector" class="mx-4 my-0 mb-3">
+    <div id="community-tab-bar" class="community-switch glass-strong">
       <!-- BOTTONI -->
-      <div class="flex justify-around relative z-10 min-h-13">
-        <!-- Seguiti -->
-        <button id="community-tab-follows" class="active-community-tab">
+        <button id="community-tab-follows" data-tab-section="follows" class="community-switch-btn is-active active-community-tab">
           <span>Seguiti</span>
         </button>
         <!-- Seguaci -->
-        <button id="community-tab-followers">
+        <button id="community-tab-followers" data-tab-section="followers" class="community-switch-btn">
           <span>Seguaci</span>
         </button>
-      </div>
-    </div>
+        <div class="community-slider" style="left: 1%;"></div>
+   </div> 
   </div>
   <!-- Contenitore corpo tab -->
   <div class="">
