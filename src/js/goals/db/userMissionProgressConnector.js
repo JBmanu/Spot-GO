@@ -18,7 +18,7 @@ import {runAllAsyncSafe} from "../utils.js";
 
 const USER_MISSION_PROGRESS_COLLECTION = "UserMissionProgress";
 
-export async function createUserMissionProgress(data) {
+async function createMissionProgressByType(data, create, update) {
     const user = await isAuthenticatedUser();
     if (!user) return null;
 
@@ -41,15 +41,48 @@ export async function createUserMissionProgress(data) {
     };
 
     if (documents.length === 0) {
-        return await createDocument(USER_MISSION_PROGRESS_COLLECTION, {
-            UserRef: userRef,
-            Missions: [newMission]
-        });
+        return await createDocument(USER_MISSION_PROGRESS_COLLECTION,
+            {UserRef: userRef, ...create(newMission)});
     } else {
-        return await updateDocument(documents[0], {
-            Missions: arrayUnion(newMission)
-        });
+        return await updateDocument(documents[0], update(newMission));
     }
+}
+
+export async function createSpotUserMissionProgress(data) {
+    return await createMissionProgressByType(data,
+        (newMission) => ({
+            SpotMission: [newMission], DailyMission: [], ThemeMission: [], LevelMission: []
+        }), (newMission) => ({
+            SpotMission: arrayUnion(newMission)
+        }))
+}
+
+export async function createDailyUserMissionProgress(data) {
+    return await createMissionProgressByType(data,
+        (newMission) => ({
+            SpotMission: [], DailyMission: [newMission], ThemeMission: [], LevelMission: []
+        }), (newMission) => ({
+            DailyMission: arrayUnion(newMission)
+        }))
+
+}
+
+export async function createThemeUserMissionProgress(data) {
+    return await createMissionProgressByType(data,
+        (newMission) => ({
+            SpotMission: [], DailyMission: [], ThemeMission: [newMission], LevelMission: []
+        }), (newMission) => ({
+            ThemeMission: arrayUnion(newMission)
+        }))
+}
+
+export async function createLevelUserMissionProgress(data) {
+    return await createMissionProgressByType(data,
+        (newMission) => ({
+            SpotMission: [], DailyMission: [], ThemeMission: [], LevelMission: [newMission]
+        }), (newMission) => ({
+            LevelMission: arrayUnion(newMission)
+        }))
 }
 
 export async function clearUserMissionProgress() {
