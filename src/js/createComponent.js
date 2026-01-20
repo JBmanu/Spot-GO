@@ -24,7 +24,10 @@ export async function loadComponentAsDocument(path) {
  * @param {(value: string, event: Event) => void} onValueChanged
  * @returns {Promise<{ searchBarEl: HTMLElement, keyboardOverlayEl: HTMLElement }>}
  */
+let keyboardId = 0;
+
 export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
+    if (!keyboardId) keyboardId = 0;
     const searchDoc = await loadComponentAsDocument("../html/common-components/search-bar/search-bar.html");
     const keyboardDoc = await loadComponentAsDocument("../html/common-components/search-bar/keyboard.html");
     const overlayDoc = await loadComponentAsDocument("../html/common-components/search-bar/keyboard-overlay.html");
@@ -35,6 +38,10 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
     const overlayEl = overlayDoc.body.firstElementChild;
 
     const searchInput = searchBarEl.querySelector("#view-all-saved-search");
+    const newId = `view-all-saved-search-${keyboardId}`;
+
+    searchInput.id = newId;
+    keyboardId++;
     const keyboard = keyboardEl; // id="view-all-saved-keyboard"
     const overlay = overlayEl;   // id="view-all-saved-keyboard-overlay"
 
@@ -144,7 +151,8 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
     return {
         searchBarEl,
         keyboardEl,
-        overlayEl
+        overlayEl,
+        newId,
     };
 }
 
