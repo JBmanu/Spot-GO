@@ -10,10 +10,8 @@ const SPOTS = ["8ncqBKHfbPWlQsFc7pvT", "G84q6lO8V2f1smPhjQk0", "qK5b57dBndsW77oU
 export async function seedUserMissionProgress() {
     const users = (await getAllUsers())
     await clearUserMissionProgress()
-
-    await runAllAsyncSafe(
-        () => seedSpotMissionsForUser(users),
-        () => seedMissionsForUser(users))
+    await seedSpotMissionsForUser(users)
+    await seedMissionsForUser(users)
 
     console.log("🎉 Creazione user mission progress completata!");
 }

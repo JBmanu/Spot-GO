@@ -1,14 +1,17 @@
 import {
-    createDocumentRef,
     clearDocuments,
     createDocument,
+    createDocumentRef,
     documentFromId,
-    documents,
+    documentsFrom,
+    documentsOf,
     EMPTY_VALUE,
     isAuthenticatedUser,
-    loadDocumentRef
+    loadDocumentRef,
+    updateDocument
 } from "./goalsConnector.js";
-import {Timestamp} from "firebase/firestore";
+import {arrayUnion, collection, query, Timestamp, where} from "firebase/firestore";
+import {db} from "../../firebase.js";
 import {MISSION_TEMPLATE_COLLECTION} from "./missionTemplateConnector.js";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
 import {runAllAsyncSafe} from "../utils.js";
@@ -19,26 +22,34 @@ export async function createUserMissionProgress(data) {
     const user = await isAuthenticatedUser();
     if (!user) return null;
 
-    const [userRes, placeRes, templateRes] =
-        await runAllAsyncSafe(
-            () => createDocumentRef("Utente", data.UserId),
-            () => createDocumentRef("Luogo", data.PlaceId),
-            () => createDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId)
-        )
+    const userRef = createDocumentRef("Utente", data.UserId);
+    const placeRef = createDocumentRef("Luogo", data.PlaceId);
+    const missionTemplateRef = createDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId);
 
-    const userRef = userRes.value;
-    const placeRef = placeRes.value;
-    const missionTemplateRef = templateRes.value;
+    const documents = await documentsFrom(query(
+        collection(db, USER_MISSION_PROGRESS_COLLECTION),
+        where("UserRef", "==", userRef)
+    ));
 
-    return await createDocument(USER_MISSION_PROGRESS_COLLECTION, {
-        UserRef: userRef,
+    const newMission = {
         PlaceRef: placeRef,
         MissionTemplateRef: missionTemplateRef,
         Current: data.Current ?? 0,
         IsCompleted: data.IsCompleted ?? false,
         IsActive: data.IsActive ?? true,
         CreatedAt: Timestamp.fromDate(new Date())
-    });
+    };
+
+    if (documents.length === 0) {
+        return await createDocument(USER_MISSION_PROGRESS_COLLECTION, {
+            UserRef: userRef,
+            Missions: [newMission]
+        });
+    } else {
+        return await updateDocument(documents[0], {
+            Missions: arrayUnion(newMission)
+        });
+    }
 }
 
 export async function clearUserMissionProgress() {
@@ -46,7 +57,7 @@ export async function clearUserMissionProgress() {
 }
 
 export async function userMissionProgresses() {
-    const userMissions = (await documents(USER_MISSION_PROGRESS_COLLECTION))
+    const userMissions = (await documentsOf(USER_MISSION_PROGRESS_COLLECTION))
     const detailedMissions = []
 
     for (let mission of userMissions) {
