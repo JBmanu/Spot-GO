@@ -487,7 +487,7 @@ export async function getFilteredSpots(
     // -------------------------
     // DISTANZA (km -> metri)
     // -------------------------
-    if (filters?.distanceKm != null) {
+    if (filters?.distanceKm != null && !isNaN(filters?.distanceKm)) {
         const maxDistanceMeters = filters.distanceKm * 1000;
 
         spots = spots.filter(spot => {

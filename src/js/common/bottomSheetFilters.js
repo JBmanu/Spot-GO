@@ -1,14 +1,12 @@
 import { closeBottomSheet } from "../ui/bottomSheet";
-import { initializeStarRating, getSelectedStarRating, resetStarRating } from "./starRating";
-import { createStarRating } from "../createComponent";
 import { initializeTimeRangeControl } from "./timeRange";
 
 // --- STATO DEFAULT ---
 const defaultFilters = {
-    distanceKm: 15,
+    distanceKm: null,
     startTime: null,
     endTime: null,
-    rating: 3
+    rating: 0
 };
 
 export async function initializeBottomSheetFilters({
@@ -22,22 +20,44 @@ export async function initializeBottomSheetFilters({
     const distanceSlider = filtersEl.querySelector('.distance-range');
     const distanceValueSpan = filtersEl.querySelector('.distance-value');
 
-    function updateDistanceSlider(e) {
-        const target = e.target || e;
-        const value =
-            ((target.value - target.min) / (target.max - target.min)) * 100;
+    const MIN_DIST = 0.5; // km
+    const MAX_DIST = 50;  // km
 
-        target.style.background = `
+    function calculateLogDistance(percent) {
+        if (parseInt(percent) === 100) return "unlimited";
+        // Usiamo una funzione quadratica per dare più spazio ai valori bassi
+        // Formula: min + (percentuale^2 * (max - min))
+        const normalized = percent / 100;
+        const value = MIN_DIST + (Math.pow(normalized, 2) * (MAX_DIST - MIN_DIST));
+        
+        return value < 5 ? value.toFixed(1) : Math.round(value);
+    }
+
+    function updateDistanceSlider(e) {
+        const el = e.target || e;
+        const percent = (el.value - el.min) / (el.max - el.min) * 100;
+        
+        const realDistance = calculateLogDistance(el.value);
+        
+        el.style.background = `
             linear-gradient(
                 to right,
                 rgb(3, 123, 252) 0%,
-                rgb(3, 123, 252) ${value}%,
-                #e5e7eb ${value}%,
+                rgb(3, 123, 252) ${percent}%,
+                #e5e7eb ${percent}%,
                 #e5e7eb 100%
             )
         `;
-
-        distanceValueSpan.textContent = `${target.value} km`;
+        
+        if (distanceValueSpan) {
+            distanceValueSpan.textContent = realDistance === 'unlimited'
+                ? 'Illimitata'
+                : `${realDistance} km`;
+        }
+        
+        el.dataset.realValue = realDistance === "unlimited"
+            ? null
+            : parseFloat(realDistance);
     }
 
     distanceSlider.addEventListener('input', updateDistanceSlider);
@@ -90,14 +110,15 @@ export async function initializeBottomSheetFilters({
 
     function resetFiltersUI() {
         // distanza
-        distanceSlider.value = defaultFilters.distanceKm;
+        distanceSlider.value = 100;
+        distanceSlider.dataset.realValue = defaultFilters.distanceKm;
         updateDistanceSlider(distanceSlider);
 
         // fascia oraria
-        startH.value = '';
-        startM.value = '';
-        endH.value = '';
-        endM.value = '';
+        startH.value = '00';
+        startM.value = '00';
+        endH.value = '23';
+        endM.value = '59';
 
         // rating
         updateStars(defaultFilters.rating);
@@ -117,7 +138,7 @@ export async function initializeBottomSheetFilters({
 
     applyBtn.addEventListener('click', () => {
         const filters = {
-            distanceKm: Number(distanceSlider.value),
+            distanceKm: Number(distanceSlider.dataset.realValue),
             startTime: readTime(startH, startM),
             endTime: readTime(endH, endM),
             rating: currentRating
