@@ -4,9 +4,9 @@ import { resetStatusFilter, setupStatusFilter, getActiveStatusFilters } from "./
 
 // --- STATO DEFAULT ---
 const defaultFilters = {
-    distanceKm: null,
-    startTime: null,
-    endTime: null,
+    distanceKm: NaN,
+    startTime: '00:00',
+    endTime: '23:59',
     rating: 0,
     status: {
         visited: false,
@@ -111,6 +111,10 @@ export async function initializeBottomSheetFilters({
 
     updateStars(defaultFilters.rating);
 
+    // STATO
+    const statusContainer = filtersEl.querySelector("#filter-status-container");
+    initializeStatusFilters(statusContainer);
+
     // RESET
     const resetBtn = filtersEl.querySelector('.filters-reset-btn');
 
@@ -129,14 +133,13 @@ export async function initializeBottomSheetFilters({
         // rating
         updateStars(defaultFilters.rating);
 
+        // status
+        resetStatusFilter(statusContainer)
+
         updateFiltersBadge(buttonEl, 0);
     }
 
     resetBtn.addEventListener('click', resetFiltersUI);
-
-    // STATO
-    const statusContainer = filtersEl.querySelector("#filter-status-container");
-    initializeStatusFilters(statusContainer);
 
     // CANCEL / APPLY
     const cancelBtn = filtersEl.querySelector('#filters-cancel');
@@ -199,10 +202,13 @@ function updateFiltersBadge(buttonEl, activeCount) {
 function countActiveFilters(current, defaults) {
     let count = 0;
 
-    if (current.distanceKm !== defaults.distanceKm) count++;
+    if (!isNaN(current.distanceKm)) count++; // [NaN !== NaN] è true?????
     if (current.rating !== defaults.rating) count++;
     if (current.startTime !== defaults.startTime) count++;
     if (current.endTime !== defaults.endTime) count++;
+    if (current.status.visited !== defaults.status.visited) count++;
+    if (current.status.saved !== defaults.status.saved) count++;
+    if (current.status.mine !== defaults.status.mine) count++;
 
     return count;
 }
