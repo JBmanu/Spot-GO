@@ -442,18 +442,41 @@ function makeChatId(str1, str2) {
     return sorted.join('-');
 }
 
+function timeToMinutes(timeStr) {
+    const [h, m] = timeStr.split(":").map(Number);
+    return h * 60 + m;
+}
+
+function intervalsOverlap(startA, endA, startB, endB) {
+    return startA < endB && endA > startB;
+}
+
 /**
  * Filtra gli spot caricati da Firestore.
  */
-export async function getFilteredSpots(categories = [], searchText = "", filters = null) {
+export async function getFilteredSpots(
+    categories = [],
+    searchText = "",
+    filters = null
+) {
     let spots = await getSpots();
 
-    spots = spots.filter(spot => spot.posizione && spot.posizione.coord1 != null && spot.posizione.coord2 != null);
+    // Coordinate valide
+    spots = spots.filter(
+        spot =>
+            spot.posizione &&
+            spot.posizione.coord1 != null &&
+            spot.posizione.coord2 != null
+    );
 
+    // Categoria
     if (categories && categories.length > 0) {
-        spots = spots.filter(spot => categories.includes(spot.idCategoria));
+        spots = spots.filter(spot =>
+            categories.includes(spot.idCategoria)
+        );
     }
 
+    // Ricerca testuale
     if (searchText && searchText.trim() !== "") {
         const searchLower = searchText.trim().toLowerCase();
         spots = spots.filter(spot =>
@@ -461,26 +484,39 @@ export async function getFilteredSpots(categories = [], searchText = "", filters
         );
     }
 
-    if (filters?.distance != null) {
+    // -------------------------
+    // DISTANZA (km -> metri)
+    // -------------------------
+    if (filters?.distanceKm != null) {
+        const maxDistanceMeters = filters.distanceKm * 1000;
+
         spots = spots.filter(spot => {
-            if (!spot.posizione) return false;
             const dist = distanceFromUserToSpot(spot);
-            return dist <= filters.distance;
+            return dist <= maxDistanceMeters;
         });
     }
 
-    if (filters?.openNow === true) {
-        const now = new Date();
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    // -------------------------
+    // FASCIA ORARIA (INTERSEZIONE)
+    // -------------------------
+    if (filters?.startTime && filters?.endTime) {
+        const filterStart = timeToMinutes(filters.startTime);
+        const filterEnd = timeToMinutes(filters.endTime);
 
         spots = spots.filter(spot => {
             if (!Array.isArray(spot.orari)) return false;
+
+            // il luogo è valido se ALMENO UNA fascia si interseca
             return spot.orari.some(orario => {
-                const [hStart, mStart] = orario.inizio.split(":").map(Number);
-                const [hEnd, mEnd] = orario.fine.split(":").map(Number);
-                const startMinutes = hStart * 60 + mStart;
-                const endMinutes = hEnd * 60 + mEnd;
-                return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+                const spotStart = timeToMinutes(orario.inizio);
+                const spotEnd = timeToMinutes(orario.fine);
+
+                return intervalsOverlap(
+                    filterStart,
+                    filterEnd,
+                    spotStart,
+                    spotEnd
+                );
             });
         });
     }
