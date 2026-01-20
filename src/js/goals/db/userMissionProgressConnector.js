@@ -67,17 +67,22 @@ export async function missionsProgressByUserAnd(type) {
         .filter(data => data.user.id === user.id && data.template.Type === type)
 }
 
-export async function activeSpotMissionProgressByUser() {
-    return (await missionsProgressByUserAnd(MISSION_TYPE.SPOT)).filter(data => data.progress.IsActive)
-}
+export async function missionsProgressGroupByUserAnd(missionType, isActive) {
+    const activeSpotMissions = (await missionsProgressByUserAnd(missionType))
+        .filter(data => data.progress.IsActive === isActive)
 
-export async function inactiveSpotMissionsProgressByUser() {
-    const inactiveSpotMissions = (await missionsProgressByUserAnd(MISSION_TYPE.SPOT))
-        .filter(data => !data.progress.IsActive)
-    return inactiveSpotMissions.reduce((acc, mission) => {
+    return activeSpotMissions.reduce((acc, mission) => {
         const placeId = mission.place.id;
         const group = acc.find(g => g.place.id === placeId);
         group ? group.missions.push(mission) : acc.push({place: mission.place, missions: [mission]})
         return acc;
     }, [])
+}
+
+export async function activeSpotMissionProgressByUser() {
+    return await missionsProgressGroupByUserAnd(MISSION_TYPE.SPOT, true)
+}
+
+export async function inactiveSpotMissionsProgressByUser() {
+    return await missionsProgressGroupByUserAnd(MISSION_TYPE.SPOT, false)
 }

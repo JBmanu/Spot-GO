@@ -9,6 +9,7 @@ import {seedDiscounts} from "./db/seed/discountSeed.js";
 import {seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
 import {loadMissions} from "./loader/missionLoader.js";
 import {seedUserMissionProgress} from "./db/seed/userMissionProgressSeed.js";
+import {runAllAsyncSafe} from "./utils.js";
 
 let isInitialized = false;
 
@@ -17,14 +18,12 @@ export async function initializeGoals() {
     isInitialized = true;
 
     // Seed DB
-    await seedBadges();
-    await seedDiscounts();
+    await runAllAsyncSafe(seedBadges, seedDiscounts)
     await seedMissionTemplates();
     await seedUserMissionProgress();
 
     // Loader
-    await loadSpotMissions();
-    await loadMissions();
+    await runAllAsyncSafe(loadSpotMissions, loadMissions)
 
     // Interaction
     await initializeSpotsMissions();
@@ -32,11 +31,6 @@ export async function initializeGoals() {
     await initializeMissionsBar();
     await initializeTypeMissions();
     await initializeCompletable();
-
-    // Test
-    // const missionDataId = await createMissionData("Scatta una foto :) ...", "Spot", "Foto");
-    // await createMission("aaaaaa", missionDataId, "Foto", 5);
-
 
     console.log("Goals module initialized");
 }

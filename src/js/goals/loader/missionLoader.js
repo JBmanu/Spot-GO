@@ -1,28 +1,28 @@
 ﻿import {MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
 import {missionsProgressByUserAnd} from "../db/userMissionProgressConnector.js";
-
-const MISSIONS_SECTION = new Map([
-    [0, MISSION_TYPE.DAILY],
-    [1, MISSION_TYPE.THEME],
-    [2, MISSION_TYPE.LEVEL]
-])
+import {runAllAsyncSafe} from "../utils.js";
 
 export async function loadMissions() {
+    await runAllAsyncSafe(
+        () => generateMissionType(MISSION_TYPE.DAILY, 0),
+        () => generateMissionType(MISSION_TYPE.THEME, 1),
+        () => generateMissionType(MISSION_TYPE.LEVEL, 2)
+    )
 
-    for (const [containerIndex, missionType] of MISSIONS_SECTION) {
-        const missions = await missionsProgressByUserAnd(missionType);
-
-        missions.forEach(mission =>
-            createMissionTemplate(
-                containerIndex,
-                mission.id,
-                mission.template,
-                mission.progress.Current));
-    }
     console.log("Missions loaded successfully.");
 }
 
-function createMissionTemplate(indexCtn, id, missionTemplate, progress) {
+async function generateMissionType(missionType, containerIndex) {
+    const missions = await missionsProgressByUserAnd(missionType);
+    missions.forEach(mission =>
+        generateHTMLMissionTemplate(
+            containerIndex,
+            mission.id,
+            mission.template,
+            mission.progress.Current));
+}
+
+function generateHTMLMissionTemplate(indexCtn, id, missionTemplate, progress) {
     const container = document.querySelectorAll('.missions-card');
     container[indexCtn].innerHTML +=
         `<div class="between-ctn glass-strong interactive completable px-5 py-4 card" db-id="${id}">

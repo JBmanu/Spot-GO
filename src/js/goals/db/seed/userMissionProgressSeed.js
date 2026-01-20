@@ -2,20 +2,19 @@ import {getAllUsers} from "../../../database.js";
 import {missionTemplatesByType} from "../missionTemplateConnector.js";
 import {MISSION_TYPE} from "./missionTemplateSeed.js";
 import {clearUserMissionProgress, createUserMissionProgress} from "../userMissionProgressConnector.js";
-import {documents, EMPTY_VALUE} from "../goalsConnector.js";
+import {runAllAsyncSafe} from "../../utils.js";
 
 const SPOTS = ["8ncqBKHfbPWlQsFc7pvT", "G84q6lO8V2f1smPhjQk0", "qK5b57dBndsW77oUhGbD"]
 
 
 export async function seedUserMissionProgress() {
-    const length = (await documents("UserMissionProgress")).length
     const users = (await getAllUsers())
-
-    console.log("length user mission progress:", length)
-
     await clearUserMissionProgress()
-    await seedSpotMissionsForUser(users)
-    await seedMissionsForUser(users)
+
+    await runAllAsyncSafe(
+        () => seedSpotMissionsForUser(users),
+        () => seedMissionsForUser(users))
+
     console.log("🎉 Creazione user mission progress completata!");
 }
 
