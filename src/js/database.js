@@ -521,6 +521,15 @@ export async function getFilteredSpots(
         });
     }
 
+    // -------------------------
+    // VALUTAZIONE
+    // -------------------------
+    if (filters?.rating > 0) {
+        spots = spots.filter(spot => {
+            return spot.valutazione >= filters.rating;
+        });
+    }
+
     return spots;
 }
 
