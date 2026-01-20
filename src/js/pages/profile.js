@@ -65,20 +65,18 @@ window.reloadProfileHeader = reloadProfileHeader;
 async function initializeProfileData(container, userData, sectionView) {
     await profileDepsReady;
 
-    await profileDepsReady;
-
     if (!userData) return;
 
-    updateProfileHeader(userData);
+    updateProfileHeader(userData, container);
 
-    await updateUserCounters(userData.username);
+    await updateUserCounters(userData.username, container);
 
     setupProfileEventListeners(container, userData, sectionView);
 
-    await initializePolaroidCarousel(document, userData);
+    await initializePolaroidCarousel(container, userData);
 }
 
-function updateProfileHeader(user) {
+function updateProfileHeader(user, container) {
     const profileData = {
         name: user.username || "",
         username: user.username ? "@" + user.username : "",
@@ -86,11 +84,18 @@ function updateProfileHeader(user) {
         avatarSrc: `../assets/icons/login-signup/${AVATAR_MAP[user.username] || AVATAR_MAP.DEFAULT}`,
     };
 
+    // Usa container.querySelector se è un container specifico, altrimenti document
+    const querySelector = (selector) => {
+        return container && container.querySelector 
+            ? container.querySelector(selector) 
+            : document.querySelector(selector);
+    };
+
     const elements = {
-        name: document.getElementById("profile-name"),
-        username: document.getElementById("profile-username"),
-        email: document.getElementById("profile-email"),
-        avatar: document.getElementById("profile-avatar")
+        name: querySelector("#profile-name"),
+        username: querySelector("#profile-username"),
+        email: querySelector("#profile-email"),
+        avatar: querySelector("#profile-avatar")
     };
 
     if (elements.name) elements.name.textContent = profileData.name;
@@ -98,15 +103,15 @@ function updateProfileHeader(user) {
     if (elements.email) elements.email.textContent = profileData.email;
     if (elements.avatar) elements.avatar.src = profileData.avatarSrc;
 
-    const title = document.getElementById("header-title");
+    const title = querySelector("#header-title");
     if (title) {
         title.classList.add("hidden");
     }
-    const logoText = document.getElementById("header-logo-text");
+    const logoText = querySelector("#header-logo-text");
     if (logoText) logoText.style.display = "";
 }
 
-async function updateUserCounters(username) {
+async function updateUserCounters(username, container) {
     try {
         const [saved, reviews, visited, created] = await Promise.all([
             getSavedSpots(username),
@@ -115,11 +120,18 @@ async function updateUserCounters(username) {
             getCreatedSpots(username)
         ]);
 
+        // Usa container.querySelector se è un container specifico, altrimenti document
+        const querySelector = (selector) => {
+            return container && container.querySelector 
+                ? container.querySelector(selector) 
+                : document.querySelector(selector);
+        };
+
         const elements = {
-            saved: document.getElementById("saved-spots"),
-            reviews: document.getElementById("written-reviews"),
-            visited: document.getElementById("visited-spots"),
-            created: document.getElementById("created-spots")
+            saved: querySelector("#saved-spots"),
+            reviews: querySelector("#written-reviews"),
+            visited: querySelector("#visited-spots"),
+            created: querySelector("#created-spots")
         };
 
         if (elements.saved) elements.saved.textContent = saved.length;
@@ -139,9 +151,8 @@ function setupProfileEventListeners(container, userData, sectionView) {
             savedSpotsButton.dataset.bound = "true";
             savedSpotsButton.addEventListener("click", handleSavedSpotsClick);
         }
-    } else {
-        console.error("Button #profile-saved-spots-button not found");
     }
+    // Silenziosamente salta se non trovato (potrebbe essere un overlay read-only)
 
     const addPolaroidButton = container.querySelector(".profile-diary-add-btn");
     if (addPolaroidButton) {
@@ -267,15 +278,23 @@ async function handleCreatedSpotsClick(e) {
     await loadViewAllAddedSpots("profile");
 }
 
-async function initializePolaroidCarousel(parentDocument, userData) {
-    const container = parentDocument.getElementById("polaroid-carousel-container");
-    if (!container) return;
+async function initializePolaroidCarousel(container, userData) {
+    // Se container è il document, usa getElementById globale
+    const carouselContainer = container.nodeType === 9 
+        ? container.getElementById("polaroid-carousel-container")
+        : container.querySelector("#polaroid-carousel-container");
+    
+    if (!carouselContainer) return;
+
+    // Determina se siamo dentro un overlay (per il back button)
+    const isOverlay = container && container.nodeType !== 9 && container.dataset?.overlayView;
+    const returnViewKey = isOverlay ? container.dataset.overlayView : null;
 
     try {
         const polaroidData = await fetchFormattedUserPolaroids(userData);
 
         if (!polaroidData || polaroidData.length === 0) {
-            renderEmptyCarousel(container);
+            renderEmptyCarousel(carouselContainer);
             return;
         }
 
@@ -285,7 +304,7 @@ async function initializePolaroidCarousel(parentDocument, userData) {
             return;
         }
 
-        renderCarouselItems(container, polaroidData, template);
+        renderCarouselItems(carouselContainer, polaroidData, template, returnViewKey);
 
     } catch (err) {
         console.error("Error initializing polaroid carousel:", err);
@@ -514,24 +533,42 @@ function updateCarouselCounter(total, current) {
 }
 
 /**
- * Read only profile data init. Some element are removed.
+ * Read only profile data init. Some element are disabled or removed.
  */
 export async function initializeReadOnlyProfileData(modalElement, userData) {
     if (!modalElement) return;
+
+    // Rimuovi elementi non necessari in read-only
     const classItemToRemove = [".profile-data-section", ".profile-diary-add-btn"];
     classItemToRemove.forEach(className => {
-        modalElement.querySelector(className).remove();
+        const el = modalElement.querySelector(className);
+        if (el) el.remove();
     });
+
+    // Disabilita i bottoni di azione (anziché rimuoverli)
+    const buttonsToDisable = [
+        "#profile-saved-spots-button",
+        "#profile-reviews-button",
+        "#profile-visited-spots-button",
+        "#profile-created-spots-button",
+        ".profile-album-btn"
+    ];
+
+    buttonsToDisable.forEach(selector => {
+        const btn = modalElement.querySelector(selector);
+        if (btn) {
+            btn.disabled = true;
+            btn.setAttribute("aria-disabled", "true");
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
+            btn.style.pointerEvents = "none";
+        }
+    });
+
     modalElement.classList.add("profile-overview-modal-content");
     await initializeProfileData(modalElement, userData, "community");
 
+    // Rimuovi menu buttons dalle polaroid (non cliccabili in read-only)
     const menuButtons = modalElement.querySelectorAll(".polaroid-menu-wrapper");
     menuButtons.forEach(btn => btn.remove());
-
-    const openAlbumButton = modalElement.querySelector(".profile-album-btn");
-    openAlbumButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log("Open Album");
-    });
 }

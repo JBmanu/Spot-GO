@@ -1,8 +1,8 @@
 
-import {searchUser, getCurrentUser, getFollowingUser, getFollowersUser, getSuggestedFollows} from "../database.js";
+import {getCurrentUser, getFollowingUser, getFollowersUser, getSuggestedFollows} from "../database.js";
 import {makeFriendCard, makeSuggestedCard} from '../pages/community/cardsFactory.js'
 import {createSearchBarWithKeyboard} from '../createComponent.js';
-import {showsItemsInContainer} from './community/communityUtility.js'
+import {showsItemsInContainer, searchUsersByName} from './community/communityUtility.js'
 import { closeChat } from './community/chat.js';
 let keyboardSetted = false;
 
@@ -26,7 +26,7 @@ export async function loadCommunityData(arg) {
 async function configureKeyboard() {
     // Bind search bar and keyboard to search section.
     const {searchBarEl, keyboardEl, overlayEl} = await createSearchBarWithKeyboard("Cerca utente", onValueChangeSearch);
-    const communityPage = document.querySelector(".app-toolbar");//querySelector('[data-section-view="community"]');
+    const communityPage = document.querySelector(".app-toolbar");
     //Estrai nodo input
     const searchInput = searchBarEl.querySelector("#view-all-saved-search");
     // Sostituisci l'input mio con quello estratto e associato alla keyboard
@@ -115,21 +115,3 @@ async function loadFollowers(userId, searchTerm = null) {
     });
 }
 
-
-function searchUsersByName(users, searchString) {
-    if (!searchString || searchString.trim() === '') {
-        return users;
-    }
-    
-    const search = searchString.toLowerCase().trim();
-    
-    const startsWith = users.filter(u => 
-        u.username?.toLowerCase().startsWith(search)
-    );
-    const contains = users.filter(u => 
-        u.username?.toLowerCase().includes(search) && 
-        !u.username?.toLowerCase().startsWith(search)
-    );
-    
-    return [...startsWith, ...contains];
-}

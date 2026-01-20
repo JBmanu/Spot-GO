@@ -3,6 +3,7 @@ import { getCurrentUser, getCreatedSpots, getSpots, getCategoryNameIt } from "..
 import { distanceFromUserToSpot, formatDistance } from "../common.js";
 import { initializeVerticalCarousel } from "../common/carousels.js";
 import { SearchSystem } from "../common/SearchSystem.js";
+import { attachSimulatedKeyboard, removeSimulatedKeyboard } from "../common/keyboardUtils.js";
 
 const OVERLAY_ID = "view-all-created";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -269,9 +270,7 @@ async function closeViewAllAndRestore() {
 
     const overlay = main.querySelector(OVERLAY_SELECTOR);
 
-    if (state.keyboardEl && main.contains(state.keyboardEl)) {
-        main.removeChild(state.keyboardEl);
-    }
+    removeSimulatedKeyboard();
     if (state.overlayEl && overlay && overlay.contains(state.overlayEl)) {
         overlay.removeChild(state.overlayEl);
     }
@@ -334,7 +333,9 @@ export async function loadViewAllAddedSpots(returnViewKey = null) {
         const { searchBarEl, keyboardEl, overlayEl } = await searchSystem.init();
 
         placeholder.replaceWith(searchBarEl);
-        main.appendChild(keyboardEl);
+
+        attachSimulatedKeyboard(keyboardEl);
+
         overlay.appendChild(overlayEl);
 
         if (searchSystem.elements.bottomSheet) overlay.appendChild(searchSystem.elements.bottomSheet);

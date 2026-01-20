@@ -1,16 +1,33 @@
-import { getCurrentUser,getAllUsers, shareCardboard } from "../database.js";
+import { getAllUsers, shareCardboard } from "../database.js";
 import { closeModal, openModal } from "../common/modalView.js";
-import { showsItemsInContainer } from "./community/communityUtility.js";
+import { showsItemsInContainer, searchUsersByName } from "./community/communityUtility.js";
 import { makeSelectableCard } from "./community/cardsFactory.js";
-import { formatDate } from "../common/datetime.js";
+import {createSearchBarWithKeyboard} from '../createComponent.js';
 
 export async function sharePolaroidModal(polaroidData) {
     await openModal("../html/common-pages/share-polaroid-modal.html", ".phone-screen", (modalElement) => {
+        insertSearchBar(modalElement);
         initializeSharePolaroid(modalElement, polaroidData);
     });
 }
 
-export async function initializeSharePolaroid(modalElement, polaroidData) {    
+async function insertSearchBar(modalNode) {
+   
+    const {searchBarEl, keyboardEl, overlayEl} = await createSearchBarWithKeyboard("Cerca utente", searchUsers);
+    const toolBar = document.querySelector(".app-toolbar");
+    toolBar.appendChild(keyboardEl);
+    const listView = modalNode.querySelector(".vertical-list-wrapper");
+    searchBarEl.querySelector("#view-all-saved-filter-btn")?.remove();
+    listView.before(searchBarEl);
+}
+
+async function searchUsers (searchTerm) {
+    const users = await getAllUsers();
+    const results = searchUsersByName(users, searchTerm);
+    showsItemsInContainer(results, "follows", "sendto-list", data => makeSelectableCard(data));
+}
+
+async function initializeSharePolaroid(modalElement, polaroidData) {    
     const friendsList = modalElement.querySelector("#sendto-list");
     const sendButton = modalElement.querySelector("#share-send-btn");
     const closeButton = modalElement.querySelector("#share-close-btn");
@@ -19,42 +36,26 @@ export async function initializeSharePolaroid(modalElement, polaroidData) {
         await closeModal(console.log("onclose modal"));
     });
 
-    const image = modalElement.querySelector(".cardboard-image");
-    const title = modalElement.querySelector(".profile-polaroid-title.share-view");
-    const date = modalElement.querySelector(".profile-polaroid-subtitle.share-view");
-
-    image.src = polaroidData.immagini?.[0] || '';
-    title.textContent = polaroidData.title || '';
-    date.textContent = polaroidData.timestamp ? formatDate(polaroidData.timestamp) : 'Nessuna data';
+    sendButton.disabled = true;
 
     try {
-        // Carica la lista degli amici
-        const user = await getCurrentUser();
-        const follows = await getAllUsers();//getFollowingUser(user.email);
-
-         // Popola la lista dei seguiti
-        showsItemsInContainer(follows, "follows", "sendto-list", data => makeSelectableCard(data));
-        
-        if (!follows || follows.length === 0) {
-            sendButton.disabled = true;
-            return;
-        }
-
+        await searchUsers();
+        const checkboxes = modalElement.querySelectorAll(".receiver-checkbox");
+        const selected = () => Array.from(modalElement.querySelectorAll(".receiver-checkbox:checked"));
+        checkboxes.forEach(checkbox => 
+            checkbox.addEventListener('change', () => {
+                sendButton.disabled = selected().length === 0;
+            })
+        );
         // Gestisci il click del bottone di invio
         sendButton.addEventListener("click", async (e) => {
             e.preventDefault();
-            const selectedFriends = Array.from(
-                modalElement.querySelectorAll(".receiver-checkbox:checked")
-            ).map(checkbox => checkbox.dataset.friendIdMail);
-
-            if (selectedFriends.length === 0) {
-                alert("Seleziona almeno un amico");
-                return;
-            }
-
+            const selectedEmails = selected.map(checkbox => checkbox.dataset.friendIdMail);
             try {
-                const res = await shareCardboard(polaroidData.id, selectedFriends);
+                //Show loading circle
+                const res = await shareCardboard(polaroidData.id, selectedEmails);
                 if (res.success) {
+                    //show ok and then close modal
                     closeModal();
                 } else {
                     console.log("Errore:", res.descr);

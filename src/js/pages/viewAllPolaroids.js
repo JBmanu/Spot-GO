@@ -1,6 +1,7 @@
 import { SearchSystem } from "../common/SearchSystem.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
 import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
+import { attachSimulatedKeyboard, removeSimulatedKeyboard } from "../common/keyboardUtils.js";
 
 const OVERLAY_ID = "view-all-polaroids";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -124,8 +125,6 @@ function clearViewAllPolaroidsHistoryState() {
     }
 }
 
-
-
 function renderViewAllPolaroidsEmptyMessage(container) {
     container.innerHTML = `
         <div class="col-span-2 flex flex-col items-center justify-center py-12 text-center opacity-60">
@@ -135,7 +134,6 @@ function renderViewAllPolaroidsEmptyMessage(container) {
         </div>
     `;
 }
-
 
 function groupPolaroidsByDate(polaroids) {
     const sorted = [...polaroids].sort((a, b) => {
@@ -230,9 +228,7 @@ async function closeViewAllPolaroidsAndRestore() {
 
     const overlay = main.querySelector(OVERLAY_SELECTOR);
 
-    if (state.keyboardEl && main.contains(state.keyboardEl)) {
-        main.removeChild(state.keyboardEl);
-    }
+    removeSimulatedKeyboard();
     if (state.overlayEl && overlay && overlay.contains(state.overlayEl)) {
         overlay.removeChild(state.overlayEl);
     }
@@ -267,7 +263,6 @@ export async function loadViewAllPolaroids(returnViewKey = null, userData) {
 
         showViewAllPolaroidsHeader();
 
-        // Cleanup logic attached to the overlay
         state.overlay.onClose = async () => {
             await closeViewAllPolaroidsAndRestore();
         };
@@ -302,7 +297,9 @@ export async function loadViewAllPolaroids(returnViewKey = null, userData) {
         const { searchBarEl, keyboardEl, overlayEl } = await searchSystem.init();
 
         placeholder.replaceWith(searchBarEl);
-        main.appendChild(keyboardEl);
+
+        attachSimulatedKeyboard(keyboardEl);
+
         overlay.appendChild(overlayEl);
 
         state.keyboardEl = keyboardEl;
@@ -311,7 +308,6 @@ export async function loadViewAllPolaroids(returnViewKey = null, userData) {
 
     pushViewAllPolaroidsHistoryState(returnViewKey);
 
-    // Cleanup logic attached to the overlay
     overlay.onClose = async () => {
         await closeViewAllPolaroidsAndRestore();
     };

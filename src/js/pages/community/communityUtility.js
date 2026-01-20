@@ -41,3 +41,22 @@ function createEmptyStateNode(emoji = '🔍', message = 'Nessun utente trovato')
     `;
     return emptyState;
 }
+
+
+export function searchUsersByName(users, searchString) {
+    if (!searchString || searchString.trim() === '') {
+        return users;
+    }
+    
+    const search = searchString.toLowerCase().trim();
+    
+    const startsWith = users.filter(u => 
+        u.username?.toLowerCase().startsWith(search)
+    );
+    const contains = users.filter(u => 
+        u.username?.toLowerCase().includes(search) && 
+        !u.username?.toLowerCase().startsWith(search)
+    );
+    
+    return [...startsWith, ...contains];
+}

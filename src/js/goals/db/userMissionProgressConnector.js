@@ -4,10 +4,12 @@ import {
     createDocument,
     documentFromId,
     documents,
-    isAuthenticatedUser
+    EMPTY_VALUE,
+    isAuthenticatedUser,
+    loadDocumentRef
 } from "./goalsConnector.js";
+import {Timestamp} from "firebase/firestore";
 import {MISSION_TEMPLATE_COLLECTION} from "./missionTemplateConnector.js";
-import {getDoc} from "firebase/firestore";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
 
 const USER_MISSION_PROGRESS_COLLECTION = "UserMissionProgress";
@@ -16,17 +18,18 @@ export async function createUserMissionProgress(data) {
     const user = await isAuthenticatedUser();
     if (!user) return null;
 
-    const userRef = await buildDocumentRef("Utente", data.UserId ?? "");
-    const placeRef = await buildDocumentRef("Luogo", data.PlaceId ?? "");
-    const missionTemplateRef = await buildDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId ?? "");
+    const userRef = await buildDocumentRef("Utente", data.UserId);
+    const placeRef = await buildDocumentRef("Luogo", data.PlaceId);
+    const missionTemplateRef = await buildDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId);
 
     return await createDocument(USER_MISSION_PROGRESS_COLLECTION, {
-        UserRef: userRef ?? "",
-        PlaceRef: placeRef ?? "",
-        MissionTemplateRef: missionTemplateRef ?? "",
+        UserRef: userRef,
+        PlaceRef: placeRef,
+        MissionTemplateRef: missionTemplateRef,
         Current: data.Current ?? 0,
         IsCompleted: data.IsCompleted ?? false,
-        IsActive: data.IsActive ?? true
+        IsActive: data.IsActive ?? true,
+        CreatedAt: Timestamp.fromDate(new Date())
     });
 }
 
@@ -39,14 +42,17 @@ export async function userMissionProgresses() {
     const detailedMissions = []
 
     for (let mission of userMissions) {
-        const userDocument = await getDoc(mission.UserRef)
-        const placeDocument = await getDoc(mission.PlaceRef)
-        const missionTemplateDocument = await getDoc(mission.MissionTemplateRef)
+        let userDocument = await loadDocumentRef(mission.UserRef)
+        let placeDocument = await loadDocumentRef(mission.PlaceRef)
+        const missionTemplateDocument = await loadDocumentRef(mission.MissionTemplateRef)
+
+        userDocument = userDocument === EMPTY_VALUE ? null : userDocument;
+        placeDocument = placeDocument === EMPTY_VALUE ? null : placeDocument;
 
         detailedMissions.push({
-            user: userDocument.data() ?? "",
-            place: placeDocument.data() ?? "",
-            missionTemplate: missionTemplateDocument.data() ?? "",
+            user: {id: userDocument?.id, ...userDocument.data()},
+            place: {id: placeDocument?.id, ...placeDocument?.data()},
+            missionTemplate: missionTemplateDocument.data(),
             missionProgress: mission,
         })
     }
@@ -58,16 +64,23 @@ export async function userMissionProgress(id) {
     return await documentFromId(USER_MISSION_PROGRESS_COLLECTION, id)
 }
 
-export async function spotMissionProgressByUser() {
+export async function missionsProgressByUserAnd(type) {
     const user = (await isAuthenticatedUser())
     return (await userMissionProgresses())
-        .filter(data => data.user.email === user.id && data.missionTemplate.Type === MISSION_TYPE.SPOT)
+        .filter(data => data.user.email === user.id && data.missionTemplate.Type === type)
 }
 
 export async function activeSpotMissionProgressByUser() {
-    return (await spotMissionProgressByUser()).filter(data => data.missionProgress.IsActive)
+    return (await missionsProgressByUserAnd(MISSION_TYPE.SPOT)).filter(data => data.missionProgress.IsActive)
 }
 
-export async function InactiveSpotMissionProgressByUser() {
-    return (await spotMissionProgressByUser()).filter(data => !data.missionProgress.IsActive)
+export async function inactiveSpotMissionsProgressByUser() {
+    const inactiveSpotMissions = (await missionsProgressByUserAnd(MISSION_TYPE.SPOT))
+        .filter(data => !data.missionProgress.IsActive)
+    return inactiveSpotMissions.reduce((acc, mission) => {
+        const placeId = mission.place.id;
+        const group = acc.find(g => g.place.id === placeId);
+        group ? group.missions.push(mission) : acc.push({place: mission.place, missions: [mission]})
+        return acc;
+    }, [])
 }

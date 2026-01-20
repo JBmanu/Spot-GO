@@ -4,6 +4,8 @@ import { getCurrentUser, getSavedSpots, getSpots, getCategoryNameIt } from "../d
 import { distanceFromUserToSpot, formatDistance } from "../common.js";
 import { initializeVerticalCarousel } from "../common/carousels.js";
 import { SearchSystem } from "../common/SearchSystem.js";
+import { goBack } from "../common/back.js";
+import { attachSimulatedKeyboard, removeSimulatedKeyboard } from "../common/keyboardUtils.js";
 
 const OVERLAY_ID = "view-all-saved";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -16,6 +18,7 @@ const state = {
     classicCardTplLoaded: false,
     keyboardEl: null,
     overlayEl: null,
+    revealHandler: null,
 };
 
 function getMain() {
@@ -61,6 +64,15 @@ function showViewAllSavedHeader() {
                 class="flex items-center justify-center w-10 h-10">
                 <img src="../../assets/icons/profile/Back.svg" alt="Indietro" class="w-6 h-6">
             </button>`;
+
+        const backBtn = logo.querySelector("#back-button");
+        if (backBtn) {
+            backBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goBack();
+            });
+        }
     }
     if (logoText) logoText.style.display = "none";
     if (title) {
@@ -127,8 +139,6 @@ function clearHistoryState() {
     } catch (_) {
     }
 }
-
-
 
 function renderEmptySavedMessage(container) {
     const p = document.createElement("p");
@@ -208,8 +218,6 @@ function renderSpotCard(template, spot, categoryCache) {
     return cardNode;
 }
 
-
-
 async function populateViewAllSavedSpots({ preserveDom = false } = {}) {
     const currentUser = await getCurrentUser();
     if (!currentUser) return;
@@ -276,14 +284,17 @@ async function closeViewAllSavedAndRestore() {
 
     const overlay = main.querySelector(OVERLAY_SELECTOR);
 
-    if (state.keyboardEl && main.contains(state.keyboardEl)) {
-        main.removeChild(state.keyboardEl);
-    }
+    removeSimulatedKeyboard();
     if (state.overlayEl && overlay && overlay.contains(state.overlayEl)) {
         overlay.removeChild(state.overlayEl);
     }
     state.keyboardEl = null;
     state.overlayEl = null;
+
+    if (state.revealHandler) {
+        document.removeEventListener("overlay:revealed", state.revealHandler);
+        state.revealHandler = null;
+    }
 
     clearHistoryState();
 }
@@ -316,8 +327,6 @@ export async function loadViewAllSaved(returnViewKey = null) {
 
         showViewAllSavedHeader();
 
-
-        // Cleanup logic attached to the overlay
         state.overlay.onClose = async () => {
             await closeViewAllSavedAndRestore();
         };
@@ -348,7 +357,9 @@ export async function loadViewAllSaved(returnViewKey = null) {
         const { searchBarEl, keyboardEl, overlayEl } = await searchSystem.init();
 
         placeholder.replaceWith(searchBarEl);
-        main.appendChild(keyboardEl);
+
+        attachSimulatedKeyboard(keyboardEl);
+
         overlay.appendChild(overlayEl);
 
 
@@ -385,8 +396,23 @@ export async function loadViewAllSaved(returnViewKey = null) {
     initializeBookmarks();
     await syncAllBookmarks();
 
-    // Cleanup logic attached to the overlay
     overlay.onClose = async () => {
         await closeViewAllSavedAndRestore();
     };
+
+    if (!state.revealHandler) {
+        state.revealHandler = (e) => {
+            if (e.detail?.overlayId === OVERLAY_ID) {
+                try {
+                    showViewAllSavedHeader();
+                    const currentOverlay = getOverlay();
+                    const currentReturnKey = currentOverlay ? currentOverlay.dataset.returnView : null;
+                    if (currentReturnKey) pushHistoryState(currentReturnKey);
+                } catch (err) {
+                    console.error("Error in view-all-saved reveal handler:", err);
+                }
+            }
+        };
+        document.addEventListener("overlay:revealed", state.revealHandler);
+    }
 }

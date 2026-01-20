@@ -213,8 +213,6 @@ export async function initializeHomepage(homepageElement) {
     if (!homepageRoot) return;
 
     if (homepageRoot.dataset.homepageBuilt === "true") {
-        await resetHomepageState(homepageRoot);
-
         initializeBookmarks(homepageRoot);
         await syncBookmarksUI(homepageRoot).catch(() => { });
         ensureSeeAllSavedButtonBound(homepageRoot);

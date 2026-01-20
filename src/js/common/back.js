@@ -4,7 +4,7 @@ export function closeOverlayAndReveal({ overlay, returnViewKey, skipReveal = fal
     const main = document.getElementById("main");
     if (!main) return null;
 
-    const ov = overlay || main.querySelector('[data-overlay-view]');
+    const ov = overlay || main.querySelector('[data-overlay-view]:not([hidden])');
     if (!ov) return null;
 
     const returnKey = returnViewKey || ov.dataset.returnView || null;
@@ -17,13 +17,22 @@ export function closeOverlayAndReveal({ overlay, returnViewKey, skipReveal = fal
             if (returnKey && main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
                 const returnOverlay = main.querySelector(`[data-overlay-view="${returnKey}"]`);
                 returnOverlay.hidden = false;
+                try {
+                    document.dispatchEvent(new CustomEvent("overlay:revealed", { detail: { overlayId: returnKey } }));
+                } catch (err) {
+                    console.error("Error dispatching overlay:revealed:", err);
+                }
             } else {
                 showOnlySectionView(main, returnKey);
             }
         }
 
         setTimeout(() => {
-            if (typeof ov.onClose === 'function') ov.onClose();
+            if (typeof ov.onClose === 'function') {
+                try {
+                    ov.onClose();
+                } catch (e) { console.error("Error in onClose:", e); }
+            }
 
             try {
                 ov.remove();
@@ -69,6 +78,11 @@ export function closeOverlayAndReveal({ overlay, returnViewKey, skipReveal = fal
     if (returnKey && main.querySelector(`[data-overlay-view="${returnKey}"]`)) {
         const returnOverlay = main.querySelector(`[data-overlay-view="${returnKey}"]`);
         returnOverlay.hidden = false;
+        try {
+            document.dispatchEvent(new CustomEvent("overlay:revealed", { detail: { overlayId: returnKey } }));
+        } catch (err) {
+            console.error("Error dispatching overlay:revealed (sync):", err);
+        }
         return returnKey;
     }
 
@@ -111,7 +125,7 @@ export function goBack({ fallback } = {}) {
         }
     }
 
-    const overlay = document.querySelector('[data-overlay-view]');
+    const overlay = document.querySelector('[data-overlay-view]:not([hidden])');
     if (overlay) {
         closeOverlayAndReveal({ overlay });
         return;
@@ -182,10 +196,12 @@ if (typeof document !== 'undefined') {
     });
 
     window.addEventListener("popstate", (event) => {
-        const overlay = document.querySelector('[data-overlay-view]');
+        const overlay = document.querySelector('[data-overlay-view]:not([hidden])');
         const currentState = event.state || {};
-        if (overlay && !overlay.hidden) {
-            if (currentState.overlay !== overlay.dataset.overlayView) {
+
+        if (overlay) {
+            const overlayId = overlay.dataset.overlayView;
+            if (currentState.overlay !== overlayId) {
                 closeOverlayAndReveal({ overlay });
             }
         }

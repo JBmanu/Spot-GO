@@ -1,4 +1,4 @@
-import { getSpotById, updatePolaroid, deletePolaroid } from "../database.js";
+import { getSpotById, updatePolaroid, deletePolaroid, getCurrentUser } from "../database.js";
 import { formatDate } from "../common/datetime.js";
 import { openSpotDetailById } from "./spotDetail.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
@@ -6,7 +6,8 @@ import { sharePolaroidModal } from "./sharePolaroid.js";
 const state = {
     templateCache: null,
     currentPolaroid: null,
-    isEditing: false
+    isEditing: false,
+    readOnly: false
 };
 
 function toggleEditMode(overlay, data) {
@@ -17,7 +18,7 @@ function toggleEditMode(overlay, data) {
     const diaryEmptySection = overlay.querySelector('[data-section="diary-empty"]');
     const editActions = overlay.querySelector('[data-section="edit-actions"]');
 
-    if (state.isEditing) {
+    if (state.isEditing && !state.readOnly) {
         if (diaryInput) {
             if (diarySection) diarySection.style.display = "block";
             if (diaryEmptySection) diaryEmptySection.style.display = "none";
@@ -70,11 +71,15 @@ function getDetailOverlay(main) {
 
 export async function openPolaroidDetail(polaroidData, options = {}) {
     try {
+        const loggedUser = await getCurrentUser();
         state.currentPolaroid = polaroidData;
+        state.readOnly = polaroidData.idUtente != loggedUser.email;
+        console.log("readonly", state.readOnly, polaroidData.idUtente, loggedUser.email);
         const main = getMain();
         if (!main) return;
 
-        const returnSection = getActiveSectionKey(main);
+        // Usa il returnViewKey fornito, altrimenti rileva la sezione attiva
+        const returnSection = options.returnViewKey || getActiveSectionKey(main);
         const existing = getDetailOverlay(main);
         if (existing) existing.remove();
 
@@ -203,7 +208,12 @@ async function populatePolaroidDetail(data, overlay) {
 
 
 function initializeDetailHandlers(overlay, data) {
-
+    const menuButton = overlay.querySelector(".polaroid-menu-float");
+    if (state.readOnly && menuButton) {
+        menuButton.style.display = "none";
+    } else {
+        
+    }
 
     const editBtn = overlay.querySelector('[data-action="edit-polaroid"]');
     if (editBtn) {
@@ -314,6 +324,7 @@ function initializeDetailHandlers(overlay, data) {
                 if (e.target === deleteModal) closeModal();
             });
         }
+
     }
 
     const cancelEditBtn = overlay.querySelector('[data-action="cancel-edit"]');
