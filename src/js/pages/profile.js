@@ -551,7 +551,6 @@ export async function initializeReadOnlyProfileData(modalElement, userData) {
         "#profile-reviews-button",
         "#profile-visited-spots-button",
         "#profile-created-spots-button",
-        ".profile-album-btn"
     ];
 
     buttonsToDisable.forEach(selector => {
@@ -559,11 +558,16 @@ export async function initializeReadOnlyProfileData(modalElement, userData) {
         if (btn) {
             btn.disabled = true;
             btn.setAttribute("aria-disabled", "true");
-            btn.style.opacity = "0.5";
             btn.style.cursor = "not-allowed";
             btn.style.pointerEvents = "none";
         }
     });
+
+    const profileBodySection = modalElement.querySelector(".profile-body-section");
+    if (profileBodySection) {
+        profileBodySection.style.display = "flex";
+        profileBodySection.style.justifyContent = "center";
+    }
 
     modalElement.classList.add("profile-overview-modal-content");
     await initializeProfileData(modalElement, userData, "community");
