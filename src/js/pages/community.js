@@ -1,8 +1,8 @@
 
-import {searchUser, getCurrentUser, getFollowingUser, getFollowersUser, getSuggestedFollows} from "../database.js";
+import {getCurrentUser, getFollowingUser, getFollowersUser, getSuggestedFollows} from "../database.js";
 import {makeFriendCard, makeSuggestedCard} from '../pages/community/cardsFactory.js'
 import {createSearchBarWithKeyboard} from '../createComponent.js';
-import {showsItemsInContainer} from './community/communityUtility.js'
+import {showsItemsInContainer, searchUsersByName} from './community/communityUtility.js'
 import { closeChat } from './community/chat.js';
 let keyboardSetted = false;
 
@@ -115,21 +115,3 @@ async function loadFollowers(userId, searchTerm = null) {
     });
 }
 
-
-function searchUsersByName(users, searchString) {
-    if (!searchString || searchString.trim() === '') {
-        return users;
-    }
-    
-    const search = searchString.toLowerCase().trim();
-    
-    const startsWith = users.filter(u => 
-        u.username?.toLowerCase().startsWith(search)
-    );
-    const contains = users.filter(u => 
-        u.username?.toLowerCase().includes(search) && 
-        !u.username?.toLowerCase().startsWith(search)
-    );
-    
-    return [...startsWith, ...contains];
-}
