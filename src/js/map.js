@@ -12,6 +12,7 @@ let getSpots,
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { setupCenterToUserPositionButton } from './common/mapExtension.js';
 
 Promise.all([
     import("./database.js").then(module => {
@@ -119,7 +120,7 @@ async function initializeMap() {
     attachBookmarkChangeListener();
 }
 
-async function loadSpotsDependentObjects() {
+export async function loadSpotsDependentObjects() {
     await loadSpots();
     await loadMarkers();
     await loadNearbySpotsList();
@@ -174,7 +175,7 @@ async function loadSearchBar() {
     if (!mainSection) return;
 
     mainSection.insertBefore(searchBarEl, mainSection.children[1]);
-    mainSection.appendChild(overlayEl);
+    // mainSection.appendChild(overlayEl);
     mainSection.appendChild(keyboardEl);
     mainSection.appendChild(bottomSheetOverlayEl);
     mainSection.appendChild(bottomSheetEl);
@@ -223,8 +224,11 @@ async function loadMap() {
         }),
         zIndexOffset: 100
     })
-        .addTo(map)
-        .bindPopup(`<b>La tua posizione</b>`);
+    .addTo(map)
+    .bindPopup(`<b>La tua posizione</b>`);
+
+    const centerButton = document.getElementById('map-recenter-btn');
+    setupCenterToUserPositionButton(map, centerButton);
 
     // setTileServer(MAP_TILE_SERVERS.ESRI_LIGHT_GRAY);
 }

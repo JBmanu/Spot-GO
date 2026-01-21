@@ -487,7 +487,7 @@ export async function getFilteredSpots(
     // -------------------------
     // DISTANZA (km -> metri)
     // -------------------------
-    if (filters?.distanceKm != null) {
+    if (filters?.distanceKm != null && !isNaN(filters?.distanceKm)) {
         const maxDistanceMeters = filters.distanceKm * 1000;
 
         spots = spots.filter(spot => {
@@ -519,6 +519,50 @@ export async function getFilteredSpots(
                 );
             });
         });
+    }
+
+    // -------------------------
+    // VALUTAZIONE
+    // -------------------------
+    if (filters?.rating > 0) {
+        spots = spots.filter(spot => {
+            return spot.valutazione >= filters.rating;
+        });
+    }
+
+    // -------------------------
+    // STATI (Visited, Saved, Mine)
+    // -------------------------
+    const user = await getCurrentUser();
+    const userId = user.email;
+
+    if (userId && filters?.status) {
+        const { visited, saved, mine } = filters.status;
+
+        // Filtro "Creato da me"
+        if (mine) {
+            spots = spots.filter(spot => 
+                spot.idCreatore != null && spot.idCreatore === userId
+            );
+        }
+
+        // Filtro "Visitato"
+        if (visited) {
+            const visitedSnap = await getDocs(
+                query(collection(db, "LuogoVisitato"), where("idUtente", "==", userId))
+            );
+            const visitedIds = visitedSnap.docs.map(doc => doc.data().idLuogo);
+            spots = spots.filter(spot => visitedIds.includes(spot.id));
+        }
+
+        // Filtro "Salvato"
+        if (saved) {
+            const savedSnap = await getDocs(
+                query(collection(db, "LuogoSalvato"), where("idUtente", "==", userId))
+            );
+            const savedIds = savedSnap.docs.map(doc => doc.data().idLuogo);
+            spots = spots.filter(spot => savedIds.includes(spot.id));
+        }
     }
 
     return spots;

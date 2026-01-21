@@ -2,6 +2,9 @@ import { createTimeRange, loadComponentAsDocument } from "../createComponent";
 import { USER_PROTO_POSITION } from "../common";
 import { insertNewSpot, getCurrentUser } from "../database";
 import { readTimeRangeValues, validateTimeRangesWithCrossIntersections } from "../common/timeRange";
+import { goBack } from "../common/back";
+import { loadSpotsDependentObjects } from "../map";
+import { setupCenterToUserPositionButton } from "../common/mapExtension";
 
 let newSpotSection;
 let map;
@@ -186,6 +189,11 @@ async function loadMap() {
       validateNewSpotForm();
     });
 
+    const centerButton = document.getElementById('new-spot-map-recenter-btn');
+    setupCenterToUserPositionButton(map, centerButton);
+
+    L.DomEvent.disableClickPropagation(centerButton);
+    L.DomEvent.disableScrollPropagation(centerButton);
 }
 
 function initializeCategorySelector() {
@@ -524,8 +532,7 @@ async function readNewSpotDataFromFields() {
 
     const immagine = imageController.getImagePath();
 
-    const valutazione = null;
-    const recensione = null;
+    const valutazione = 4.5;
 
     if (!nome || !descrizione || !idCategoria || !posizione) {
         throw new Error("Compila tutti i campi obbligatori");
@@ -540,7 +547,6 @@ async function readNewSpotDataFromFields() {
         orari,
         costo,
         valutazione,
-        recensione,
         immagine,
         idCreatore
     };
@@ -564,6 +570,8 @@ async function addNewSpotAndClose(e) {
     try {
         const spot = await readNewSpotDataFromFields();
         const spotId = await insertNewSpot(spot);
+        goBack({});
+        loadSpotsDependentObjects();
     } catch (err) {
         console.error("Errore inserimento Luogo:", err);
         throw err;
