@@ -174,7 +174,7 @@ async function loadSearchBar() {
     if (!mainSection) return;
 
     mainSection.insertBefore(searchBarEl, mainSection.children[1]);
-    mainSection.appendChild(overlayEl);
+    // mainSection.appendChild(overlayEl);
     mainSection.appendChild(keyboardEl);
     mainSection.appendChild(bottomSheetOverlayEl);
     mainSection.appendChild(bottomSheetEl);
