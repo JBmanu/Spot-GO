@@ -1,5 +1,5 @@
 ﻿import {MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
-import {missionsProgressByUserAnd} from "../db/userMissionProgressConnector.js";
+import {missionsProgressByCurrentUserAnd} from "../db/userMissionProgressConnector.js";
 import {runAllAsyncSafe} from "../utils.js";
 
 export async function loadMissions() {
@@ -13,7 +13,7 @@ export async function loadMissions() {
 }
 
 async function generateMissionType(missionType, containerIndex) {
-    const missions = await missionsProgressByUserAnd(missionType);
+    const missions = await missionsProgressByCurrentUserAnd(missionType);
     missions.forEach(mission =>
         generateHTMLMissionTemplate(
             containerIndex,

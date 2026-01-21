@@ -6,7 +6,7 @@ import {
     createDailyUserMissionProgress,
     createLevelUserMissionProgress,
     createSpotUserMissionProgress,
-    createThemeUserMissionProgress,
+    createThemeUserMissionProgress, missionsProgressByCurrentUser, missionsProgressByCurrentUserAnd,
 } from "../userMissionProgressConnector.js";
 
 const SPOTS = ["8ncqBKHfbPWlQsFc7pvT", "G84q6lO8V2f1smPhjQk0", "qK5b57dBndsW77oUhGbD"]
@@ -14,20 +14,25 @@ const SPOTS = ["8ncqBKHfbPWlQsFc7pvT", "G84q6lO8V2f1smPhjQk0", "qK5b57dBndsW77oU
 
 export async function seedUserMissionProgress() {
     const users = (await getAllUsers())
+    const user = [users[0]]
     await clearUserMissionProgress()
 
-    await seedSpotMissionsForUser(users)
+    console.log("SIZE USERS: ", user.length)
+    await seedSpotMissionsForUser(user)
 
 
-    await seedMissionsForUser(users, MISSION_TYPE.DAILY, createDailyUserMissionProgress)
-    await seedMissionsForUser(users, MISSION_TYPE.THEME, createThemeUserMissionProgress)
-    await seedMissionsForUser(users, MISSION_TYPE.LEVEL, createLevelUserMissionProgress)
+    await seedMissionsForUser(user, MISSION_TYPE.DAILY, createDailyUserMissionProgress)
+    await seedMissionsForUser(user, MISSION_TYPE.THEME, createThemeUserMissionProgress)
+    await seedMissionsForUser(user, MISSION_TYPE.LEVEL, createLevelUserMissionProgress)
 
     console.log("🎉 Creazione user mission progress completata!");
+
+    console.log(await missionsProgressByCurrentUserAnd(MISSION_TYPE.SPOT))
 }
 
 async function seedSpotMissionsForUser(users) {
     const spotMissions = await missionTemplatesByType(MISSION_TYPE.SPOT)
+    console.log("Spot missions found: ", spotMissions.length * SPOTS.length)
     let oneActivePerUser = true;
 
     for (let usersKey of users) {
@@ -48,6 +53,7 @@ async function seedSpotMissionsForUser(users) {
 
 async function seedMissionsForUser(users, missionType, toCreateMission) {
     const missions = await missionTemplatesByType(missionType)
+    console.log(missionType + " missions found: ", missions.length)
     for (let usersKey of users) {
         for (let mission of missions) {
             await toCreateMission({

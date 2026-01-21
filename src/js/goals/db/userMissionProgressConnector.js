@@ -40,53 +40,51 @@ async function createMissionProgressByType(data, create, update) {
         CreatedAt: Timestamp.fromDate(new Date())
     };
 
+    const emptyMissionStructure = {
+        [MISSION_TYPE.SPOT]: [], [MISSION_TYPE.DAILY]: [], [MISSION_TYPE.THEME]: [], [MISSION_TYPE.LEVEL]: []
+    };
+
     if (documents.length === 0) {
+        console.log("Creating new UserMissionProgress for user:", user.id);
         return await createDocument(USER_MISSION_PROGRESS_COLLECTION,
-            {UserRef: userRef, ...create(newMission)});
+            {UserRef: userRef, Missions: {...emptyMissionStructure, ...create(newMission)}});
     } else {
+        console.log("Updating existing UserMissionProgress for user:", user.id);
         return await updateDocument(documents[0], update(newMission));
     }
 }
 
+
 export async function createSpotUserMissionProgress(data) {
     return await createMissionProgressByType(data,
-        (newMission) => ({
-            SpotMission: [newMission], DailyMission: [], ThemeMission: [], LevelMission: []
-        }), (newMission) => ({
-            SpotMission: arrayUnion(newMission)
-        }))
+        (newMission) => ({[MISSION_TYPE.SPOT]: [newMission]}),
+        (newMission) => ({[`Missions.${MISSION_TYPE.SPOT}`]: arrayUnion(newMission)}))
 }
 
 export async function createDailyUserMissionProgress(data) {
     return await createMissionProgressByType(data,
-        (newMission) => ({
-            SpotMission: [], DailyMission: [newMission], ThemeMission: [], LevelMission: []
-        }), (newMission) => ({
-            DailyMission: arrayUnion(newMission)
-        }))
-
+        (newMission) => ({[MISSION_TYPE.DAILY]: [newMission]}),
+        (newMission) => ({[`Missions.${MISSION_TYPE.DAILY}`]: arrayUnion(newMission)}))
 }
 
 export async function createThemeUserMissionProgress(data) {
     return await createMissionProgressByType(data,
-        (newMission) => ({
-            SpotMission: [], DailyMission: [], ThemeMission: [newMission], LevelMission: []
-        }), (newMission) => ({
-            ThemeMission: arrayUnion(newMission)
-        }))
+        (newMission) => ({[MISSION_TYPE.THEME]: [newMission]}),
+        (newMission) => ({[`Missions.${MISSION_TYPE.THEME}`]: arrayUnion(newMission)}))
 }
 
 export async function createLevelUserMissionProgress(data) {
     return await createMissionProgressByType(data,
-        (newMission) => ({
-            SpotMission: [], DailyMission: [], ThemeMission: [], LevelMission: [newMission]
-        }), (newMission) => ({
-            LevelMission: arrayUnion(newMission)
-        }))
+        (newMission) => ({[MISSION_TYPE.LEVEL]: [newMission]}),
+        (newMission) => ({[`Missions.${MISSION_TYPE.LEVEL}`]: arrayUnion(newMission)}))
 }
 
 export async function clearUserMissionProgress() {
     await clearDocuments(USER_MISSION_PROGRESS_COLLECTION)
+}
+
+export async function userMissionProgress(id) {
+    return await documentFromId(USER_MISSION_PROGRESS_COLLECTION, id)
 }
 
 export async function userMissionProgresses() {
@@ -94,7 +92,6 @@ export async function userMissionProgresses() {
     const detailedMissions = []
 
     for (let mission of userMissions) {
-
         const [userRef, placeRef, templateRef] =
             await runAllAsyncSafe(
                 () => loadDocumentRef(mission.UserRef),
@@ -117,18 +114,32 @@ export async function userMissionProgresses() {
     return detailedMissions
 }
 
-export async function userMissionProgress(id) {
-    return await documentFromId(USER_MISSION_PROGRESS_COLLECTION, id)
+
+export async function missionsProgressByCurrentUser() {
+    const user = await isAuthenticatedUser();
+    if (!user) return EMPTY_VALUE;
+
+    const userRef = createDocumentRef("Utente", user.id);
+    const documents = await documentsFrom(query(
+        collection(db, USER_MISSION_PROGRESS_COLLECTION),
+        where("UserRef", "==", userRef)
+    ));
+
+    return documents[0]
 }
 
-export async function missionsProgressByUserAnd(type) {
+export async function missionsProgressByCurrentUserAnd(type) {
+    const userMissions = await missionsProgressByCurrentUser()
+    console.log("TEEESSSTT: " + userMissions)
+    console.log("TYPE: " + userMissions.Missions[type].length)
+
     const user = (await isAuthenticatedUser())
     return (await userMissionProgresses())
         .filter(data => data.user.id === user.id && data.template.Type === type)
 }
 
 export async function missionsProgressGroupByUserAnd(missionType, isActive) {
-    const activeSpotMissions = (await missionsProgressByUserAnd(missionType))
+    const activeSpotMissions = (await missionsProgressByCurrentUserAnd(missionType))
         .filter(data => data.progress.IsActive === isActive)
 
     return activeSpotMissions.reduce((acc, mission) => {
