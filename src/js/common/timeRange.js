@@ -36,22 +36,18 @@ export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
             em.value.length !== 2
         ) return true;
 
-        return getMinutes(eh.value, em.value) >
-               getMinutes(sh.value, sm.value);
+        return (
+            getMinutes(eh.value, em.value) >
+            getMinutes(sh.value, sm.value)
+        );
     };
 
-    // AUTO END TIME
-    const autoSetEndTime = () => {
-        if (sh.value.length === 2 && sm.value.length === 2) {
-            let end = getMinutes(sh.value, sm.value) + 60;
-            if (end >= 1440) end = 1439;
-
-            eh.value = pad(Math.floor(end / 60));
-            em.value = pad(end % 60);
-
-            remember(eh);
-            remember(em);
-        }
+    // END = 23:59
+    const setEndToMax = () => {
+        eh.value = "23";
+        em.value = "59";
+        remember(eh);
+        remember(em);
     };
 
     // INPUT GENERICO
@@ -66,23 +62,38 @@ export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
 
             remember(el);
             afterValid?.();
+            onInput();
         });
-
-        onInput();
     };
 
     // START
     validatedInput(sh, isValidHour, () => {
-        if (sh.value.length === 2) sm.focus();
+        if (sh.value.length === 2) {
+            // forza minuti a 00
+            sm.value = "00";
+            remember(sm);
+            sm.focus();
+
+            // compila end a 23:59
+            setEndToMax();
+        }
     });
 
     validatedInput(sm, isValidMinute, () => {
-        if (sm.value.length === 2) autoSetEndTime();
+        if (sm.value.length === 2) {
+            // minuti validi -> end = 23:59
+            setEndToMax();
+        }
     });
 
     // END
-    validatedInput(eh, (v) => isValidHour(v) && isEndAfterStart(), () => {
-        if (eh.value.length === 2) em.focus();
+    validatedInput(eh, isValidHour, () => {
+        if (eh.value.length === 2) {
+            // forza minuti a 00
+            em.value = "00";
+            remember(em);
+            em.focus();
+        }
     });
 
     validatedInput(em, (v) => isValidMinute(v) && isEndAfterStart());
