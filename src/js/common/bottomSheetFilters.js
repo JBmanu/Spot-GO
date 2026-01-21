@@ -1,6 +1,12 @@
 import { closeBottomSheet } from "../ui/bottomSheet";
 import { initializeTimeRangeControl } from "./timeRange";
-import { resetStatusFilter, setupStatusFilter, getActiveStatusFilters } from "./spotStatusFilter";
+import { 
+    resetStatusFilter,
+    setupStatusFilter,
+    getActiveStatusFilters,
+    getStatusState,
+    mapping
+} from "./spotStatusFilter";
 
 // --- STATO DEFAULT ---
 const defaultFilters = {
@@ -176,11 +182,58 @@ export async function initializeBottomSheetFilters({
         toggleApplyFiltersButton();
     }
 
+    function applyActiveFiltersToFiltersUI() {
+        const filters = activeFilters;
+
+        // DISTANZA
+        if (filters.distanceKm === null || isNaN(filters.distanceKm)) {
+            distanceSlider.value = 100;
+        } else {
+            const min = MIN_DIST;
+            const max = MAX_DIST;
+            const perc = Math.sqrt((filters.distanceKm - min) / (max - min)) * 100;
+            distanceSlider.value = Math.max(0, Math.min(100, perc));
+        }
+        updateDistanceSlider(distanceSlider);
+
+        // FASCIA ORARIA
+        if (filters.startTime) {
+            const [sh, sm] = filters.startTime.split(':');
+            startH.value = sh;
+            startM.value = sm;
+        }
+        if (filters.endTime) {
+            const [eh, em] = filters.endTime.split(':');
+            endH.value = eh;
+            endM.value = em;
+        }
+
+        // RATING
+        updateStars(filters.rating || 0);
+
+        // STATUS (Visited, Saved, Mine)
+        if (filters.status) {
+            const state = getStatusState(statusContainer);
+            
+            state.visited = !!filters.status.visited;
+            state.saved = !!filters.status.saved;
+            state.mine = !!filters.status.mine;
+
+            statusContainer.querySelectorAll(".home-chip").forEach((btn) => {
+                const key = mapping[btn.dataset.category];
+                const isActive = state[key];
+                btn.classList.toggle("active", isActive);
+                btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+            });
+        }
+        toggleApplyFiltersButton();
+    }
+
     resetBtn.addEventListener('click', resetFiltersUI);
 
     // CANCEL / APPLY
     cancelBtn.addEventListener('click', () => {
-        // TODO: annullare modifiche correnti e riportare a stato precedente "activeStatus"
+        applyActiveFiltersToFiltersUI();
         closeBottomSheet(bottomSheetEl, overlayEl);
     });
 

@@ -1,10 +1,16 @@
 const statusStates = new WeakMap();
 
+export const mapping = {
+    'visitato': 'visited',
+    'salvato': 'saved',
+    'creato': 'mine'
+};
+
 /**
  * Recupera o inizializza lo stato dei filtri per un dato contenitore.
  * Utilizziamo un oggetto per mappare i 3 stati boolean.
  */
-function getStatusState(containerEl) {
+export function getStatusState(containerEl) {
     if (!containerEl) return { visited: false, saved: false, mine: false };
     if (!statusStates.has(containerEl)) {
         statusStates.set(containerEl, {
@@ -31,12 +37,6 @@ export function setupStatusFilter(containerEl, { onChange } = {}) {
 
         const rawCategory = button.dataset.category;
         if (!rawCategory) return;
-
-        const mapping = {
-            'visitato': 'visited',
-            'salvato': 'saved',
-            'creato': 'mine'
-        };
         
         const stateKey = mapping[rawCategory];
         const state = getStatusState(containerEl);
