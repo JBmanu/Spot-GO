@@ -19,6 +19,7 @@ export function openBottomSheet(bottomSheetEl, overlayEl) {
     requestAnimationFrame(() => {
         bottomSheetEl.classList.add('active');
         overlayEl.classList.add('active');
+        raiseFiltersOpenEvent(bottomSheetEl);
     });
 }
 
@@ -39,4 +40,13 @@ export function closeBottomSheet(bottomSheetEl, overlayEl) {
     };
 
     bottomSheetEl.addEventListener('transitionend', onEnd);
+}
+
+function raiseFiltersOpenEvent(bottomSheetEl) {
+    const filtersEventProvider = bottomSheetEl.querySelector('.event-provider');
+    if (filtersEventProvider) {
+        if (filtersEventProvider.onOpen) {
+            filtersEventProvider.onOpen();
+        }
+    }
 }

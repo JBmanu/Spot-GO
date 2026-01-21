@@ -1,4 +1,4 @@
-export function initializeTimeRangeControl(timeRangeEl) {
+export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
     const sh = timeRangeEl.querySelector("#start-h");
     const sm = timeRangeEl.querySelector("#start-m");
     const eh = timeRangeEl.querySelector("#end-h");
@@ -67,6 +67,8 @@ export function initializeTimeRangeControl(timeRangeEl) {
             remember(el);
             afterValid?.();
         });
+
+        onInput();
     };
 
     // START

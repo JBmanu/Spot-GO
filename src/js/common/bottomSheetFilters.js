@@ -15,6 +15,9 @@ const defaultFilters = {
     }
 };
 
+// --- STATO ATTIVO ---
+let activeFilters = defaultFilters;
+
 export async function initializeBottomSheetFilters({
     filtersEl,
     bottomSheetEl,
@@ -22,6 +25,61 @@ export async function initializeBottomSheetFilters({
     buttonEl,
     onFiltersApplied
 }) {
+    let statusContainer;
+    let currentRating = null;
+    const cancelBtn = filtersEl.querySelector('#filters-cancel');
+    const applyBtn = filtersEl.querySelector('#filters-apply');
+
+    function toggleApplyFiltersButton() {
+        const currentFilters = readFilters();
+        const disabled = countActiveFilters(currentFilters, activeFilters) == 0;
+
+        applyBtn.disabled = disabled;
+        applyBtn.classList.toggle("opacity-50", disabled);
+        applyBtn.classList.toggle("cursor-not-allowed", disabled);
+    }
+
+    const readTime = (h, m) => {
+        if (!h.value && !m.value) return null;
+        const hh = h.value.padStart(2, '0');
+        const mm = m.value.padStart(2, '0');
+        return `${hh}:${mm}`;
+    };
+
+    filtersEl.onOpen = () => {
+        toggleApplyFiltersButton();
+    }
+
+    // FASCIA ORARIA
+    const timeRangeEl = filtersEl.querySelector('#filters-time-range');
+    initializeTimeRangeControl(timeRangeEl, toggleApplyFiltersButton);
+
+    const startH = timeRangeEl.querySelector('#start-h');
+    const startM = timeRangeEl.querySelector('#start-m');
+    const endH = timeRangeEl.querySelector('#end-h');
+    const endM = timeRangeEl.querySelector('#end-m');
+
+    startH.value = '00';
+    endH.value = '00';
+    startM.value = '23';
+    endM.value = '59';
+
+    // STATO
+    statusContainer = filtersEl.querySelector("#filter-status-container");
+    initializeStatusFilters(statusContainer);
+
+    function initializeStatusFilters(statusContainer) {
+        if (!statusContainer) return;
+
+        // Reset visivo e dello stato interno all'avvio
+        resetStatusFilter(statusContainer);
+
+        // Configurazione dei listener
+        setupStatusFilter(statusContainer, {
+            onChange: toggleApplyFiltersButton
+        });
+    }
+
     // DISTANZA
     const distanceSlider = filtersEl.querySelector('.distance-range');
     const distanceValueSpan = filtersEl.querySelector('.distance-value');
@@ -64,36 +122,17 @@ export async function initializeBottomSheetFilters({
         el.dataset.realValue = realDistance === "unlimited"
             ? null
             : parseFloat(realDistance);
+
+        toggleApplyFiltersButton();
     }
 
     distanceSlider.addEventListener('input', updateDistanceSlider);
     updateDistanceSlider(distanceSlider);
 
-    // FASCIA ORARIA
-    const timeRangeEl = filtersEl.querySelector('#filters-time-range');
-    initializeTimeRangeControl(timeRangeEl);
-
-    const startH = timeRangeEl.querySelector('#start-h');
-    const startM = timeRangeEl.querySelector('#start-m');
-    const endH = timeRangeEl.querySelector('#end-h');
-    const endM = timeRangeEl.querySelector('#end-m');
-
-    startH.value = '00';
-    endH.value = '00';
-    startM.value = '23';
-    endM.value = '59';
-
-    const readTime = (h, m) => {
-        if (!h.value && !m.value) return null;
-        const hh = h.value.padStart(2, '0');
-        const mm = m.value.padStart(2, '0');
-        return `${hh}:${mm}`;
-    };
-
     // RATING
     const starButtons = filtersEl.querySelectorAll('.star-btn-filters');
 
-    let currentRating = defaultFilters.rating;
+    currentRating = defaultFilters.rating;
 
     function updateStars(rating) {
         currentRating = rating;
@@ -101,6 +140,7 @@ export async function initializeBottomSheetFilters({
             const value = Number(btn.dataset.value);
             btn.classList.toggle('active', value <= rating);
         });
+        toggleApplyFiltersButton();
     }
 
     starButtons.forEach(btn => {
@@ -110,10 +150,6 @@ export async function initializeBottomSheetFilters({
     });
 
     updateStars(defaultFilters.rating);
-
-    // STATO
-    const statusContainer = filtersEl.querySelector("#filter-status-container");
-    initializeStatusFilters(statusContainer);
 
     // RESET
     const resetBtn = filtersEl.querySelector('.filters-reset-btn');
@@ -137,19 +173,20 @@ export async function initializeBottomSheetFilters({
         resetStatusFilter(statusContainer)
 
         updateFiltersBadge(buttonEl, 0);
+        toggleApplyFiltersButton();
     }
 
     resetBtn.addEventListener('click', resetFiltersUI);
 
     // CANCEL / APPLY
-    const cancelBtn = filtersEl.querySelector('#filters-cancel');
-    const applyBtn = filtersEl.querySelector('#filters-apply');
-
     cancelBtn.addEventListener('click', () => {
+        // TODO: annullare modifiche correnti e riportare a stato precedente "activeStatus"
         closeBottomSheet(bottomSheetEl, overlayEl);
     });
 
-    applyBtn.addEventListener('click', () => {
+    function readFilters() {
+        if (!statusContainer || currentRating === null) return defaultFilters;
+
         const statusFilters = statusContainer 
             ? getActiveStatusFilters(statusContainer) 
             : { visited: false, saved: false, mine: false };
@@ -162,28 +199,23 @@ export async function initializeBottomSheetFilters({
             status: statusFilters
         };
 
+        return filters;
+    }
+
+    applyBtn.addEventListener('click', () => {
+        const filters = readFilters();
+
         updateFiltersBadge(
             buttonEl,
             countActiveFilters(filters, defaultFilters)
         );
 
         closeBottomSheet(bottomSheetEl, overlayEl);
+        activeFilters = filters;
         onFiltersApplied(filters);
     });
 
     resetFiltersUI();
-}
-
-function initializeStatusFilters(statusContainer) {
-    if (!statusContainer) return;
-
-    // Reset visivo e dello stato interno all'avvio
-    resetStatusFilter(statusContainer);
-
-    // Configurazione dei listener
-    setupStatusFilter(statusContainer, {
-        onChange: () => {}
-    });
 }
 
 function updateFiltersBadge(buttonEl, activeCount) {
@@ -202,7 +234,7 @@ function updateFiltersBadge(buttonEl, activeCount) {
 function countActiveFilters(current, defaults) {
     let count = 0;
 
-    if (!isNaN(current.distanceKm)) count++; // [NaN !== NaN] è true?????
+    if (!Object.is(current.distanceKm, defaults.distanceKm)) count++; // [NaN !== NaN] è true?????
     if (current.rating !== defaults.rating) count++;
     if (current.startTime !== defaults.startTime) count++;
     if (current.endTime !== defaults.endTime) count++;
