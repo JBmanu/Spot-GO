@@ -2,7 +2,6 @@ import {
     clearDocuments,
     createDocument,
     createDocumentRef,
-    documentFromId,
     documentsFrom,
     EMPTY_VALUE,
     isAuthenticatedUser,
@@ -16,7 +15,7 @@ import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
 
 const USER_MISSION_PROGRESS_COLLECTION = "UserMissionProgress";
 
-async function createMissionProgressByType(data, create, update) {
+async function createMissionProgress(data, create, update) {
     const user = await isAuthenticatedUser();
     if (!user) return null;
 
@@ -38,7 +37,7 @@ async function createMissionProgressByType(data, create, update) {
         [MISSION_TYPE.SPOT]: [], [MISSION_TYPE.DAILY]: [], [MISSION_TYPE.THEME]: [], [MISSION_TYPE.LEVEL]: []
     };
 
-    const userMissions = await missionsProgressByUser(data.UserId)
+    const userMissions = await userMissionsOf(data.UserId)
 
     if (!userMissions) {
         return await createDocument(USER_MISSION_PROGRESS_COLLECTION,
@@ -48,9 +47,8 @@ async function createMissionProgressByType(data, create, update) {
     }
 }
 
-
-export async function createSpotUserMissionProgress(data) {
-    return await createMissionProgressByType(data,
+export async function createSpotMission(data) {
+    return await createMissionProgress(data,
         (newMission) => ({
             [MISSION_TYPE.SPOT]: {[data.PlaceId]: [newMission]}
         }),
@@ -59,20 +57,20 @@ export async function createSpotUserMissionProgress(data) {
         }))
 }
 
-export async function createDailyUserMissionProgress(data) {
-    return await createMissionProgressByType(data,
+export async function createDailyMission(data) {
+    return await createMissionProgress(data,
         (newMission) => ({[MISSION_TYPE.DAILY]: [newMission]}),
         (newMission) => ({[`Missions.${MISSION_TYPE.DAILY}`]: arrayUnion(newMission)}))
 }
 
-export async function createThemeUserMissionProgress(data) {
-    return await createMissionProgressByType(data,
+export async function createThemeMission(data) {
+    return await createMissionProgress(data,
         (newMission) => ({[MISSION_TYPE.THEME]: [newMission]}),
         (newMission) => ({[`Missions.${MISSION_TYPE.THEME}`]: arrayUnion(newMission)}))
 }
 
-export async function createLevelUserMissionProgress(data) {
-    return await createMissionProgressByType(data,
+export async function createLevelMission(data) {
+    return await createMissionProgress(data,
         (newMission) => ({[MISSION_TYPE.LEVEL]: [newMission]}),
         (newMission) => ({[`Missions.${MISSION_TYPE.LEVEL}`]: arrayUnion(newMission)}))
 }
@@ -81,11 +79,7 @@ export async function clearUserMissionProgress() {
     await clearDocuments(USER_MISSION_PROGRESS_COLLECTION)
 }
 
-export async function userMissionProgress(id) {
-    return await documentFromId(USER_MISSION_PROGRESS_COLLECTION, id)
-}
-
-export async function missionsProgressByUser(userId) {
+async function userMissionsOf(userId) {
     const userRef = createDocumentRef("Utente", userId);
     const documents = await documentsFrom(query(
         collection(db, USER_MISSION_PROGRESS_COLLECTION),
@@ -94,51 +88,56 @@ export async function missionsProgressByUser(userId) {
     return documents[0]
 }
 
-
-export async function missionsProgressByCurrentUser() {
+async function currentUserMissions() {
     const user = await isAuthenticatedUser();
     if (!user) return EMPTY_VALUE;
-    return (await missionsProgressByUser(user.id))
+    return (await userMissionsOf(user.id))
 }
 
-export async function missionsProgressByCurrentUserAnd(type) {
-    const userMissions = await missionsProgressByCurrentUser()
+async function currentUserMissionsOf(type) {
+    const userMissions = await currentUserMissions()
     return userMissions?.Missions[type]
 }
 
+async function hydrateMissions(mission) {
+    const missionTemplateDocument = await loadDocumentRef(mission.MissionTemplateRef);
+    const placeDocument = missionTemplateDocument.data().Type === MISSION_TYPE.SPOT ?
+        await loadDocumentRef(mission.PlaceRef) : EMPTY_VALUE;
+    const userDocument = await loadDocumentRef(mission.UserRef);
+    return {
+        user: userDocument !== EMPTY_VALUE && {id: userDocument.id, ...userDocument.data()},
+        place: placeDocument !== EMPTY_VALUE && {id: placeDocument.id, ...placeDocument.data()},
+        template: missionTemplateDocument.data(),
+        progress: mission,
+    }
+}
 
+export async function hydrateCurrentUserMissionsOf(type) {
+    if (type === MISSION_TYPE.SPOT) return [];
+    const userMissions = await currentUserMissionsOf(type)
+    return await Promise.all(userMissions.map(hydrateMissions));
+}
 
-async function userSpotMissionsGroupByPlaceAnd(isActive) {
-    const activeSpotMissions = (await missionsProgressByCurrentUserAnd(MISSION_TYPE.SPOT));
+async function hydrateCurrentUserSpotMissionsIf(isActive) {
+    const activeSpotMissions = (await currentUserMissionsOf(MISSION_TYPE.SPOT));
     const result = Object.entries(activeSpotMissions)
         .filter(([, missions]) => missions.every(m => m.IsActive === isActive))
         .map(async ([_, missions]) => {
             const placeDocument = (await loadDocumentRef(missions[0].PlaceRef));
-            const detailsMission = missions.map(async mission => {
-                const userDocument = (await loadDocumentRef(mission.UserRef));
-                const missionTemplateDocument = (await loadDocumentRef(mission.MissionTemplateRef));
-                return {
-                    user: userDocument !== EMPTY_VALUE && {id: userDocument.id, ...userDocument.data()},
-                    place: placeDocument !== EMPTY_VALUE && {id: placeDocument.id, ...placeDocument.data()},
-                    template: missionTemplateDocument.data(),
-                    progress: mission,
-                }
-            })
-
-            const resolvedMissions = await Promise.all(detailsMission);
+            const hydratedMissions = await Promise.all(missions.map(hydrateMissions));
             return {
                 place: placeDocument !== EMPTY_VALUE && {id: placeDocument.id, ...placeDocument.data()},
-                missions: resolvedMissions
+                missions: hydratedMissions
             }
         })
 
     return await Promise.all(result);
 }
 
-export async function activeSpotMissionProgressByUser() {
-    return await userSpotMissionsGroupByPlaceAnd(true)
+export async function hydrateActiveSpotMissionsOfCurrentUser() {
+    return await hydrateCurrentUserSpotMissionsIf(true)
 }
 
-export async function inactiveSpotMissionsProgressByUser() {
-    return await userSpotMissionsGroupByPlaceAnd(false)
+export async function hydrateInactiveSpotMissionsOfCurrentUser() {
+    return await hydrateCurrentUserSpotMissionsIf(false)
 }

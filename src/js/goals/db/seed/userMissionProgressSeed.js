@@ -3,10 +3,10 @@ import {missionTemplatesByType} from "../missionTemplateConnector.js";
 import {MISSION_TYPE} from "./missionTemplateSeed.js";
 import {
     clearUserMissionProgress,
-    createDailyUserMissionProgress,
-    createLevelUserMissionProgress,
-    createSpotUserMissionProgress,
-    createThemeUserMissionProgress,
+    createDailyMission,
+    createLevelMission,
+    createSpotMission,
+    createThemeMission,
 } from "../userMissionProgressConnector.js";
 
 const SPOTS = ["8ncqBKHfbPWlQsFc7pvT", "G84q6lO8V2f1smPhjQk0", "qK5b57dBndsW77oUhGbD"]
@@ -17,9 +17,9 @@ export async function seedUserMissionProgress() {
     await clearUserMissionProgress()
 
     await seedSpotMissionsForUser(users)
-    await seedMissionsForUser(users, MISSION_TYPE.DAILY, createDailyUserMissionProgress)
-    await seedMissionsForUser(users, MISSION_TYPE.THEME, createThemeUserMissionProgress)
-    await seedMissionsForUser(users, MISSION_TYPE.LEVEL, createLevelUserMissionProgress)
+    await seedMissionsForUser(users, MISSION_TYPE.DAILY, createDailyMission)
+    await seedMissionsForUser(users, MISSION_TYPE.THEME, createThemeMission)
+    await seedMissionsForUser(users, MISSION_TYPE.LEVEL, createLevelMission)
     console.log("🎉 Creazione user mission progress completata!");
 }
 
@@ -31,7 +31,7 @@ async function seedSpotMissionsForUser(users) {
         oneActivePerUser = true;
         for (let post of SPOTS) {
             for (let spotMission of spotMissions) {
-                await createSpotUserMissionProgress({
+                await createSpotMission({
                     UserId: usersKey.id,
                     PlaceId: post,
                     MissionTemplateId: spotMission.id,

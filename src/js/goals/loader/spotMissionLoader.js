@@ -1,14 +1,14 @@
 import {
-    activeSpotMissionProgressByUser,
-    inactiveSpotMissionsProgressByUser
+    hydrateActiveSpotMissionsOfCurrentUser,
+    hydrateInactiveSpotMissionsOfCurrentUser
 } from "../db/userMissionProgressConnector.js";
 import {runAllAsyncSafe} from "../utils.js";
 
 export async function loadSpotMissions() {
 
     await runAllAsyncSafe(
-        () => generateSpotCard(activeSpotMissionProgressByUser, generateHTMLActiveSpotCard),
-        () => generateSpotCard(inactiveSpotMissionsProgressByUser, generateHTMLInactiveSpotCard)
+        () => generateSpotCard(hydrateActiveSpotMissionsOfCurrentUser, generateHTMLActiveSpotCard),
+        () => generateSpotCard(hydrateInactiveSpotMissionsOfCurrentUser, generateHTMLInactiveSpotCard)
     )
 
     console.log("Spot missions loaded");
