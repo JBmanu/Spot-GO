@@ -50,13 +50,17 @@ async function initializeSharePolaroid(modalElement, polaroidData) {
         // Gestisci il click del bottone di invio
         sendButton.addEventListener("click", async (e) => {
             e.preventDefault();
-            const selectedEmails = selected.map(checkbox => checkbox.dataset.friendIdMail);
+            sendButton.disabled = true;
+            const selectedEmails = selected().map(checkbox => checkbox.dataset.friendIdMail);
             try {
                 //Show loading circle
                 const res = await shareCardboard(polaroidData.id, selectedEmails);
                 if (res.success) {
                     //show ok and then close modal
-                    closeModal();
+                    sendButton.innerHTML = "Inviata!";
+                    setTimeout(() => {
+                        closeModal();
+                    }, 2000);
                 } else {
                     console.log("Errore:", res.descr);
                     alert(res.descr);
