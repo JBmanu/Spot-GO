@@ -1,4 +1,4 @@
-import {addDoc, collection, deleteDoc, doc, getDoc, getDocs} from "firebase/firestore";
+import {addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc} from "firebase/firestore";
 import {db} from "../../firebase.js";
 import {getCurrentUser} from "../../database.js";
 
@@ -39,13 +39,33 @@ export async function createDocument(collectionName, data) {
     }
 }
 
-export async function documents(collectionName) {
+export async function updateDocument(document, data) {
+    if (hasInvalid(document, data)) return false;
+    try {
+        await updateDoc(document.ref, data);
+        return true;
+    } catch (e) {
+        console.error("Error updating document " + document.id + ": ", e);
+        return false;
+    }
+}
+
+export function createDocumentRef(collectionName, id) {
+    if (hasInvalid(collectionName, id)) return EMPTY_VALUE;
+    return doc(db, collectionName, id);
+}
+
+export async function documentsOf(collectionName) {
     if (hasInvalid(collectionName)) return [];
     try {
         const querySnapshot = await getDocs(collection(db, collectionName));
         const documents = [];
         querySnapshot.forEach((doc) => {
-            documents.push({id: doc.id, ...doc.data()});
+            documents.push({
+                id: doc.id,
+                ref: doc.ref,
+                ...doc.data()
+            });
         });
         return documents;
     } catch (e) {
@@ -54,13 +74,22 @@ export async function documents(collectionName) {
     }
 }
 
-export async function buildDocumentRef(collectionName, id) {
-    if (hasInvalid(collectionName, id)) return EMPTY_VALUE;
+export async function documentsFrom(query) {
+    if (hasInvalid(query)) return [];
     try {
-        return (await doc(db, collectionName, id));
+        const querySnapshot = await getDocs(query);
+        const documents = [];
+        querySnapshot.forEach((doc) => {
+            documents.push({
+                id: doc.id,
+                ref: doc.ref,
+                ...doc.data()
+            });
+        });
+        return documents;
     } catch (e) {
-        console.error("Error building document ref for " + collectionName + " with id " + id + ": ", e);
-        return EMPTY_VALUE;
+        console.error("Error getting documents from query: ", e);
+        return [];
     }
 }
 
@@ -75,11 +104,10 @@ export async function loadDocumentRef(documentRef) {
 }
 
 export async function documentsFiltered(collectionName, filterFn) {
-    return (await documents(collectionName)).filter(filterFn);
+    return (await documentsOf(collectionName)).filter(filterFn);
 }
 
 export async function documentFromId(collectionName, id) {
     const firstItem = (await documentsFiltered(collectionName, document => document.id === id))[0];
     return firstItem ? firstItem : EMPTY_VALUE;
 }
-

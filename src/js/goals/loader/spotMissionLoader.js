@@ -1,34 +1,32 @@
 import {
-    activeSpotMissionProgressByUser,
-    inactiveSpotMissionsProgressByUser
+    hydrateActiveSpotMissionsOfCurrentUser,
+    hydrateInactiveSpotMissionsOfCurrentUser
 } from "../db/userMissionProgressConnector.js";
+import {runAllAsyncSafe} from "../utils.js";
 
 export async function loadSpotMissions() {
-    const activeSpotMissions = await activeSpotMissionProgressByUser()
-    const countCompletedMissions = activeSpotMissions.filter(mission => mission.missionProgress.IsCompleted)
-    console.log("Loaded active spot missions: " + activeSpotMissions)
 
-    generateActiveSpotMissions(
-        activeSpotMissions[0].place,
-        countCompletedMissions.length,
-        activeSpotMissions
+    await runAllAsyncSafe(
+        () => generateSpotCard(hydrateActiveSpotMissionsOfCurrentUser, generateHTMLActiveSpotCard),
+        () => generateSpotCard(hydrateInactiveSpotMissionsOfCurrentUser, generateHTMLInactiveSpotCard)
     )
 
-    const inactiveSpotMissions = (await inactiveSpotMissionsProgressByUser())
-    console.log("Loaded inactive spot missions: " + inactiveSpotMissions)
+    console.log("Spot missions loaded");
+}
 
-    inactiveSpotMissions.forEach(inactiveSpotMissions => {
-        console.log("Place " + inactiveSpotMissions.place.nome + " inactive spot missions: " + inactiveSpotMissions.missions.length)
-        const countCompletedMissions = inactiveSpotMissions.missions.filter(mission => mission.missionProgress.IsCompleted)
-        generateInactiveSpotMissions(
-            inactiveSpotMissions.place,
+async function generateSpotCard(loadSpotMissionsFun, generateHTMLFun) {
+    const spotMissions = await loadSpotMissionsFun()
+    spotMissions.forEach(spotMission => {
+        const countCompletedMissions = spotMission.missions.filter(mission => mission.progress.IsCompleted)
+        generateHTMLFun(
+            spotMission.place,
             countCompletedMissions.length,
-            inactiveSpotMissions.missions
+            spotMission.missions
         )
     })
 }
 
-function generateActiveSpotMissions(place, progress, missions) {
+function generateHTMLActiveSpotCard(place, progress, missions) {
     const spotCtn = document.querySelector('.spot-card');
     spotCtn.setAttribute('db-id', place.id);
     spotCtn.innerHTML +=
@@ -71,14 +69,13 @@ function generateActiveSpotMissions(place, progress, missions) {
 
     const spotCard = document.querySelector(`.spot-card[db-id="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
-    missions.forEach(mission => generateSpotMissions(
+    missions.forEach(mission => generateHTMLSpotMissions(
         missionCtn,
-        mission.missionProgress.id,
-        mission.missionTemplate))
+        mission.progress.id,
+        mission.template))
 }
 
-// Generate spots
-function generateInactiveSpotMissions(place, progress, missions) {
+function generateHTMLInactiveSpotCard(place, progress, missions) {
     const spotCtn = document.querySelector('.all-spots-missions-ctn');
     spotCtn.innerHTML +=
         `<div class="glass-medium interactive spot-card" db-id="${place.id}">
@@ -118,14 +115,13 @@ function generateInactiveSpotMissions(place, progress, missions) {
 
     const spotCard = spotCtn.querySelector(`.spot-card[db-id="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
-    missions.forEach(mission => generateSpotMissions(
+    missions.forEach(mission => generateHTMLSpotMissions(
         missionCtn,
-        mission.missionProgress.id,
-        mission.missionTemplate))
+        mission.progress.id,
+        mission.template))
 }
 
-// Generate spot missions
-function generateSpotMissions(missionContainer, id, missionTemplate) {
+function generateHTMLSpotMissions(missionContainer, id, missionTemplate) {
     missionContainer.innerHTML +=
         `<button class="between-ctn interactive spot-mission completable card" db-id="${id}">
             <!-- Left -->

@@ -1,4 +1,4 @@
-import {clearDocuments, createDocument, documentFromId, documents} from "./goalsConnector.js";
+import {clearDocuments, createDocument, documentFromId, documentsOf} from "./goalsConnector.js";
 
 const BADGES_COLLECTION = "Badge";
 
@@ -17,7 +17,7 @@ export async function clearBadges() {
 }
 
 export async function badges() {
-    return await documents(BADGES_COLLECTION);
+    return await documentsOf(BADGES_COLLECTION);
 }
 
 export async function badge(id) {

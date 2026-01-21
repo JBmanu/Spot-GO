@@ -2,10 +2,10 @@ import {clearMissionTemplates, createMissionTemplate} from "../missionTemplateCo
 import {createdBadgeIds} from "./badgeSeed.js";
 
 export const MISSION_TYPE = {
-    SPOT: "spot",
-    DAILY: "daily",
-    THEME: "theme",
-    LEVEL: "level"
+    SPOT: "Spot",
+    DAILY: "Daily",
+    THEME: "Theme",
+    LEVEL: "Level"
 }
 
 const MISSION_TEMPLATES = [
@@ -13,7 +13,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Scatta una foto allo spot",
         Description: "Immortala la magia in un click!",
-        Type: "spot",
+        Type: MISSION_TYPE.SPOT,
         Category: null,
         Action: "fai_foto",
         Target: 1,
@@ -22,7 +22,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Scrivi una recensione allo spot",
         Description: "Racconta cosa ti ha fatto battere il cuore!",
-        Type: "spot",
+        Type: MISSION_TYPE.SPOT,
         Category: null,
         Action: "scrivi_recensione",
         Target: 1,
@@ -31,7 +31,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Crea una polaroid dello spot",
         Description: "Dagli un tocco unico e condividilo!",
-        Type: "spot",
+        Type: MISSION_TYPE.SPOT,
         Category: null,
         Action: "crea_polaroid",
         Target: 1,
@@ -179,7 +179,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Raggiungi il livello 5",
         Description: "Stai crescendo, continua così!",
-        Type: "level",
+        Type: MISSION_TYPE.LEVEL,
         Category: null,
         Action: "raggiungi_livello",
         Target: 5,
@@ -188,7 +188,7 @@ const MISSION_TEMPLATES = [
     {
         Name: "Ottieni 3 badge",
         Description: "Colleziona gloria e virtuosismi!",
-        Type: "level",
+        Type: MISSION_TYPE.LEVEL,
         Category: null,
         Action: "ottieni_badge",
         Target: 3,
