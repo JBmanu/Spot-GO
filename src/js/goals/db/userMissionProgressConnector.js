@@ -57,8 +57,12 @@ async function createMissionProgressByType(data, create, update) {
 
 export async function createSpotUserMissionProgress(data) {
     return await createMissionProgressByType(data,
-        (newMission) => ({[MISSION_TYPE.SPOT]: [newMission]}),
-        (newMission) => ({[`Missions.${MISSION_TYPE.SPOT}`]: arrayUnion(newMission)}))
+        (newMission) => ({
+            [MISSION_TYPE.SPOT]: {[data.PlaceId]: [newMission]}
+        }),
+        (newMission) => ({
+            [`Missions.${MISSION_TYPE.SPOT}.${data.PlaceId}`]: arrayUnion(newMission)
+        }))
 }
 
 export async function createDailyUserMissionProgress(data) {
