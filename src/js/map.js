@@ -119,7 +119,7 @@ async function initializeMap() {
     attachBookmarkChangeListener();
 }
 
-async function loadSpotsDependentObjects() {
+export async function loadSpotsDependentObjects() {
     await loadSpots();
     await loadMarkers();
     await loadNearbySpotsList();

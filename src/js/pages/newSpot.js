@@ -2,6 +2,8 @@ import { createTimeRange, loadComponentAsDocument } from "../createComponent";
 import { USER_PROTO_POSITION } from "../common";
 import { insertNewSpot, getCurrentUser } from "../database";
 import { readTimeRangeValues, validateTimeRangesWithCrossIntersections } from "../common/timeRange";
+import { goBack } from "../common/back";
+import { loadSpotsDependentObjects } from "../map";
 
 let newSpotSection;
 let map;
@@ -562,6 +564,8 @@ async function addNewSpotAndClose(e) {
     try {
         const spot = await readNewSpotDataFromFields();
         const spotId = await insertNewSpot(spot);
+        goBack({});
+        loadSpotsDependentObjects();
     } catch (err) {
         console.error("Errore inserimento Luogo:", err);
         throw err;
