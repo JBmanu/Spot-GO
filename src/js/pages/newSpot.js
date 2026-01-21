@@ -4,6 +4,7 @@ import { insertNewSpot, getCurrentUser } from "../database";
 import { readTimeRangeValues, validateTimeRangesWithCrossIntersections } from "../common/timeRange";
 import { goBack } from "../common/back";
 import { loadSpotsDependentObjects } from "../map";
+import { setupCenterToUserPositionButton } from "../common/mapExtension";
 
 let newSpotSection;
 let map;
@@ -188,6 +189,11 @@ async function loadMap() {
       validateNewSpotForm();
     });
 
+    const centerButton = document.getElementById('new-spot-map-recenter-btn');
+    setupCenterToUserPositionButton(map, centerButton);
+
+    L.DomEvent.disableClickPropagation(centerButton);
+    L.DomEvent.disableScrollPropagation(centerButton);
 }
 
 function initializeCategorySelector() {
