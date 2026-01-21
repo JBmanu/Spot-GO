@@ -23,6 +23,15 @@
                 <img src="../assets/icons/homepage/Desura.svg" alt="Icona Mistero" class="icon-mini" /> Mistero
             </button>
         </div>
+
+        <section class="px-3 mt-2">
+        <header class="flex flex-row items-center justify-between relative z-1">
+            <h2 class="home-section-title">Spot vicini</h2>
+            <button type="button" id="open-nearby-spots-btn" class="vedi-tutti-button"
+                aria-label="Apri lista degli spot vicini">
+                Visualizza lista
+            </button>
+        </header>
     </section>
 
     <!-- Mappa -->
@@ -36,21 +45,16 @@
     </div>
 
     <!-- Spot vicini -->
-    <section class="px-3 mt-2">
-        <header class="flex flex-row items-center justify-between">
-            <h2 class="home-section-title" data-slot="title">Spot vicini</h2>
-        </header>
-        <div id="map-nearby-section" class="mt-2">
-            <div id="map-nearby-carousel" data-carousel-type="vertical" data-template="classic-spot-card-template"
-                aria-label="Carosello spot vicini (scorri su e giù)" data-size="md">
+    <div id="map-nearby-section" class="mt-2">
+        <div id="map-nearby-carousel" data-carousel-type="vertical" data-template="classic-spot-card-template"
+            aria-label="Carosello spot vicini (scorri su e giù)" data-size="md">
 
-                <p id="map-nearby-empty" class="text-sm text-text_color/70 px-1 py-2 hidden">
-                    Nessuno spot trovato con questi filtri.
-                </p>
+            <p id="map-nearby-empty" class="text-sm text-text_color/70 px-1 py-2 hidden">
+                Nessuno spot trovato con questi filtri.
+            </p>
 
-                <!-- cards -->
-                <div id="map-nearby-spots-container" role="list" aria-label="Lista spot vicini"></div>
-            </div>
+            <!-- cards -->
+            <div id="map-nearby-spots-container" role="list" aria-label="Lista spot vicini"></div>
         </div>
-    </section>
+    </div>
 </section>

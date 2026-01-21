@@ -20,6 +20,7 @@ export function openBottomSheet(bottomSheetEl, overlayEl) {
         bottomSheetEl.classList.add('active');
         overlayEl.classList.add('active');
         raiseFiltersOpenEvent(bottomSheetEl);
+        document.getElementById('main').classList.add('scroll-y-hidden');
     });
 }
 
@@ -37,6 +38,7 @@ export function closeBottomSheet(bottomSheetEl, overlayEl) {
         bottomSheetEl.style.display = 'none';
         overlayEl.style.display = 'none';
         bottomSheetEl.removeEventListener('transitionend', onEnd);
+        document.getElementById('main').classList.remove('scroll-y-hidden');
     };
 
     bottomSheetEl.addEventListener('transitionend', onEnd);

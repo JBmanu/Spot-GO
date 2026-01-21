@@ -107,6 +107,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             currentSection = section;
             main.scrollTop = 0;
+
+            // Assicuriamo che lo scroll sia sempre attivo di default (vedi mappa)
+            main.classList.remove('scroll-y-hidden');
         } finally {
             isNavigating = false;
         }

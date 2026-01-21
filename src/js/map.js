@@ -6,7 +6,7 @@ let getSpots,
     createSearchBarWithKeyboardAndFilters, createBottomSheetWithStandardFilters,
     initializeSpotClickHandlers, initializeVerticalCarousel,
     openSpotDetailById, openNewSpotPage, generateSpotCardList,
-    syncBookmarksUI, updateBookmarkVisual,
+    syncBookmarksUI, updateBookmarkVisual, createBottomSheetWithOverlay,
     setupCategoryFilter, resetCategoryFilter, getActiveCategories;
 
 
@@ -28,6 +28,7 @@ Promise.all([
     import("./createComponent.js").then(module => {
         createSearchBarWithKeyboardAndFilters = module.createSearchBarWithKeyboardAndFilters;
         createBottomSheetWithStandardFilters = module.createBottomSheetWithStandardFilters;
+        createBottomSheetWithOverlay = module.createBottomSheetWithOverlay;
     }),
     import("./pages/spotDetail.js").then((module) => {
         initializeSpotClickHandlers = module.initializeSpotClickHandlers;
@@ -66,6 +67,7 @@ let map;
 // Layer corrente della mappa (stile selezionato)
 let currentTileLayer;
 let searchBarLoaded = false;
+let nearbySpotsBottomSheetLoaded = false;
 let spotMarkersMap = new Map(); // spotId -> marker
 
 // Mappa categoria -> icona marker
@@ -115,6 +117,7 @@ async function initializeMap() {
 
     loadSearchBar(); // await
     await loadMap();
+    await loadNearbySpotsBottomSheet();
     await loadSpotsDependentObjects();
 
     attachBookmarkChangeListener();
@@ -177,6 +180,24 @@ async function loadSearchBar() {
     mainSection.insertBefore(searchBarEl, mainSection.children[0]);
     // mainSection.appendChild(overlayEl);
     mainSection.appendChild(keyboardEl);
+    mainSection.appendChild(bottomSheetOverlayEl);
+    mainSection.appendChild(bottomSheetEl);
+}
+
+async function loadNearbySpotsBottomSheet() {
+    if (nearbySpotsBottomSheetLoaded) return;
+    nearbySpotsBottomSheetLoaded = true;
+
+    const openNearbySpotsButton = document.getElementById('open-nearby-spots-btn');
+    const { bottomSheetEl, bottomSheetOverlayEl } =
+        await createBottomSheetWithOverlay(openNearbySpotsButton);
+
+    const nearbySpotsCarousel = document.getElementById('map-nearby-carousel');
+    bottomSheetEl.appendChild(nearbySpotsCarousel);
+
+    const mainSection = document.getElementById("map-main-section");
+    if (!mainSection) return;
+
     mainSection.appendChild(bottomSheetOverlayEl);
     mainSection.appendChild(bottomSheetEl);
 }
