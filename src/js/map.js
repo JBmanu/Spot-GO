@@ -174,7 +174,7 @@ async function loadSearchBar() {
     const mainSection = document.getElementById("map-main-section");
     if (!mainSection) return;
 
-    mainSection.insertBefore(searchBarEl, mainSection.children[1]);
+    mainSection.insertBefore(searchBarEl, mainSection.children[0]);
     // mainSection.appendChild(overlayEl);
     mainSection.appendChild(keyboardEl);
     mainSection.appendChild(bottomSheetOverlayEl);
@@ -258,10 +258,10 @@ async function loadMarkers() {
 
         const popupHtml = `
             <div class="spot-popup" data-spot-id="${luogo.id}">
-                <b>${luogo.nome}</b>
-                <p>${luogo.descrizione}</p>
-                <button type="button" class="filter-button-footer mt-2"
-                        data-spot-id="${luogo.id}" style="margin: auto;" data-open-detail>
+                <b class="spot-popup-title">${luogo.nome}</b>
+                <p class="spot-popup-description">${luogo.descrizione}</p>
+                <button type="button" class="submit-polaroid-btn glass-btn-primary"
+                        data-spot-id="${luogo.id}" data-open-detail>
                     Visualizza dettagli
                 </button>
             </div>
