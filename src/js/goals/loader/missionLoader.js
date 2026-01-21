@@ -14,6 +14,7 @@ export async function loadMissions() {
 
 async function generateMissionType(missionType, containerIndex) {
     const missions = await missionsProgressByCurrentUserAnd(missionType);
+    console.log("MISSION TYPE:", missionType, "\n", missions);
     missions.forEach(mission =>
         generateHTMLMissionTemplate(
             containerIndex,
