@@ -13,14 +13,16 @@ export async function loadMissions() {
         () => generateMissionType(MISSION_TYPE.LEVEL, 2)
     )
 
-    await updateValueOfMission(MISSION_TYPE.DAILY,
+    const updatedMission = await updateValueOfMission(MISSION_TYPE.DAILY,
         "LfJMWzpIu7VWIauMJdfE",
         current => current + 1);
+    console.log("UPDATE MISSION: ", updatedMission);
 
-    await updateValueOfSpotMission(
+    const updatedSpotMission = await updateValueOfSpotMission(
         "8ncqBKHfbPWlQsFc7pvT",
         "ceGA2KwDbHE9xsE9lzC2",
         current => current + 1);
+    console.log("UPDATE SPOT MISSION: ", updatedSpotMission);
 
     console.log("Missions loaded successfully.");
 }

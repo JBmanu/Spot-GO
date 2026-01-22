@@ -100,7 +100,7 @@ async function currentUserMissionsOf(type) {
     return Object.values(userMissions?.[type]);
 }
 
-async function hydrateMissions(mission) {
+async function hydrateMission(mission) {
     const missionTemplateData = await loadDocumentRef(mission.MissionTemplateRef);
     const placeData = missionTemplateData.Type === MISSION_TYPE.SPOT ?
         await loadDocumentRef(mission.PlaceRef) : EMPTY_VALUE;
@@ -118,7 +118,7 @@ async function hydrateMissions(mission) {
 export async function hydrateCurrentUserMissionsOf(type) {
     if (type === MISSION_TYPE.SPOT) return [];
     const userMissions = await currentUserMissionsOf(type)
-    return await Promise.all(userMissions.map(hydrateMissions));
+    return await Promise.all(userMissions.map(hydrateMission));
 }
 
 async function hydrateCurrentUserSpotMissionsIf(isActive) {
@@ -128,7 +128,7 @@ async function hydrateCurrentUserSpotMissionsIf(isActive) {
         .filter(missions => missions.every(m => m.IsActive === isActive))
         .map(async missions => {
             const placeData = (await loadDocumentRef(missions[0].PlaceRef));
-            const hydratedMissions = await Promise.all(missions.map(hydrateMissions));
+            const hydratedMissions = await Promise.all(missions.map(hydrateMission));
             return {place: placeData !== EMPTY_VALUE && placeData, missions: hydratedMissions}
         })
 
@@ -143,51 +143,45 @@ export async function hydrateInactiveSpotMissionsOfCurrentUser() {
     return await hydrateCurrentUserSpotMissionsIf(false)
 }
 
+async function updateValueMission(missions, mission, pathUpdate, updateFun) {
+    const current = mission.progress.Current
+    const target = mission.template.Target
+    const updatedValue = updateFun(current)
+    const isCompleted = updatedValue >= target;
+    const userMissions = await userMissionsOf(mission.user.id)
+
+    await updateDocument(userMissions, {[`${pathUpdate}.Current`]: updatedValue});
+    if (!mission.progress.IsCompleted && isCompleted) {
+        await updateDocument(userMissions, {[`${pathUpdate}.IsCompleted`]: true});
+    }
+
+    const missionsCount = missions.length;
+    let completedCount = missions.filter(m => m.progress.IsCompleted).length;
+    completedCount = isCompleted ? completedCount + 1 : completedCount;
+
+    return {
+        missions: missionsCount, completedMissions: completedCount,
+        isCompleted: isCompleted, target: target, updatedValue: updatedValue
+    };
+}
+
 export async function updateValueOfSpotMission(placeId, missionTemplateId, updateFun) {
     const spotsMissions = (await currentUserMissions())?.[MISSION_TYPE.SPOT];
     const spotMissions = spotsMissions?.[placeId];
-    const mission = spotMissions?.[missionTemplateId];
-    const hydrateMission = await hydrateMissions(mission)
 
-    const current = hydrateMission.progress.Current
-    const target = hydrateMission.template.Target
-    const updatedValue = updateFun(current)
-    const isCompleted = updatedValue >= target;
-    const userMissions = await userMissionsOf(hydrateMission.user.id)
+    const missions = await Promise.all(Object.values(spotMissions).map(hydrateMission));
+    const mission = await hydrateMission(spotMissions?.[missionTemplateId]);
 
-    const path = `${MISSION_TYPE.SPOT}.${placeId}.${missionTemplateId}`;
-    await updateDocument(userMissions, {[`${path}.Current`]: updatedValue});
-
-    if (!hydrateMission.progress.IsCompleted && isCompleted) {
-        await updateDocument(userMissions, {[`${path}.IsCompleted`]: true});
-    }
-
-    const missionsCount = Object.keys(spotMissions).length;
-    let completedCount = Object.values(spotMissions).filter(m => m?.IsCompleted).length;
-    completedCount = isCompleted ? completedCount + 1 : completedCount;
-
-    return {missions: missionsCount, completedMissions: completedCount,
-        isCompleted: isCompleted, updatedValue: updatedValue};
+    const pathUpdate = `${MISSION_TYPE.SPOT}.${placeId}.${missionTemplateId}`;
+    return await updateValueMission(missions, mission, pathUpdate, updateFun);
 }
 
 export async function updateValueOfMission(type, missionTemplateId, updateFun) {
     const missions = await hydrateCurrentUserMissionsOf(type);
     const mission = missions.filter(mission => mission.id === missionTemplateId)[0];
-    const user = mission.user;
-    const currentValue = mission.progress.Current
-    const targetValue = mission.template.Target
-    const updatedValue = updateFun(currentValue)
-    const isCompleted = updatedValue >= targetValue;
-    const userMissions = await userMissionsOf(user.id)
 
-    await updateDocument(userMissions, {[`${type}.${mission.id}.Current`]: updatedValue});
-
-    if (!mission.progress.IsCompleted && isCompleted) {
-        await updateDocument(userMissions, {[`${type}.${mission.id}.IsCompleted`]: true});
-    }
-
-    console.log("Current: ", currentValue, " Update: ", updateFun(currentValue))
-    return {isCompleted: isCompleted, updatedValue: updatedValue};
+    const pathUpdate = `${type}.${mission.id}`;
+    return await updateValueMission(missions, mission, pathUpdate, updateFun);
 }
 
 
