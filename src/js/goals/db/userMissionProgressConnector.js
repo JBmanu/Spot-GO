@@ -100,14 +100,15 @@ async function currentUserMissionsOf(type) {
 }
 
 async function hydrateMissions(mission) {
-    const missionTemplateDocument = await loadDocumentRef(mission.MissionTemplateRef);
-    const placeDocument = missionTemplateDocument.data().Type === MISSION_TYPE.SPOT ?
+    const missionTemplateData = await loadDocumentRef(mission.MissionTemplateRef);
+    const placeData = missionTemplateData.Type === MISSION_TYPE.SPOT ?
         await loadDocumentRef(mission.PlaceRef) : EMPTY_VALUE;
-    const userDocument = await loadDocumentRef(mission.UserRef);
+    const userData = await loadDocumentRef(mission.UserRef);
+
     return {
-        user: userDocument !== EMPTY_VALUE && {id: userDocument.id, ...userDocument.data()},
-        place: placeDocument !== EMPTY_VALUE && {id: placeDocument.id, ...placeDocument.data()},
-        template: missionTemplateDocument.data(),
+        user: userData !== EMPTY_VALUE && userData,
+        place: placeData !== EMPTY_VALUE && placeData,
+        template: missionTemplateData,
         progress: mission,
     }
 }
@@ -115,7 +116,7 @@ async function hydrateMissions(mission) {
 export async function hydrateCurrentUserMissionsOf(type) {
     if (type === MISSION_TYPE.SPOT) return [];
     const userMissions = await currentUserMissionsOf(type)
-    return await Promise.all(userMissions.map(hydrateMissions));
+    return await Promise.all(userMissions.map(missions => hydrateMissions(missions)));
 }
 
 async function hydrateCurrentUserSpotMissionsIf(isActive) {
@@ -123,10 +124,10 @@ async function hydrateCurrentUserSpotMissionsIf(isActive) {
     const result = Object.entries(activeSpotMissions)
         .filter(([, missions]) => missions.every(m => m.IsActive === isActive))
         .map(async ([_, missions]) => {
-            const placeDocument = (await loadDocumentRef(missions[0].PlaceRef));
+            const placeData = (await loadDocumentRef(missions[0].PlaceRef));
             const hydratedMissions = await Promise.all(missions.map(hydrateMissions));
             return {
-                place: placeDocument !== EMPTY_VALUE && {id: placeDocument.id, ...placeDocument.data()},
+                place: placeData !== EMPTY_VALUE && placeData,
                 missions: hydratedMissions
             }
         })
