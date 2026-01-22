@@ -107,6 +107,7 @@ async function hydrateMissions(mission) {
     const userData = await loadDocumentRef(mission.UserRef);
 
     return {
+        id: missionTemplateData.id,
         user: userData !== EMPTY_VALUE && userData,
         place: placeData !== EMPTY_VALUE && placeData,
         template: missionTemplateData,
@@ -142,15 +143,51 @@ export async function hydrateInactiveSpotMissionsOfCurrentUser() {
     return await hydrateCurrentUserSpotMissionsIf(false)
 }
 
-export async function updateCurrentValueOfMission(updateFun) {
-    const userRef = createDocumentRef("Utente", userId);
-    const documents = await documentsFrom(query(
-        collection(db, USER_MISSION_PROGRESS_COLLECTION),
-        where("UserRef", "==", userRef),
-    ));
+export async function updateValueOfSpotMission(placeId, missionTemplateId, updateFun) {
+    const spotsMissions = (await currentUserMissions())?.[MISSION_TYPE.SPOT];
+    const spotMissions = spotsMissions?.[placeId];
+    const mission = spotMissions?.[missionTemplateId];
+    const hydrateMission = await hydrateMissions(mission)
 
-    const userMissions = await currentUserMissions();
-    if (!userMissions) return null;
+    const current = hydrateMission.progress.Current
+    const target = hydrateMission.template.Target
+    const updatedValue = updateFun(current)
+    const isCompleted = updatedValue >= target;
+    const userMissions = await userMissionsOf(hydrateMission.user.id)
+
+    const path = `${MISSION_TYPE.SPOT}.${placeId}.${missionTemplateId}`;
+    await updateDocument(userMissions, {[`${path}.Current`]: updatedValue});
+
+    if (!hydrateMission.progress.IsCompleted && isCompleted) {
+        await updateDocument(userMissions, {[`${path}.IsCompleted`]: true});
+    }
+
+    const missionsCount = Object.keys(spotMissions).length;
+    let completedCount = Object.values(spotMissions).filter(m => m?.IsCompleted).length;
+    completedCount = isCompleted ? completedCount + 1 : completedCount;
+
+    return {missions: missionsCount, completedMissions: completedCount,
+        isCompleted: isCompleted, updatedValue: updatedValue};
+}
+
+export async function updateValueOfMission(type, missionTemplateId, updateFun) {
+    const missions = await hydrateCurrentUserMissionsOf(type);
+    const mission = missions.filter(mission => mission.id === missionTemplateId)[0];
+    const user = mission.user;
+    const currentValue = mission.progress.Current
+    const targetValue = mission.template.Target
+    const updatedValue = updateFun(currentValue)
+    const isCompleted = updatedValue >= targetValue;
+    const userMissions = await userMissionsOf(user.id)
+
+    await updateDocument(userMissions, {[`${type}.${mission.id}.Current`]: updatedValue});
+
+    if (!mission.progress.IsCompleted && isCompleted) {
+        await updateDocument(userMissions, {[`${type}.${mission.id}.IsCompleted`]: true});
+    }
+
+    console.log("Current: ", currentValue, " Update: ", updateFun(currentValue))
+    return {isCompleted: isCompleted, updatedValue: updatedValue};
 }
 
 
