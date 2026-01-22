@@ -14,18 +14,19 @@ export async function loadMissions() {
 
 async function generateMissionType(missionType, containerIndex) {
     const missions = await hydrateCurrentUserMissionsOf(missionType);
+    console.log("Missions: ", missions);
+
     missions.forEach(mission =>
         generateHTMLMissionTemplate(
             containerIndex,
-            mission.id,
             mission.template,
             mission.progress.Current));
 }
 
-function generateHTMLMissionTemplate(indexCtn, id, missionTemplate, progress) {
+function generateHTMLMissionTemplate(indexCtn, missionTemplate, progress) {
     const container = document.querySelectorAll('.missions-card');
     container[indexCtn].innerHTML +=
-        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card" db-id="${id}">
+        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card" db-ref="${missionTemplate.ref}">
             <!-- Lato sinistro -->
             <div class="space-y-1">
                 <h3 class="text-sm font-semibold text-gray-800">${missionTemplate.Name}</h3>

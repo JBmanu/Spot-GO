@@ -10,13 +10,12 @@ export async function initializeCompletable() {
                 <span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>
             </div>
         `;
-        // const box = document.createElement('div');
-        // box.className = `center-ctn spot-mission-complete inactive`;
-        // box.innerHTML = `<span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>`;
-        // mission.appendChild(box);
 
         mission.addEventListener('click', () => {
             mission.querySelector('.spot-mission-complete').classList.toggle('inactive');
+            console.log("click completable mission")
+
+
         })
     })
 

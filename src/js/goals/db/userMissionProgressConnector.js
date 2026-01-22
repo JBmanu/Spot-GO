@@ -8,7 +8,7 @@ import {
     loadDocumentRef,
     updateDocument
 } from "./goalsConnector.js";
-import {arrayUnion, collection, query, Timestamp, where} from "firebase/firestore";
+import {collection, query, Timestamp, where} from "firebase/firestore";
 import {db} from "../../firebase.js";
 import {MISSION_TEMPLATE_COLLECTION} from "./missionTemplateConnector.js";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
@@ -41,38 +41,39 @@ async function createMissionProgress(data, create, update) {
 
     if (!userMissions) {
         return await createDocument(USER_MISSION_PROGRESS_COLLECTION,
-            {UserRef: userRef, Missions: {...emptyMissionStructure, ...create(newMission)}});
+            {UserRef: userRef, ...emptyMissionStructure, ...create(newMission)});
     } else {
         return await updateDocument(userMissions, update(newMission));
     }
 }
 
 export async function createSpotMission(data) {
+
     return await createMissionProgress(data,
         (newMission) => ({
-            [MISSION_TYPE.SPOT]: {[data.PlaceId]: [newMission]}
+            [MISSION_TYPE.SPOT]: {[data.PlaceId]: {[data.MissionTemplateId]: newMission}}
         }),
         (newMission) => ({
-            [`Missions.${MISSION_TYPE.SPOT}.${data.PlaceId}`]: arrayUnion(newMission)
+            [`${MISSION_TYPE.SPOT}.${data.PlaceId}.${data.MissionTemplateId}`]: newMission
         }))
 }
 
 export async function createDailyMission(data) {
     return await createMissionProgress(data,
-        (newMission) => ({[MISSION_TYPE.DAILY]: [newMission]}),
-        (newMission) => ({[`Missions.${MISSION_TYPE.DAILY}`]: arrayUnion(newMission)}))
+        (newMission) => ({[MISSION_TYPE.DAILY]: {[data.MissionTemplateId]: newMission}}),
+        (newMission) => ({[`${MISSION_TYPE.DAILY}.${data.MissionTemplateId}`]: newMission}))
 }
 
 export async function createThemeMission(data) {
     return await createMissionProgress(data,
-        (newMission) => ({[MISSION_TYPE.THEME]: [newMission]}),
-        (newMission) => ({[`Missions.${MISSION_TYPE.THEME}`]: arrayUnion(newMission)}))
+        (newMission) => ({[MISSION_TYPE.THEME]: {[data.MissionTemplateId]: newMission}}),
+        (newMission) => ({[`${MISSION_TYPE.THEME}.${data.MissionTemplateId}`]: newMission}))
 }
 
 export async function createLevelMission(data) {
     return await createMissionProgress(data,
-        (newMission) => ({[MISSION_TYPE.LEVEL]: [newMission]}),
-        (newMission) => ({[`Missions.${MISSION_TYPE.LEVEL}`]: arrayUnion(newMission)}))
+        (newMission) => ({[MISSION_TYPE.LEVEL]: {[data.MissionTemplateId]: newMission}}),
+        (newMission) => ({[`${MISSION_TYPE.LEVEL}.${data.MissionTemplateId}`]: newMission}))
 }
 
 export async function clearUserMissionProgress() {
@@ -96,7 +97,7 @@ async function currentUserMissions() {
 
 async function currentUserMissionsOf(type) {
     const userMissions = await currentUserMissions()
-    return userMissions?.Missions[type]
+    return Object.values(userMissions?.[type]);
 }
 
 async function hydrateMissions(mission) {
@@ -116,20 +117,18 @@ async function hydrateMissions(mission) {
 export async function hydrateCurrentUserMissionsOf(type) {
     if (type === MISSION_TYPE.SPOT) return [];
     const userMissions = await currentUserMissionsOf(type)
-    return await Promise.all(userMissions.map(missions => hydrateMissions(missions)));
+    return await Promise.all(userMissions.map(hydrateMissions));
 }
 
 async function hydrateCurrentUserSpotMissionsIf(isActive) {
-    const activeSpotMissions = (await currentUserMissionsOf(MISSION_TYPE.SPOT));
-    const result = Object.entries(activeSpotMissions)
-        .filter(([, missions]) => missions.every(m => m.IsActive === isActive))
-        .map(async ([_, missions]) => {
+    const activeSpotMissions = await currentUserMissionsOf(MISSION_TYPE.SPOT);
+
+    const result = activeSpotMissions.map(Object.values)
+        .filter(missions => missions.every(m => m.IsActive === isActive))
+        .map(async missions => {
             const placeData = (await loadDocumentRef(missions[0].PlaceRef));
             const hydratedMissions = await Promise.all(missions.map(hydrateMissions));
-            return {
-                place: placeData !== EMPTY_VALUE && placeData,
-                missions: hydratedMissions
-            }
+            return {place: placeData !== EMPTY_VALUE && placeData, missions: hydratedMissions}
         })
 
     return await Promise.all(result);
@@ -142,3 +141,16 @@ export async function hydrateActiveSpotMissionsOfCurrentUser() {
 export async function hydrateInactiveSpotMissionsOfCurrentUser() {
     return await hydrateCurrentUserSpotMissionsIf(false)
 }
+
+export async function updateCurrentValueOfMission(updateFun) {
+    const userRef = createDocumentRef("Utente", userId);
+    const documents = await documentsFrom(query(
+        collection(db, USER_MISSION_PROGRESS_COLLECTION),
+        where("UserRef", "==", userRef),
+    ));
+
+    const userMissions = await currentUserMissions();
+    if (!userMissions) return null;
+}
+
+

@@ -5,7 +5,6 @@ import {
 import {runAllAsyncSafe} from "../utils.js";
 
 export async function loadSpotMissions() {
-
     await runAllAsyncSafe(
         () => generateSpotCard(hydrateActiveSpotMissionsOfCurrentUser, generateHTMLActiveSpotCard),
         () => generateSpotCard(hydrateInactiveSpotMissionsOfCurrentUser, generateHTMLInactiveSpotCard)
@@ -24,6 +23,29 @@ async function generateSpotCard(loadSpotMissionsFun, generateHTMLFun) {
             spotMission.missions
         )
     })
+}
+
+function generateSpotMissions(missionCtn, missions) {
+    missions.forEach(mission => generateHTMLSpotMissions(missionCtn, mission.template))
+}
+
+function generateHTMLSpotMissions(missionContainer, missionTemplate) {
+    missionContainer.innerHTML +=
+        `<button class="between-ctn interactive spot-mission completable card" 
+            db-ref="${missionTemplate.ref}">
+            <!-- Left -->
+            <div class="vertical-ctn-g1">
+                <!-- Title -->
+                <h3 class="flex items-start font-semibold text-gray-800"> ${missionTemplate.Name} </h3>
+                <!-- Description -->
+                <p class="text-xs text-gray-600">${missionTemplate.Description}</p>
+            </div>
+            <!-- Reward -->
+            <div class="center-ctn">
+                <span class="font-semibold text-green-600">+${missionTemplate.Reward.Experience} XP</span>
+                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt=""/>
+            </div>
+        </button>`;
 }
 
 function generateHTMLActiveSpotCard(place, progress, missions) {
@@ -69,10 +91,7 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
 
     const spotCard = document.querySelector(`.spot-card[db-id="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
-    missions.forEach(mission => generateHTMLSpotMissions(
-        missionCtn,
-        mission.progress.id,
-        mission.template))
+    generateSpotMissions(missionCtn, missions)
 }
 
 function generateHTMLInactiveSpotCard(place, progress, missions) {
@@ -115,26 +134,5 @@ function generateHTMLInactiveSpotCard(place, progress, missions) {
 
     const spotCard = spotCtn.querySelector(`.spot-card[db-id="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
-    missions.forEach(mission => generateHTMLSpotMissions(
-        missionCtn,
-        mission.progress.id,
-        mission.template))
-}
-
-function generateHTMLSpotMissions(missionContainer, id, missionTemplate) {
-    missionContainer.innerHTML +=
-        `<button class="between-ctn interactive spot-mission completable card" db-id="${id}">
-            <!-- Left -->
-            <div class="vertical-ctn-g1">
-                <!-- Title -->
-                <h3 class="flex items-start font-semibold text-gray-800"> ${missionTemplate.Name} </h3>
-                <!-- Description -->
-                <p class="text-xs text-gray-600">${missionTemplate.Description}</p>
-            </div>
-            <!-- Reward -->
-            <div class="center-ctn">
-                <span class="font-semibold text-green-600">+${missionTemplate.Reward.Experience} XP</span>
-                <img src="../assets/icons/goals/FlashOn.svg" class="w-4 h-4" alt=""/>
-            </div>
-        </button>`;
+    generateSpotMissions(missionCtn, missions)
 }
