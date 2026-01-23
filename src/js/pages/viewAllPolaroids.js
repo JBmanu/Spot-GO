@@ -41,10 +41,15 @@ async function fetchViewAllPolaroidsOverlayHtml() {
 
 function resolveViewAllPolaroidsReturnKey(main) {
     const activeBtn = document.querySelector(".app-toolbar button[aria-current='page']");
-    if (activeBtn) return activeBtn.dataset.section || null;
-
     const activeView = main.querySelector("[data-section-view]:not([hidden])");
-    return activeView?.getAttribute("data-section-view") || activeView?.id || null;
+    if (activeView) {
+        //SE presente una sezione torna alla prima sezione non nascosta.
+        return activeView?.getAttribute("data-section-view") || activeView?.id || null;
+    } else if (activeBtn) {
+        //altrimenti in estremis torna alla macrosezione che è selezionata nella bar in basso.
+        return activeBtn.dataset.section || null;
+    }
+    
 }
 
 function showViewAllPolaroidsHeader() {
@@ -247,6 +252,7 @@ export async function loadViewAllPolaroids(userData) {
     if (!main) return;
 
     const returnViewKey = resolveViewAllPolaroidsReturnKey(main);
+    console.log("Riga 250 viewAllPolaroid: ", returnViewKey);
 
     if (state.overlay && !main.contains(state.overlay)) {
         state.overlay = null;
