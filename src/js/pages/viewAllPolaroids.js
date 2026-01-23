@@ -72,11 +72,7 @@ function showViewAllPolaroidsHeader() {
 }
 
 function hideAllSectionViewsForAlbum(main) {
-    main.querySelectorAll("[data-section-view]").forEach((el) => {
-         el.hidden = true;
-        console.log(el.getAttribute("data-section-view"));
-    }
-    );
+    main.querySelectorAll("[data-section-view]").forEach((el) => el.hidden = true);
 }
 
 function mountViewAllPolaroidsOverlay(main, { html, returnViewKey }) {
@@ -252,7 +248,6 @@ export async function loadViewAllPolaroids(userData) {
     if (!main) return;
 
     const returnViewKey = resolveViewAllPolaroidsReturnKey(main);
-    console.log("Riga 250 viewAllPolaroid: ", returnViewKey);
 
     if (state.overlay && !main.contains(state.overlay)) {
         state.overlay = null;

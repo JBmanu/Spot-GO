@@ -43,19 +43,8 @@ async function loadChatView() {
         if (!chatContainer) {
             throw new Error("Chat container #chat-container not found in template");
         }
-
-        const commBody = document.getElementById("community-main-body");
-        if (commBody && commBody.parentNode) {
-            commBody.parentNode.insertBefore(chatContainer, commBody);
-        } else {
-            const main = document.getElementById("main");
-            const commSection = main.querySelector('[data-section-view="community"]');
-            if (commSection) {
-                commSection.appendChild(chatContainer);
-            } else {
-                main.appendChild(chatContainer);
-            }
-        }
+        const main = document.getElementById("main");
+        main.appendChild(chatContainer);
     } catch (err) {
         console.error("Error loading chat view:", err);
         alert("Impossibile caricare la chat. Riprova o ricarica la pagina.");
@@ -66,8 +55,6 @@ async function loadChatView() {
 export function closeChat({ animated = true } = {}) {
     const chatContainer = document.getElementById('chat-container');
     if (chatContainer && !chatContainer.classList.contains('hidden-chat')) {
-        showCommunityMainSections();
-        chatContainer.classList.add('hidden-chat');
 
         if (!animated) {
             chatContainer.style.display = 'none';
@@ -87,9 +74,11 @@ export async function openChat(userData) {
     const messagesContainer = document.getElementById('messagesContainer');
 
     if (chatContainer) {
-        chatContainer.classList.remove('hidden-chat');
+        // chatContainer.classList.remove('hidden-chat');
         chatContainer.style.display = '';
-        hideCommunityMainSections();
+        // hideCommunityMainSections();
+        const communitySection = main.querySelector('[data-section-view="community"]');
+        communitySection.hidden = true;
     }
 
     const avatarImg = document.getElementById('chat-header-avatar');
@@ -101,11 +90,6 @@ export async function openChat(userData) {
     }
     if (userName) {
         userName.textContent = userData.username;
-    }
-
-    if (chatContainer) {
-        chatContainer.classList.remove('hidden-chat');
-        hideCommunityMainSections();
     }
 
     updateChatHeader(userData);
@@ -141,7 +125,7 @@ export async function openChat(userData) {
     }
 }
 
-function updateChatHeader(userData) {
+function updateChatHeader() {
     const headerLeftLogo = document.querySelector(".header-left-logo");
     const headerLogoText = document.getElementById("header-logo-text");
     const headerTitle = document.getElementById("header-title");
@@ -172,7 +156,6 @@ function showCommunityMainSections() {
 }
 
 function renderMessages(messages) {
-    hideCommunityMainSections();
     const chatContainer = document.getElementById('chat-container');
     chatContainer.classList.remove('hidden-chat');
 
@@ -216,7 +199,7 @@ function renderMessages(messages) {
 
                 if (article) {
                     article.addEventListener('click', (e) => {
-                        openPolaroidDetail(msg.cartolina);
+                        openPolaroidDetail(msg.cartolina, {returnViewKey: "community-chat-view"});
                     });
                 }
 
@@ -237,8 +220,8 @@ function renderMessages(messages) {
 
 window.addEventListener('popstate', (event) => {
     const chatContainer = document.getElementById('chat-container');
-    if (chatContainer && !chatContainer.classList.contains('hidden-chat')) {
-        showCommunityMainSections();
+    if (chatContainer /*&& !chatContainer.classList.contains('hidden-chat')*/) {
+        // showCommunityMainSections();
         chatContainer.classList.add('hidden-chat');
         resetHeaderBaseForSection('community');
         document.dispatchEvent(new CustomEvent("section:revealed", { detail: { section: 'community' } }));
