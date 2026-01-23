@@ -65,8 +65,8 @@ function getVisibleSectionKey(mainEl) {
 }
 
 function closeAnyOverlay(main) {
-    const overlay = main.querySelector("[data-overlay-view]");
-    if (overlay) closeOverlayAndReveal({ overlay, skipReveal: true });
+    const overlay = main.querySelectorAll("[data-overlay-view]");
+    overlay.forEach(ov => closeOverlayAndReveal({ov, skipReveal: true }));
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -233,8 +233,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         closeAnyOverlay(main);
 
         const visible = getVisibleSectionKey(main) || currentSection;
-        if (next === visible) return;
-
+        const isReallyVisible = main.querySelector(`[data-section-view="${visible}"]`);
+        if (isReallyVisible && !isReallyVisible.hidden) {
+            if (next === visible) return;
+        }
+       
         await navigateTo(next);
     });
 
