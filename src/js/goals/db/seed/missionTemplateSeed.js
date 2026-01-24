@@ -16,11 +16,11 @@ export const CATEGORY = {
 }
 
 export const ACTION_TYPE = {
+    LOGIN: "login",
     FOTO: "fai_foto",
     REVIEW: "scrivi_recensione",
     POLAROID: "crea_polaroid",
     SHARE_POLAROID: "condividi_polaroid",
-    LOGIN: "login",
     COMPLETE_MISSIONS: "completa_missioni",
     REACH_LEVEL: "raggiungi_livello",
     OBTAIN_BADGE: "ottieni_badge"

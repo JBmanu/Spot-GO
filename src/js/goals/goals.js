@@ -10,6 +10,7 @@ import {seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
 import {loadMissions} from "./loader/missionLoader.js";
 import {seedUserMissionProgress} from "./db/seed/userMissionProgressSeed.js";
 import {runAllAsyncSafe} from "./utils.js";
+import {testActiveTriggers} from "./trigger/activeTriggerForMission.js";
 
 let isInitialized = false;
 
@@ -31,6 +32,9 @@ export async function initializeGoals() {
     await initializeMissionsBar();
     await initializeTypeMissions();
     await initializeCompletable();
+
+    // Test triggers
+    await testActiveTriggers()
 
     console.log("Goals module initialized");
 }
