@@ -96,7 +96,8 @@ export async function documentsFrom(query) {
 export async function loadDocumentRef(documentRef) {
     if (hasInvalid(documentRef)) return EMPTY_VALUE;
     try {
-        return (await getDoc(documentRef));
+        const doc = (await getDoc(documentRef));
+        return {id: doc.id, ref: doc.ref, ...doc.data()};
     } catch (e) {
         console.error("Error loading document " + documentRef.id ?? "NONE" + "ref: ", e);
         return EMPTY_VALUE;

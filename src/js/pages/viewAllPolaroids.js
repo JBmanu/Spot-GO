@@ -41,10 +41,15 @@ async function fetchViewAllPolaroidsOverlayHtml() {
 
 function resolveViewAllPolaroidsReturnKey(main) {
     const activeBtn = document.querySelector(".app-toolbar button[aria-current='page']");
-    if (activeBtn) return activeBtn.dataset.section || null;
-
     const activeView = main.querySelector("[data-section-view]:not([hidden])");
-    return activeView?.getAttribute("data-section-view") || activeView?.id || null;
+    if (activeView) {
+        //SE presente una sezione torna alla prima sezione non nascosta.
+        return activeView?.getAttribute("data-section-view") || activeView?.id || null;
+    } else if (activeBtn) {
+        //altrimenti in estremis torna alla macrosezione che è selezionata nella bar in basso.
+        return activeBtn.dataset.section || null;
+    }
+    
 }
 
 function showViewAllPolaroidsHeader() {
@@ -67,11 +72,7 @@ function showViewAllPolaroidsHeader() {
 }
 
 function hideAllSectionViewsForAlbum(main) {
-    main.querySelectorAll("[data-section-view]").forEach((el) => {
-         el.hidden = true;
-        console.log(el.getAttribute("data-section-view"));
-    }
-    );
+    main.querySelectorAll("[data-section-view]").forEach((el) => el.hidden = true);
 }
 
 function mountViewAllPolaroidsOverlay(main, { html, returnViewKey }) {

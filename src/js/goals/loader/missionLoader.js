@@ -9,23 +9,34 @@ export async function loadMissions() {
         () => generateMissionType(MISSION_TYPE.LEVEL, 2)
     )
 
+    // const updatedMission = await updateValueOfMission(MISSION_TYPE.DAILY,
+    //     "LfJMWzpIu7VWIauMJdfE",
+    //     current => current + 1);
+    // console.log("UPDATE MISSION: ", updatedMission);
+    //
+    // const updatedSpotMission = await updateValueOfSpotMission(
+    //     "8ncqBKHfbPWlQsFc7pvT",
+    //     "ceGA2KwDbHE9xsE9lzC2",
+    //     current => current + 1);
+    // console.log("UPDATE SPOT MISSION: ", updatedSpotMission);
+
     console.log("Missions loaded successfully.");
 }
 
 async function generateMissionType(missionType, containerIndex) {
     const missions = await hydrateCurrentUserMissionsOf(missionType);
+
     missions.forEach(mission =>
         generateHTMLMissionTemplate(
             containerIndex,
-            mission.id,
             mission.template,
             mission.progress.Current));
 }
 
-function generateHTMLMissionTemplate(indexCtn, id, missionTemplate, progress) {
+function generateHTMLMissionTemplate(indexCtn, missionTemplate, progress) {
     const container = document.querySelectorAll('.missions-card');
     container[indexCtn].innerHTML +=
-        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card" db-id="${id}">
+        `<div class="between-ctn glass-strong interactive completable px-5 py-4 card" db-ref="${missionTemplate.ref}">
             <!-- Lato sinistro -->
             <div class="space-y-1">
                 <h3 class="text-sm font-semibold text-gray-800">${missionTemplate.Name}</h3>

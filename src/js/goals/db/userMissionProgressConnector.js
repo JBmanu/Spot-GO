@@ -8,7 +8,7 @@ import {
     loadDocumentRef,
     updateDocument
 } from "./goalsConnector.js";
-import {arrayUnion, collection, query, Timestamp, where} from "firebase/firestore";
+import {collection, query, Timestamp, where} from "firebase/firestore";
 import {db} from "../../firebase.js";
 import {MISSION_TEMPLATE_COLLECTION} from "./missionTemplateConnector.js";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
@@ -41,38 +41,39 @@ async function createMissionProgress(data, create, update) {
 
     if (!userMissions) {
         return await createDocument(USER_MISSION_PROGRESS_COLLECTION,
-            {UserRef: userRef, Missions: {...emptyMissionStructure, ...create(newMission)}});
+            {UserRef: userRef, ...emptyMissionStructure, ...create(newMission)});
     } else {
         return await updateDocument(userMissions, update(newMission));
     }
 }
 
 export async function createSpotMission(data) {
+
     return await createMissionProgress(data,
         (newMission) => ({
-            [MISSION_TYPE.SPOT]: {[data.PlaceId]: [newMission]}
+            [MISSION_TYPE.SPOT]: {[data.PlaceId]: {[data.MissionTemplateId]: newMission}}
         }),
         (newMission) => ({
-            [`Missions.${MISSION_TYPE.SPOT}.${data.PlaceId}`]: arrayUnion(newMission)
+            [`${MISSION_TYPE.SPOT}.${data.PlaceId}.${data.MissionTemplateId}`]: newMission
         }))
 }
 
 export async function createDailyMission(data) {
     return await createMissionProgress(data,
-        (newMission) => ({[MISSION_TYPE.DAILY]: [newMission]}),
-        (newMission) => ({[`Missions.${MISSION_TYPE.DAILY}`]: arrayUnion(newMission)}))
+        (newMission) => ({[MISSION_TYPE.DAILY]: {[data.MissionTemplateId]: newMission}}),
+        (newMission) => ({[`${MISSION_TYPE.DAILY}.${data.MissionTemplateId}`]: newMission}))
 }
 
 export async function createThemeMission(data) {
     return await createMissionProgress(data,
-        (newMission) => ({[MISSION_TYPE.THEME]: [newMission]}),
-        (newMission) => ({[`Missions.${MISSION_TYPE.THEME}`]: arrayUnion(newMission)}))
+        (newMission) => ({[MISSION_TYPE.THEME]: {[data.MissionTemplateId]: newMission}}),
+        (newMission) => ({[`${MISSION_TYPE.THEME}.${data.MissionTemplateId}`]: newMission}))
 }
 
 export async function createLevelMission(data) {
     return await createMissionProgress(data,
-        (newMission) => ({[MISSION_TYPE.LEVEL]: [newMission]}),
-        (newMission) => ({[`Missions.${MISSION_TYPE.LEVEL}`]: arrayUnion(newMission)}))
+        (newMission) => ({[MISSION_TYPE.LEVEL]: {[data.MissionTemplateId]: newMission}}),
+        (newMission) => ({[`${MISSION_TYPE.LEVEL}.${data.MissionTemplateId}`]: newMission}))
 }
 
 export async function clearUserMissionProgress() {
@@ -96,18 +97,20 @@ async function currentUserMissions() {
 
 async function currentUserMissionsOf(type) {
     const userMissions = await currentUserMissions()
-    return userMissions?.Missions[type]
+    return Object.values(userMissions?.[type]);
 }
 
-async function hydrateMissions(mission) {
-    const missionTemplateDocument = await loadDocumentRef(mission.MissionTemplateRef);
-    const placeDocument = missionTemplateDocument.data().Type === MISSION_TYPE.SPOT ?
+async function hydrateMission(mission) {
+    const missionTemplateData = await loadDocumentRef(mission.MissionTemplateRef);
+    const placeData = missionTemplateData.Type === MISSION_TYPE.SPOT ?
         await loadDocumentRef(mission.PlaceRef) : EMPTY_VALUE;
-    const userDocument = await loadDocumentRef(mission.UserRef);
+    const userData = await loadDocumentRef(mission.UserRef);
+
     return {
-        user: userDocument !== EMPTY_VALUE && {id: userDocument.id, ...userDocument.data()},
-        place: placeDocument !== EMPTY_VALUE && {id: placeDocument.id, ...placeDocument.data()},
-        template: missionTemplateDocument.data(),
+        id: missionTemplateData.id,
+        user: userData !== EMPTY_VALUE && userData,
+        place: placeData !== EMPTY_VALUE && placeData,
+        template: missionTemplateData,
         progress: mission,
     }
 }
@@ -115,20 +118,18 @@ async function hydrateMissions(mission) {
 export async function hydrateCurrentUserMissionsOf(type) {
     if (type === MISSION_TYPE.SPOT) return [];
     const userMissions = await currentUserMissionsOf(type)
-    return await Promise.all(userMissions.map(hydrateMissions));
+    return await Promise.all(userMissions.map(hydrateMission));
 }
 
 async function hydrateCurrentUserSpotMissionsIf(isActive) {
-    const activeSpotMissions = (await currentUserMissionsOf(MISSION_TYPE.SPOT));
-    const result = Object.entries(activeSpotMissions)
-        .filter(([, missions]) => missions.every(m => m.IsActive === isActive))
-        .map(async ([_, missions]) => {
-            const placeDocument = (await loadDocumentRef(missions[0].PlaceRef));
-            const hydratedMissions = await Promise.all(missions.map(hydrateMissions));
-            return {
-                place: placeDocument !== EMPTY_VALUE && {id: placeDocument.id, ...placeDocument.data()},
-                missions: hydratedMissions
-            }
+    const activeSpotMissions = await currentUserMissionsOf(MISSION_TYPE.SPOT);
+
+    const result = activeSpotMissions.map(Object.values)
+        .filter(missions => missions.every(m => m.IsActive === isActive))
+        .map(async missions => {
+            const placeData = (await loadDocumentRef(missions[0].PlaceRef));
+            const hydratedMissions = await Promise.all(missions.map(hydrateMission));
+            return {place: placeData !== EMPTY_VALUE && placeData, missions: hydratedMissions}
         })
 
     return await Promise.all(result);
@@ -141,3 +142,46 @@ export async function hydrateActiveSpotMissionsOfCurrentUser() {
 export async function hydrateInactiveSpotMissionsOfCurrentUser() {
     return await hydrateCurrentUserSpotMissionsIf(false)
 }
+
+async function updateValueMission(missions, mission, pathUpdate, updateFun) {
+    const current = mission.progress.Current
+    const target = mission.template.Target
+    const updatedValue = updateFun(current)
+    const isCompleted = updatedValue >= target;
+    const userMissions = await userMissionsOf(mission.user.id)
+
+    await updateDocument(userMissions, {[`${pathUpdate}.Current`]: updatedValue});
+    if (!mission.progress.IsCompleted && isCompleted) {
+        await updateDocument(userMissions, {[`${pathUpdate}.IsCompleted`]: true});
+    }
+
+    const missionsCount = missions.length;
+    let completedCount = missions.filter(m => m.progress.IsCompleted).length;
+    completedCount = isCompleted ? completedCount + 1 : completedCount;
+
+    return {
+        missions: missionsCount, completedMissions: completedCount,
+        isCompleted: isCompleted, target: target, updatedValue: updatedValue
+    };
+}
+
+export async function updateValueOfSpotMission(placeId, missionTemplateId, updateFun) {
+    const spotsMissions = (await currentUserMissions())?.[MISSION_TYPE.SPOT];
+    const spotMissions = spotsMissions?.[placeId];
+
+    const missions = await Promise.all(Object.values(spotMissions).map(hydrateMission));
+    const mission = await hydrateMission(spotMissions?.[missionTemplateId]);
+
+    const pathUpdate = `${MISSION_TYPE.SPOT}.${placeId}.${missionTemplateId}`;
+    return await updateValueMission(missions, mission, pathUpdate, updateFun);
+}
+
+export async function updateValueOfMission(type, missionTemplateId, updateFun) {
+    const missions = await hydrateCurrentUserMissionsOf(type);
+    const mission = missions.filter(mission => mission.id === missionTemplateId)[0];
+
+    const pathUpdate = `${type}.${mission.id}`;
+    return await updateValueMission(missions, mission, pathUpdate, updateFun);
+}
+
+

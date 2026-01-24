@@ -18,9 +18,9 @@ export async function initializeGoals() {
     isInitialized = true;
 
     // Seed DB
-    await runAllAsyncSafe(seedBadges, seedDiscounts)
-    await seedMissionTemplates();
-    await seedUserMissionProgress();
+    // await runAllAsyncSafe(seedBadges, seedDiscounts)
+    // await seedMissionTemplates();
+    // await seedUserMissionProgress();
 
     // Loader
     await runAllAsyncSafe(loadSpotMissions, loadMissions)

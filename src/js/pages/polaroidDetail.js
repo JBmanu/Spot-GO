@@ -54,11 +54,12 @@ function getMain() {
 
 function getActiveSectionKey(main) {
     if (!main) return "homepage";
-    const visible = main.querySelector('[data-section-view]:not([hidden])');
-    if (visible) return (visible?.dataset.sectionView || "homepage").trim();
 
     const overlay = main.querySelector('[data-overlay-view]');
     if (overlay) return overlay.dataset.overlayView;
+
+    const visible = main.querySelector('[data-section-view]:not([hidden])');
+    if (visible) return (visible?.dataset.sectionView || "homepage").trim();
 
     return "homepage";
 }
