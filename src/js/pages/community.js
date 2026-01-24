@@ -37,10 +37,18 @@ async function configureKeyboard() {
     }
     communityPage.appendChild(keyboardEl);
     const clearBtn = document.querySelector("#clear-search-btn");
+    clearBtn.hidden = true;
+
     clearBtn.addEventListener("click", () => {
         searchInput.value = "";
         onValueChangeSearch("");
+        clearBtn.hidden = true;
     });
+
+    searchInput.addEventListener('input', () => {
+        clearBtn.hidden = searchInput.value.trim() == '';
+    });
+
     keyboardSetted = true;
 }
 
