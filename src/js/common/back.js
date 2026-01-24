@@ -42,7 +42,8 @@ export function closeOverlayAndReveal({ overlay, returnViewKey, skipReveal = fal
 
             if (!skipReveal && (!returnKey || !main.querySelector(`[data-overlay-view="${returnKey}"]`))) {
                 const shown = showOnlySectionView(main, returnKey) || "homepage";
-                resetHeaderBaseForSection(shown);
+                //nel caso di section-profile in lettura non bisogna rimuovere il back button.
+                if(returnKey !== "community-profile") resetHeaderBaseForSection(shown);
                 activateToolbar(shown);
                 document.dispatchEvent(new CustomEvent("section:revealed", { detail: { section: shown } }));
             }
