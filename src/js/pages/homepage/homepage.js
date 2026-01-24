@@ -19,6 +19,7 @@ import { loadViewAllSaved } from "../viewAllSaved.js";
 import { autoInitializeCarousels, initializeHorizontalCarousel } from "../../common/carousels.js";
 import { PATHS } from "../../paths.js";
 import { pollForUserNotifications, stopPollingUserNotifications } from "../../notifications.js";
+import { fadeInZoom } from "../../map.js";
 
 const state = {
     homepageBuilt: false,
@@ -185,9 +186,20 @@ async function buildHomepageOnce(homepageRoot) {
     homepageRoot.dataset.homepageBuilt = "true";
     state.homepageBuilt = true;
 
+    // Apri mappa
+    const openMapButton = document.getElementById('home-nearby-see-all');
+    openMapButton.removeEventListener('click', openMap);
+    openMapButton.addEventListener('click', openMap);
+
     // Notifiche
     stopPollingUserNotifications();
     pollForUserNotifications();
+}
+
+function openMap(e) {
+    e.preventDefault();
+    window.navigateToSection("map");
+    fadeInZoom();
 }
 
 export async function resetHomepageState(homepageRoot) {

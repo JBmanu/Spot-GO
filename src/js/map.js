@@ -70,6 +70,17 @@ let searchBarLoaded = false;
 let nearbySpotsBottomSheetLoaded = false;
 let spotMarkersMap = new Map(); // spotId -> marker
 
+let needsFadeInZoom = false;
+
+export function fadeInZoom() {
+    if (!map) {
+        needsFadeInZoom = true;
+        return;
+    }
+    map.setView(USER_PROTO_POSITION, 5);
+    map.flyTo(USER_PROTO_POSITION, 15);
+}
+
 // Mappa categoria -> icona marker
 const categoryToMarkerMap = {
     "culture": "MarkerCulture.svg",
@@ -129,7 +140,6 @@ export async function loadSpotsDependentObjects() {
     await loadNearbySpotsList();
     const mapWrapper = document.querySelector('[data-section-view="map"]');
     initializeSpotClickHandlers(mapWrapper || document.getElementById("main"));
-
 }
 
 function initializeCategoryFilters() {
@@ -233,7 +243,7 @@ async function loadMap() {
     // Aggiunta layer OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 19,
+        maxZoom: 20,
     }).addTo(map);
 
     // Aggiunta posizione corrente dell'utente (simulata)
@@ -250,6 +260,11 @@ async function loadMap() {
 
     const centerButton = document.getElementById('map-recenter-btn');
     setupCenterToUserPositionButton(map, centerButton);
+
+    if (needsFadeInZoom) {
+        needsFadeInZoom = false;
+        fadeInZoom();
+    }
 
     // setTileServer(MAP_TILE_SERVERS.ESRI_LIGHT_GRAY);
 }
@@ -365,10 +380,6 @@ async function loadNearbySpotsList() {
 }
 
 function setTileServer(server) {
-    if (currentTileLayer) {
-        map.removeLayer(currentTileLayer);
-    }
-
     currentTileLayer = L.tileLayer(server.url, {
         attribution: server.attribution
     }).addTo(map);
