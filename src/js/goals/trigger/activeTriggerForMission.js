@@ -18,10 +18,11 @@ export async function triggerLogin() {
     console.log("Missions LOGIN: ", missionsLogin);
 
     for (const mission of missionsLogin) {
-        const isCompleted = mission.progress.isCompleted
+        const isCompleted = mission.progress.IsCompleted
         const savedData = mission.progress.CreatedAt.toDate()
         const areEqualsDay = checkEqualsDay(savedData, new Date())
         if (!isCompleted && areEqualsDay) {
+            console.log("UDATE LOGIN")
             await updateValueOfMission(MISSION_TYPE.DAILY, mission.id, value => value + 1);
         }
     }
