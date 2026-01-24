@@ -1,10 +1,6 @@
 ﻿import {MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
 import {runAllAsyncSafe} from "../utils.js";
-import {
-    hydrateCurrentUserMissionsOf,
-    updateValueOfMission,
-    updateValueOfSpotMission
-} from "../db/userMissionProgressConnector.js";
+import {hydrateCurrentUserMissionsOf} from "../db/userMissionProgressConnector.js";
 
 export async function loadMissions() {
     await runAllAsyncSafe(
@@ -13,16 +9,16 @@ export async function loadMissions() {
         () => generateMissionType(MISSION_TYPE.LEVEL, 2)
     )
 
-    const updatedMission = await updateValueOfMission(MISSION_TYPE.DAILY,
-        "LfJMWzpIu7VWIauMJdfE",
-        current => current + 1);
-    console.log("UPDATE MISSION: ", updatedMission);
-
-    const updatedSpotMission = await updateValueOfSpotMission(
-        "8ncqBKHfbPWlQsFc7pvT",
-        "ceGA2KwDbHE9xsE9lzC2",
-        current => current + 1);
-    console.log("UPDATE SPOT MISSION: ", updatedSpotMission);
+    // const updatedMission = await updateValueOfMission(MISSION_TYPE.DAILY,
+    //     "LfJMWzpIu7VWIauMJdfE",
+    //     current => current + 1);
+    // console.log("UPDATE MISSION: ", updatedMission);
+    //
+    // const updatedSpotMission = await updateValueOfSpotMission(
+    //     "8ncqBKHfbPWlQsFc7pvT",
+    //     "ceGA2KwDbHE9xsE9lzC2",
+    //     current => current + 1);
+    // console.log("UPDATE SPOT MISSION: ", updatedSpotMission);
 
     console.log("Missions loaded successfully.");
 }
