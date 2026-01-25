@@ -15,8 +15,8 @@ const defaultFilters = {
     endTime: '23:59',
     rating: 0,
     status: {
-        visited: false,
         saved: false,
+        badge: false,
         mine: false
     }
 };
@@ -211,12 +211,12 @@ export async function initializeBottomSheetFilters({
         // RATING
         updateStars(filters.rating || 0);
 
-        // STATUS (Visited, Saved, Mine)
+        // STATUS (Badge, Saved, Mine)
         if (filters.status) {
             const state = getStatusState(statusContainer);
-            
-            state.visited = !!filters.status.visited;
+
             state.saved = !!filters.status.saved;
+            state.badge = !!filters.status.badge;
             state.mine = !!filters.status.mine;
 
             statusContainer.querySelectorAll(".home-chip").forEach((btn) => {
@@ -242,7 +242,7 @@ export async function initializeBottomSheetFilters({
 
         const statusFilters = statusContainer 
             ? getActiveStatusFilters(statusContainer) 
-            : { visited: false, saved: false, mine: false };
+            : { saved: false, badge: false, mine: false };
 
         const filters = {
             distanceKm: Number(distanceSlider.dataset.realValue),
@@ -291,7 +291,7 @@ function countActiveFilters(current, defaults) {
     if (current.rating !== defaults.rating) count++;
     if (current.startTime !== defaults.startTime) count++;
     if (current.endTime !== defaults.endTime) count++;
-    if (current.status.visited !== defaults.status.visited) count++;
+    if (current.status.badge !== defaults.status.badge) count++;
     if (current.status.saved !== defaults.status.saved) count++;
     if (current.status.mine !== defaults.status.mine) count++;
 

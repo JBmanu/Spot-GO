@@ -531,13 +531,13 @@ export async function getFilteredSpots(
     }
 
     // -------------------------
-    // STATI (Visited, Saved, Mine)
+    // STATI (Saved, Badge Obtained, Mine)
     // -------------------------
     const user = await getCurrentUser();
     const userId = user.email;
 
     if (userId && filters?.status) {
-        const { visited, saved, mine } = filters.status;
+        const { saved, badge, mine } = filters.status;
 
         // Filtro "Creato da me"
         if (mine) {
@@ -546,14 +546,15 @@ export async function getFilteredSpots(
             );
         }
 
-        // Filtro "Visitato"
-        if (visited) {
-            const visitedSnap = await getDocs(
-                query(collection(db, "LuogoVisitato"), where("idUtente", "==", userId))
-            );
-            const visitedIds = visitedSnap.docs.map(doc => doc.data().idLuogo);
-            spots = spots.filter(spot => visitedIds.includes(spot.id));
-        }
+        // Filtro "Badge Ottenuto"
+        // TODO: QUERY BADGE
+        // if (visited) {
+        //     const visitedSnap = await getDocs(
+        //         query(collection(db, "LuogoVisitato"), where("idUtente", "==", userId))
+        //     );
+        //     const visitedIds = visitedSnap.docs.map(doc => doc.data().idLuogo);
+        //     spots = spots.filter(spot => visitedIds.includes(spot.id));
+        // }
 
         // Filtro "Salvato"
         if (saved) {

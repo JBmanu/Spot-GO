@@ -1,8 +1,8 @@
 const statusStates = new WeakMap();
 
 export const mapping = {
-    'visitato': 'visited',
     'salvato': 'saved',
+    'badge': 'badge',
     'creato': 'mine'
 };
 
