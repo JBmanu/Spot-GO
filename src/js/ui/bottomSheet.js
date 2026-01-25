@@ -20,7 +20,18 @@ export function openBottomSheet(bottomSheetEl, overlayEl) {
         bottomSheetEl.classList.add('active');
         overlayEl.classList.add('active');
         raiseFiltersOpenEvent(bottomSheetEl);
-        document.getElementById('main').classList.add('scroll-y-hidden');
+        
+        const main = document.getElementById('main');
+        main.classList.add('scroll-y-hidden');
+
+        const onOpenEnd = (e) => {
+            if (e.target !== bottomSheetEl || e.propertyName !== 'transform' || isClosing) return;
+
+            main.classList.remove('scroll-y-hidden');
+            bottomSheetEl.removeEventListener('transitionend', onOpenEnd);
+        };
+
+        bottomSheetEl.addEventListener('transitionend', onOpenEnd);
     });
 }
 
@@ -30,6 +41,9 @@ export function closeBottomSheet(bottomSheetEl, overlayEl) {
     bottomSheetEl.classList.remove('active');
     overlayEl.classList.remove('active');
 
+    const main = document.getElementById('main');
+    main.classList.add('scroll-y-hidden');
+
     const onEnd = (e) => {
         if (e.target !== bottomSheetEl) return;
         if (e.propertyName !== 'transform') return;
@@ -38,7 +52,7 @@ export function closeBottomSheet(bottomSheetEl, overlayEl) {
         bottomSheetEl.style.display = 'none';
         overlayEl.style.display = 'none';
         bottomSheetEl.removeEventListener('transitionend', onEnd);
-        document.getElementById('main').classList.remove('scroll-y-hidden');
+        main.classList.remove('scroll-y-hidden');
     };
 
     bottomSheetEl.addEventListener('transitionend', onEnd);
