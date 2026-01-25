@@ -16,7 +16,8 @@ export async function testActiveTriggers() {
     console.log("Active triggers tested");
 }
 
-async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, filterMission) {
+async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, filterMission,
+                                                   updateMission = value => value + 1) {
     const missions = await hydrateCurrentUserMissionsOf(missionType)
     const filteredMissions = mapMissions(missions)
         .filter(mission => filterMission(mission) && !mission.progress.IsCompleted)
@@ -24,16 +25,18 @@ async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, fil
     for (let mission of filteredMissions) {
         let updatedMissionData;
         if (missionType === MISSION_TYPE.SPOT) {
-            updatedMissionData = await updateValueOfSpotMission(mission.place.id, mission.id, value => value + 1);
+            updatedMissionData = await updateValueOfSpotMission(mission.place.id, mission.id, updateMission);
         } else {
-            updatedMissionData = await updateValueOfMission(missionType, mission.id, value => value + 1);
+            updatedMissionData = await updateValueOfMission(missionType, mission.id, updateMission);
         }
 
+        // Update level
+        if (updatedMissionData.isCompleted) {
+            const levelData = await updateCurrentUserLevel(level => level + mission.template.Reward.Experience)
+            await triggerReachLevel(levelData)
+        }
         // Update Completed Mission
         await triggerCompleteMission(updatedMissionData, missionType);
-        // Update level
-        if (updatedMissionData.isCompleted)
-            await updateCurrentUserLevel(level => level + mission.template.Reward.Experience)
 
     }
 }
@@ -80,14 +83,13 @@ export async function triggerSharePolaroid(spotData) {
 async function triggerCompleteMission(updatedMissionData, missionType) {
     if (missionType === MISSION_TYPE.SPOT || !updatedMissionData.isCompleted) return;
     await chooseMissionTypeAndFilterForUpdate(missionType, identityFun,
-        mission => {
-            // console.log("Mission completed:", mission);
-            return mission.template.Action === ACTION_TYPE.COMPLETE_MISSIONS
-        });
+        mission => mission.template.Action === ACTION_TYPE.COMPLETE_MISSIONS);
 }
 
-export async function triggerReachLevel() {
-
+export async function triggerReachLevel(levelData) {
+    await chooseMissionTypeAndFilterForUpdate(MISSION_TYPE.LEVEL, identityFun,
+        mission => mission.template.Action === ACTION_TYPE.REACH_LEVEL,
+        _ => levelData.newLevel)
 }
 
 export async function triggerObtainBadge() {

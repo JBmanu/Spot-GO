@@ -144,7 +144,7 @@ export async function hydrateInactiveSpotMissionsOfCurrentUser() {
 async function updateValueMission(missions, mission, pathUpdate, updateFun) {
     const current = mission.progress.Current
     const target = mission.template.Target
-    const updatedValue = updateFun(current)
+    const updatedValue = updateFun(current) > target ? target : updateFun(current);
     const isCompleted = updatedValue >= target;
     const userMissions = await userMissionsOf(mission.user.id)
 
