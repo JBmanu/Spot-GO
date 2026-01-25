@@ -19,7 +19,7 @@ export const ACTION_TYPE = {
     LOGIN: "login",
     FOTO: "fai_foto",
     REVIEW: "scrivi_recensione",
-    POLAROID: "crea_polaroid",
+    CREATE_POLAROID: "crea_polaroid",
     SHARE_POLAROID: "condividi_polaroid",
     COMPLETE_MISSIONS: "completa_missioni",
     REACH_LEVEL: "raggiungi_livello",
@@ -51,7 +51,7 @@ const MISSION_TEMPLATES = [
         Description: "Dagli un tocco unico e condividilo!",
         Type: MISSION_TYPE.SPOT,
         Category: null,
-        Action: ACTION_TYPE.POLAROID,
+        Action: ACTION_TYPE.CREATE_POLAROID,
         Target: 1,
         Reward: {Experience: 40, BadgeId: createdBadgeIds[2], DiscountId: null}
     },
@@ -89,7 +89,7 @@ const MISSION_TEMPLATES = [
         Description: "Crea un ricordo unico della giornata!",
         Type: MISSION_TYPE.DAILY,
         Category: null,
-        Action: ACTION_TYPE.POLAROID,
+        Action: ACTION_TYPE.CREATE_POLAROID,
         Target: 1,
         Reward: {Experience: 30, BadgeId: null, DiscountId: null}
     },

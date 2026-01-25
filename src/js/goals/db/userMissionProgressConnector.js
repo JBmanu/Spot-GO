@@ -142,10 +142,6 @@ export async function hydrateInactiveSpotMissionsOfCurrentUser() {
     return await hydrateCurrentUserSpotMissionsIf(false)
 }
 
-async function hydrateCurrentUserMissionsThatAre() {
-
-}
-
 async function updateValueMission(missions, mission, pathUpdate, updateFun) {
     const current = mission.progress.Current
     const target = mission.template.Target
