@@ -1,11 +1,18 @@
-﻿
-// Trigger attivi: l'utente fa qualcosa
-import {hydrateCurrentUserMissionsOf, updateValueOfMission} from "../db/userMissionProgressConnector.js";
-import {ACTION_TYPE, MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
+﻿// Trigger attivi: l'utente fa qualcosa
+import {
+    hydrateCurrentUserMissionsOf,
+    updateValueOfMission,
+    updateValueOfSpotMission
+} from "../db/userMissionProgressConnector.js";
+import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
 import {checkEqualsDay} from "../utils.js";
 
 export async function testActiveTriggers() {
     await triggerLogin();
+    await triggerFoto({
+        id: "8ncqBKHfbPWlQsFc7pvT",
+        category: CATEGORY.NATURE
+    });
     // await triggerFoto();
     // await triggerReview();
     // await triggerCreatePolaroid();
@@ -15,21 +22,43 @@ export async function testActiveTriggers() {
 export async function triggerLogin() {
     const missions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.DAILY)
     const missionsLogin = missions.filter(mission => mission.template.Action === ACTION_TYPE.LOGIN)
-    console.log("Missions LOGIN: ", missionsLogin);
 
     for (const mission of missionsLogin) {
         const isCompleted = mission.progress.IsCompleted
         const savedData = mission.progress.CreatedAt.toDate()
         const areEqualsDay = checkEqualsDay(savedData, new Date())
         if (!isCompleted && areEqualsDay) {
-            console.log("UDATE LOGIN")
             await updateValueOfMission(MISSION_TYPE.DAILY, mission.id, value => value + 1);
         }
     }
 }
 
-export async function triggerFoto() {
+export async function triggerFoto(spotData) {
+    const spotsMissions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.SPOT)
+    const spotMissions = spotsMissions.find(spot => spot.place.id === spotData.id)
+    const missions = spotMissions.missions
+        .filter(mission => mission.template.Action === ACTION_TYPE.FOTO && !mission.progress.IsCompleted)
 
+    for (const mission of missions) {
+        await updateValueOfSpotMission(spotData.id, mission.id, value => value + 1);
+    }
+
+    const dailyMissions = (await hydrateCurrentUserMissionsOf(MISSION_TYPE.DAILY))
+        .filter(dailyMission => dailyMission.template.Action === ACTION_TYPE.FOTO &&
+            !dailyMission.progress.IsCompleted)
+
+    for (let dailyMission of dailyMissions) {
+        await updateValueOfMission(MISSION_TYPE.DAILY, dailyMission.id, value => value + 1);
+    }
+
+    const themeMissions = (await hydrateCurrentUserMissionsOf(MISSION_TYPE.THEME))
+        .filter(themeMission => themeMission.template.Action === ACTION_TYPE.FOTO &&
+            themeMission.template.Category === spotData.category &&
+            !themeMission.progress.IsCompleted)
+
+    for (let themeMission of themeMissions) {
+        await updateValueOfMission(MISSION_TYPE.THEME, themeMission.id, value => value + 1);
+    }
 }
 
 export async function triggerReview() {

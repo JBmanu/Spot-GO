@@ -9,10 +9,10 @@ export const MISSION_TYPE = {
 }
 
 export const CATEGORY = {
-    NATURE: "natura",
-    FOOD: "cibo",
-    CULTURE: "cultura",
-    MYSTERY: "mistero"
+    NATURE: "nature",
+    FOOD: "food",
+    CULTURE: "culture",
+    MYSTERY: "mystery"
 }
 
 export const ACTION_TYPE = {
