@@ -200,7 +200,7 @@ async function loadMap() {
 
         icon.src = "../assets/icons/map/Done.svg";
       }
-      validateNewSpotForm();
+      validateUserData();
     });
 
     const centerButton = document.getElementById('new-spot-map-recenter-btn');
@@ -348,7 +348,7 @@ function setupNewSpotFormValidation() {
     if (!form || !submitBtn) return;
 
     const update = () => {
-        submitBtn.disabled = !validateNewSpotForm();
+        submitBtn.disabled = !validateUserData();
         submitBtn.classList.toggle("opacity-50", submitBtn.disabled);
         submitBtn.classList.toggle("cursor-not-allowed", submitBtn.disabled);
     };
@@ -427,6 +427,15 @@ function setupPriceLogic() {
     syncPriceFieldsState(form);
 }
 
+function validateUserData() {
+    if (validateNewSpotForm()) return true;
+
+    const msg = document.getElementById('new-spot-help-text');
+    msg.innerText = getValidationErrorMessage();
+
+    return false;
+}
+
 function validateNewSpotForm() {
     const form = document.getElementById("new-spot-form");
     if (!form) return false;
@@ -488,6 +497,49 @@ function validateNewSpotForm() {
         return false;
     }
     return true;
+}
+
+function getValidationErrorMessage() {
+    const form = document.getElementById("new-spot-form");
+    if (!form) return "";
+
+    // POSIZIONE
+    const posizioneValida = Array.isArray(selectedSpotPosition) && selectedSpotPosition.length === 2;
+    if (!posizioneValida) return "Seleziona una posizione sulla mappa";
+
+    // NOME
+    const nome = form.querySelector("#new-spot-name")?.value.trim();
+    if (!nome) return "Inserisci il nome dello spot";
+
+    // DESCRIZIONE
+    const descrizione = form.querySelector("#new-spot-desc")?.value.trim();
+    if (!descrizione) return "Inserisci una breve descrizione dello spot";
+
+    // CATEGORIA
+    const categoria = form.querySelector("#new-spot-category")?.value;
+    if (!categoria) return "Seleziona una categoria";
+
+    // COSTI
+    if (categoria === "food") {
+        const spesaMedia = form.querySelector("#new-spot-price-food")?.value.trim();
+        if (!spesaMedia || parsePrice(spesaMedia) <= 0) return "Inserisci la spesa media";
+    } else {
+        const freeTabActive = form.querySelector('[data-auth-tab="free"]')?.classList.contains("is-active");
+        if (!freeTabActive) {
+            const prezzoIntero = parsePrice(form.querySelector("#new-spot-price-intero")?.value.trim());
+            if (prezzoIntero <= 0) return "Inserisci il prezzo intero";
+        }
+    }
+
+    // IMMAGINE
+    const imageInput = form.querySelector("#new-spot-image-input");
+    const imageValida =
+        imageInput &&
+        imageInput.files &&
+        imageInput.files.length > 0;
+    if (!imageValida) return "Carica una foto dello spot";
+
+    return "";
 }
 
 async function readNewSpotDataFromFields() {
