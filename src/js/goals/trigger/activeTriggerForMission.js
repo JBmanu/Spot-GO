@@ -15,46 +15,45 @@ export async function testActiveTriggers() {
     await triggerSharePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
 }
 
-export async function triggerLogin() {
-    const missions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.DAILY)
-    const missionsLogin = missions.filter(mission => mission.template.Action === ACTION_TYPE.LOGIN)
+async function chooseMissionTypeAndFilterForUpdate(missionType, filterMission) {
+    const missions = await hydrateCurrentUserMissionsOf(missionType)
+    const filteredMissions = missions
+        .filter(mission => filterMission(mission) && !mission.progress.IsCompleted)
 
-    for (const mission of missionsLogin) {
-        const isCompleted = mission.progress.IsCompleted
-        const savedData = mission.progress.CreatedAt.toDate()
-        const areEqualsDay = checkEqualsDay(savedData, new Date())
-        if (!isCompleted && areEqualsDay) {
-            await updateValueOfMission(MISSION_TYPE.DAILY, mission.id, value => value + 1);
+    for (let mission of filteredMissions) {
+        if (missionType === MISSION_TYPE.SPOT) {
+            await updateValueOfSpotMission(mission.place.id, mission.id, value => value + 1);
+        } else {
+            await updateValueOfMission(missionType, mission.id, value => value + 1);
         }
     }
+}
+
+export async function triggerLogin() {
+    await chooseMissionTypeAndFilterForUpdate(MISSION_TYPE.DAILY,
+        mission => {
+            const savedData = mission.progress.CreatedAt.toDate()
+            const areEqualsDay = checkEqualsDay(savedData, new Date())
+            return mission.template.Action === ACTION_TYPE.LOGIN && areEqualsDay
+        })
 }
 
 async function baseTriggerSpotAction(spotData, actionType) {
     const spotsMissions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.SPOT)
     const spotMissions = spotsMissions.find(spot => spot.place.id === spotData.id)
+
     const missions = spotMissions.missions
         .filter(mission => mission.template.Action === actionType && !mission.progress.IsCompleted)
 
     for (const mission of missions) {
-        await updateValueOfSpotMission(spotData.id, mission.id, value => value + 1);
+        await updateValueOfSpotMission(mission.place.id, mission.id, value => value + 1);
     }
 
-    const dailyMissions = (await hydrateCurrentUserMissionsOf(MISSION_TYPE.DAILY))
-        .filter(dailyMission => dailyMission.template.Action === actionType &&
-            !dailyMission.progress.IsCompleted)
+    await chooseMissionTypeAndFilterForUpdate(MISSION_TYPE.DAILY, mission =>
+        mission.template.Action === actionType)
 
-    for (let dailyMission of dailyMissions) {
-        await updateValueOfMission(MISSION_TYPE.DAILY, dailyMission.id, value => value + 1);
-    }
-
-    const themeMissions = (await hydrateCurrentUserMissionsOf(MISSION_TYPE.THEME))
-        .filter(themeMission => themeMission.template.Action === actionType &&
-            themeMission.template.Category === spotData.category &&
-            !themeMission.progress.IsCompleted)
-
-    for (let themeMission of themeMissions) {
-        await updateValueOfMission(MISSION_TYPE.THEME, themeMission.id, value => value + 1);
-    }
+    await chooseMissionTypeAndFilterForUpdate(MISSION_TYPE.THEME, mission =>
+        mission.template.Action === actionType && mission.template.Category === spotData.category)
 }
 
 export async function triggerFoto(spotData) {
@@ -71,5 +70,4 @@ export async function triggerCreatePolaroid(spotData) {
 
 export async function triggerSharePolaroid(spotData) {
     await baseTriggerSpotAction(spotData, ACTION_TYPE.SHARE_POLAROID);
-
 }
