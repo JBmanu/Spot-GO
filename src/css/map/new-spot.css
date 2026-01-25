@@ -1,7 +1,7 @@
 @layer components {
 
     .new-spot-map {
-        @apply w-full h-[240px];
+        @apply w-full h-[400px];
     }
 
     .time-range {

@@ -203,7 +203,7 @@ async function loadNearbySpotsBottomSheet() {
         await createBottomSheetWithOverlay(openNearbySpotsButton);
 
     const nearbySpotsCarousel = document.getElementById('map-nearby-carousel');
-    bottomSheetEl.appendChild(nearbySpotsCarousel);
+    bottomSheetEl.querySelector('.filter-content').appendChild(nearbySpotsCarousel);
 
     const mainSection = document.getElementById("map-main-section");
     if (!mainSection) return;
@@ -376,6 +376,14 @@ async function loadNearbySpotsList() {
     const emptyMsg = document.getElementById("map-nearby-empty");
     if (emptyMsg) {
         emptyMsg.classList.toggle("hidden", spots && spots.length > 0);
+    }
+    else if (!spots || spots.length === 0) {
+        const emptyMsgString = `
+            <p id="map-nearby-empty" class="text-md text-text_color/70 px-1 py-2" style="text-align: center;">
+                Nessuno spot trovato con questi filtri.
+            </p>`;
+
+        carouselEl.insertAdjacentHTML("afterbegin", emptyMsgString);
     }
 }
 
