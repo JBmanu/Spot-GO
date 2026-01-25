@@ -2,17 +2,17 @@
     hydrateCurrentUserMissionsOf,
     updateValueOfMission,
     updateValueOfSpotMission
-} from "../db/userMissionProgressConnector.js";
-import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
-import {checkEqualsDay, identityFun} from "../utils.js";
-import {updateCurrentUserLevel} from "../db/userGoalsConnector.js";
+} from "./db/userMissionProgressConnector.js";
+import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
+import {checkEqualsDay, identityFun} from "./utils.js";
+import {updateCurrentUserLevel} from "./db/userGoalsConnector.js";
 
 export async function testActiveTriggers() {
     await triggerLogin();
     await triggerFoto({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
-    await triggerReview({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
-    await triggerCreatePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
-    await triggerSharePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
+    // await triggerReview({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
+    // await triggerCreatePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
+    // await triggerSharePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     console.log("Active triggers tested");
 }
 
@@ -22,16 +22,23 @@ async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, fil
         .filter(mission => filterMission(mission) && !mission.progress.IsCompleted)
 
     for (let mission of filteredMissions) {
+        let updatedMissionData;
         if (missionType === MISSION_TYPE.SPOT) {
-            await updateValueOfSpotMission(mission.place.id, mission.id, value => value + 1);
+            updatedMissionData = await updateValueOfSpotMission(mission.place.id, mission.id, value => value + 1);
         } else {
-            await updateValueOfMission(missionType, mission.id, value => value + 1);
+            updatedMissionData = await updateValueOfMission(missionType, mission.id, value => value + 1);
         }
-        console.log(`Triggered mission: ${mission.template.Name}`)
-        await updateCurrentUserLevel(level => level + mission.template.Reward.Experience)
+
+        // Update Completed Mission
+        await triggerCompleteMission(updatedMissionData, missionType);
+        // Update level
+        if (updatedMissionData.isCompleted)
+            await updateCurrentUserLevel(level => level + mission.template.Reward.Experience)
+
     }
 }
 
+// ACTIVE TRIGGERS
 export async function triggerLogin() {
     await chooseMissionTypeAndFilterForUpdate(MISSION_TYPE.DAILY,
         identityFun, mission => {
@@ -67,4 +74,22 @@ export async function triggerCreatePolaroid(spotData) {
 
 export async function triggerSharePolaroid(spotData) {
     await baseTriggerSpotAction(spotData, ACTION_TYPE.SHARE_POLAROID);
+}
+
+// PASSIVE TRIGGERS
+async function triggerCompleteMission(updatedMissionData, missionType) {
+    if (missionType === MISSION_TYPE.SPOT || !updatedMissionData.isCompleted) return;
+    await chooseMissionTypeAndFilterForUpdate(missionType, identityFun,
+        mission => {
+            // console.log("Mission completed:", mission);
+            return mission.template.Action === ACTION_TYPE.COMPLETE_MISSIONS
+        });
+}
+
+export async function triggerReachLevel() {
+
+}
+
+export async function triggerObtainBadge() {
+
 }

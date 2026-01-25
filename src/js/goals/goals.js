@@ -10,7 +10,7 @@ import {seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
 import {loadMissions} from "./loader/missionLoader.js";
 import {seedUserMissionProgress} from "./db/seed/userMissionProgressSeed.js";
 import {runAllAsyncSafe} from "./utils.js";
-import {testActiveTriggers} from "./trigger/activeTriggerForMission.js";
+import {testActiveTriggers} from "./missionsTrigger.js";
 
 let isInitialized = false;
 
