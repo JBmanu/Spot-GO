@@ -172,6 +172,8 @@ async function loadMap() {
         map.removeLayer(spotPositionMarker)
       }
 
+      const firstTimePositionSet = selectedSpotPosition == null;
+
       const { lat, lng } = e.latlng;
       selectedSpotPosition = [lat, lng];
 
@@ -185,7 +187,19 @@ async function loadMap() {
       spotPositionMarker = L.marker(selectedSpotPosition, { icon, interactive: false })
         .addTo(map);
 
-      newSpotSection.querySelector('#spot-position').textContent = `${lat.toFixed(4)} : ${lng.toFixed(4)}`;
+      // newSpotSection.querySelector('#spot-position').textContent = `${lat.toFixed(4)} : ${lng.toFixed(4)}`;
+
+      if (firstTimePositionSet) {
+        const badge = document.getElementById('position-badge');
+        const icon = badge.querySelector('img');
+
+        badge.childNodes[badge.childNodes.length - 1].textContent = "Posizione impostata";
+
+        badge.classList.remove('warning');
+        badge.classList.add('success');
+
+        icon.src = "../assets/icons/map/Done.svg";
+      }
       validateNewSpotForm();
     });
 

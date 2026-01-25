@@ -68,4 +68,30 @@
     .remove-time-btn:active {
         transform: scale(0.9);
     }
+
+    .map-badge {
+        gap: 8px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .map-badge.warning {
+        font-style: italic;
+    }
+
+    .map-badge.success {
+        background-color: #e8f5e9;
+        border-color: #4caf50;
+        color: #2e7d32;
+        transform: scale(1.05);
+    }
+
+    .map-badge.success img {
+        animation: icon-bounce 0.5s ease;
+    }
+
+    @keyframes icon-bounce {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.4) rotate(10deg); }
+        100% { transform: scale(1); }
+    }
 }

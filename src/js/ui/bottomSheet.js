@@ -5,6 +5,7 @@ export function initializeBottomSheet(bottomSheetEl, overlayEl, openButtonEl) {
     overlayEl.addEventListener('click', () => closeBottomSheet(bottomSheetEl, overlayEl));
 
     closeBottomSheet(bottomSheetEl, overlayEl);
+    document.getElementById('main').classList.remove('scroll-y-hidden');
 }
 
 // Non dovrebbe essere globale (problema multiple istanze di bottom-sheet), ma non importa
