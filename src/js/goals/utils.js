@@ -22,3 +22,7 @@ export function checkEqualsDay(date1, date2) {
         date1.getDate() === date2.getDate()
     );
 }
+
+export function identityFun(x) {
+    return x;
+}
