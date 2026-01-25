@@ -14,8 +14,8 @@ export function getStatusState(containerEl) {
     if (!containerEl) return { visited: false, saved: false, mine: false };
     if (!statusStates.has(containerEl)) {
         statusStates.set(containerEl, {
-            visited: false,
             saved: false,
+            badge: false,
             mine: false
         });
     }
