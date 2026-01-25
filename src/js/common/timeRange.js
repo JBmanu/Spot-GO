@@ -98,6 +98,15 @@ export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
         em,
         (v) => isValidMinute(v) && isNotSameTimeAsStart()
     );
+
+    // Rimozione
+    const removeBtn = timeRangeEl.querySelector('.remove-time-btn');
+    if (removeBtn) {
+        removeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            timeRangeEl.remove();
+        });
+    }
 }
 
 export function validateTimeRange(timeRangeEl) {
