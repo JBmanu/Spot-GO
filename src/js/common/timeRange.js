@@ -13,8 +13,6 @@ export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
 
     const getMinutes = (h, m) => Number(h) * 60 + Number(m);
 
-    const pad = (v) => v.toString().padStart(2, "0");
-
     // VALIDAZIONI
     const isValidHour = (v) => {
         if (v === "") return true;
@@ -28,7 +26,8 @@ export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
         return Number(v) >= 0 && Number(v) <= 59;
     };
 
-    const isEndAfterStart = () => {
+    // Controllo "orario da" diverso da "orario a"
+    const isNotSameTimeAsStart = () => {
         if (
             sh.value.length !== 2 ||
             sm.value.length !== 2 ||
@@ -37,7 +36,7 @@ export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
         ) return true;
 
         return (
-            getMinutes(eh.value, em.value) >
+            getMinutes(eh.value, em.value) !==
             getMinutes(sh.value, sm.value)
         );
     };
@@ -74,14 +73,13 @@ export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
             remember(sm);
             sm.focus();
 
-            // compila end a 23:59
+            // end = 23:59
             setEndToMax();
         }
     });
 
     validatedInput(sm, isValidMinute, () => {
         if (sm.value.length === 2) {
-            // minuti validi -> end = 23:59
             setEndToMax();
         }
     });
@@ -96,7 +94,10 @@ export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
         }
     });
 
-    validatedInput(em, (v) => isValidMinute(v) && isEndAfterStart());
+    validatedInput(
+        em,
+        (v) => isValidMinute(v) && isNotSameTimeAsStart()
+    );
 }
 
 export function validateTimeRange(timeRangeEl) {
@@ -157,10 +158,10 @@ export function readTimeRangeValues(timeRangeElList) {
         const eh = timeRangeEl.querySelector("#end-h")?.value ?? "";
         const em = timeRangeEl.querySelector("#end-m")?.value ?? "";
 
-        // tutti vuoti → sempre aperto
+        // tutti vuoti -> sempre aperto
         if (!sh && !sm && !eh && !em) continue;
 
-        // parziale → invalido
+        // parziale -> invalido
         if (!sh || !sm || !eh || !em) continue;
 
         ranges.push({
@@ -186,7 +187,7 @@ export function validateTimeRangesWithCrossIntersections(timeRangeElList) {
     let timeRangeRes = true;
     const ranges = [];
 
-    // ===== VALIDAZIONE SINGOLA + LETTURA =====
+    // VALIDAZIONE SINGOLA + LETTURA
     for (const timeRangeEl of timeRangeElList) {
         if (!validateTimeRange(timeRangeEl)) {
             timeRangeRes = false;
@@ -198,7 +199,7 @@ export function validateTimeRangesWithCrossIntersections(timeRangeElList) {
         const eh = timeRangeEl.querySelector("#end-h")?.value;
         const em = timeRangeEl.querySelector("#end-m")?.value;
 
-        // range vuoto → sempre aperto → ignoriamo nel confronto
+        // range vuoto -> sempre aperto -> ignoriamo nel confronto
         if (!sh || !sm || !eh || !em) continue;
 
         const start = toMinutes(`${sh}:${sm}`);
@@ -210,7 +211,7 @@ export function validateTimeRangesWithCrossIntersections(timeRangeElList) {
     // se una singola validazione è fallita
     if (!timeRangeRes) return false;
 
-    // ===== 2. CONTROLLO INTERSEZIONI =====
+    // CONTROLLO INTERSEZIONI
     for (let i = 0; i < ranges.length; i++) {
         for (let j = i + 1; j < ranges.length; j++) {
             if (rangesOverlap(ranges[i], ranges[j])) {

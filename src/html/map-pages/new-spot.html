@@ -4,7 +4,7 @@
     <div class="p-4 space-y-4">
       <!-- POSIZIONE -->
       <section>
-        <label class="block font-bold mb-2">
+        <label class="input-label">
           Posizione:
           <span class="font-normal" id="spot-position">- : -</span>
         </label>
@@ -78,10 +78,13 @@
         </div>
 
         <!-- ORARI -->
-        <label for="new-spot-time-range" class="input-label">Orari di apertura</label>
-        <button type="button" id="new-time-range-btn" class="profile-diary-add-btn" style="margin: auto;" aria-label="Aggiungi fascia orari">
-          <img src="../assets/icons/map/Add.svg" alt="Aggiungi fascia oraria">
-        </button>
+        <div class="add-polaroid-input-group">
+          <label for="new-spot-time-range" class="input-label" id="time-range-label">Orari di apertura</label>
+          <button type="button" id="new-time-range-btn" class="new-time-range-btn" aria-label="Aggiungi fascia orari">
+            <img src="../assets/icons/map/Add.svg" alt="Aggiungi fascia oraria" class="new-time-range-icon">
+            <label class="input-label">Aggiungi orario</label>
+          </button>
+        </div>
       </section>
 
       <!-- IMMAGINE -->

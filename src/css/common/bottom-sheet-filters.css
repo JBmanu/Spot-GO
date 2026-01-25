@@ -160,7 +160,7 @@
     }
 
     input[type="range"]:active::-webkit-slider-thumb {
-        transform: scale(1.2);
+        transform: scale(1.5);
         background: rgb(3, 123, 252);
     }
 
