@@ -5,6 +5,7 @@
 } from "../db/userMissionProgressConnector.js";
 import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
 import {checkEqualsDay, identityFun} from "../utils.js";
+import {updateCurrentUserLevel} from "../db/userGoalsConnector.js";
 
 export async function testActiveTriggers() {
     await triggerLogin();
@@ -12,6 +13,7 @@ export async function testActiveTriggers() {
     await triggerReview({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     await triggerCreatePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     await triggerSharePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
+    console.log("Active triggers tested");
 }
 
 async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, filterMission) {
@@ -25,6 +27,8 @@ async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, fil
         } else {
             await updateValueOfMission(missionType, mission.id, value => value + 1);
         }
+        console.log(`Triggered mission: ${mission.template.Name}`)
+        await updateCurrentUserLevel(level => level + mission.template.Reward.Experience)
     }
 }
 

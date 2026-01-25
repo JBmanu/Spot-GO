@@ -48,7 +48,6 @@ async function createMissionProgress(data, create, update) {
 }
 
 export async function createSpotMission(data) {
-
     return await createMissionProgress(data,
         (newMission) => ({
             [MISSION_TYPE.SPOT]: {[data.PlaceId]: {[data.MissionTemplateId]: newMission}}
