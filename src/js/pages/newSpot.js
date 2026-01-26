@@ -251,6 +251,7 @@ function initializePriceTab() {
     document.getElementById('new-spot-price-ridotto').addEventListener('input', validatePriceInputField);
 
     setupPriceLogic();
+    switchToTab("free");
 }
 
 function switchToTab(tab) {
@@ -266,6 +267,37 @@ function switchToTab(tab) {
     });
 
     if (slider) slider.style.left = tab === 'free' ? '1%' : '51%';
+
+    const interoInput = document.getElementById('new-spot-price-intero');
+    const ridottoInput = document.getElementById('new-spot-price-ridotto');
+
+    if (tab === 'free') {
+        switchButtons[0].style.pointerEvents = 'none';
+        switchButtons[1].style.pointerEvents = 'auto';
+        if (interoInput) {
+            interoInput.style.pointerEvents = 'none';
+            interoInput.disabled = true; 
+            interoInput.parentElement.style.opacity = '0.5';
+        }
+        if (ridottoInput) {
+            ridottoInput.style.pointerEvents = 'none';
+            ridottoInput.disabled = true;
+            ridottoInput.parentElement.style.opacity = '0.5';
+        }
+    } else {
+        switchButtons[0].style.pointerEvents = 'auto';
+        switchButtons[1].style.pointerEvents = 'none';
+        if (interoInput) {
+            interoInput.style.pointerEvents = 'auto';
+            interoInput.disabled = false;
+            interoInput.parentElement.style.opacity = '1';
+        }
+        if (ridottoInput) {
+            ridottoInput.style.pointerEvents = 'auto';
+            ridottoInput.disabled = false;
+            ridottoInput.parentElement.style.opacity = '1';
+        }
+    }
 }
 
 function initializeImageInput() {
