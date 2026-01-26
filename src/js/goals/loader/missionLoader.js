@@ -1,7 +1,7 @@
 ﻿import {MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
 import {runAllAsyncSafe} from "../utils.js";
 import {hydrateCurrentUserMissionsOf} from "../db/userMissionProgressConnector.js";
-import {ATTRIBUTE_NAME} from "../Datas.js";
+import {MISSION_ATTRIBUTE} from "../Datas.js";
 
 export async function loadMissions() {
     await runAllAsyncSafe(
@@ -38,7 +38,7 @@ function generateHTMLMissionTemplate(indexCtn, missionTemplate, progress) {
     const container = document.querySelectorAll('.missions-card');
     container[indexCtn].innerHTML +=
         `<div class="between-ctn glass-strong interactive completable px-5 py-4 card" 
-        ${ATTRIBUTE_NAME.MISSION}="${missionTemplate.id}">
+            ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Lato sinistro -->
             <div class="space-y-1">
                 <h3 class="text-sm font-semibold text-gray-800">${missionTemplate.Name}</h3>
@@ -50,7 +50,9 @@ function generateHTMLMissionTemplate(indexCtn, missionTemplate, progress) {
             </div>
             <!-- Lato destro -->
             <div class="center-ctn">
-                <span class="text-lg font-medium text-gray-500">${progress} / ${missionTemplate.Target}</span>
+                <span class="text-lg font-medium text-gray-500" ${MISSION_ATTRIBUTE.PROGRESS}>
+                    ${progress} / ${missionTemplate.Target}
+                </span>
             </div>
         </div>`;
 }

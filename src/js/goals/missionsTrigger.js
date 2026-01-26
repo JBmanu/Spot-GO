@@ -12,7 +12,7 @@ export async function testActiveTriggers() {
     await resetCurrentUserLevel()
     await triggerLogin();
     await triggerFoto({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
-    // await triggerReview({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
+    await triggerReview({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     // await triggerCreatePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     // await triggerSharePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
 
@@ -22,10 +22,11 @@ export async function testActiveTriggers() {
 async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, filterMission,
                                                    updateMission = value => value + 1) {
     const missions = await hydrateCurrentUserMissionsOf(missionType)
-    const filteredMissions = mapMissions(missions)
-        .filter(mission => filterMission(mission) && !mission.progress.IsCompleted)
+    const mappedMissions = mapMissions(missions)
+    const filteredMissions = mappedMissions.filter(filterMission)
+    const uncompletedMissions = filteredMissions.filter(mission => !mission.progress.IsCompleted)
 
-    for (let mission of filteredMissions) {
+    for (let mission of uncompletedMissions) {
         let updatedMissionData;
         if (missionType === MISSION_TYPE.SPOT) {
             updatedMissionData = await updateValueOfSpotMission(mission.place.id, mission.id, updateMission);
@@ -34,7 +35,7 @@ async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, fil
         }
 
         // Update View
-        updateViewMission(mission, updatedMissionData);
+        updateViewMission(mappedMissions, mission, updatedMissionData);
 
         // Update level
         if (updatedMissionData.isCompleted) {
