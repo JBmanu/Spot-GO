@@ -3,13 +3,14 @@ import {
     hydrateInactiveSpotMissionsOfCurrentUser
 } from "../db/userMissionProgressConnector.js";
 import {runAllAsyncSafe} from "../utils.js";
+import {ATTRIBUTE_NAME} from "../Datas.js";
+
 
 export async function loadSpotMissions() {
     await runAllAsyncSafe(
         () => generateSpotCard(hydrateActiveSpotMissionsOfCurrentUser, generateHTMLActiveSpotCard),
         () => generateSpotCard(hydrateInactiveSpotMissionsOfCurrentUser, generateHTMLInactiveSpotCard)
     )
-
     console.log("Spot missions loaded");
 }
 
@@ -32,7 +33,7 @@ function generateSpotMissions(missionCtn, missions) {
 function generateHTMLSpotMissions(missionContainer, missionTemplate) {
     missionContainer.innerHTML +=
         `<button class="between-ctn interactive spot-mission completable card" 
-            db-ref="${missionTemplate.ref}">
+            ${ATTRIBUTE_NAME.MISSION}="${missionTemplate.id}">
             <!-- Left -->
             <div class="vertical-ctn-g1">
                 <!-- Title -->
@@ -50,7 +51,7 @@ function generateHTMLSpotMissions(missionContainer, missionTemplate) {
 
 function generateHTMLActiveSpotCard(place, progress, missions) {
     const spotCtn = document.querySelector('.spot-card');
-    spotCtn.setAttribute('db-id', place.id);
+    spotCtn.setAttribute(ATTRIBUTE_NAME.SPOT, place.id);
     spotCtn.innerHTML +=
         `<!-- Spot info -->
         <div class="between-ctn spot-header open">
@@ -89,7 +90,7 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
             <div class="vertical-ctn-g2 missions-spot open" data-carousel-type="vertical" data-size="mm">
             </div>`;
 
-    const spotCard = document.querySelector(`.spot-card[db-id="${place.id}"]`);
+    const spotCard = document.querySelector(`.spot-card[${ATTRIBUTE_NAME.SPOT}="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
     generateSpotMissions(missionCtn, missions)
 }
@@ -97,7 +98,7 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
 function generateHTMLInactiveSpotCard(place, progress, missions) {
     const spotCtn = document.querySelector('.all-spots-missions-ctn');
     spotCtn.innerHTML +=
-        `<div class="glass-medium interactive spot-card" db-id="${place.id}">
+        `<div class="glass-medium interactive spot-card" ${ATTRIBUTE_NAME.SPOT}="${place.id}">
             <!-- Spot info -->
             <div class="between-ctn spot-header">
                 <!-- Icona + Luogo -->
@@ -132,7 +133,7 @@ function generateHTMLInactiveSpotCard(place, progress, missions) {
             </div>          
         </div>`;
 
-    const spotCard = spotCtn.querySelector(`.spot-card[db-id="${place.id}"]`);
+    const spotCard = spotCtn.querySelector(`.spot-card[${ATTRIBUTE_NAME.SPOT}="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
     generateSpotMissions(missionCtn, missions)
 }

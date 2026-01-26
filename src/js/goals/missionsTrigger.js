@@ -6,6 +6,7 @@
 import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
 import {checkEqualsDay, identityFun} from "./utils.js";
 import {resetCurrentUserLevel, updateCurrentUserLevel} from "./db/userGoalsConnector.js";
+import {updateViewMission} from "./missionsViewUpdater.js";
 
 export async function testActiveTriggers() {
     await resetCurrentUserLevel()
@@ -31,6 +32,9 @@ async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, fil
         } else {
             updatedMissionData = await updateValueOfMission(missionType, mission.id, updateMission);
         }
+
+        // Update View
+        updateViewMission(mission, updatedMissionData);
 
         // Update level
         if (updatedMissionData.isCompleted) {
