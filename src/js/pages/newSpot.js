@@ -444,12 +444,13 @@ function validateNewSpotForm() {
     const nome = form.querySelector("#new-spot-name")?.value.trim();
     const descrizione = form.querySelector("#new-spot-desc")?.value.trim();
     const categoria = form.querySelector("#new-spot-category")?.value;
+    const indirizzo = form.querySelector("#new-spot-address")?.value.trim();
 
     const posizioneValida =
         Array.isArray(selectedSpotPosition) &&
         selectedSpotPosition.length === 2;
 
-    if (!nome || !descrizione || !categoria || !posizioneValida) {
+    if (!nome || !descrizione || !categoria || !posizioneValida || !indirizzo) {
         return false;
     }
 
@@ -507,6 +508,10 @@ function getValidationErrorMessage() {
     const posizioneValida = Array.isArray(selectedSpotPosition) && selectedSpotPosition.length === 2;
     if (!posizioneValida) return "Seleziona una posizione sulla mappa";
 
+    // INDIRIZZO
+    const indirizzo = form.querySelector("#new-spot-address")?.value.trim();
+    if (!indirizzo) return "Inserisci un indirizzo";
+
     // NOME
     const nome = form.querySelector("#new-spot-name")?.value.trim();
     if (!nome) return "Inserisci il nome dello spot";
@@ -560,7 +565,7 @@ async function readNewSpotDataFromFields() {
         ? { coord1: selectedSpotPosition[0], coord2: selectedSpotPosition[1] }
         : null;
 
-    const indirizzo = "";
+    const indirizzo = form.querySelector("#new-spot-address")?.value.trim() || "";
 
     const timeRangeElList = form.querySelectorAll(".time-range");
     const orari = readTimeRangeValues(timeRangeElList);

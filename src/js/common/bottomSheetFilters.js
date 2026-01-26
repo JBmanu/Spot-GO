@@ -104,7 +104,7 @@ export async function initializeBottomSheetFilters({
         return value < 5 ? value.toFixed(1) : Math.round(value);
     }
 
-    function updateDistanceSlider(e) {
+    function updateDistanceSlider(e, updateFilters = true) {
         const el = e.target || e;
         const percent = (el.value - el.min) / (el.max - el.min) * 100;
         
@@ -130,7 +130,9 @@ export async function initializeBottomSheetFilters({
             ? null
             : parseFloat(realDistance);
 
-        toggleApplyFiltersButton();
+        if (updateFilters) {
+            toggleApplyFiltersButton();
+        }
     }
 
     distanceSlider.addEventListener('input', updateDistanceSlider);
@@ -145,13 +147,15 @@ export async function initializeBottomSheetFilters({
 
     currentRating = defaultFilters.rating;
 
-    function updateStars(rating) {
+    function updateStars(rating, updateFilters = true) {
         currentRating = rating;
         starButtons.forEach(btn => {
             const value = Number(btn.dataset.value);
             btn.classList.toggle('active', value <= rating);
         });
-        toggleApplyFiltersButton();
+        if (updateFilters) {
+            toggleApplyFiltersButton();
+        }
     }
 
     starButtons.forEach(btn => {
@@ -169,7 +173,7 @@ export async function initializeBottomSheetFilters({
         // distanza
         distanceSlider.value = 100;
         distanceSlider.dataset.realValue = defaultFilters.distanceKm;
-        updateDistanceSlider(distanceSlider);
+        updateDistanceSlider(distanceSlider, false);
 
         // aperto ora
         openNowCheckbox.checked = defaultFilters.openNow;
@@ -181,7 +185,7 @@ export async function initializeBottomSheetFilters({
         endM.value = '59';
 
         // rating
-        updateStars(defaultFilters.rating);
+        updateStars(defaultFilters.rating, false);
 
         // status
         resetStatusFilter(statusContainer)
@@ -246,6 +250,13 @@ export async function initializeBottomSheetFilters({
     cancelBtn.addEventListener('click', () => {
         applyActiveFiltersToFiltersUI();
         closeBottomSheet(bottomSheetEl, overlayEl);
+        
+        const filters = readFilters();
+        updateFiltersBadge(
+            buttonEl,
+            countActiveFilters(filters, defaultFilters)
+        );
+        onFiltersApplied(filters);
     });
 
     function readFilters() {
