@@ -497,6 +497,27 @@ export async function getFilteredSpots(
     }
 
     // -------------------------
+    // APERTO ORA (CONTENIMENTO)
+    // -------------------------
+    if (filters?.openNow) {
+        const now = new Date();
+        const nowInMinutes = (now.getHours() * 60) + now.getMinutes();
+
+        spots = spots.filter(spot => {
+            if (!Array.isArray(spot.orari)) return false;
+
+            // Lo spot è valido se l'ora attuale è COMPRESA tra inizio e fine di una fascia
+            return spot.orari.some(orario => {
+                const spotStart = timeToMinutes(orario.inizio);
+                const spotEnd = timeToMinutes(orario.fine);
+
+                // Gestione classica: l'orario attuale è nel range
+                return nowInMinutes >= spotStart && nowInMinutes <= spotEnd;
+            });
+        });
+    }
+
+    // -------------------------
     // FASCIA ORARIA (INTERSEZIONE)
     // -------------------------
     if (filters?.startTime && filters?.endTime) {

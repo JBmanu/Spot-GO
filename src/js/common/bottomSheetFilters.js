@@ -11,6 +11,7 @@ import {
 // --- STATO DEFAULT ---
 const defaultFilters = {
     distanceKm: NaN,
+    openNow: false,
     startTime: '00:00',
     endTime: '23:59',
     rating: 0,
@@ -135,6 +136,10 @@ export async function initializeBottomSheetFilters({
     distanceSlider.addEventListener('input', updateDistanceSlider);
     updateDistanceSlider(distanceSlider);
 
+    // OPEN NOW
+    const openNowCheckbox = filtersEl.querySelector('#filter-open-now');
+    openNowCheckbox.addEventListener('change', toggleApplyFiltersButton);
+
     // RATING
     const starButtons = filtersEl.querySelectorAll('.star-btn-filters');
 
@@ -166,6 +171,9 @@ export async function initializeBottomSheetFilters({
         distanceSlider.dataset.realValue = defaultFilters.distanceKm;
         updateDistanceSlider(distanceSlider);
 
+        // aperto ora
+        openNowCheckbox.checked = defaultFilters.openNow;
+
         // fascia oraria
         startH.value = '00';
         startM.value = '00';
@@ -195,6 +203,9 @@ export async function initializeBottomSheetFilters({
             distanceSlider.value = Math.max(0, Math.min(100, perc));
         }
         updateDistanceSlider(distanceSlider);
+
+        // APERTO ORA
+        openNowCheckbox.checked = filters.openNow;
 
         // FASCIA ORARIA
         if (filters.startTime) {
@@ -246,6 +257,7 @@ export async function initializeBottomSheetFilters({
 
         const filters = {
             distanceKm: Number(distanceSlider.dataset.realValue),
+            openNow: openNowCheckbox.checked,
             startTime: readTime(startH, startM),
             endTime: readTime(endH, endM),
             rating: currentRating,
@@ -289,6 +301,7 @@ function countActiveFilters(current, defaults) {
 
     if (!Object.is(current.distanceKm, defaults.distanceKm)) count++; // [NaN !== NaN] è true?????
     if (current.rating !== defaults.rating) count++;
+    if (current.openNow !== defaults.openNow) count++;
     if (current.startTime !== defaults.startTime) count++;
     if (current.endTime !== defaults.endTime) count++;
     if (current.status.badge !== defaults.status.badge) count++;
