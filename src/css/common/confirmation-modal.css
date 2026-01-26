@@ -2,7 +2,6 @@
 @layer components {
 
     .background-modal-overlay {
-        z-index: 2000;
         padding: calc(var(--spacing) * 6);
     }
 
