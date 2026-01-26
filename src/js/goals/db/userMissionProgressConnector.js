@@ -48,7 +48,6 @@ async function createMissionProgress(data, create, update) {
 }
 
 export async function createSpotMission(data) {
-
     return await createMissionProgress(data,
         (newMission) => ({
             [MISSION_TYPE.SPOT]: {[data.PlaceId]: {[data.MissionTemplateId]: newMission}}
@@ -116,23 +115,22 @@ async function hydrateMission(mission) {
 }
 
 export async function hydrateCurrentUserMissionsOf(type) {
-    if (type === MISSION_TYPE.SPOT) return [];
     const userMissions = await currentUserMissionsOf(type)
+    if (type === MISSION_TYPE.SPOT) {
+        const spotMissions = userMissions.map(Object.values)
+            .map(async missions => {
+                const placeData = (await loadDocumentRef(missions[0].PlaceRef));
+                const hydratedMissions = await Promise.all(missions.map(hydrateMission));
+                return {place: placeData !== EMPTY_VALUE && placeData, missions: hydratedMissions}
+            })
+        return await Promise.all(spotMissions);
+    }
     return await Promise.all(userMissions.map(hydrateMission));
 }
 
 async function hydrateCurrentUserSpotMissionsIf(isActive) {
-    const activeSpotMissions = await currentUserMissionsOf(MISSION_TYPE.SPOT);
-
-    const result = activeSpotMissions.map(Object.values)
-        .filter(missions => missions.every(m => m.IsActive === isActive))
-        .map(async missions => {
-            const placeData = (await loadDocumentRef(missions[0].PlaceRef));
-            const hydratedMissions = await Promise.all(missions.map(hydrateMission));
-            return {place: placeData !== EMPTY_VALUE && placeData, missions: hydratedMissions}
-        })
-
-    return await Promise.all(result);
+    const activeSpotMissions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.SPOT);
+    return activeSpotMissions.filter(spot => spot.missions.every(m => m.progress.IsActive === isActive))
 }
 
 export async function hydrateActiveSpotMissionsOfCurrentUser() {
@@ -146,7 +144,7 @@ export async function hydrateInactiveSpotMissionsOfCurrentUser() {
 async function updateValueMission(missions, mission, pathUpdate, updateFun) {
     const current = mission.progress.Current
     const target = mission.template.Target
-    const updatedValue = updateFun(current)
+    const updatedValue = updateFun(current) > target ? target : updateFun(current);
     const isCompleted = updatedValue >= target;
     const userMissions = await userMissionsOf(mission.user.id)
 
