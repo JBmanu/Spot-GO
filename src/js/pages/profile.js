@@ -3,6 +3,7 @@ import { openAddPolaroidModal } from "./addPolaroid.js";
 import { openPolaroidDetail } from "./polaroidDetail.js";
 import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
+import { showConfirmModal } from "../ui/confirmModal.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",
@@ -438,32 +439,9 @@ function renderCarouselItems(container, items, template) {
     setupCarouselControls(track, items.length);
 }
 
-function showDeleteConfirmation(item) {
-    const modal = document.getElementById("polaroid-delete-modal");
-    if (!modal) return;
-
-    const confirmBtn = modal.querySelector("#delete-modal-confirm");
-    const cancelBtn = modal.querySelector("#delete-modal-cancel");
-
-    const newConfirmBtn = confirmBtn.cloneNode(true);
-    const newCancelBtn = cancelBtn.cloneNode(true);
-    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-    cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
-
-    const closeModal = () => {
-        modal.classList.remove("active");
-        setTimeout(() => {
-            modal.style.display = "none";
-        }, 300);
-    };
-
-    newCancelBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        closeModal();
-    });
-
-    newConfirmBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
+async function showDeleteConfirmation(item) {
+    const res = await showConfirmModal("Elimina Polaroid", "Sei sicuro di voler eliminare questa polaroid? L'azione è irreversibile.");
+    if (res) {
         try {
             await deletePolaroid(item.id);
             closeModal();
@@ -476,16 +454,7 @@ function showDeleteConfirmation(item) {
             alert("Errore durante l'eliminazione.");
             closeModal();
         }
-    });
-
-    modal.style.display = "flex";
-    requestAnimationFrame(() => {
-        modal.classList.add("active");
-    });
-
-    modal.onclick = (e) => {
-        if (e.target === modal) closeModal();
-    };
+    }
 }
 
 function setupCarouselControls(track, totalItems) {

@@ -2,6 +2,7 @@ import { getSpotById, updatePolaroid, deletePolaroid, getCurrentUser } from "../
 import { formatDate } from "../common/datetime.js";
 import { openSpotDetailById } from "./spotDetail.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
+import { showConfirmModal } from "../ui/confirmModal.js";
 
 const state = {
     templateCache: null,
@@ -273,57 +274,33 @@ function initializeDetailHandlers(overlay, data) {
         }
 
         const deleteBtn = menuDropdown.querySelector('[data-action="delete-polaroid"]');
-        const deleteModal = overlay.querySelector("#polaroid-delete-modal");
 
-        if (deleteBtn && deleteModal) {
-            const confirmBtn = deleteModal.querySelector("#delete-modal-confirm");
-            const cancelBtn = deleteModal.querySelector("#delete-modal-cancel");
-
-            deleteBtn.addEventListener("click", (e) => {
+        if (deleteBtn) {
+            deleteBtn.addEventListener("click", async (e) => {
                 e.stopPropagation();
                 closeMenu();
+                
+                const res = await showConfirmModal("Elimina Polaroid", "Sei sicuro di voler eliminare questa polaroid? L'azione è irreversibile.");
+                if (res) {
+                    try {
+                        await deletePolaroid(data.id);
+                        closeModal();
 
-                deleteModal.style.display = "flex";
-                requestAnimationFrame(() => {
-                    deleteModal.classList.add("active");
-                });
-            });
+                        const returnViewId = overlay.dataset.returnView;
+                        if (returnViewId === "profile" || document.querySelector('[data-section-view="profile"]:not([hidden])')) {
+                            if (window.reloadProfileHeader) window.reloadProfileHeader();
 
-            const closeModal = () => {
-                deleteModal.classList.remove("active");
-                setTimeout(() => {
-                    deleteModal.style.display = "none";
-                }, 300);
-            };
+                            document.dispatchEvent(new CustomEvent("polaroid:deleted", { detail: { id: data.id } }));
+                        }
 
-            cancelBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                closeModal();
-            });
-
-            confirmBtn.addEventListener("click", async (e) => {
-                e.preventDefault();
-                try {
-                    await deletePolaroid(data.id);
-                    closeModal();
-
-                    const returnViewId = overlay.dataset.returnView;
-                    if (returnViewId === "profile" || document.querySelector('[data-section-view="profile"]:not([hidden])')) {
-                        if (window.reloadProfileHeader) window.reloadProfileHeader();
-
-                        document.dispatchEvent(new CustomEvent("polaroid:deleted", { detail: { id: data.id } }));
+                    } catch (err) {
+                        console.error("Error deleting polaroid:", err);
+                        alert("Errore durante l'eliminazione.");
+                        closeModal();
                     }
-
-                } catch (err) {
-                    console.error("Error deleting polaroid:", err);
-                    alert("Errore durante l'eliminazione.");
-                    closeModal();
                 }
             });
 
-            deleteModal.addEventListener("click", (e) => {
-                if (e.target === deleteModal) closeModal();
-            });
         }
 
     }
