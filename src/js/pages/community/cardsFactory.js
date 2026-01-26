@@ -4,7 +4,7 @@ import {loadCommunityData} from '../community.js'
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
 import {initializeReadOnlyProfileData} from "../profile.js";
 import { closeOverlayAndReveal } from "../../common/back.js";
-import { openModal, closeModal } from "../../common/modalView.js";
+import { showConfirmModal } from "../../ui/confirmModal.js"
 
 export function makeSelectableCard(userData) {
     return makeGenericCard(userData, checkboxAction(userData));
@@ -268,29 +268,16 @@ function followActionBtn(userId, btnBody) {
 }
 
 async function removeFollower(userData) {
-    await openModal("../html/community-pages/remove-user-modal.html", "#community-main-body", (modalElement) => {
-        initRemoveUserModal(modalElement, userData);
-    });
-}
+    const title = "Confermi di rimuovere " + userData.username + "?";
+    const descr = "Non sarai più amico di " + userData.username + ", ma potrai sempre riallacciare i rapporti.";
 
-function initRemoveUserModal(modalElement, userData) {
-    const username = userData.username;
-    const descr = "Non sarai più amico di " + username + ", ma potrai sempre riallacciare i rapporti.";
-    modalElement.querySelector("#remove-user-name").innerHTML = username;
-    modalElement.querySelector(".modal-description").innerHTML = descr;
-    const closeButton = modalElement.querySelector("#close-remove-btn");
-    const confirmButton = modalElement.querySelector("#confirm-remove-btn");
-    
-    closeButton.addEventListener('click', async () => {
-        await closeModal();
-    });
-
-    confirmButton.addEventListener('click', async () => {
+    const res = await showConfirmModal(title, descr);
+    if (res) {
         const loggedUser = await getCurrentUser();
         removeFriend(loggedUser.email, userData.id).then(
             await loadCommunityData()
-        ).then(closeModal());
-    });
+        );
+    }
 }
 
 async function addFollower(userId) {

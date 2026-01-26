@@ -34,6 +34,8 @@
 
 @import "./common/bottom-sheet-filters.css";
 
+@import "./common/confirmation-modal.css";
+
 @import "./common/add-review-modal.css";
 
 @import "./common/add-polaroid-modal.css";
