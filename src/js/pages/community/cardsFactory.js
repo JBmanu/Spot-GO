@@ -1,11 +1,10 @@
-import {showConfirmModal} from "../../ui/confirmModal.js";
 import {openChat} from "../community/chat.js";
 import {removeFriend, addFollows, getCurrentUser} from '../../database.js'
 import {loadCommunityData} from '../community.js'
 import {AVATAR_MAP} from "../../common/avatarImagePaths.js";
 import {initializeReadOnlyProfileData} from "../profile.js";
 import { closeOverlayAndReveal } from "../../common/back.js";
-import {openPolaroidDetail} from "../polaroidDetail.js";
+import { openModal, closeModal } from "../../common/modalView.js";
 
 export function makeSelectableCard(userData) {
     return makeGenericCard(userData, checkboxAction(userData));
@@ -245,7 +244,7 @@ function makeFriendActionContainer(userData) {
         const removeIcon = document.createElement("img");
         removeIcon.src = "assets/icons/community/delete.svg";
         removeButton.appendChild(removeIcon);
-        removeButton.addEventListener('click', () => removeFollower(userData.id, userData.username));
+        removeButton.addEventListener('click', () => removeFollower(userData));
         actionsContainer.appendChild(removeButton);
     } else {
         const followIcon = document.createElement("img");
@@ -268,15 +267,30 @@ function followActionBtn(userId, btnBody) {
     return addButton;
 }
 
-async function removeFollower(userId, name) {
-    const descr = "Non sarai più amico di " + name + ", ma potrai sempre riallacciare i rapporti.";
-    const res = await showConfirmModal(`Vuoi rimuovere ${name} come amico?`, descr);
-    if (res) {
+async function removeFollower(userData) {
+    await openModal("../html/community-pages/remove-user-modal.html", "#community-main-body", (modalElement) => {
+        initRemoveUserModal(modalElement, userData);
+    });
+}
+
+function initRemoveUserModal(modalElement, userData) {
+    const username = userData.username;
+    const descr = "Non sarai più amico di " + username + ", ma potrai sempre riallacciare i rapporti.";
+    modalElement.querySelector("#remove-user-name").innerHTML = username;
+    modalElement.querySelector(".modal-description").innerHTML = descr;
+    const closeButton = modalElement.querySelector("#close-remove-btn");
+    const confirmButton = modalElement.querySelector("#confirm-remove-btn");
+    
+    closeButton.addEventListener('click', async () => {
+        await closeModal();
+    });
+
+    confirmButton.addEventListener('click', async () => {
         const loggedUser = await getCurrentUser();
-        await removeFriend(loggedUser.email, userId).then(
+        removeFriend(loggedUser.email, userData.id).then(
             await loadCommunityData()
-        );
-    }
+        ).then(closeModal());
+    });
 }
 
 async function addFollower(userId) {
