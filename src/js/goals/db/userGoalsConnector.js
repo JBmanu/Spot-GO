@@ -2,6 +2,9 @@ import {documentFromId, isAuthenticatedUser, updateDocument} from "./goalsConnec
 
 const USER_COLLECTION = "Utente";
 
+export async function resetCurrentUserLevel() {
+    await updateCurrentUserLevel(() => 0);
+}
 
 export async function updateCurrentUserLevel(updateFun) {
     const user = await isAuthenticatedUser();
