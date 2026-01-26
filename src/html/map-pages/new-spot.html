@@ -17,8 +17,14 @@
         </div>
       </section>
 
-      <!-- NOME / DESCRIZIONE -->
+      <!-- INDIRIZZO / NOME / DESCRIZIONE -->
       <section class="space-y-4">
+        <div class="add-polaroid-input-group">
+          <label for="new-spot-address" class="input-label">Indirizzo *</label>
+          <input type="text" id="new-spot-address" name="address" class="polaroid-input glass-strong"
+            placeholder="Es. Via Bosco, 16" required maxlength="50" />
+        </div>
+
         <div class="add-polaroid-input-group">
           <label for="new-spot-name" class="input-label">Nome *</label>
           <input type="text" id="new-spot-name" name="name" class="polaroid-input glass-strong"
@@ -94,7 +100,7 @@
           <label for="new-spot-image-input" class="polaroid-image-label">
             <div class="polaroid-upload-placeholder">
               <img src="../../assets/icons/profile/Add Image.svg" alt="Carica immagine" class="upload-icon" />
-              <span class="upload-text">Carica foto</span>
+              <span class="upload-text">Carica foto *</span>
             </div>
             <div class="polaroid-image-preview" id="new-spot-image-preview"></div>
           </label>

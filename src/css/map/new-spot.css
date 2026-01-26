@@ -38,6 +38,7 @@
         color: rgba(22, 24, 29, 0.88);
         position: relative;
         overflow: hidden;
+        margin-bottom: 16px;
     }
 
     .new-time-range-icon {
