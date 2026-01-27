@@ -95,6 +95,22 @@
         color: rgba(99, 102, 106, 0.88);
     }
 
+    .input-wrapper-currency {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        right: 22px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+        user-select: none;
+        font-size: 18px;
+    }
+
     @keyframes icon-bounce {
         0% { transform: scale(1); }
         50% { transform: scale(1.4) rotate(10deg); }

@@ -54,8 +54,12 @@
         <!-- FOOD -->
         <div class="add-polaroid-input-group" id="price-section-food">
             <label for="new-spot-price-food" class="input-label">Spesa media</label>
-            <input type="text" id="new-spot-price-food" name="price_food" class="polaroid-input glass-strong"
-                placeholder="0.00" inputmode="decimal" maxlength="50" />
+            <div class="input-wrapper-currency">
+                <input type="text" id="new-spot-price-food" name="price_food" 
+                      class="polaroid-input glass-strong"
+                      placeholder="0.00" inputmode="decimal" maxlength="50" />
+                <span class="currency-symbol">€</span>
+            </div>
         </div>
 
         <!-- ALTRE CATEGORIE -->
@@ -70,13 +74,19 @@
               data-auth-tab="price">
               <div class="add-polaroid-input-group" style="text-align: left;">
                 <label for="new-spot-price-intero" class="input-label">Intero</label>
-                <input type="text" id="new-spot-price-intero" name="price_intero" class="polaroid-input glass-strong"
-                    placeholder="0.00" inputmode="decimal" maxlength="50" />
+                <div class="input-wrapper-currency">
+                  <input type="text" id="new-spot-price-intero" name="price_intero" class="polaroid-input glass-strong"
+                      placeholder="0.00" inputmode="decimal" maxlength="50" />
+                  <span class="currency-symbol">€</span>
+                </div>
               </div>
               <div class="add-polaroid-input-group" style="text-align: left;">
                 <label for="new-spot-price-ridotto" class="input-label">Ridotto</label>
-                <input type="text" id="new-spot-price-ridotto" name="price_ridotto" class="polaroid-input glass-strong"
-                    placeholder="0.00" inputmode="decimal" maxlength="50" />
+                <div class="input-wrapper-currency">
+                  <input type="text" id="new-spot-price-ridotto" name="price_ridotto" class="polaroid-input glass-strong"
+                      placeholder="0.00" inputmode="decimal" maxlength="50" />
+                  <span class="currency-symbol">€</span>
+                </div>
               </div>
             </button>
             <div class="auth-slider new-spot-slider"></div>
