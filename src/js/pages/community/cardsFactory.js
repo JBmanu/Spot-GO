@@ -165,47 +165,6 @@ function setupReadOnlyProfileHeader(overlay) {
         }
     };
 
-    // Aggiungi event listener al back button
-    const backBtn = headerLeftLogo.querySelector("#back-button");
-    if (backBtn) {
-        backBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Chiudi il dettaglio della polaroid se è aperto
-            const main = document.getElementById("main");
-            if (main) {
-                const polaroidDetail = main.querySelector('[data-overlay-view="polaroid-detail"]');
-                if (polaroidDetail) {
-                    try {
-                        polaroidDetail.remove();
-                    } catch (_) {
-                        if (polaroidDetail.parentNode) {
-                            polaroidDetail.parentNode.removeChild(polaroidDetail);
-                        }
-                    }
-                }
-            }
-            
-            // Chiudi l'overlay (che triggeha onClose e rimuove dal DOM)
-            closeOverlayAndReveal({ 
-                overlay,
-                returnViewKey: "community" 
-            });
-            
-            // Extra: assicura rimozione dopo l'animazione
-            setTimeout(() => {
-                if (overlay.parentNode) {
-                    try {
-                        overlay.remove();
-                    } catch (_) {
-                        overlay.parentNode.removeChild(overlay);
-                    }
-                }
-            }, 350);
-        });
-    }
-
     // Nascondi logo testo
     const logoText = overlay.querySelector("#header-logo-text");
     if (logoText) logoText.style.display = "none";
