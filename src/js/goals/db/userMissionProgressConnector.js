@@ -10,10 +10,9 @@ import {
 } from "./goalsConnector.js";
 import {collection, query, Timestamp, where} from "firebase/firestore";
 import {db} from "../../firebase.js";
-import {MISSION_TEMPLATE_COLLECTION} from "./missionTemplateConnector.js";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
+import {COLLECTIONS} from "../Datas.js";
 
-const USER_MISSION_PROGRESS_COLLECTION = "UserMissionProgress";
 
 async function createMissionProgress(data, create, update) {
     const user = await isAuthenticatedUser();
@@ -21,7 +20,7 @@ async function createMissionProgress(data, create, update) {
 
     const userRef = createDocumentRef("Utente", data.UserId);
     const placeRef = createDocumentRef("Luogo", data.PlaceId);
-    const missionTemplateRef = createDocumentRef(MISSION_TEMPLATE_COLLECTION, data.MissionTemplateId);
+    const missionTemplateRef = createDocumentRef(COLLECTIONS.MISSION_TEMPLATE, data.MissionTemplateId);
 
     const newMission = {
         UserRef: userRef,
@@ -40,7 +39,7 @@ async function createMissionProgress(data, create, update) {
     const userMissions = await userMissionsOf(data.UserId)
 
     if (!userMissions) {
-        return await createDocument(USER_MISSION_PROGRESS_COLLECTION,
+        return await createDocument(COLLECTIONS.USER_MISSION_PROGRESS,
             {UserRef: userRef, ...emptyMissionStructure, ...create(newMission)});
     } else {
         return await updateDocument(userMissions, update(newMission));
@@ -76,13 +75,13 @@ export async function createLevelMission(data) {
 }
 
 export async function clearUserMissionProgress() {
-    await clearDocuments(USER_MISSION_PROGRESS_COLLECTION)
+    await clearDocuments(COLLECTIONS.USER_MISSION_PROGRESS)
 }
 
 async function userMissionsOf(userId) {
     const userRef = createDocumentRef("Utente", userId);
     const documents = await documentsFrom(query(
-        collection(db, USER_MISSION_PROGRESS_COLLECTION),
+        collection(db, COLLECTIONS.USER_MISSION_PROGRESS),
         where("UserRef", "==", userRef)
     ));
     return documents[0]

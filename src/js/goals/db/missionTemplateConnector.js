@@ -1,9 +1,8 @@
 import {clearDocuments, createDocument, documentFromId, documentsFiltered} from "./goalsConnector.js";
-
-export const MISSION_TEMPLATE_COLLECTION = "MissionTemplate";
+import {COLLECTIONS} from "../Datas.js";
 
 export async function createMissionTemplate(data) {
-    return await createDocument(MISSION_TEMPLATE_COLLECTION, {
+    return await createDocument(COLLECTIONS.MISSION_TEMPLATE, {
         Name: data.Name,
         Description: data.Description,
         Type: data.Type,
@@ -19,13 +18,13 @@ export async function createMissionTemplate(data) {
 }
 
 export async function clearMissionTemplates() {
-    await clearDocuments(MISSION_TEMPLATE_COLLECTION)
+        await clearDocuments(COLLECTIONS.MISSION_TEMPLATE)
 }
 
 export async function missionTemplate(id) {
-    return await documentFromId(MISSION_TEMPLATE_COLLECTION, id);
+    return await documentFromId(COLLECTIONS.MISSION_TEMPLATE, id);
 }
 
 export async function missionTemplatesByType(type) {
-    return await documentsFiltered(MISSION_TEMPLATE_COLLECTION, mission => mission.Type === type);
+    return await documentsFiltered(COLLECTIONS.MISSION_TEMPLATE, mission => mission.Type === type);
 }

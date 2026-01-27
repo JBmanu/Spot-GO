@@ -1,5 +1,11 @@
 // DB COLLECTIONS
 
+export const COLLECTIONS = {
+    USER: 'Utente',
+    MISSION_TEMPLATE: 'MissionTemplate',
+    USER_MISSION_PROGRESS: 'UserMissionProgress'
+}
+
 // CUSTOM ATTRIBUTES
 const ATTRIBUTE_PREFIX = 'data-';
 
