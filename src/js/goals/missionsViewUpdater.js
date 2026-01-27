@@ -1,5 +1,6 @@
 import {MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
 import {MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "./Datas.js";
+import {hydrateCurrentUserSpotMissionsOf} from "./db/userMissionProgressConnector.js";
 
 
 export function updateViewMission(missions, mission, updatedData) {
@@ -19,4 +20,21 @@ export function updateViewMission(missions, mission, updatedData) {
         const progress = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.PROGRESS}]`)
         progress.textContent = `${updatedData.updatedValue} / ${updatedData.target}`;
     }
+}
+
+export async function updateViewSpotDetails(spotData, overlayElHTML) {
+    console.log("DATA SPOT FOR UPDATE ", spotData);
+    console.log("Initialize spot detail handlers ", overlayElHTML);
+    const spotMissions = await hydrateCurrentUserSpotMissionsOf(spotData.id)
+
+    // MANCA SE NON CI SONO MISSIONI
+
+    // Count all missions
+    const totalEl = overlayElHTML.querySelector('#spot-missions-total');
+    totalEl.textContent = spotMissions.length;
+
+    // Count completed missions
+    const countCompleted = spotMissions.filter(mission => mission.progress.IsCompleted).length
+    const completedEl = overlayElHTML.querySelector('#spot-missions-completed');
+    completedEl.textContent = countCompleted;
 }

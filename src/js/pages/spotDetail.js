@@ -1,21 +1,22 @@
 import {
     initializeBookmarks,
+    syncBookmarksUI,
     toggleBookmarkForSpot,
     updateBookmarkVisual,
-    syncBookmarksUI,
 } from "../common/bookmark.js";
 import {
     getCategoryNameIt,
     getCurrentUser,
+    getReviewsForSpot,
     getSavedSpots,
     getSpotById,
     pickRating,
-    getReviewsForSpot,
 } from "../database.js";
-import { formatRatingAsText } from "../common/fitText.js";
-import { initializeHorizontalCarousel } from "../common/carousels.js";
-import { setReviewSpotId, openAddReviewModal } from "./addReview.js";
-import { distanceFromUserToSpot, formatDistance } from "../common.js";
+import {formatRatingAsText} from "../common/fitText.js";
+import {initializeHorizontalCarousel} from "../common/carousels.js";
+import {openAddReviewModal, setReviewSpotId} from "./addReview.js";
+import {distanceFromUserToSpot, formatDistance} from "../common.js";
+import {updateViewSpotDetails} from "../goals/missionsViewUpdater.js";
 
 const state = {
     spotData: null,
@@ -72,7 +73,6 @@ function removeHeaderBookmarkButton() {
 }
 
 
-
 export function initializeSpotClickHandlers(scopeEl = document) {
     const root = scopeEl === document ? document.getElementById("main") : scopeEl;
     if (!root || root.dataset.spotClickBound === "true") return;
@@ -124,9 +124,10 @@ async function loadSpotDetail(spotId) {
 
         updateDetailHeader(spotData);
         await populateSpotDetail(spotData, overlay);
-        initializeDetailHandlers(overlay);
+        await initializeDetailHandlers(spotData, overlay);
         initializeBookmarks(overlay);
-        syncBookmarksUI(overlay).catch(() => { });
+        syncBookmarksUI(overlay).catch(() => {
+        });
     } catch (err) {
         console.error("loadSpotDetail error:", err);
     }
@@ -169,7 +170,8 @@ function setupHeaderBookmark(spotData) {
         try {
             await toggleBookmarkForSpot(spotData.id);
             await refreshHeaderBookmarkVisual(btn, spotData.id);
-        } catch { }
+        } catch {
+        }
     };
     btn.addEventListener("click", state.bookmarkClickHandler);
 
@@ -180,7 +182,8 @@ function setupHeaderBookmark(spotData) {
         updateBookmarkVisual(btn, isSaved);
     };
     document.addEventListener("bookmark:changed", state.bookmarkChangeHandler);
-    refreshHeaderBookmarkVisual(btn, spotData.id).catch(() => { });
+    refreshHeaderBookmarkVisual(btn, spotData.id).catch(() => {
+    });
 }
 
 async function refreshHeaderBookmarkVisual(btn, spotId) {
@@ -301,16 +304,20 @@ function setupToolbarNavigation() {
     });
 }
 
-function initializeDetailHandlers(overlayEl) {
+async function initializeDetailHandlers(spotData, overlayEl) {
     const shown = getActiveSectionKey(getMain()) || "homepage";
     const scope = getSectionWrapper(getMain(), shown) || document;
-    syncBookmarksUI(scope).catch(() => { });
+    syncBookmarksUI(scope).catch(() => {
+    });
     initializeBookmarks(scope);
 
+    // Initialize spot detail missions view: count how many missions are completed
+    await updateViewSpotDetails(spotData, overlayEl)
 
     const missionsToggle = overlayEl?.querySelector("#spot-missions-toggle") || document.getElementById("spot-missions-toggle");
     if (missionsToggle) {
         missionsToggle.addEventListener("click", (e) => {
+            console.log("CLICK: Toggle missions details");
             const missionsDetails = overlayEl?.querySelector("#spot-missions-details") || document.getElementById("spot-missions-details");
             if (!missionsDetails) return;
 

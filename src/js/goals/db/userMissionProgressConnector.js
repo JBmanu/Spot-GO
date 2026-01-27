@@ -127,6 +127,11 @@ export async function hydrateCurrentUserMissionsOf(type) {
     return await Promise.all(userMissions.map(hydrateMission));
 }
 
+export async function hydrateCurrentUserSpotMissionsOf(placeId) {
+    const spotsMissions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.SPOT)
+    return spotsMissions.find(spot => spot.place.id === placeId).missions
+}
+
 async function hydrateCurrentUserSpotMissionsIf(isActive) {
     const activeSpotMissions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.SPOT);
     return activeSpotMissions.filter(spot => spot.missions.every(m => m.progress.IsActive === isActive))
