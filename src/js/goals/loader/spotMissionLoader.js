@@ -1,5 +1,5 @@
 import {
-    hydrateActiveSpotMissionsOfCurrentUser,
+    hydrateActiveSpotMissionsOfCurrentUser, hydrateCurrentUserSpotMissionsOf,
     hydrateInactiveSpotMissionsOfCurrentUser
 } from "../db/userMissionProgressConnector.js";
 import {runAllAsyncSafe} from "../utils.js";
@@ -12,6 +12,19 @@ export async function loadSpotMissions() {
         () => generateSpotCard(hydrateInactiveSpotMissionsOfCurrentUser, generateHTMLInactiveSpotCard)
     )
     console.log("Spot missions loaded");
+}
+
+export async function loadSpotMissionsForSpotDetails(spotData, overlayEl) {
+    const spotMissions = await hydrateCurrentUserSpotMissionsOf(spotData.id)
+    const missionsCtnEL = overlayEl.querySelector('#spot-missions-list');
+    const missionEls = missionsCtnEL.querySelectorAll('.mission-banner');
+
+    spotMissions.forEach((mission, index) => {
+        const missionEl = missionEls[index];
+        missionEl.textContent = mission.template.Name;
+        if (mission.progress.IsCompleted) missionEl.classList.add('completed');
+        else missionEl.classList.remove('completed');
+    });
 }
 
 async function generateSpotCard(loadSpotMissionsFun, generateHTMLFun) {

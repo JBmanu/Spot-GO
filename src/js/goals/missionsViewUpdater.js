@@ -22,19 +22,20 @@ export function updateViewMission(missions, mission, updatedData) {
     }
 }
 
-export async function updateViewSpotDetails(spotData, overlayElHTML) {
+export async function updateViewSpotDetails(spotData, overlayEl) {
     console.log("DATA SPOT FOR UPDATE ", spotData);
-    console.log("Initialize spot detail handlers ", overlayElHTML);
+    console.log("Initialize spot detail handlers ", overlayEl);
     const spotMissions = await hydrateCurrentUserSpotMissionsOf(spotData.id)
 
     // MANCA SE NON CI SONO MISSIONI
+    // da far vedere una scritta tipo "no missions available"
 
     // Count all missions
-    const totalEl = overlayElHTML.querySelector('#spot-missions-total');
+    const totalEl = overlayEl.querySelector('#spot-missions-total');
     totalEl.textContent = spotMissions.length;
 
     // Count completed missions
     const countCompleted = spotMissions.filter(mission => mission.progress.IsCompleted).length
-    const completedEl = overlayElHTML.querySelector('#spot-missions-completed');
+    const completedEl = overlayEl.querySelector('#spot-missions-completed');
     completedEl.textContent = countCompleted;
 }
