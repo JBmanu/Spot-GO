@@ -1,6 +1,6 @@
 @layer components {
     .add-polaroid-modal-overlay {
-        @apply z-2000 p-4;
+        @apply /*z-2000*/ p-4;
     }
 
     .add-polaroid-modal {

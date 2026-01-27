@@ -6,8 +6,18 @@ import {createSearchBarWithKeyboard} from '../createComponent.js';
 
 export async function sharePolaroidModal(polaroidData) {
     await openModal("../html/common-pages/share-polaroid-modal.html", ".phone-screen", (modalElement) => {
+        initModalCloseAlternative();
         insertSearchBar(modalElement);
         initializeSharePolaroid(modalElement, polaroidData);
+    });
+}
+
+async function initModalCloseAlternative() {
+    const backdrop = document.querySelector(".background-modal-overlay");
+    backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+            closeModal();
+        }
     });
 }
 
