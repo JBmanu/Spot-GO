@@ -27,31 +27,11 @@ async function configureKeyboard() {
     // Bind search bar and keyboard to search section.
     const {searchBarEl, keyboardEl, overlayEl, newId} = await createSearchBarWithKeyboard("Cerca utente", onValueChangeSearch);
     const communityPage = document.querySelector(".app-toolbar");
-    //Estrai nodo input
-    const searchInput = searchBarEl.querySelector(`#${newId}`);
-    // Sostituisci l'input mio con quello estratto e associato alla keyboard
-    const oldInput = document.getElementById("community-search-input");
-    // oldInput.replaceWith(searchInput);
-    if (oldInput) {
-        oldInput.replaceWith(searchInput);
-    }
     communityPage.appendChild(keyboardEl);
-    const clearBtn = document.querySelector("#clear-search-btn");
-    clearBtn.hidden = true;
-
-    clearBtn.addEventListener("click", () => {
-        searchInput.value = "";
-        onValueChangeSearch("");
-        clearBtn.hidden = true;
-    });
-
-    searchInput.addEventListener('input', () => {
-        clearBtn.hidden = searchInput.value.trim() == '';
-    });
-
+    const searchBar = document.querySelector("#search-bar-placeholder");
+    searchBar.replaceWith(searchBarEl);
     keyboardSetted = true;
 }
-
 
 function initTabSelector() {
     const tabs = {

@@ -39,9 +39,24 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
 
     const searchInput = searchBarEl.querySelector("#view-all-saved-search");
     const newId = `view-all-saved-search-${keyboardId}`;
-
     searchInput.id = newId;
     keyboardId++;
+
+    const clearBtn = searchDoc.querySelector("#reset-search-btn");
+    clearBtn.id = `reset-search-btn-${keyboardId}`;
+    clearBtn.hidden = true;
+
+    clearBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        onValueChanged("");
+        clearBtn.hidden = true;
+    });
+
+    searchInput.addEventListener('input', () => {
+        clearBtn.hidden = searchInput.value.trim() == '';
+    });
+
+
     const keyboard = keyboardEl; // id="view-all-saved-keyboard"
     const overlay = overlayEl;   // id="view-all-saved-keyboard-overlay"
 

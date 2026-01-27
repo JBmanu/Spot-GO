@@ -18,10 +18,6 @@
         overflow-y: scroll;
     }
 
-    .community-section:not(.hidden) {
-        /* animation: slideInDown 0.3s ease forwards; */
-    }
-
     .community-section.hidden {
     /* animation: slideOutUp 0.3s ease forwards; */
         pointer-events: none;
@@ -114,7 +110,8 @@
     }
 
     .user-avatar {
-        @apply grid place-items-center w-16 h-16 rounded-full border border-border_color text-xl font-bold;
+        @apply grid place-items-center w-16 h-16 border border-border_color text-xl font-bold;
+        border-radius: var(--radius-2xl);
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.18));
     }
 
@@ -127,8 +124,8 @@
     }
 
     .comm-button-action-icon {
-        height: calc(var(--spacing) * 12);
-        width: calc(var(--spacing) * 12);
+        height: calc(var(--spacing) * 9);
+        width: calc(var(--spacing) * 9);
         cursor: pointer;
         align-items: center;
         justify-content: center;
@@ -139,10 +136,6 @@
         transition: transform 0.3s ease;
     }
 
-    .comm-button-action-icon:hover {
-        transform: scale(1.1);
-    }
-
     .comm-button-action-icon>img {
         transition-property: opacity;
         transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
@@ -151,9 +144,6 @@
         transition-duration: 200ms;
     }
 
-    .comm-button-action-icon:hover>img {
-        opacity: 0.6;
-    }
 
     .comm-button-action-icon:active>img {
         @apply scale-[0.95];
@@ -211,8 +201,9 @@
 
     .empty-state-emoji {
         font-size: 4rem;
-        line-height: 1;
-        animation: gentle-bounce 2s ease-in-out infinite;
+        line-height: 1;    
+        filter: grayscale(1);
+        opacity: 30%;
     }
 
     .empty-state-text {
