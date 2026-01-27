@@ -4,6 +4,7 @@ import { openPolaroidDetail } from "./polaroidDetail.js";
 import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
 import { showConfirmModal } from "../ui/confirmModal.js";
+import {currentUserLevel} from "../goals/db/userGoalsConnector.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",
@@ -87,8 +88,8 @@ function updateProfileHeader(user, container) {
 
     // Usa container.querySelector se è un container specifico, altrimenti document
     const querySelector = (selector) => {
-        return container && container.querySelector 
-            ? container.querySelector(selector) 
+        return container && container.querySelector
+            ? container.querySelector(selector)
             : document.querySelector(selector);
     };
 
@@ -114,11 +115,12 @@ function updateProfileHeader(user, container) {
 
 async function updateUserCounters(username, container) {
     try {
-        const [saved, reviews, visited, created] = await Promise.all([
+        const [saved, reviews, visited, created, userLevel] = await Promise.all([
             getSavedSpots(username),
             getReviews(username),
             getVisitedSpots(username),
-            getCreatedSpots(username)
+            getCreatedSpots(username),
+            currentUserLevel()
         ]);
 
         // Usa container.querySelector se è un container specifico, altrimenti document
@@ -132,13 +134,15 @@ async function updateUserCounters(username, container) {
             saved: querySelector("#saved-spots"),
             reviews: querySelector("#written-reviews"),
             visited: querySelector("#visited-spots"),
-            created: querySelector("#created-spots")
+            created: querySelector("#created-spots"),
+            level: querySelector("#explorer-level")
         };
 
         if (elements.saved) elements.saved.textContent = saved.length;
         if (elements.reviews) elements.reviews.textContent = reviews.length;
         if (elements.visited) elements.visited.textContent = visited.length;
         if (elements.created) elements.created.textContent = created.length;
+        if (elements.level) elements.level.textContent = userLevel;
 
     } catch (error) {
         console.error("Error updating profile counters:", error);

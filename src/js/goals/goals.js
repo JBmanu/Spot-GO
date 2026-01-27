@@ -10,13 +10,17 @@ import {seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
 import {loadMissions} from "./loader/missionLoader.js";
 import {seedUserMissionProgress} from "./db/seed/userMissionProgressSeed.js";
 import {runAllAsyncSafe} from "./utils.js";
-import {testActiveTriggers} from "./missionsTrigger.js";
+import {testActiveTriggers, triggerLogin} from "./missionsTrigger.js";
+import {resetCurrentUserLevel} from "./db/userGoalsConnector.js";
 
 let isInitialized = false;
 
 export async function initializeGoals() {
     if (isInitialized) return;
     isInitialized = true;
+
+    // User level
+    await resetCurrentUserLevel()
 
     // Seed DB
     await runAllAsyncSafe(seedBadges, seedDiscounts)

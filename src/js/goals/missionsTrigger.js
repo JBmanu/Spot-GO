@@ -5,14 +5,13 @@
 } from "./db/userMissionProgressConnector.js";
 import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
 import {checkEqualsDay, identityFun} from "./utils.js";
-import {resetCurrentUserLevel, updateCurrentUserLevel} from "./db/userGoalsConnector.js";
+import {updateCurrentUserLevel} from "./db/userGoalsConnector.js";
 import {updateViewMission} from "./missionsViewUpdater.js";
 
 export async function testActiveTriggers() {
-    await resetCurrentUserLevel()
     await triggerLogin();
     await triggerFoto({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
-    await triggerReview({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
+    // await triggerReview({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     // await triggerCreatePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     // await triggerSharePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
 

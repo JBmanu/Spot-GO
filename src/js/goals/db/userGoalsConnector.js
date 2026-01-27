@@ -6,6 +6,12 @@ export async function resetCurrentUserLevel() {
     await updateCurrentUserLevel(() => 0);
 }
 
+export async function currentUserLevel() {
+    const user = await isAuthenticatedUser();
+    const userDocument =  await documentFromId(USER_COLLECTION, user.id)
+    return userDocument.livello;
+}
+
 export async function updateCurrentUserLevel(updateFun) {
     const user = await isAuthenticatedUser();
     const userDocument =  await documentFromId(USER_COLLECTION, user.id)
