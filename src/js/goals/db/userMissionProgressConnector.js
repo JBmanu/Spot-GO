@@ -12,6 +12,7 @@ import {collection, query, Timestamp, where} from "firebase/firestore";
 import {db} from "../../firebase.js";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
 import {COLLECTIONS} from "../Datas.js";
+import {missionTemplatesByType} from "./missionTemplateConnector.js";
 
 
 async function createMissionProgress(data, create, update) {
@@ -54,6 +55,18 @@ export async function createSpotMission(data) {
         (newMission) => ({
             [`${MISSION_TYPE.SPOT}.${data.PlaceId}.${data.MissionTemplateId}`]: newMission
         }))
+}
+
+export async function createAllSpotMissions(userId, placeId, isActive = true) {
+    const spotMissions = await missionTemplatesByType(MISSION_TYPE.SPOT)
+    for (let spotMission of spotMissions) {
+        await createSpotMission({
+            UserId: userId,
+            PlaceId: placeId,
+            MissionTemplateId: spotMission.id,
+            IsActive: isActive
+        })
+    }
 }
 
 export async function createDailyMission(data) {

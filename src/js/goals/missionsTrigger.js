@@ -7,6 +7,7 @@ import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "./db/seed/missionTemplateSeed
 import {checkEqualsDay, identityFun} from "./utils.js";
 import {updateCurrentUserLevel} from "./db/userGoalsConnector.js";
 import {updateViewMission} from "./missionsViewUpdater.js";
+import {missionTemplatesByType} from "./db/missionTemplateConnector.js";
 
 export async function testActiveTriggers() {
     await triggerLogin();
@@ -17,6 +18,12 @@ export async function testActiveTriggers() {
 
     console.log("Active triggers tested");
 }
+
+// CRATE MISSION FOR SPOT
+export async function triggerToCreateSpotMission() {
+    const spotMissions = await missionTemplatesByType(MISSION_TYPE.SPOT)
+}
+
 
 async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, filterMission,
                                                    updateMission = value => value + 1) {

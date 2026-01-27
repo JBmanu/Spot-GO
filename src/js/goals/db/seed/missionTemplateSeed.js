@@ -29,7 +29,7 @@ export const ACTION_TYPE = {
 const MISSION_TEMPLATES = [
     // 🏞 SPOT
     {
-        Name: "Scatta una foto allo spot",
+        Name: "Scatta una foto",
         Description: "Immortala la magia in un click!",
         Type: MISSION_TYPE.SPOT,
         Category: null,
@@ -38,7 +38,7 @@ const MISSION_TEMPLATES = [
         Reward: {Experience: 20, BadgeId: createdBadgeIds[0], DiscountId: null}
     },
     {
-        Name: "Scrivi una recensione allo spot",
+        Name: "Scrivi una recensione",
         Description: "Racconta cosa ti ha fatto battere il cuore!",
         Type: MISSION_TYPE.SPOT,
         Category: null,
@@ -47,7 +47,7 @@ const MISSION_TEMPLATES = [
         Reward: {Experience: 30, BadgeId: createdBadgeIds[1], DiscountId: null}
     },
     {
-        Name: "Crea una polaroid dello spot",
+        Name: "Crea una polaroid",
         Description: "Dagli un tocco unico e condividilo!",
         Type: MISSION_TYPE.SPOT,
         Category: null,

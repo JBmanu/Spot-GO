@@ -2,7 +2,7 @@ import {getAllUsers} from "../../../database.js";
 import {missionTemplatesByType} from "../missionTemplateConnector.js";
 import {MISSION_TYPE} from "./missionTemplateSeed.js";
 import {
-    clearUserMissionProgress,
+    clearUserMissionProgress, createAllSpotMissions,
     createDailyMission,
     createLevelMission,
     createSpotMission,
@@ -24,20 +24,12 @@ export async function seedUserMissionProgress() {
 }
 
 async function seedSpotMissionsForUser(users) {
-    const spotMissions = await missionTemplatesByType(MISSION_TYPE.SPOT)
     let oneActivePerUser = true;
 
-    for (let usersKey of users) {
+    for (let user of users) {
         oneActivePerUser = true;
-        for (let post of SPOTS) {
-            for (let spotMission of spotMissions) {
-                await createSpotMission({
-                    UserId: usersKey.id,
-                    PlaceId: post,
-                    MissionTemplateId: spotMission.id,
-                    IsActive: oneActivePerUser
-                })
-            }
+        for (let placeId of SPOTS) {
+            await createAllSpotMissions(user.id, placeId, oneActivePerUser)
             oneActivePerUser = false;
         }
     }
