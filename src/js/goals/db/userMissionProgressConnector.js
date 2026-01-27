@@ -129,7 +129,7 @@ export async function hydrateCurrentUserMissionsOf(type) {
 
 export async function hydrateCurrentUserSpotMissionsOf(placeId) {
     const spotsMissions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.SPOT)
-    return spotsMissions.find(spot => spot.place.id === placeId).missions
+    return spotsMissions.find(spot => spot.place.id === placeId)?.missions
 }
 
 async function hydrateCurrentUserSpotMissionsIf(isActive) {

@@ -23,12 +23,10 @@ export function updateViewMission(missions, mission, updatedData) {
 }
 
 export async function updateViewSpotDetails(spotData, overlayEl) {
-    console.log("DATA SPOT FOR UPDATE ", spotData);
-    console.log("Initialize spot detail handlers ", overlayEl);
     const spotMissions = await hydrateCurrentUserSpotMissionsOf(spotData.id)
-
     // MANCA SE NON CI SONO MISSIONI
     // da far vedere una scritta tipo "no missions available"
+    if (!spotMissions) return
 
     // Count all missions
     const totalEl = overlayEl.querySelector('#spot-missions-total');

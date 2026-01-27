@@ -16,6 +16,8 @@ export async function loadSpotMissions() {
 
 export async function loadSpotMissionsForSpotDetails(spotData, overlayEl) {
     const spotMissions = await hydrateCurrentUserSpotMissionsOf(spotData.id)
+    if (!spotMissions) return
+
     const missionsCtnEL = overlayEl.querySelector('#spot-missions-list');
     const missionEls = missionsCtnEL.querySelectorAll('.mission-banner');
 
