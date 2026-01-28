@@ -1,5 +1,5 @@
 ﻿import {
-    createAllSpotMissionsForCurrentUser,
+    createAllSpotMissionsForCurrentUser, currentUserHasSpotMissions,
     deactivateAllSpotMissionsOfCurrentUser,
     hydrateCurrentUserMissionsOf,
     updateValueOfMission,
@@ -24,6 +24,7 @@ export async function testActiveTriggers() {
 export async function activateTriggerToCreateSpotMission(spotData, overlayEl) {
     const btnCreateMissions = overlayEl.querySelector('#spot-detail-share-button');
     btnCreateMissions.addEventListener("click", async (_) => {
+        if (await currentUserHasSpotMissions(spotData.id)) return;
         await deactivateAllSpotMissionsOfCurrentUser()
         await createAllSpotMissionsForCurrentUser(spotData.id, true)
         await updateViewSpotDetails(spotData, overlayEl)

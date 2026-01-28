@@ -164,6 +164,10 @@ export async function hydrateInactiveSpotMissionsOfCurrentUser() {
     return await hydrateCurrentUserSpotMissionsIf(false)
 }
 
+export async function currentUserHasSpotMissions(placeId) {
+    return (await currentUserMissions())?.[MISSION_TYPE.SPOT][placeId]
+}
+
 async function updateValueMission(missions, mission, pathUpdate, updateFun) {
     const current = mission.progress.Current
     const target = mission.template.Target
@@ -189,19 +193,18 @@ async function updateValueMission(missions, mission, pathUpdate, updateFun) {
 export async function updateValueOfSpotMission(placeId, missionTemplateId, updateFun) {
     const spotsMissions = (await currentUserMissions())?.[MISSION_TYPE.SPOT];
     const spotMissions = spotsMissions?.[placeId];
-
     const missions = await Promise.all(Object.values(spotMissions).map(hydrateMission));
     const mission = await hydrateMission(spotMissions?.[missionTemplateId]);
-
     const pathUpdate = `${MISSION_TYPE.SPOT}.${placeId}.${missionTemplateId}`;
+
     return await updateValueMission(missions, mission, pathUpdate, updateFun);
 }
 
 export async function updateValueOfMission(type, missionTemplateId, updateFun) {
     const missions = await hydrateCurrentUserMissionsOf(type);
     const mission = missions.filter(mission => mission.id === missionTemplateId)[0];
-
     const pathUpdate = `${type}.${mission.id}`;
+
     return await updateValueMission(missions, mission, pathUpdate, updateFun);
 }
 
@@ -217,5 +220,6 @@ export async function deactivateAllSpotMissionsOfCurrentUser() {
         }
     }
 }
+
 
 
