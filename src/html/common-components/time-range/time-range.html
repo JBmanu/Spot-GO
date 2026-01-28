@@ -4,20 +4,22 @@
     </button>
 
     <div class="time-range time-range-input glass-strong">
+        <!-- INIZIO -->
+        <label for="start-h" class="input-label">Da</label>
         <div class="time-block">
-            <label for="start-h" class="input-label">Da</label>
-            <input id="start-h" type="text" inputmode="numeric" maxlength="2" placeholder="HH">
+            <input id="start-h" type="text" inputmode="numeric" maxlength="2" placeholder="HH" value="00">
             <span>:</span>
-            <input id="start-m" type="text" inputmode="numeric" maxlength="2" placeholder="MM">
+            <input id="start-m" type="text" inputmode="numeric" maxlength="2" placeholder="MM" value="00">
         </div>
 
-        <img src="../../assets/icons/map/ArrowRight.svg" alt="Freccia" style="width: 20px;" />
+        <img src="../../assets/icons/map/ArrowRight.svg" alt="Carica immagine" style="width: 20px;" />
 
+        <!-- FINE -->
+        <label for="end-h" class="input-label">A</label>
         <div class="time-block">
-            <label for="end-h" class="input-label">A</label>
-            <input id="end-h" type="text" inputmode="numeric" maxlength="2" placeholder="HH">
+            <input id="end-h" type="text" inputmode="numeric" maxlength="2" placeholder="HH" value="23">
             <span>:</span>
-            <input id="end-m" type="text" inputmode="numeric" maxlength="2" placeholder="MM">
+            <input id="end-m" type="text" inputmode="numeric" maxlength="2" placeholder="MM" value="59">
         </div>
     </div>
 </div>
