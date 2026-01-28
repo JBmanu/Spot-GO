@@ -8,7 +8,7 @@
 import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
 import {checkEqualsDay, identityFun} from "./utils.js";
 import {updateCurrentUserLevel} from "./db/userGoalsConnector.js";
-import {updateViewMission} from "./missionsViewUpdater.js";
+import {updateViewMission, updateViewSpotDetails} from "./missionsViewUpdater.js";
 
 export async function testActiveTriggers() {
     await triggerLogin();
@@ -23,10 +23,11 @@ export async function testActiveTriggers() {
 // CRATE MISSION FOR SPOT
 export async function activateTriggerToCreateSpotMission(spotData, overlayEl) {
     const btnCreateMissions = overlayEl.querySelector('#spot-detail-share-button');
-
-    btnCreateMissions.addEventListener("click", async (e) => {
+    btnCreateMissions.addEventListener("click", async (_) => {
         await deactivateAllSpotMissionsOfCurrentUser()
         await createAllSpotMissionsForCurrentUser(spotData.id, true)
+        await updateViewSpotDetails(spotData, overlayEl)
+        console.log("Spot missions created for current user");
     })
 }
 
