@@ -1,5 +1,10 @@
 import { initializeBottomSheet } from "../ui/bottomSheet.js";
 import { initializeBottomSheetFilters } from "./bottomSheetFilters.js";
+import { 
+    createSearchBarWithKeyboardAndFilters, 
+    createSearchBarWithKeyboard, 
+    createBottomSheetWithStandardFilters
+} from '../createComponent.js';
 
 
 async function loadTemplate(path) {
@@ -61,26 +66,19 @@ export class SearchSystem {
     }
 
     async init() {
+        const {searchBarEl, keyboardEl, overlayEl, newId} = this.enableFilters ?
+            await createSearchBarWithKeyboardAndFilters(this.placeholder, this.onSearch, createBottomSheetWithStandardFilters) :
+            await createSearchBarWithKeyboard(this.placeholder, this.onSearch);
+        this.elements.searchBar = searchBarEl;
+        this.elements.keyboard = keyboardEl;
+        this.elements.overlay = overlayEl;
 
-        this.elements.searchBar = await loadTemplate("../html/common-components/search-bar/search-bar.html");
-
-        this.elements.keyboard = await loadTemplate("../html/common-components/search-bar/keyboard.html");
-
-        this.elements.overlay = await loadTemplate("../html/common-components/search-bar/keyboard-overlay.html");
-
-        if (!this.elements.searchBar || !this.elements.keyboard || !this.elements.overlay) {
-            console.error("SearchSystem: Failed to initialize. Check template paths.");
-            return null;
+        if (!this.enableFilters) {
+            searchBarEl.querySelector("#view-all-saved-filter-btn").remove();
         }
-
-        this.elements.input = this.elements.searchBar.querySelector("input");
-        this.elements.filterBtn = this.elements.searchBar.querySelector("button");
-
-
-        this.setupSearchInput();
-        this.setupKeyboard();
+   
         this.setupOverlay();
-        await this.setupFilterButton();
+        //await this.setupFilterButton();
 
         return {
             searchBarEl: this.elements.searchBar,

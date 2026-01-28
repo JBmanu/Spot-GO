@@ -349,9 +349,9 @@ export async function loadViewAllSaved(returnViewKey = null) {
         const searchSystem = new SearchSystem({
             placeholder: "Cerca...",
             onSearch: (value) => filterSpotCards(overlay, value),
-            enableFilters: true,
-            onFiltersApply: (filters) => {
-            }
+            enableFilters: false,
+            // onFiltersApply: (filters) => {
+            // }
         });
 
         const { searchBarEl, keyboardEl, overlayEl } = await searchSystem.init();

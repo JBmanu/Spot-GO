@@ -30,6 +30,7 @@ async function configureKeyboard() {
     communityPage.appendChild(keyboardEl);
     const searchBar = document.querySelector("#search-bar-placeholder");
     searchBar.replaceWith(searchBarEl);
+    searchBarEl.querySelector("#view-all-saved-filter-btn").remove();
     keyboardSetted = true;
 }
 

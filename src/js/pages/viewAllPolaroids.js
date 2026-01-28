@@ -295,12 +295,10 @@ export async function loadViewAllPolaroids(userData) {
             placeholder: "Cerca nel tuo album...",
             onSearch: (value) => {
                 renderViewAllPolaroidsGrid(container, allPolaroids, value);
-            },
-
+            }
         });
 
         const { searchBarEl, keyboardEl, overlayEl } = await searchSystem.init();
-
         placeholder.replaceWith(searchBarEl);
 
         attachSimulatedKeyboard(keyboardEl);
