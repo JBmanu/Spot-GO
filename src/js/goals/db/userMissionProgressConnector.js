@@ -69,6 +69,12 @@ export async function createAllSpotMissions(userId, placeId, isActive = true) {
     }
 }
 
+export async function createAllSpotMissionsForCurrentUser(placeId, isActive = true) {
+    const user = await isAuthenticatedUser();
+    if (!user) return null;
+    await createAllSpotMissions(user.id, placeId, isActive)
+}
+
 export async function createDailyMission(data) {
     return await createMissionProgress(data,
         (newMission) => ({[MISSION_TYPE.DAILY]: {[data.MissionTemplateId]: newMission}}),
@@ -197,6 +203,19 @@ export async function updateValueOfMission(type, missionTemplateId, updateFun) {
 
     const pathUpdate = `${type}.${mission.id}`;
     return await updateValueMission(missions, mission, pathUpdate, updateFun);
+}
+
+export async function deactivateAllSpotMissionsOfCurrentUser() {
+    const user = await isAuthenticatedUser();
+    const spotsMissions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.SPOT)
+    const userMissions = await userMissionsOf(user.id)
+
+    for (let spotMissions of spotsMissions) {
+        for (let mission of spotMissions.missions) {
+            const pathUpdate = `${MISSION_TYPE.SPOT}.${spotMissions.place.id}.${mission.id}`;
+            await updateDocument(userMissions, {[`${pathUpdate}.IsActive`]: false});
+        }
+    }
 }
 
 
