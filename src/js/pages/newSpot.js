@@ -408,23 +408,25 @@ function syncPriceFieldsState(form) {
 
     if (!interoInput || !ridottoInput) return;
 
-    // ===== GRATUITO ATTIVO =====
     if (freeTabActive) {
         interoInput.value = "";
         ridottoInput.value = "";
-
         interoInput.disabled = true;
         ridottoInput.disabled = true;
         return;
     }
 
-    // ===== NON GRATUITO =====
     interoInput.disabled = false;
-
     const interoValue = parsePrice(interoInput.value);
 
     if (interoValue > 0) {
         ridottoInput.disabled = false;
+        
+        const ridottoValue = parsePrice(ridottoInput.value);
+        if (ridottoValue !== null && ridottoValue >= interoValue) {
+            // Se il ridotto è maggiore o uguale all'intero, lo svuotiamo
+            ridottoInput.value = ridottoInput.value.slice(0, -1); 
+        }
     } else {
         ridottoInput.value = "";
         ridottoInput.disabled = true;
@@ -444,7 +446,7 @@ function setupPriceLogic() {
     });
 
     ridottoInput?.addEventListener("input", () => {
-        // nulla di speciale, validato altrove
+        syncPriceFieldsState(form);
     });
 
     priceTabs.forEach(tab => {
@@ -519,6 +521,11 @@ function validateNewSpotForm() {
 
             // ridotto ammesso solo se intero > 0
             if (prezzoRidotto > 0 && prezzoIntero <= 0) {
+                return false;
+            }
+
+            // Se c'è un ridotto, deve essere strettamente minore dell'intero
+            if (prezzoRidotto !== null && prezzoRidotto >= prezzoIntero) {
                 return false;
             }
         }
@@ -656,7 +663,7 @@ async function readNewSpotDataFromFields() {
 }
 
 function initializeTimeRange() {
-    instantiateTimeRange();
+    // instantiateTimeRange();
 
     const newTimeRangeBtn = document.getElementById('new-time-range-btn');
     newTimeRangeBtn.removeEventListener('click', instantiateTimeRange);
