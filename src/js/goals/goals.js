@@ -1,5 +1,4 @@
 ﻿import {initializeMissionsBar} from "./interaction/missionsTypeBar.js";
-import {initializeSpotsMissions} from "./interaction/spotsMissions.js";
 import {initializeTypeMissions} from "./interaction/typeMissions.js";
 import {initializeCompletable} from "./interaction/missionCompletable.js";
 import {loadSpotMissions} from "./loader/spotMissionLoader.js";
@@ -33,7 +32,6 @@ export async function initializeGoals() {
     await runAllAsyncSafe(loadSpotMissions, loadMissions)
 
     // Interaction
-    await initializeSpotsMissions();
     await initializedAllSpotsMissions();
     await initializeMissionsBar();
     await initializeTypeMissions();

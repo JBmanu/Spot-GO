@@ -4,6 +4,7 @@ import {
 } from "../db/userMissionProgressConnector.js";
 import {runAllAsyncSafe} from "../utils.js";
 import {MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "../Datas.js";
+import {initializeEventOpenCloseSpotMissions} from "../interaction/spotsMissions.js";
 
 
 export async function loadSpotMissions() {
@@ -102,11 +103,12 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
     const spotCard = document.querySelector(`.spot-card[${SPOT_ATTRIBUTE.ID}="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
     generateSpotMissions(missionCtn, missions)
+    initializeEventOpenCloseSpotMissions(spotCard)
 }
 
 function generateHTMLInactiveSpotCard(place, progress, missions) {
     const spotCtn = document.querySelector('.all-spots-missions-ctn');
-    spotCtn.innerHTML +=
+    spotCtn.insertAdjacentHTML("beforeend",
         `<div class="glass-medium interactive spot-card" ${SPOT_ATTRIBUTE.ID}="${place.id}">
             <!-- Spot info -->
             <div class="between-ctn spot-header">
@@ -141,9 +143,10 @@ function generateHTMLInactiveSpotCard(place, progress, missions) {
             <div class="vertical-ctn-g2 missions-spot" data-carousel-type="vertical" data-size="mm">
             
             </div>          
-        </div>`;
+        </div>`);
 
     const spotCard = spotCtn.querySelector(`.spot-card[${SPOT_ATTRIBUTE.ID}="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
     generateSpotMissions(missionCtn, missions)
+    initializeEventOpenCloseSpotMissions(spotCard)
 }
