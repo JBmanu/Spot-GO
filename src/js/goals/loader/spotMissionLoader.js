@@ -1,5 +1,5 @@
 import {
-    hydrateActiveSpotMissionsOfCurrentUser, hydrateCurrentUserSpotMissionsOf,
+    hydrateActiveSpotMissionsOfCurrentUser,
     hydrateInactiveSpotMissionsOfCurrentUser
 } from "../db/userMissionProgressConnector.js";
 import {runAllAsyncSafe} from "../utils.js";
@@ -7,6 +7,12 @@ import {MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "../Datas.js";
 
 
 export async function loadSpotMissions() {
+    const mainCtn = document.querySelector('.main-goals-page')
+    const activeSpotMissionsCtn = mainCtn.querySelector('.spot-card');
+    activeSpotMissionsCtn.replaceChildren()
+    const deactiveSpotsMissionsCtn = document.querySelector('.all-spots-missions-ctn');
+    deactiveSpotsMissionsCtn.replaceChildren()
+
     await runAllAsyncSafe(
         () => generateSpotCard(hydrateActiveSpotMissionsOfCurrentUser, generateHTMLActiveSpotCard),
         () => generateSpotCard(hydrateInactiveSpotMissionsOfCurrentUser, generateHTMLInactiveSpotCard)
@@ -50,8 +56,10 @@ function generateHTMLSpotMissions(missionContainer, missionTemplate) {
 }
 
 function generateHTMLActiveSpotCard(place, progress, missions) {
-    const spotCtn = document.querySelector('.spot-card');
+    const mainCtn = document.querySelector('.main-goals-page')
+    const spotCtn = mainCtn.querySelector('.spot-card');
     spotCtn.setAttribute(SPOT_ATTRIBUTE.ID, place.id);
+
     spotCtn.innerHTML +=
         `<!-- Spot info -->
         <div class="between-ctn spot-header open">

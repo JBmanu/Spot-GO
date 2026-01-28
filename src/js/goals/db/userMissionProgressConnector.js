@@ -210,7 +210,7 @@ export async function updateValueOfMission(type, missionTemplateId, updateFun) {
 
 export async function deactivateAllSpotMissionsOfCurrentUser() {
     const user = await isAuthenticatedUser();
-    const spotsMissions = await hydrateCurrentUserMissionsOf(MISSION_TYPE.SPOT)
+    const spotsMissions = await hydrateActiveSpotMissionsOfCurrentUser()
     const userMissions = await userMissionsOf(user.id)
 
     for (let spotMissions of spotsMissions) {

@@ -16,6 +16,8 @@ import {resetCurrentUserLevel} from "./db/userGoalsConnector.js";
 let isInitialized = false;
 
 export async function initializeGoals() {
+
+    console.log("INITIALIZING Goals module...");
     if (isInitialized) return;
     isInitialized = true;
 
@@ -43,3 +45,6 @@ export async function initializeGoals() {
     console.log("Goals module initialized");
 }
 
+// export async function loadAllMissions() {
+//     await runAllAsyncSafe(loadSpotMissions, loadMissions)
+// }

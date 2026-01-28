@@ -1,5 +1,6 @@
 ﻿import {
-    createAllSpotMissionsForCurrentUser, currentUserHasSpotMissions,
+    createAllSpotMissionsForCurrentUser,
+    currentUserHasSpotMissions,
     deactivateAllSpotMissionsOfCurrentUser,
     hydrateCurrentUserMissionsOf,
     updateValueOfMission,
@@ -9,6 +10,7 @@ import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "./db/seed/missionTemplateSeed
 import {checkEqualsDay, identityFun} from "./utils.js";
 import {updateCurrentUserLevel} from "./db/userGoalsConnector.js";
 import {updateViewMission, updateViewSpotDetails} from "./missionsViewUpdater.js";
+import {loadSpotMissions} from "./loader/spotMissionLoader.js";
 
 export async function testActiveTriggers() {
     await triggerLogin();
@@ -28,6 +30,7 @@ export async function activateTriggerToCreateSpotMission(spotData, overlayEl) {
         await deactivateAllSpotMissionsOfCurrentUser()
         await createAllSpotMissionsForCurrentUser(spotData.id, true)
         await updateViewSpotDetails(spotData, overlayEl)
+        await loadSpotMissions()
         console.log("Spot missions created for current user");
     })
 }
