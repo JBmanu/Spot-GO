@@ -2,12 +2,15 @@ export async function initializeCompletable() {
     const spotsMissions = document.querySelectorAll('.spot-mission')
     spotsMissions.forEach(spotMissions => {
         const titleSpan = spotMissions.querySelector('.mission-title');
-        const radioSpan = spotMissions.querySelector('.mission-radio');
+        if (!titleSpan) return;
 
-        if (!radioSpan || !titleSpan) return;
         spotMissions.addEventListener('click', () => {
-            titleSpan.classList.toggle('completed')
-            radioSpan.classList.toggle('completed')
+            console.log( "Clicked mission completable")
+            if (titleSpan.classList.contains('completed')) {
+                markMissionAsUncompleted(spotMissions)
+            } else {
+                markMissionAsCompleted(spotMissions)
+            }
         })
     })
     console.log("Completable initialized")
@@ -15,18 +18,22 @@ export async function initializeCompletable() {
 
 export function markMissionAsCompleted(missionEl) {
     const titleSpan = missionEl.querySelector('.mission-title');
-    const radioSpan = missionEl.querySelector('.mission-radio');
+    const descriptionP = missionEl.querySelector('.mission-title-description');
+    const imageCheckbox = missionEl.querySelector('.spot-mission-checkbox');
 
-    if (!radioSpan || !titleSpan) return;
+    if (!imageCheckbox || !titleSpan || !descriptionP) return;
     titleSpan.classList.add('completed')
-    radioSpan.classList.add('completed')
+    descriptionP.classList.add('completed')
+    imageCheckbox.src = '../assets/icons/goals/check/check-complete.svg';
 }
 
 export function markMissionAsUncompleted(missionEl) {
     const titleSpan = missionEl.querySelector('.mission-title');
-    const radioSpan = missionEl.querySelector('.mission-radio');
+    const descriptionP = missionEl.querySelector('.mission-title-description');
+    const imageCheckbox = missionEl.querySelector('.spot-mission-checkbox');
 
-    if (!radioSpan || !titleSpan) return;
+    if (!imageCheckbox || !titleSpan) return;
     titleSpan.classList.remove('completed')
-    radioSpan.classList.remove('completed')
+    descriptionP.classList.remove('completed')
+    imageCheckbox.src = '../assets/icons/goals/check/check-empty.svg';
 }

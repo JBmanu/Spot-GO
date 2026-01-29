@@ -34,21 +34,24 @@ async function generateSpotCard(loadSpotMissionsFun, generateHTMLFun) {
 }
 
 function generateSpotMissions(missionCtn, missions) {
-    missions.forEach(mission => generateHTMLSpotMissions(missionCtn, mission.template))
+    missions.forEach(mission => generateHTMLSpotMissions(missionCtn, mission))
 }
 
-function generateHTMLSpotMissions(missionContainer, missionTemplate) {
+function generateHTMLSpotMissions(missionContainer, mission) {
+    const missionTemplate = mission.template
+    const check = mission.progress.IsCompleted ? 'complete' : 'empty';
+    const checkIconPath = '../assets/icons/goals/check/check-' + check + '.svg';
     missionContainer.innerHTML +=
         `<button class="interactive completable spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
-            <span class="mission-radio"></span>
+            <img src="${checkIconPath}" class="spot-mission-checkbox" alt="" ${MISSION_ATTRIBUTE.PROGRESS}/>
             <!-- Contenuto -->
-            <div class="vertical-ctn min-w-0 w-full">
+            <div class="vertical-ctn gap-1.5 min-w-0 w-full">
                 <div class="between-ctn w-full">
                     <span class="mission-title">${missionTemplate.Name}</span>
-                    <span class="text-sm text-gray-600">+${missionTemplate.Reward.Experience} XP</span>
+                    <span class="text-sm font-normal text-gray-600">+${missionTemplate.Reward.Experience} XP</span>
                 </div>
-                <p class="flex items-start text-sm text-gray-600 truncate">${missionTemplate.Description}</p>
+                <p class="mission-title-description">${missionTemplate.Description}</p>
             </div>
         </button>`;
 }
