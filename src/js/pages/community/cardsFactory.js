@@ -33,7 +33,8 @@ export function makeSuggestedCard(userData) {
     actionsContainer.className = "card-actions-container";
     const followsText = document.createElement("p");
     const addButton = followActionBtn(userData.id, followsText);
-    followsText.textContent = "Segui";
+    
+    followsText.textContent = userData.followingBack ? "Segui anche tu" : "Segui";
     actionsContainer.appendChild(addButton);
 
     const card = makeGenericCard(userData, actionsContainer)

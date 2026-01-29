@@ -302,14 +302,16 @@ export async function getFollowingUser(userId) {
     }
 }
 
+async function followingUsersIds(userId) {
+    const followings = await getFollowingUser(userId);
+    return Array.from(followings.map(f => f.id));
+}
+
 // Funzione per ottenere tutti gli utenti in "Amico" che hanno l'utente target nei Friends
 export async function getFollowersUser(targetUserId) {
     try {
-        //Logged User followings users
-        const docRef = doc(db, 'Amico', targetUserId);
-        const docSnapshot = await getDoc(docRef);
-        const snapData = docSnapshot.data();
-        const followingsBack = snapData.friends.map(f => f.id);
+        //Logged User's followings users
+        const followings = await followingUsersIds(targetUserId);
 
         // Get all users that follows logged user.
         const amiciRef = collection(db, 'Amico');
@@ -326,7 +328,7 @@ export async function getFollowersUser(targetUserId) {
                 const followerDoc = await getDoc(userRef);
                 const data = {
                     id: followerDoc.id,
-                    followingBack: followingsBack.includes(followerDoc.id),
+                    followingBack: followings.includes(followerDoc.id),
                     livello: followerDoc.data().livello || "-",
                     email: followerDoc.data().email || "-",
                     username: followerDoc.data().username || "-"
@@ -374,42 +376,45 @@ export async function addFollows(userId, friendEmail) {
 export async function getSuggestedFollows(userId) {
     if (!userId) return;
     try {
-        const userDocRef = doc(db, 'Amico', userId);
-        const userDocSnapshot = await getDoc(userDocRef);
-
-        const currentFriendsIds = new Set();
-        if (userDocSnapshot.exists()) {
-            const friendRefs = userDocSnapshot.data().friends || [];
-            friendRefs.forEach(ref => {
-                currentFriendsIds.add(ref.id);
-            });
-        }
-
+        //1. ottieni tutti gli id degli utenti che userId segue già
         // 2. Ottieni TUTTI i documenti dalla collezione Amico
-        const amicoCollectionRef = collection(db, 'Amico');
-        const allUsersSnapshot = await getDocs(amicoCollectionRef);
+        const [followingUsers, allUsersSnapshot, followers] = await Promise.all([
+            await getFollowingUser(userId),
+            await getDocs(collection(db, 'Amico')),
+            await getFollowersUser(userId)
+        ]);
+        const currentFriendsIds = new Set(followingUsers.map(usr => usr.id));
 
-        // 3. Filtra escludendo gli amici attuali e l'utente stesso
-        const availableIds = [];
+        // 3. Filtra escludendo gli amici attuali che già segue e l'utente stesso
+        const suggestedIds = [];
         allUsersSnapshot.forEach(doc => {
             if (doc.id !== userId && !currentFriendsIds.has(doc.id)) {
-                availableIds.push(doc.id);
+                suggestedIds.push(doc.id);
             }
         });
 
-        var availableFriends = [];
-        if (availableIds.length !== 0) {
+        // 3.5 ottinei tutti gli utenti che ti seguono e tieni solo gli di di quelli che non segui
+        const followersNotFollowed = followers.filter(f => !f.followingBack).map(f => f.id);
+
+        var suggestedUsers = [];
+        if (suggestedIds.length !== 0) {
             // 4. Recupera i dati da Utenti per ogni ID
-            availableFriends = await getItems('Utente', where(documentId(), 'in', availableIds),
+            suggestedUsers = await getItems('Utente', where(documentId(), 'in', suggestedIds),
                 (id, data) => ({
                     id: id,
+                    followingBack: followersNotFollowed.includes(id),
                     livello: data.livello || "-",
                     email: data.email || "-",
                     username: data.username || "-"
                 })
             );
         }
-        return availableFriends;
+
+        return suggestedUsers.sort((a, b) => {
+                    if (a.followingBack && !b.followingBack) return -1;
+                    if (!a.followingBack && b.followingBack) return 1;
+                    return 0;
+                });
     } catch (error) {
         console.error('Errore:', error);
         return [];
