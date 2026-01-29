@@ -50,7 +50,7 @@
 
     .community-suggest-card button {
         min-height: 50px;      /* Altezza minima touch-friendly */
-        min-width: 120px;      /* Larghezza minima */
+        min-width: 160px;      /* Larghezza minima */
         font-size: 16px;
         box-sizing: border-box; /* Padding incluso nelle dimensioni */
         display: flex;
