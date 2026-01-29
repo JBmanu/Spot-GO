@@ -20,4 +20,3 @@ export const SPOT_ATTRIBUTE = {
     PROGRESS: `${ATTRIBUTE_PREFIX}place-progress`,
     PROGRESS_BAR: `${ATTRIBUTE_PREFIX}place-progress-base`,
 }
-

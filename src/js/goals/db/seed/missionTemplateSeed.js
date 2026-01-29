@@ -15,6 +15,15 @@ export const CATEGORY = {
     MYSTERY: "mystery"
 }
 
+const ICON_PREFIX = '../assets/icons/homepage/';
+export const CATEGORY_ICON_PATH = {
+    [CATEGORY.NATURE]: ICON_PREFIX + "Oak Tree.svg",
+    [CATEGORY.FOOD]: ICON_PREFIX + "Fast Food.svg",
+    [CATEGORY.CULTURE]: ICON_PREFIX + "Cathedral.svg",
+    [CATEGORY.MYSTERY]: ICON_PREFIX + "Desura.svg",
+}
+
+
 export const ACTION_TYPE = {
     LOGIN: "login",
     FOTO: "fai_foto",

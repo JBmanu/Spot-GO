@@ -5,6 +5,7 @@ import {
 import {runAllAsyncSafe} from "../utils.js";
 import {MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "../Datas.js";
 import {initializeEventOpenCloseSpotMissions} from "../interaction/spotsMissions.js";
+import {CATEGORY_ICON_PATH} from "../db/seed/missionTemplateSeed.js";
 
 
 export async function loadSpotMissions() {
@@ -37,20 +38,6 @@ function generateSpotMissions(missionCtn, missions) {
 }
 
 function generateHTMLSpotMissions(missionContainer, missionTemplate) {
-    // <div class="mission flex items-start gap-3 p-3 rounded-xl bg-white/20 border border-white/30 backdrop-blur-xl shadow-sm">
-    //     <!-- Stato -->
-    //     <span class="shrink-0 mt-1 w-4 h-4 rounded-full bg-blue-500"></span> <!-- Attiva: bg-blue-500, Completata: bg-green-500, Bloccata: bg-gray-300 -->
-    //
-    //     <!-- Contenuto -->
-    //     <div class="flex-1 min-w-0">
-    //         <div class="flex items-center justify-between">
-    //             <span class="text-[16px] font-semibold text-gray-900 truncate">Raggiungi l’ingresso</span>
-    //             <span class="text-sm text-gray-600">+20 XP</span>
-    //         </div>
-    //         <p class="text-sm text-gray-600 truncate">Trova l’accesso segreto</p>
-    //     </div>
-    // </div>
-
     missionContainer.innerHTML +=
         `<button class="interactive completable spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
@@ -66,22 +53,24 @@ function generateHTMLSpotMissions(missionContainer, missionTemplate) {
         </button>`;
 }
 
+
 function generateHTMLActiveSpotCard(place, progress, missions) {
     const mainCtn = document.querySelector('.main-goals-page')
     const spotCtn = mainCtn.querySelector('.spot-card');
     spotCtn.setAttribute(SPOT_ATTRIBUTE.ID, place.id);
     const percentProgress = Math.min(100, (progress / missions.length) * 100);
-
+    const iconPath = CATEGORY_ICON_PATH[place.idCategoria]
     spotCtn.innerHTML +=
         `<!-- Spot info -->
         <div class="spot-header open">
             <!-- Header -->
-            <div class="between-ctn pb-2">
-                <div class="flex items-center gap-3 min-w-0">
+            <div class="between-ctn pb-1">
+                <div class="vertical-ctn">
                     <span class="text-[17px] font-semibold text-gray-900 truncate">${place.nome}</span>
-                    <span class="shrink-0 rounded-full border border-white/30 bg-white/40 px-2.5 py-0.5 text-xs text-gray-600">
-                        ${place.idCategoria}
-                    </span>
+                    <div class="flex items-center gap-1 rounded-full border border-white/30 bg-white/40">
+                        <img src="${iconPath}" class="w-4 h-4" alt=""/>
+                        <span class="shrink-0 text-xs text-gray-600">${place.idCategoria}</span>
+                    </div>
                 </div>
     
                 <!-- Chevron -->
@@ -115,17 +104,19 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
 function generateHTMLInactiveSpotCard(place, progress, missions) {
     const spotCtn = document.querySelector('.all-spots-missions-ctn');
     const percentProgress = Math.min(100, (progress / missions.length) * 100);
+    const iconPath = CATEGORY_ICON_PATH[place.idCategoria]
 
     spotCtn.insertAdjacentHTML("beforeend",
         `<div class="glass-medium interactive spot-card" ${SPOT_ATTRIBUTE.ID}="${place.id}">
             <div class="spot-header">
                 <!-- Header -->
-                <div class="between-ctn pb-2">
-                    <div class="flex items-center gap-3 min-w-0">
+                <div class="between-ctn pb-1">
+                    <div class="vertical-ctn">
                         <span class="text-[17px] font-semibold text-gray-900 truncate">${place.nome}</span>
-                        <span class="shrink-0 rounded-full border border-white/30 bg-white/40 px-2.5 py-0.5 text-xs text-gray-600">
-                            ${place.idCategoria}
-                        </span>
+                        <div class="flex items-center gap-1 rounded-full border border-white/30 bg-white/40">
+                            <img src="${iconPath}" class="w-4 h-4" alt=""/>
+                            <span class="shrink-0 text-xs text-gray-600">${place.idCategoria}</span>
+                        </div>
                     </div>
         
                     <!-- Chevron -->

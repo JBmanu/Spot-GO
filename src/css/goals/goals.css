@@ -78,7 +78,7 @@
     }
 
     .spot-header {
-        @apply cursor-pointer p-4
+        @apply cursor-pointer px-3 pt-2 pb-2.5
     }
     .spot-header.open {
         @apply pb-0
