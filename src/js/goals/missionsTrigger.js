@@ -56,11 +56,11 @@ async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, fil
 
         // Update level
         if (updatedMissionData.isCompleted) {
+            // Update Completed Mission
+            await triggerCompleteMission(updatedMissionData, missionType);
             const levelData = await updateCurrentUserLevel(level => level + mission.template.Reward.Experience)
             await triggerReachLevel(levelData)
         }
-        // Update Completed Mission
-        await triggerCompleteMission(updatedMissionData, missionType);
     }
 }
 

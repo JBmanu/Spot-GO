@@ -15,7 +15,7 @@ function selectionSlider(cards, index) {
 export async function initializeTypeMissions() {
     const buttons = document.querySelectorAll(".mission-type-btn");
     const slider = document.querySelector('.mission-type-slider');
-    const cards = document.querySelectorAll(".missions-card");
+    const cards = document.querySelectorAll(".missions-card-ctn");
 
     buttons.forEach((btn, index) => {
         btn.addEventListener("click", () => {
