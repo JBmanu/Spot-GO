@@ -37,15 +37,28 @@ function generateSpotMissions(missionCtn, missions) {
 }
 
 function generateHTMLSpotMissions(missionContainer, missionTemplate) {
+    // <div class="mission flex items-start gap-3 p-3 rounded-xl bg-white/20 border border-white/30 backdrop-blur-xl shadow-sm">
+    //     <!-- Stato -->
+    //     <span class="shrink-0 mt-1 w-4 h-4 rounded-full bg-blue-500"></span> <!-- Attiva: bg-blue-500, Completata: bg-green-500, Bloccata: bg-gray-300 -->
+    //
+    //     <!-- Contenuto -->
+    //     <div class="flex-1 min-w-0">
+    //         <div class="flex items-center justify-between">
+    //             <span class="text-[16px] font-semibold text-gray-900 truncate">Raggiungi l’ingresso</span>
+    //             <span class="text-sm text-gray-600">+20 XP</span>
+    //         </div>
+    //         <p class="text-sm text-gray-600 truncate">Trova l’accesso segreto</p>
+    //     </div>
+    // </div>
+
     missionContainer.innerHTML +=
-        `<button class="interactive completable spot-mission" 
-            ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
+        `<button class="interactive completable spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
-            <span class="shrink-0 mt-1 w-4 h-4 rounded-full bg-blue-500"></span>
+            <span class="mission-radio"></span>
             <!-- Contenuto -->
             <div class="vertical-ctn min-w-0 w-full">
                 <div class="between-ctn w-full">
-                    <span class="text-[16px] font-semibold text-gray-400 line-through truncate">${missionTemplate.Name}</span>
+                    <span class="mission-title">${missionTemplate.Name}</span>
                     <span class="text-sm text-gray-600">+${missionTemplate.Reward.Experience} XP</span>
                 </div>
                 <p class="flex items-start text-sm text-gray-600 truncate">${missionTemplate.Description}</p>
@@ -91,20 +104,6 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
         </div>
         <!-- Missions -->
         <div class="vertical-ctn-g2 missions-spot open" data-carousel-type="vertical" data-size="mm">
-        
-            <div class="mission flex items-start gap-3 p-3 rounded-xl bg-white/20 border border-white/30 backdrop-blur-xl shadow-sm">
-                <!-- Stato -->
-                <span class="shrink-0 mt-1 w-4 h-4 rounded-full bg-blue-500"></span> <!-- Attiva: bg-blue-500, Completata: bg-green-500, Bloccata: bg-gray-300 -->
-    
-                <!-- Contenuto -->
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[16px] font-semibold text-gray-900 truncate">Raggiungi l’ingresso</span>
-                        <span class="text-sm text-gray-600">+20 XP</span>
-                    </div>
-                    <p class="text-sm text-gray-600 truncate">Trova l’accesso segreto</p>
-                </div>
-            </div>
         </div>`;
 
     const spotCard = document.querySelector(`.spot-card[${SPOT_ATTRIBUTE.ID}="${place.id}"]`);

@@ -1,24 +1,32 @@
 export async function initializeCompletable() {
-    const completableMissions = document.querySelectorAll('.completable');
-    completableMissions.forEach(mission => {
-        const completeDiv = mission.querySelector('.spot-mission-complete');
-        if (completeDiv) return;
+    const spotsMissions = document.querySelectorAll('.spot-mission')
+    spotsMissions.forEach(spotMissions => {
+        const titleSpan = spotMissions.querySelector('.mission-title');
+        const radioSpan = spotMissions.querySelector('.mission-radio');
 
-        mission.innerHTML += `
-            <!-- Complete -->
-            <div class="center-ctn spot-mission-complete inactive">
-                <span class="text-lg font-bold text-green-700">COMPLETATO ✔</span>
-            </div>
-        `;
-
-        mission.addEventListener('click', () => {
-            mission.querySelector('.spot-mission-complete').classList.toggle('inactive');
-            console.log("click completable mission")
-
-
+        if (!radioSpan || !titleSpan) return;
+        spotMissions.addEventListener('click', () => {
+            titleSpan.classList.toggle('completed')
+            radioSpan.classList.toggle('completed')
         })
     })
-
-
     console.log("Completable initialized")
+}
+
+export function markMissionAsCompleted(missionEl) {
+    const titleSpan = missionEl.querySelector('.mission-title');
+    const radioSpan = missionEl.querySelector('.mission-radio');
+
+    if (!radioSpan || !titleSpan) return;
+    titleSpan.classList.add('completed')
+    radioSpan.classList.add('completed')
+}
+
+export function markMissionAsUncompleted(missionEl) {
+    const titleSpan = missionEl.querySelector('.mission-title');
+    const radioSpan = missionEl.querySelector('.mission-radio');
+
+    if (!radioSpan || !titleSpan) return;
+    titleSpan.classList.remove('completed')
+    radioSpan.classList.remove('completed')
 }

@@ -51,6 +51,22 @@
         @apply bg-green-500
     }
 
+    /* ================= MISSIONS ================= */
+    .mission-radio {
+        @apply shrink-0 mt-1 w-4 h-4 rounded-full bg-blue-500
+    }
+
+    .mission-radio.completed {
+        @apply shrink-0 mt-1 w-4 h-4 rounded-full bg-green-500
+    }
+
+    .mission-title {
+        @apply text-[16px] font-semibold text-gray-900 truncate
+    }
+
+    .mission-title.completed {
+        @apply text-gray-400 line-through
+    }
 
     /* ================= SPOT MISSIONS ================= */
     .spot-card-ctn {
@@ -87,6 +103,7 @@
     .spot-mission {
         @apply flex items-start w-full gap-3 px-3 py-2
     }
+
 
     .spot-mission-complete {
         /* backdrop-saturate-150 */
