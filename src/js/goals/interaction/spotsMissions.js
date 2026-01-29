@@ -1,5 +1,4 @@
 export function initializeEventOpenCloseSpotMissions(card) {
-    console.log(card)
     const header = card.querySelector('.spot-header');
     const missions = card.querySelector('.missions-spot');
 

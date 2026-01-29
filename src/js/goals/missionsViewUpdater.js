@@ -10,15 +10,19 @@ export function updateViewMission(missions, mission, updatedData) {
         const placeSelectors = `[${SPOT_ATTRIBUTE.ID}="${mission.place.id}"]`;
         const placeHTML = document.querySelector(placeSelectors);
         const progress = placeHTML.querySelector(`[${SPOT_ATTRIBUTE.PROGRESS}]`)
+        const progressBar = placeHTML.querySelector(`[${SPOT_ATTRIBUTE.PROGRESS_BAR}]`)
 
         if (updatedData.isCompleted) {
             const completedMissions = missions.filter(m => m.progress.IsCompleted).length + 1;
             progress.textContent = `${completedMissions} / ${missions.length}`;
+            progressBar.style.width = `${(completedMissions / missions.length) * 100}%`;
         }
     } else {
         const missionHTML = document.querySelector(missionSelectors);
         const progress = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.PROGRESS}]`)
+        const progressBar = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.PROGRESS_BAR}]`)
         progress.textContent = `${updatedData.updatedValue} / ${updatedData.target}`;
+        progressBar.style.width = `${(updatedData.updatedValue / updatedData.target) * 100}%`;
     }
 }
 

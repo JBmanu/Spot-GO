@@ -50,7 +50,7 @@
     }
 
     .spot-card {
-        @apply flex flex-col rounded-xl
+        @apply flex flex-col rounded-xl p-4
     }
 
     .spot-header {

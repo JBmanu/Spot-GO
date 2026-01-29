@@ -107,7 +107,8 @@ function generateHTMLMissionTemplate(indexCtn, missionTemplate, progress) {
 
             <div class="center-ctn gap-3">
                 <div class="relative h-1.5 flex-1 overflow-hidden rounded-full bg-black/10">
-                    <div class="absolute inset-y-0 left-0 rounded-full bg-blue-500" style="width: ${percentProgress}%;"></div>
+                    <div class="absolute inset-y-0 left-0 rounded-full bg-blue-500" 
+                    style="width: ${percentProgress}%;" ${MISSION_ATTRIBUTE.PROGRESS_BAR}></div>
                 </div>
                 <span class="min-w-9 text-right text-sm text-gray-600" ${MISSION_ATTRIBUTE.PROGRESS}>
                     ${progress} / ${missionTemplate.Target}
