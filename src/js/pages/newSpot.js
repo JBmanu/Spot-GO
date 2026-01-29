@@ -4,7 +4,7 @@ import { insertNewSpot, getCurrentUser } from "../database";
 import { readTimeRangeValues, validateTimeRangesWithCrossIntersections } from "../common/timeRange";
 import { goBack } from "../common/back";
 import { loadSpotsDependentObjects } from "../map";
-import { setupCenterToUserPositionButton } from "../common/mapExtension";
+import { setupCenterToUserPositionButton, setupCenterToSpotPositionButton } from "../common/mapExtension";
 
 let newSpotSection;
 let map;
@@ -204,10 +204,15 @@ async function loadMap() {
     });
 
     const centerButton = document.getElementById('new-spot-map-recenter-btn');
+    const markerCenterButton = document.getElementById('new-spot-map-marker-recenter-btn');
     setupCenterToUserPositionButton(map, centerButton);
+    setupCenterToSpotPositionButton(map, markerCenterButton, () => selectedSpotPosition);
+
 
     L.DomEvent.disableClickPropagation(centerButton);
     L.DomEvent.disableScrollPropagation(centerButton);
+    L.DomEvent.disableClickPropagation(markerCenterButton);
+    L.DomEvent.disableScrollPropagation(markerCenterButton);
 }
 
 function initializeCategorySelector() {
