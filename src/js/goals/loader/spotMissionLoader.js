@@ -62,18 +62,18 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
     const iconPath = CATEGORY_ICON_PATH[place.idCategoria]
     spotCtn.innerHTML +=
         `<!-- Spot info -->
-        <div class="spot-header open">
+        <div class="spot-header open" data-spot-category="${place.idCategoria}">
             <!-- Header -->
             <div class="between-ctn">
                 <div class="vertical-ctn w-full">
                     <div class="between-ctn">
                         <span class="text-[17px] font-semibold text-gray-900 truncate">${place.nome}</span>
-                        <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="3"
+                        <svg class="spot-arrow rotate-0" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m6 9 6 6 6-6"/>
                         </svg>
                     </div>
-                    <div class="center-ctn gap-1 spot-category" data-spot-category="${place.idCategoria}">
+                    <div class="center-ctn gap-1 spot-category"">
                         <img src="${iconPath}" class="spot-category-icon" alt=""/>
                         <span class="spot-category-title">${place.idCategoria}</span>
                     </div>
@@ -82,10 +82,10 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
             <!-- Progress -->
             <div class="center-ctn gap-3">
                 <div class="relative h-1.5 flex-1 overflow-hidden rounded-full bg-black/10">
-                    <div class="absolute inset-y-0 left-0 rounded-full bg-blue-500" 
+                    <div class="absolute inset-y-0 left-0 rounded-full bg-[var(--color-text)]" 
                         style="width: ${percentProgress}%;" ${SPOT_ATTRIBUTE.PROGRESS_BAR}></div>
                 </div>
-                <span class="min-w-9 text-right text-sm text-gray-600" ${SPOT_ATTRIBUTE.PROGRESS}>
+                <span class="min-w-9 text-right text-base font-medium text-gray-600" ${SPOT_ATTRIBUTE.PROGRESS}>
                     ${progress} / ${missions.length}
                 </span>
             </div>
@@ -113,7 +113,7 @@ function generateHTMLInactiveSpotCard(place, progress, missions) {
                     <div class="vertical-ctn w-full">
                         <div class="between-ctn">
                             <span class="text-[17px] font-semibold text-gray-900 truncate">${place.nome}</span>
-                            <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="3"
+                            <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"
                                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m6 9 6 6 6-6"/>
                             </svg>
@@ -129,7 +129,7 @@ function generateHTMLInactiveSpotCard(place, progress, missions) {
                     <div class="relative h-1.5 flex-1 overflow-hidden rounded-full bg-black/10">
                         <div class="absolute inset-y-0 left-0 rounded-full bg-blue-500" style="width: ${percentProgress}%;"></div>
                     </div>
-                    <span class="min-w-9 text-right text-sm text-gray-600" ${SPOT_ATTRIBUTE.PROGRESS}>
+                    <span class="min-w-9 text-right text-base font-medium text-gray-600" ${SPOT_ATTRIBUTE.PROGRESS}>
                         ${progress} / ${missions.length}
                     </span>
                 </div>

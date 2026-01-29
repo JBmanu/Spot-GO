@@ -9,7 +9,7 @@ export function initializeEventOpenCloseSpotMissions(card) {
 
         const arrow = card.querySelector('.spot-arrow');
         if (!arrow) return;
-        arrow.classList.toggle('rotate-180')
+        arrow.classList.toggle('rotate-0')
     });
 }
 

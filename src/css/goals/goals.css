@@ -44,12 +44,6 @@
     }
 
     /* ================= MISSION COLOR ================= */
-    .mission-color.active {
-        @apply bg-blue-500
-    }
-    .mission-color.complete {
-        @apply bg-green-500
-    }
 
     /* ================= MISSIONS ================= */
     .mission-radio {
@@ -109,7 +103,7 @@
     }
 
     .spot-category-title {
-        @apply shrink-0 text-xs uppercase tracking-wider font-bold text-[var(--color-text)]
+        @apply shrink-0 text-xs uppercase tracking-wider font-bold text-[var(--color-text)]/60
     }
 
     .spot-category-icon {
@@ -117,8 +111,7 @@
     }
 
     .spot-arrow {
-        @apply w-5 h-5 text-gray-500 transition-transform duration-500
-        ease-[cubic-bezier(0.25,0.8,0.25,1)]
+        @apply w-5 h-5 text-gray-600 transition-transform duration-500 rotate-180 ease-[cubic-bezier(0.25,0.8,0.25,1)]
     }
 
     .missions-spot {
