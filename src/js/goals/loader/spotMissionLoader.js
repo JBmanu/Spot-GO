@@ -64,21 +64,20 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
         `<!-- Spot info -->
         <div class="spot-header open">
             <!-- Header -->
-            <div class="between-ctn pb-1">
-                <div class="vertical-ctn">
-                    <span class="text-[17px] font-semibold text-gray-900 truncate">${place.nome}</span>
-                    <div class="flex items-center gap-1 rounded-full border border-white/30 bg-white/40">
-                        <img src="${iconPath}" class="w-4 h-4" alt=""/>
-                        <span class="shrink-0 text-xs text-gray-600">${place.idCategoria}</span>
+            <div class="between-ctn">
+                <div class="vertical-ctn w-full">
+                    <div class="between-ctn">
+                        <span class="text-[17px] font-semibold text-gray-900 truncate">${place.nome}</span>
+                        <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="3"
+                            viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m6 9 6 6 6-6"/>
+                        </svg>
+                    </div>
+                    <div class="center-ctn gap-1 spot-category" data-spot-category="${place.idCategoria}">
+                        <img src="${iconPath}" class="spot-category-icon" alt=""/>
+                        <span class="spot-category-title">${place.idCategoria}</span>
                     </div>
                 </div>
-    
-                <!-- Chevron -->
-                <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"
-                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m6 9 6 6 6-6"/>
-                </svg>
-<!--                    <span class="text-lg text-gray-500 transition-transform duration-200">⌄</span>-->
             </div>
             <!-- Progress -->
             <div class="center-ctn gap-3">
@@ -111,20 +110,19 @@ function generateHTMLInactiveSpotCard(place, progress, missions) {
             <div class="spot-header">
                 <!-- Header -->
                 <div class="between-ctn pb-1">
-                    <div class="vertical-ctn">
-                        <span class="text-[17px] font-semibold text-gray-900 truncate">${place.nome}</span>
-                        <div class="flex items-center gap-1 rounded-full border border-white/30 bg-white/40">
-                            <img src="${iconPath}" class="w-4 h-4" alt=""/>
-                            <span class="shrink-0 text-xs text-gray-600">${place.idCategoria}</span>
+                    <div class="vertical-ctn w-full">
+                        <div class="between-ctn">
+                            <span class="text-[17px] font-semibold text-gray-900 truncate">${place.nome}</span>
+                            <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="3"
+                                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"/>
+                            </svg>
+                        </div>
+                        <div class="center-ctn gap-1 spot-category" data-spot-category="${place.idCategoria}">
+                            <img src="${iconPath}" class="spot-category-icon" alt=""/>
+                            <span class="spot-category-title">${place.idCategoria}</span>
                         </div>
                     </div>
-        
-                    <!-- Chevron -->
-                    <svg class="spot-arrow" fill="none" stroke="currentColor" stroke-width="2"
-                     viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m6 9 6 6 6-6"/>
-                    </svg>
-<!--                    <span class="text-lg text-gray-500 transition-transform duration-200">⌄</span>-->
                 </div>
                 <!-- Progress -->
                 <div class="center-ctn gap-3">

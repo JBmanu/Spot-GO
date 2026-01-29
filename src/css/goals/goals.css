@@ -84,6 +84,38 @@
         @apply pb-0
     }
 
+    [data-spot-category="nature"] {
+        --color-bg: #d1fae5;
+        --color-text: #0d5a3f;
+    }
+
+    [data-spot-category="food"] {
+        --color-bg: #fff1e6;
+        --color-text: #b23a0d;
+    }
+
+    [data-spot-category="culture"] {
+        --color-bg: #fff7e6;
+        --color-text: #b27f0d;
+    }
+
+    [data-spot-category="mystery"] {
+        --color-bg: #f3e8ff;
+        --color-text: #5b21b6;
+    }
+
+    .spot-category {
+        @apply my-1 w-fit rounded-full border border-white/30 p-1 bg-[var(--color-bg)]
+    }
+
+    .spot-category-title {
+        @apply shrink-0 text-xs uppercase tracking-wider font-bold text-[var(--color-text)]
+    }
+
+    .spot-category-icon {
+        @apply w-5 h-5
+    }
+
     .spot-arrow {
         @apply w-5 h-5 text-gray-500 transition-transform duration-500
         ease-[cubic-bezier(0.25,0.8,0.25,1)]
