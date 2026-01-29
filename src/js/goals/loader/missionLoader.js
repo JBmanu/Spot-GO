@@ -2,6 +2,7 @@
 import {runAllAsyncSafe} from "../utils.js";
 import {hydrateCurrentUserMissionsOf} from "../db/userMissionProgressConnector.js";
 import {CHECKBOX_ICON_PATH, MISSION_ATTRIBUTE} from "../Datas.js";
+import {markMissionAsCompleted} from "../interaction/missionCompletable.js";
 
 export async function loadMissions() {
     await runAllAsyncSafe(
@@ -32,10 +33,8 @@ async function generateMissionType(missionType, containerIndex) {
 function generateHTMLMissionTemplate(indexCtn, mission) {
     const missionTemplate = mission.template
     const progress = mission.progress.Current;
-
     const container = document.querySelectorAll('.missions-card-ctn');
     const percentProgress = Math.min(100, (progress / missionTemplate.Target) * 100);
-    const checkIconPath = mission.progress.IsCompleted ? CHECKBOX_ICON_PATH.COMPLETE : CHECKBOX_ICON_PATH.EMPTY;
 
     container[indexCtn].innerHTML +=
         `<div class="vertical-ctn-g2 glass-strong interactive completable px-3 py-3" 
@@ -44,7 +43,7 @@ function generateHTMLMissionTemplate(indexCtn, mission) {
             <div class="vertical-ctn">
                 <div class="between-ctn">
                     <span class="mission-title">${missionTemplate.Name}</span>
-                    <img src="${checkIconPath}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
+                    <img src="${CHECKBOX_ICON_PATH.EMPTY}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
                 </div>
                 <!-- Descrizione breve -->
                 <p class="mission-title-description">${missionTemplate.Description}</p>
@@ -67,4 +66,9 @@ function generateHTMLMissionTemplate(indexCtn, mission) {
                 </span>
             </div>
         </div>`;
+
+    if (mission.progress.IsCompleted) {
+        const missionEl = container[indexCtn].querySelector(`[${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}"]`);
+        markMissionAsCompleted(missionEl)
+    }
 }

@@ -6,6 +6,7 @@ import {runAllAsyncSafe} from "../utils.js";
 import {CHECKBOX_ICON_PATH, MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "../Datas.js";
 import {initializeEventOpenCloseSpotMissions} from "../interaction/spotsMissions.js";
 import {CATEGORY_ICON_PATH} from "../db/seed/missionTemplateSeed.js";
+import {markMissionAsCompleted} from "../interaction/missionCompletable.js";
 
 
 export async function loadSpotMissions() {
@@ -39,11 +40,10 @@ function generateSpotMissions(missionCtn, missions) {
 
 function generateHTMLSpotMissions(missionContainer, mission) {
     const missionTemplate = mission.template
-    const checkIconPath = mission.progress.IsCompleted ? CHECKBOX_ICON_PATH.COMPLETE : CHECKBOX_ICON_PATH.EMPTY;
     missionContainer.innerHTML +=
         `<button class="interactive completable spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
-            <img src="${checkIconPath}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
+            <img src="${CHECKBOX_ICON_PATH.EMPTY}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
             <!-- Contenuto -->
             <div class="vertical-ctn gap-1.5 min-w-0 w-full">
                 <div class="between-ctn w-full">
@@ -53,6 +53,11 @@ function generateHTMLSpotMissions(missionContainer, mission) {
                 <p class="mission-title-description">${missionTemplate.Description}</p>
             </div>
         </button>`;
+
+    if (mission.progress.IsCompleted) {
+        const missionEl = missionContainer.querySelector(`button[${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}"]`);
+        markMissionAsCompleted(missionEl)
+    }
 }
 
 

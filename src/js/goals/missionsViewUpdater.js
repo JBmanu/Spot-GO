@@ -1,6 +1,7 @@
 import {MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
 import {CHECKBOX_ICON_PATH as ICONBOX_ICON_PATH, MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "./Datas.js";
 import {hydrateCurrentUserSpotMissionsOf} from "./db/userMissionProgressConnector.js";
+import {markMissionAsCompleted} from "./interaction/missionCompletable.js";
 
 
 export function updateViewMission(missions, mission, updatedData) {
@@ -18,7 +19,8 @@ export function updateViewMission(missions, mission, updatedData) {
             const completedMissions = missions.filter(m => m.progress.IsCompleted).length + 1;
             progress.textContent = `${completedMissions} / ${missions.length}`;
             progressBar.style.width = `${(completedMissions / missions.length) * 100}%`;
-            checkbox.src = ICONBOX_ICON_PATH.COMPLETE;
+            checkbox.src = ICONBOX_ICON_PATH.COMPLETE
+            markMissionAsCompleted(missionHTML)
         }
     } else {
         const progress = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.PROGRESS}]`)
@@ -29,6 +31,7 @@ export function updateViewMission(missions, mission, updatedData) {
         if (updatedData.isCompleted) {
             const checkbox = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.CHECKBOX}]`)
             checkbox.src = ICONBOX_ICON_PATH.COMPLETE;
+            markMissionAsCompleted(missionHTML)
         }
     }
 }
