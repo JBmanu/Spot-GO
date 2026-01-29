@@ -36,4 +36,14 @@ export async function updateViewSpotDetails(spotData, overlayEl) {
     const countCompleted = spotMissions.filter(mission => mission.progress.IsCompleted).length
     const completedEl = overlayEl.querySelector('#spot-missions-completed');
     completedEl.textContent = countCompleted;
+
+    // Update each mission
+    const missionsCtnEL = overlayEl.querySelector('#spot-missions-list');
+    const missionEls = missionsCtnEL.querySelectorAll('.mission-banner');
+    spotMissions.forEach((mission, index) => {
+        const missionEl = missionEls[index];
+        missionEl.textContent = mission.template.Name;
+        if (mission.progress.IsCompleted) missionEl.classList.add('completed');
+        else missionEl.classList.remove('completed');
+    });
 }

@@ -1,32 +1,24 @@
 import {
-    hydrateActiveSpotMissionsOfCurrentUser, hydrateCurrentUserSpotMissionsOf,
+    hydrateActiveSpotMissionsOfCurrentUser,
     hydrateInactiveSpotMissionsOfCurrentUser
 } from "../db/userMissionProgressConnector.js";
 import {runAllAsyncSafe} from "../utils.js";
 import {MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "../Datas.js";
+import {initializeEventOpenCloseSpotMissions} from "../interaction/spotsMissions.js";
 
 
 export async function loadSpotMissions() {
+    const mainCtn = document.querySelector('.main-goals-page')
+    const activeSpotMissionsCtn = mainCtn.querySelector('.spot-card');
+    activeSpotMissionsCtn.replaceChildren()
+    const deactiveSpotsMissionsCtn = document.querySelector('.all-spots-missions-ctn');
+    deactiveSpotsMissionsCtn.replaceChildren()
+
     await runAllAsyncSafe(
         () => generateSpotCard(hydrateActiveSpotMissionsOfCurrentUser, generateHTMLActiveSpotCard),
         () => generateSpotCard(hydrateInactiveSpotMissionsOfCurrentUser, generateHTMLInactiveSpotCard)
     )
     console.log("Spot missions loaded");
-}
-
-export async function loadSpotMissionsForSpotDetails(spotData, overlayEl) {
-    const spotMissions = await hydrateCurrentUserSpotMissionsOf(spotData.id)
-    if (!spotMissions) return
-
-    const missionsCtnEL = overlayEl.querySelector('#spot-missions-list');
-    const missionEls = missionsCtnEL.querySelectorAll('.mission-banner');
-
-    spotMissions.forEach((mission, index) => {
-        const missionEl = missionEls[index];
-        missionEl.textContent = mission.template.Name;
-        if (mission.progress.IsCompleted) missionEl.classList.add('completed');
-        else missionEl.classList.remove('completed');
-    });
 }
 
 async function generateSpotCard(loadSpotMissionsFun, generateHTMLFun) {
@@ -65,8 +57,10 @@ function generateHTMLSpotMissions(missionContainer, missionTemplate) {
 }
 
 function generateHTMLActiveSpotCard(place, progress, missions) {
-    const spotCtn = document.querySelector('.spot-card');
+    const mainCtn = document.querySelector('.main-goals-page')
+    const spotCtn = mainCtn.querySelector('.spot-card');
     spotCtn.setAttribute(SPOT_ATTRIBUTE.ID, place.id);
+
     spotCtn.innerHTML +=
         `<!-- Spot info -->
         <div class="between-ctn spot-header open">
@@ -109,11 +103,12 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
     const spotCard = document.querySelector(`.spot-card[${SPOT_ATTRIBUTE.ID}="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
     generateSpotMissions(missionCtn, missions)
+    initializeEventOpenCloseSpotMissions(spotCard)
 }
 
 function generateHTMLInactiveSpotCard(place, progress, missions) {
     const spotCtn = document.querySelector('.all-spots-missions-ctn');
-    spotCtn.innerHTML +=
+    spotCtn.insertAdjacentHTML("beforeend",
         `<div class="glass-medium interactive spot-card" ${SPOT_ATTRIBUTE.ID}="${place.id}">
             <!-- Spot info -->
             <div class="between-ctn spot-header">
@@ -148,9 +143,10 @@ function generateHTMLInactiveSpotCard(place, progress, missions) {
             <div class="vertical-ctn-g2 missions-spot" data-carousel-type="vertical" data-size="mm">
             
             </div>          
-        </div>`;
+        </div>`);
 
     const spotCard = spotCtn.querySelector(`.spot-card[${SPOT_ATTRIBUTE.ID}="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');
     generateSpotMissions(missionCtn, missions)
+    initializeEventOpenCloseSpotMissions(spotCard)
 }

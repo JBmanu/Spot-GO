@@ -1,5 +1,4 @@
 ﻿import {initializeMissionsBar} from "./interaction/missionsTypeBar.js";
-import {initializeSpotsMissions} from "./interaction/spotsMissions.js";
 import {initializeTypeMissions} from "./interaction/typeMissions.js";
 import {initializeCompletable} from "./interaction/missionCompletable.js";
 import {loadSpotMissions} from "./loader/spotMissionLoader.js";
@@ -16,6 +15,8 @@ import {resetCurrentUserLevel} from "./db/userGoalsConnector.js";
 let isInitialized = false;
 
 export async function initializeGoals() {
+
+    console.log("INITIALIZING Goals module...");
     if (isInitialized) return;
     isInitialized = true;
 
@@ -31,7 +32,6 @@ export async function initializeGoals() {
     await runAllAsyncSafe(loadSpotMissions, loadMissions)
 
     // Interaction
-    await initializeSpotsMissions();
     await initializedAllSpotsMissions();
     await initializeMissionsBar();
     await initializeTypeMissions();
@@ -43,3 +43,6 @@ export async function initializeGoals() {
     console.log("Goals module initialized");
 }
 
+// export async function loadAllMissions() {
+//     await runAllAsyncSafe(loadSpotMissions, loadMissions)
+// }
