@@ -46,6 +46,10 @@
     /* ================= MISSION COLOR ================= */
 
     /* ================= MISSIONS ================= */
+    .mission-checkbox {
+        @apply size-6
+    }
+
     .mission-radio {
         @apply shrink-0 mt-1 w-4 h-4 rounded-full bg-blue-500
     }
@@ -136,9 +140,6 @@
         @apply flex items-start w-full gap-2 px-3 py-3
     }
 
-    .spot-mission-checkbox {
-        @apply size-6
-    }
 
     /* ================= MISSIONS TYPE BAR ================= */
     .missions-type-bar {
@@ -176,7 +177,7 @@
     }
 
     .missions-card-ctn {
-        @apply shrink-0 w-full px-4 py-2 transition-all duration-500 opacity-100 scale-100
+        @apply shrink-0 w-full px-2 py-2 transition-all duration-500 opacity-100 scale-100
     }
 
 }

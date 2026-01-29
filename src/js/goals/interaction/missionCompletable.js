@@ -1,6 +1,7 @@
 export async function initializeCompletable() {
-    const spotsMissions = document.querySelectorAll('.spot-mission')
-    spotsMissions.forEach(spotMissions => {
+    const missions = document.querySelectorAll('.completable')
+
+    missions.forEach(spotMissions => {
         const titleSpan = spotMissions.querySelector('.mission-title');
         if (!titleSpan) return;
 
@@ -19,7 +20,7 @@ export async function initializeCompletable() {
 export function markMissionAsCompleted(missionEl) {
     const titleSpan = missionEl.querySelector('.mission-title');
     const descriptionP = missionEl.querySelector('.mission-title-description');
-    const imageCheckbox = missionEl.querySelector('.spot-mission-checkbox');
+    const imageCheckbox = missionEl.querySelector('.mission-checkbox');
 
     if (!imageCheckbox || !titleSpan || !descriptionP) return;
     titleSpan.classList.add('completed')
@@ -30,7 +31,7 @@ export function markMissionAsCompleted(missionEl) {
 export function markMissionAsUncompleted(missionEl) {
     const titleSpan = missionEl.querySelector('.mission-title');
     const descriptionP = missionEl.querySelector('.mission-title-description');
-    const imageCheckbox = missionEl.querySelector('.spot-mission-checkbox');
+    const imageCheckbox = missionEl.querySelector('.mission-checkbox');
 
     if (!imageCheckbox || !titleSpan) return;
     titleSpan.classList.remove('completed')

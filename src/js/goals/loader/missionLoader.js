@@ -1,7 +1,7 @@
 ﻿import {MISSION_TYPE} from "../db/seed/missionTemplateSeed.js";
 import {runAllAsyncSafe} from "../utils.js";
 import {hydrateCurrentUserMissionsOf} from "../db/userMissionProgressConnector.js";
-import {MISSION_ATTRIBUTE} from "../Datas.js";
+import {CHECKBOX_ICON_PATH, MISSION_ATTRIBUTE} from "../Datas.js";
 
 export async function loadMissions() {
     await runAllAsyncSafe(
@@ -26,30 +26,28 @@ export async function loadMissions() {
 
 async function generateMissionType(missionType, containerIndex) {
     const missions = await hydrateCurrentUserMissionsOf(missionType);
-
-    missions.forEach(mission =>
-        generateHTMLMissionTemplate(
-            containerIndex,
-            mission.template,
-            mission.progress.Current));
+    missions.forEach(mission => generateHTMLMissionTemplate(containerIndex, mission));
 }
 
-function generateHTMLMissionTemplate(indexCtn, missionTemplate, progress) {
+function generateHTMLMissionTemplate(indexCtn, mission) {
+    const missionTemplate = mission.template
+    const progress = mission.progress.Current;
+
     const container = document.querySelectorAll('.missions-card-ctn');
     const percentProgress = Math.min(100, (progress / missionTemplate.Target) * 100);
-    // <div class=" p-4 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 shadow-sm flex flex-col gap-2">
+    const checkIconPath = mission.progress.IsCompleted ? CHECKBOX_ICON_PATH.COMPLETE : CHECKBOX_ICON_PATH.EMPTY;
+
     container[indexCtn].innerHTML +=
-        `<div class="vertical-ctn-g2 glass-strong interactive completable px-5 py-4" 
+        `<div class="vertical-ctn-g2 glass-strong interactive completable px-3 py-3" 
             ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Riga superiore: nome + stato -->
-            <div>
+            <div class="vertical-ctn">
                 <div class="between-ctn">
-                    <span class="text-[16px] font-semibold text-gray-900 truncate">${missionTemplate.Name}</span>
-                    <span class="w-4 h-4 rounded-full bg-blue-500" title="Missione attiva"></span>
-                    <!-- Usare bg-green-500 per completata, bg-gray-300 per bloccata -->
+                    <span class="mission-title">${missionTemplate.Name}</span>
+                    <img src="${checkIconPath}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
                 </div>
                 <!-- Descrizione breve -->
-                <p class="text-sm text-gray-600 truncate">${missionTemplate.Description}</p>
+                <p class="mission-title-description">${missionTemplate.Description}</p>
             </div>
 
             <!-- Ricompense -->

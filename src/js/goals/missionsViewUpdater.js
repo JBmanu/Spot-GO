@@ -1,28 +1,35 @@
 import {MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
-import {MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "./Datas.js";
+import {CHECKBOX_ICON_PATH as ICONBOX_ICON_PATH, MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "./Datas.js";
 import {hydrateCurrentUserSpotMissionsOf} from "./db/userMissionProgressConnector.js";
 
 
 export function updateViewMission(missions, mission, updatedData) {
-    let missionSelectors = `[${MISSION_ATTRIBUTE.ID}="${mission.id}"]`;
+    const missionSelectors = `[${MISSION_ATTRIBUTE.ID}="${mission.id}"]`;
+    const missionHTML = document.querySelector(missionSelectors);
 
     if (mission.template.Type === MISSION_TYPE.SPOT) {
         const placeSelectors = `[${SPOT_ATTRIBUTE.ID}="${mission.place.id}"]`;
         const placeHTML = document.querySelector(placeSelectors);
         const progress = placeHTML.querySelector(`[${SPOT_ATTRIBUTE.PROGRESS}]`)
         const progressBar = placeHTML.querySelector(`[${SPOT_ATTRIBUTE.PROGRESS_BAR}]`)
+        const checkbox = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.CHECKBOX}]`)
 
         if (updatedData.isCompleted) {
             const completedMissions = missions.filter(m => m.progress.IsCompleted).length + 1;
             progress.textContent = `${completedMissions} / ${missions.length}`;
             progressBar.style.width = `${(completedMissions / missions.length) * 100}%`;
+            checkbox.src = ICONBOX_ICON_PATH.COMPLETE;
         }
     } else {
-        const missionHTML = document.querySelector(missionSelectors);
         const progress = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.PROGRESS}]`)
         const progressBar = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.PROGRESS_BAR}]`)
         progress.textContent = `${updatedData.updatedValue} / ${updatedData.target}`;
         progressBar.style.width = `${(updatedData.updatedValue / updatedData.target) * 100}%`;
+
+        if (updatedData.isCompleted) {
+            const checkbox = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.CHECKBOX}]`)
+            checkbox.src = ICONBOX_ICON_PATH.COMPLETE;
+        }
     }
 }
 

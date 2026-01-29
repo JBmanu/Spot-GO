@@ -3,7 +3,7 @@ import {
     hydrateInactiveSpotMissionsOfCurrentUser
 } from "../db/userMissionProgressConnector.js";
 import {runAllAsyncSafe} from "../utils.js";
-import {MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "../Datas.js";
+import {CHECKBOX_ICON_PATH, MISSION_ATTRIBUTE, SPOT_ATTRIBUTE} from "../Datas.js";
 import {initializeEventOpenCloseSpotMissions} from "../interaction/spotsMissions.js";
 import {CATEGORY_ICON_PATH} from "../db/seed/missionTemplateSeed.js";
 
@@ -39,12 +39,11 @@ function generateSpotMissions(missionCtn, missions) {
 
 function generateHTMLSpotMissions(missionContainer, mission) {
     const missionTemplate = mission.template
-    const check = mission.progress.IsCompleted ? 'complete' : 'empty';
-    const checkIconPath = '../assets/icons/goals/check/check-' + check + '.svg';
+    const checkIconPath = mission.progress.IsCompleted ? CHECKBOX_ICON_PATH.COMPLETE : CHECKBOX_ICON_PATH.EMPTY;
     missionContainer.innerHTML +=
         `<button class="interactive completable spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
-            <img src="${checkIconPath}" class="spot-mission-checkbox" alt="" ${MISSION_ATTRIBUTE.PROGRESS}/>
+            <img src="${checkIconPath}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
             <!-- Contenuto -->
             <div class="vertical-ctn gap-1.5 min-w-0 w-full">
                 <div class="between-ctn w-full">
@@ -130,7 +129,8 @@ function generateHTMLInactiveSpotCard(place, progress, missions) {
                 <!-- Progress -->
                 <div class="center-ctn gap-3">
                     <div class="relative h-1.5 flex-1 overflow-hidden rounded-full bg-black/10">
-                        <div class="absolute inset-y-0 left-0 rounded-full bg-blue-500" style="width: ${percentProgress}%;"></div>
+                        <div class="absolute inset-y-0 left-0 rounded-full bg-[var(--color-text)]" 
+                            style="width: ${percentProgress}%;" ${SPOT_ATTRIBUTE.PROGRESS_BAR}></div>
                     </div>
                     <span class="min-w-9 text-right text-base font-medium text-gray-600" ${SPOT_ATTRIBUTE.PROGRESS}>
                         ${progress} / ${missions.length}
