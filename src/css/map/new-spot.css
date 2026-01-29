@@ -73,10 +73,14 @@
     .map-badge {
         gap: 8px;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        outline: none;
+        border: none;
     }
 
     .map-badge.warning {
         font-style: italic;
+        outline: none;
+        border: none;
     }
 
     .map-badge.success {
@@ -84,6 +88,8 @@
         border-color: #4caf50;
         color: #2e7d32;
         transform: scale(1.05);
+        outline: none;
+        border: none;
     }
 
     .map-badge.success img {
