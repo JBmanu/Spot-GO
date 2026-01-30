@@ -37,7 +37,7 @@ function generateHTMLMissionTemplate(indexCtn, mission) {
     const percentProgress = Math.min(100, (progress / missionTemplate.Target) * 100);
 
     container[indexCtn].innerHTML +=
-        `<div class="vertical-ctn-g2 glass-strong interactive completable px-3 py-3" 
+        `<div class="vertical-ctn-g2 glass-strong interactive completable mission px-3 py-3" 
             ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Riga superiore: nome + stato -->
             <div class="vertical-ctn">

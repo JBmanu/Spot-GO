@@ -41,7 +41,7 @@ function generateSpotMissions(missionCtn, missions) {
 function generateHTMLSpotMissions(missionContainer, mission) {
     const missionTemplate = mission.template
     missionContainer.innerHTML +=
-        `<button class="interactive completable spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
+        `<button class="glass-strong interactive completable mission spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
             <img src="${CHECKBOX_ICON_PATH.EMPTY}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
             <!-- Contenuto -->

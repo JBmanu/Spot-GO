@@ -44,8 +44,16 @@
     }
 
     /* ================= MISSION COLOR ================= */
-
     /* ================= MISSIONS ================= */
+    .mission {
+
+    }
+
+    .mission.completed {
+        @apply bg-green-500/8 backdrop-blur-xl border border-white/20
+        /*@apply bg-white/12 bg-green-500/10 backdrop-blur-xl border border-green-500/20 shadow-sm*/
+    }
+
     .mission-checkbox {
         @apply size-6
     }
@@ -61,6 +69,7 @@
     .mission-title {
         @apply text-[16px] font-semibold text-gray-900 truncate
     }
+
     .mission-title.completed {
         @apply text-gray-400 line-through
     }
@@ -85,6 +94,7 @@
     .spot-header {
         @apply cursor-pointer px-3 pt-2 pb-2.5
     }
+
     .spot-header.open {
         @apply pb-0
     }
@@ -139,7 +149,6 @@
     .spot-mission {
         @apply flex items-start w-full gap-2 px-3 py-3
     }
-
 
     /* ================= MISSIONS TYPE BAR ================= */
     .missions-type-bar {

@@ -23,6 +23,7 @@ export function markMissionAsCompleted(missionEl) {
     const imageCheckbox = missionEl.querySelector('.mission-checkbox');
 
     if (!imageCheckbox || !titleSpan || !descriptionP) return;
+    missionEl.classList.add('completed')
     titleSpan.classList.add('completed')
     descriptionP.classList.add('completed')
     imageCheckbox.src = '../assets/icons/goals/check/check-complete.svg';
@@ -34,6 +35,7 @@ export function markMissionAsUncompleted(missionEl) {
     const imageCheckbox = missionEl.querySelector('.mission-checkbox');
 
     if (!imageCheckbox || !titleSpan) return;
+    missionEl.classList.remove('completed')
     titleSpan.classList.remove('completed')
     descriptionP.classList.remove('completed')
     imageCheckbox.src = '../assets/icons/goals/check/check-empty.svg';
