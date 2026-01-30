@@ -48,7 +48,7 @@ function generateHTMLSpotMissions(missionContainer, mission) {
             <div class="vertical-ctn gap-1.5 min-w-0 w-full">
                 <div class="between-ctn w-full">
                     <span class="mission-title">${missionTemplate.Name}</span>
-                    <span class="text-sm font-normal text-gray-600">+${missionTemplate.Reward.Experience} XP</span>
+                    <span class="spot-mission-exp">+${missionTemplate.Reward.Experience} XP</span>
                 </div>
                 <p class="mission-title-description">${missionTemplate.Description}</p>
             </div>

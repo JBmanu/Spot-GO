@@ -99,6 +99,14 @@
         @apply pb-0
     }
 
+    .spot-mission-exp {
+        @apply text-sm font-normal text-gray-600
+    }
+
+    .spot-mission-exp.completed {
+        @apply text-sm font-medium text-blue-500
+    }
+
     [data-spot-category="nature"] {
         --color-bg: #d1fae5;
         --color-text: #0d5a3f;
