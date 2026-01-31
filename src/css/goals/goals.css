@@ -154,13 +154,19 @@
         @apply max-h-1000 opacity-100 scale-100 blur-none py-2 pt-0
     }
 
+    .spot-mission-isolated {
+
+    }
+
+    .spot-mission-isolated.completed {
+        @apply bg-gray-300/5 bg-blend-overlay rounded-xl
+    }
+
     .spot-mission {
         @apply flex items-start w-full gap-2 px-3 py-3
     }
 
-    .spot-mission.completed {
-        /*@apply opacity-80*/
-    }
+
 
     /* ================= MISSIONS TYPE BAR ================= */
     .missions-type-bar {

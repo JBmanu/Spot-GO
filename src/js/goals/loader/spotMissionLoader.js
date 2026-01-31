@@ -42,8 +42,8 @@ function generateHTMLSpotMissions(missionContainer, mission) {
     const missionTemplate = mission.template
     missionContainer.innerHTML +=
         `
-        <div class="bg-white-400/10  rounded-xl">
-            <button class="glass-strong interactive completable mission spot-mission relative z-10" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
+        <div class="spot-mission-isolated">
+            <button class="glass-medium interactive completable mission spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
             <img src="${CHECKBOX_ICON_PATH.EMPTY}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
             <!-- Contenuto -->
@@ -59,7 +59,7 @@ function generateHTMLSpotMissions(missionContainer, mission) {
 `;
 
     if (mission.progress.IsCompleted) {
-        const missionEl = missionContainer.querySelector(`button[${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}"]`);
+        const missionEl = missionContainer.querySelector(`[${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}"]`);
         markMissionAsCompleted(missionEl)
     }
 }
