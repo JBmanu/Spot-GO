@@ -42,7 +42,7 @@ function generateHTMLSpotMissions(missionContainer, mission) {
     const missionTemplate = mission.template
     missionContainer.innerHTML +=
         `
-        <div class="bg-gray-400/10  rounded-xl">
+        <div class="bg-white-400/10  rounded-xl">
             <button class="glass-strong interactive completable mission spot-mission relative z-10" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
             <img src="${CHECKBOX_ICON_PATH.EMPTY}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
@@ -55,7 +55,8 @@ function generateHTMLSpotMissions(missionContainer, mission) {
                 <p class="mission-title-description">${missionTemplate.Description}</p>
             </div>
             </button>
-        </div>`;
+        </div>
+`;
 
     if (mission.progress.IsCompleted) {
         const missionEl = missionContainer.querySelector(`button[${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}"]`);
@@ -72,16 +73,16 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
     const iconPath = CATEGORY_ICON_PATH[place.idCategoria]
     spotCtn.innerHTML +=
         `<!-- Spot info -->
-        <div class="spot-header open" data-spot-category="${place.idCategoria}">
+        <div class="spot-header open" style="pointer-events: none;" data-spot-category="${place.idCategoria}">
             <!-- Header -->
             <div class="between-ctn">
                 <div class="vertical-ctn w-full">
                     <div class="between-ctn">
                         <span class="text-[17px] font-semibold text-gray-900 truncate">${place.nome}</span>
-                        <svg class="spot-arrow rotate-0" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m6 9 6 6 6-6"/>
-                        </svg>
+<!--                        <svg class="spot-arrow rotate-0" fill="none" stroke="currentColor" stroke-width="2"-->
+<!--                            viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">-->
+<!--                            <path d="m6 9 6 6 6-6"/>-->
+<!--                        </svg>-->
                     </div>
                     <div class="center-ctn gap-1 spot-category"">
                         <img src="${iconPath}" class="spot-category-icon" alt=""/>

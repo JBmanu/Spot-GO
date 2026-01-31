@@ -50,8 +50,8 @@
     }
 
     .mission.completed {
-        @apply bg-green-500/8 backdrop-blur-xl border border-white/20 shadow-none
-        /*@apply bg-white/12 bg-green-500/10 backdrop-blur-xl border border-green-500/20 shadow-sm*/
+        @apply bg-gray-500/8 backdrop-blur-xl border border-white/20 shadow-none
+        /*@apply bg-white/12 bg-green-500/10 backdrop-blur-xl  shadow-sm*/
     }
 
     .mission-checkbox {
@@ -156,6 +156,10 @@
 
     .spot-mission {
         @apply flex items-start w-full gap-2 px-3 py-3
+    }
+
+    .spot-mission.completed {
+        /*@apply opacity-80*/
     }
 
     /* ================= MISSIONS TYPE BAR ================= */
