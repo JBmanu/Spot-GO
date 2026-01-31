@@ -22,8 +22,12 @@ export function markMissionAsCompleted(missionEl) {
     const descriptionP = missionEl.querySelector('.mission-title-description');
     const imageCheckbox = missionEl.querySelector('.mission-checkbox');
 
+    const isolatedSpotMission = missionEl.closest('.spot-mission-isolated');
+    if (isolatedSpotMission) isolatedSpotMission.classList.add('completed');
+
     const spotExp = missionEl.querySelector('.spot-mission-exp')
     if (spotExp) spotExp.classList.add('completed')
+
     if (!imageCheckbox || !titleSpan || !descriptionP) return;
     missionEl.classList.add('completed')
     titleSpan.classList.add('completed')
@@ -35,6 +39,9 @@ export function markMissionAsUncompleted(missionEl) {
     const titleSpan = missionEl.querySelector('.mission-title');
     const descriptionP = missionEl.querySelector('.mission-title-description');
     const imageCheckbox = missionEl.querySelector('.mission-checkbox');
+
+    const isolatedSpotMission = missionEl.closest('.spot-mission-isolated');
+    if (isolatedSpotMission) isolatedSpotMission.classList.remove('completed');
 
     const spotExp = missionEl.querySelector('.spot-mission-exp')
     if (spotExp) spotExp.classList.remove('completed')
