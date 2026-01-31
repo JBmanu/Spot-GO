@@ -50,7 +50,7 @@
     }
 
     .mission.completed {
-        @apply bg-green-500/8 backdrop-blur-xl border border-white/20
+        @apply bg-green-500/8 backdrop-blur-xl border border-white/20 shadow-none
         /*@apply bg-white/12 bg-green-500/10 backdrop-blur-xl border border-green-500/20 shadow-sm*/
     }
 
@@ -104,7 +104,7 @@
     }
 
     .spot-mission-exp.completed {
-        @apply text-sm font-medium text-blue-500
+        @apply text-gray-400 line-through
     }
 
     [data-spot-category="nature"] {
