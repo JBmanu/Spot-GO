@@ -21,24 +21,23 @@
     }
 
     .new-spot-button {
-        @apply py-3 px-3 rounded-2xl font-black uppercase text-center flex items-center justify-center;
+        @apply px-3 py-2.5 rounded-2xl text-sm font-black uppercase;
+        letter-spacing: 0.04em;
+        color: var(--color-text_color);
+        background: var(--cat-grad-hero);
+        border: 1px solid var(--cat-outline-20);
+        transition: transform 180ms ease;
         margin-top: 16px;
         font-family: "Montserrat", sans-serif;
         font-size: 14px;
         width: 100%;
         margin-bottom: 5px;
-        /* position: relative; */
+        min-height: 44px;
         z-index: 1000;
-        letter-spacing: 0.05em;
-        color: rgba(17, 24, 39, 0.82);
-        background: rgba(255, 255, 255, 0.55);
-        border: 1px solid rgba(17, 24, 39, 0.82);
-        box-shadow:
-                0 14px 36px rgba(0,0,0,0.05),
-                inset 0 1px 0 rgba(255,255,255,0.7);
-        backdrop-filter: blur(14px) saturate(155%);
-        -webkit-backdrop-filter: blur(14px) saturate(155%);
-        transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .new-spot-button:active {
+        transform: scale(0.98);
     }
 
     .recenter-button {
