@@ -63,6 +63,12 @@ export function initializeTimeRangeControl(timeRangeEl, onInput = () => {}) {
             afterValid?.();
             onInput();
         });
+
+        el.addEventListener("focus", () => {
+            requestAnimationFrame(() => {
+                el.select();
+            });
+        });
     };
 
     // START
