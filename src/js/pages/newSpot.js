@@ -251,12 +251,51 @@ function initializePriceTab() {
     foodPriceDisplayMode = document.getElementById('price-section-food').style.display;
     otherPriceDisplayMode = document.getElementById('price-section-other').style.display;
 
-    document.getElementById('new-spot-price-food').addEventListener('input', validatePriceInputField);
-    document.getElementById('new-spot-price-intero').addEventListener('input', validatePriceInputField);
-    document.getElementById('new-spot-price-ridotto').addEventListener('input', validatePriceInputField);
+    const priceInputs = [
+        'new-spot-price-food',
+        'new-spot-price-intero',
+        'new-spot-price-ridotto'
+    ];
+    
+    priceInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', validatePriceInputField);
+            el.addEventListener('blur', formatPriceOnBlur);
+        }
+    });
 
     setupPriceLogic();
     switchToTab("free");
+}
+
+function formatPriceOnBlur(e) {
+    let value = e.target.value;
+
+    if (!value) return;
+
+    if (!value.includes('.')) {
+        value = value + ".00";
+    } else {
+        const parts = value.split('.');
+        const integerPart = parts[0];
+        let decimalPart = parts[1] || "";
+
+        if (decimalPart.length === 1) {
+            decimalPart += "0";
+        } 
+        else if (decimalPart.length === 0) {
+            decimalPart = "00";
+        }
+
+        value = `${integerPart}.${decimalPart}`;
+    }
+
+    e.target.value = value;
+    
+    const form = document.getElementById("new-spot-form");
+    if (form) syncPriceFieldsState(form);
+    validateUserData();
 }
 
 function switchToTab(tab) {
