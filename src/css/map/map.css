@@ -93,6 +93,14 @@
         overflow-y: hidden;
     }
 
+    .map-add-spot-icon {
+        width: 22px;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        display: inline-grid;
+        place-items: center;
+    }
+
     @keyframes squishy-pop {
         0% {
             transform: scale(1.2, 0.5); /* inizialmente larga e compressa verticalmente */
