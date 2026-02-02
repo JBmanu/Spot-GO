@@ -17,7 +17,7 @@ import {initializeHorizontalCarousel} from "../common/carousels.js";
 import {openAddReviewModal, setReviewSpotId} from "./addReview.js";
 import {distanceFromUserToSpot, formatDistance} from "../common.js";
 import {updateViewSpotDetails} from "../goals/missionsViewUpdater.js";
-import {activateTriggerToCreateSpotMission} from "../goals/missionsTrigger.js";
+import {activateTriggerToCreateSpotMissionsWithFoto} from "../goals/missionsTrigger.js";
 
 const state = {
     spotData: null,
@@ -313,8 +313,12 @@ async function initializeDetailHandlers(spotData, overlayEl) {
     initializeBookmarks(scope);
 
     // Initialize spot detail missions view: count how many missions are completed and missions
+
+    const btnCreateMissions = overlayEl.querySelector('#spot-detail-share-button');
+    btnCreateMissions.addEventListener("click", async (_) =>
+        await activateTriggerToCreateSpotMissionsWithFoto(btnCreateMissions, spotData, overlayEl))
+
     await updateViewSpotDetails(spotData, overlayEl)
-    await activateTriggerToCreateSpotMission(spotData, overlayEl)
 
     const missionsToggle = overlayEl?.querySelector("#spot-missions-toggle") || document.getElementById("spot-missions-toggle");
     if (missionsToggle) {
