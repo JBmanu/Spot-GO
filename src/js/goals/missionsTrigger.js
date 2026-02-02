@@ -24,6 +24,7 @@ export async function testActiveTriggers() {
 async function activateTriggerToCreateSpotMission(btnTrigger, spotData, overlayEl, triggerAction) {
     btnTrigger.disabled = true;
     if (await currentUserHasSpotMissions(spotData.id)) {
+        await triggerAction(spotData)
         btnTrigger.disabled = false;
         return;
     }
@@ -46,7 +47,7 @@ export async function activateTriggerToCreateSpotMissionsWithCreatePolaroid(btnT
         btnTrigger, spotData, overlayEl, triggerCreatePolaroid)
 }
 
-export async function activateTriggerToCreateSpotMissionsWithReview(btnTrigger, spotData, overlayEl) {
+export async function activateTriggerToCreateSpotMissionsWithCreateReview(btnTrigger, spotData, overlayEl) {
     await activateTriggerToCreateSpotMission(
         btnTrigger, spotData, overlayEl, triggerReview)
 }

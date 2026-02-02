@@ -16,7 +16,6 @@ export async function loadMissions() {
 
 async function generateMissionType(missionType, containerIndex) {
     const missions = await hydrateCurrentUserMissionsOf(missionType);
-
     // i wish to sort mission, last missions that are completed and first missions that are nearly completed
     missions.sort((a, b) => {
         if (a.progress.IsCompleted && !b.progress.IsCompleted) return 1;
@@ -35,7 +34,7 @@ function generateHTMLMissionTemplate(indexCtn, mission) {
     const container = document.querySelectorAll('.missions-card-ctn');
     const percentProgress = Math.min(100, (progress / missionTemplate.Target) * 100);
 
-    container[indexCtn].innerHTML +=
+    container[indexCtn].insertAdjacentHTML("beforeend",
         `<div class="vertical-ctn-g2 glass-strong interactive completable mission px-3 py-3" 
             ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Riga superiore: nome + stato -->
@@ -64,7 +63,7 @@ function generateHTMLMissionTemplate(indexCtn, mission) {
                     ${progress} / ${missionTemplate.Target}
                 </span>
             </div>
-        </div>`;
+        </div>`);
 
     if (mission.progress.IsCompleted) {
         const missionEl = container[indexCtn].querySelector(`[${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}"]`);

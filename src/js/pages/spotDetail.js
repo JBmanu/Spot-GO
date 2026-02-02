@@ -17,7 +17,10 @@ import {initializeHorizontalCarousel} from "../common/carousels.js";
 import {openAddReviewModal, setReviewSpotId} from "./addReview.js";
 import {distanceFromUserToSpot, formatDistance} from "../common.js";
 import {updateViewSpotDetails} from "../goals/missionsViewUpdater.js";
-import {activateTriggerToCreateSpotMissionsWithFoto} from "../goals/missionsTrigger.js";
+import {
+    activateTriggerToCreateSpotMissionsWithCreateReview,
+    activateTriggerToCreateSpotMissionsWithFoto
+} from "../goals/missionsTrigger.js";
 
 const state = {
     spotData: null,
@@ -317,6 +320,9 @@ async function initializeDetailHandlers(spotData, overlayEl) {
     const btnCreateMissions = overlayEl.querySelector('#spot-detail-share-button');
     btnCreateMissions.addEventListener("click", async (_) =>
         await activateTriggerToCreateSpotMissionsWithFoto(btnCreateMissions, spotData, overlayEl))
+    const btnCreateReviewMissions = overlayEl.querySelector('.submit-review-btn');
+    btnCreateReviewMissions.addEventListener("click", async (_) =>
+        await activateTriggerToCreateSpotMissionsWithCreateReview(btnCreateReviewMissions, spotData, overlayEl))
 
     await updateViewSpotDetails(spotData, overlayEl)
 
