@@ -11,22 +11,17 @@ export async function loadMissions() {
         () => generateMissionType(MISSION_TYPE.LEVEL, 2)
     )
 
-    // const updatedMission = await updateValueOfMission(MISSION_TYPE.DAILY,
-    //     "LfJMWzpIu7VWIauMJdfE",
-    //     current => current + 1);
-    // console.log("UPDATE MISSION: ", updatedMission);
-    //
-    // const updatedSpotMission = await updateValueOfSpotMission(
-    //     "8ncqBKHfbPWlQsFc7pvT",
-    //     "ceGA2KwDbHE9xsE9lzC2",
-    //     current => current + 1);
-    // console.log("UPDATE SPOT MISSION: ", updatedSpotMission);
-
     console.log("Missions loaded successfully.");
 }
 
 async function generateMissionType(missionType, containerIndex) {
     const missions = await hydrateCurrentUserMissionsOf(missionType);
+
+    // sort missions by IsCompleted ascending
+    missions.sort((a, b) => {
+        return a.progress.IsCompleted - b.progress.IsCompleted;
+    });
+
     missions.forEach(mission => generateHTMLMissionTemplate(containerIndex, mission));
 }
 

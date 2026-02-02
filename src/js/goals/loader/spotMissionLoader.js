@@ -49,6 +49,14 @@ function loadViewAllSpotsMissions(hasMissions) {
 
 async function generateSpotCard(loadSpotMissionsFun, generateHTMLFun) {
     const spotMissions = await loadSpotMissionsFun()
+
+    // sort spotMissions by IsCompleted count descending
+    spotMissions.sort((a, b) => {
+        const aCompletedCount = a.missions.filter(mission => mission.progress.IsCompleted).length;
+        const bCompletedCount = b.missions.filter(mission => mission.progress.IsCompleted).length;
+        return bCompletedCount - aCompletedCount;
+    });
+
     spotMissions.forEach(spotMission => {
         const countCompletedMissions = spotMission.missions.filter(mission => mission.progress.IsCompleted)
         generateHTMLFun(
