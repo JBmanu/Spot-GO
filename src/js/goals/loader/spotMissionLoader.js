@@ -15,12 +15,37 @@ export async function loadSpotMissions() {
     activeSpotMissiosn.replaceChildren()
     const deactiveSpotsMissionsCtn = document.querySelector('.all-spots-missions-ctn');
     deactiveSpotsMissionsCtn.replaceChildren()
+
     await runAllAsyncSafe(
         () => generateSpotCard(hydrateActiveSpotMissionsOfCurrentUser, generateHTMLActiveSpotCard),
         () => generateSpotCard(hydrateInactiveSpotMissionsOfCurrentUser, generateHTMLInactiveSpotCard)
     )
     console.log("Spot missions loaded");
 }
+
+function loadEmptyBannerForNoSpotMissions(hasMissions) {
+    const mainCtn = document.querySelector('.main-goals-page')
+    const emptyStateBanner = mainCtn.querySelector('.empty-state-banner');
+    const spotCard = mainCtn.querySelector('.spot-card');
+    if (hasMissions) {
+        spotCard.classList.remove('hidden')
+        emptyStateBanner.classList.add('hidden')
+    } else {
+        spotCard.classList.add('hidden')
+        emptyStateBanner.classList.remove('hidden')
+    }
+}
+
+function loadViewAllSpotsMissions(hasMissions) {
+    const mainCtn = document.querySelector('.main-goals-page')
+    const viewAllSpotsMissions = mainCtn.querySelector('.view-all-spots-missions');
+    if (hasMissions) {
+        viewAllSpotsMissions.classList.remove('hidden')
+    } else {
+        viewAllSpotsMissions.classList.add('hidden')
+    }
+}
+
 
 async function generateSpotCard(loadSpotMissionsFun, generateHTMLFun) {
     const spotMissions = await loadSpotMissionsFun()
@@ -71,9 +96,11 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
     spotCtn.setAttribute(SPOT_ATTRIBUTE.ID, place.id);
     const percentProgress = Math.min(100, (progress / missions.length) * 100);
     const iconPath = CATEGORY_ICON_PATH[place.idCategoria]
+
+    loadEmptyBannerForNoSpotMissions(missions.length > 0)
     spotCtn.innerHTML +=
         `<!-- Spot info -->
-        <div class="spot-header open" style="pointer-events: none;" data-spot-category="${place.idCategoria}">
+        <div class="spot-header cursor-none open" style="pointer-events: none;" data-spot-category="${place.idCategoria}">
             <!-- Header -->
             <div class="between-ctn">
                 <div class="vertical-ctn w-full">
@@ -115,6 +142,7 @@ function generateHTMLInactiveSpotCard(place, progress, missions) {
     const spotCtn = document.querySelector('.all-spots-missions-ctn');
     const percentProgress = Math.min(100, (progress / missions.length) * 100);
     const iconPath = CATEGORY_ICON_PATH[place.idCategoria]
+    loadViewAllSpotsMissions(missions.length > 0)
 
     spotCtn.insertAdjacentHTML("beforeend",
         `<div class="glass-medium interactive spot-card" ${SPOT_ATTRIBUTE.ID}="${place.id}">

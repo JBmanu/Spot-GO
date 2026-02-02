@@ -58,14 +58,6 @@
         @apply size-6
     }
 
-    .mission-radio {
-        @apply shrink-0 mt-1 w-4 h-4 rounded-full bg-blue-500
-    }
-
-    .mission-radio.completed {
-        @apply shrink-0 mt-1 w-4 h-4 rounded-full bg-green-500
-    }
-
     .mission-title {
         @apply text-[16px] font-semibold text-gray-900 truncate
     }
@@ -85,6 +77,10 @@
     /* ================= SPOT MISSIONS ================= */
     .spot-card-ctn {
 
+    }
+
+    .view-all-spots-missions {
+        @apply text-sm font-bold underline cursor-pointer
     }
 
     .spot-card {

@@ -23,10 +23,20 @@
             <!-- Titolo principale -->
             <div class="between-ctn pb-1">
                 <span class="text-xl font-bold text-gray-800">Ultima missione attivata</span>
-                <button class="view-all-spots-missions text-sm font-bold underline cursor-pointer">Vedi tutti</button>
+                <button class="view-all-spots-missions hidden">Vedi tutti</button>
             </div>
+            <!-- Contenitore No Missions -->
+            <div class="empty-state-banner center-ctn h-69 glass-strong m-0">
+                <div class="vertical-ctn">
+                    <h3 class="text-lg font-semibold mb-2">Non hai ancora completato nessuna missione.</h3>
+                    <p class="text-sm text-text_color/70">
+                        Aggiungi le missioni di uno spot per vederle qui.
+                    </p>
+                </div>
+            </div>
+
             <!-- Contenitore Active Spot Missions -->
-            <div class="glass-medium interactive spot-card">
+            <div class="glass-medium spot-card hidden">
 
             </div>
         </div>

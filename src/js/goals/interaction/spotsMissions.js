@@ -12,7 +12,3 @@ export function initializeEventOpenCloseSpotMissions(card) {
         arrow.classList.toggle('rotate-0')
     });
 }
-
-
-export class initializeSpotsMissions {
-}
