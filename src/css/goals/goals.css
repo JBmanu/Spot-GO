@@ -195,7 +195,7 @@
         @apply
         relative inline-block font-normal text-gray-600
         after:absolute after:left-0 after:-bottom-1
-        after:h-0.5 after:w-full
+        after:h-0.8 after:w-full
         after:bg-primary_color
         after:origin-center after:scale-x-0
         after:transition-transform after:duration-300;
