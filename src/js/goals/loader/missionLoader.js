@@ -17,11 +17,15 @@ export async function loadMissions() {
 async function generateMissionType(missionType, containerIndex) {
     const missions = await hydrateCurrentUserMissionsOf(missionType);
 
-    // sort missions by IsCompleted ascending
+    // i wish to sort mission, last missions that are completed and first missions that are nearly completed
     missions.sort((a, b) => {
-        return a.progress.IsCompleted - b.progress.IsCompleted;
-    });
+        if (a.progress.IsCompleted && !b.progress.IsCompleted) return 1;
+        if (!a.progress.IsCompleted && b.progress.IsCompleted) return -1;
 
+        const aPercent = a.progress.Current / a.template.Target;
+        const bPercent = b.progress.Current / b.template.Target;
+        return bPercent - aPercent;
+    })
     missions.forEach(mission => generateHTMLMissionTemplate(containerIndex, mission));
 }
 
