@@ -163,7 +163,6 @@
     }
 
 
-
     /* ================= MISSIONS TYPE BAR ================= */
     .missions-type-bar {
         @apply relative px-2 py-2
@@ -178,10 +177,33 @@
         text-gray-700 cursor-pointer transition;
     }
 
-    .mission-type-btn-element {
+    .mission-type-btn-element,
+    .mission-type-btn-icon,
+    .mission-type-btn-title {
         @apply transition-all duration-200 ease-in-out
     }
 
+    .mission-type-btn-icon {
+        @apply block size-5 saturate-40
+    }
+
+    .mission-type-btn-icon.active {
+        @apply size-9 saturate-100
+    }
+
+    .mission-type-btn-title {
+        @apply
+        relative inline-block font-normal text-gray-600
+        after:absolute after:left-0 after:-bottom-1
+        after:h-0.5 after:w-full
+        after:bg-primary_color
+        after:origin-center after:scale-x-0
+        after:transition-transform after:duration-300;
+    }
+
+    .mission-type-btn-title.active {
+        @apply after:scale-x-100 font-semibold text-gray-900
+    }
 
     /* ================= MISSIONS TYPE ================= */
     .missions-ctn {

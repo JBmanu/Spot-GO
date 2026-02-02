@@ -1,29 +1,16 @@
 ﻿function activeButton(buttons, activeButton) {
-    const ICON_ACTIVE_CLASS = "icon";
-    const ICON_INACTIVE_CLASS = "icon-mini";
-
-    const TEXT_ACTIVE_CLASS = "font-semibold";
-    const TEXT_INACTIVE_CLASS = "font-normal";
-
     buttons.forEach(button => {
-        const icon = button.querySelector("img");
-        const text = button.querySelector("span");
-
-        // reset stato
-        icon.classList.remove(ICON_ACTIVE_CLASS);
-        icon.classList.add(ICON_INACTIVE_CLASS);
-        text.classList.remove(TEXT_ACTIVE_CLASS);
-        text.classList.add(TEXT_INACTIVE_CLASS);
+        const icon = button.querySelector('.mission-type-btn-icon');
+        const text = button.querySelector('.mission-type-btn-title');
+        icon.classList.remove('active');
+        text.classList.remove('active')
     });
 
     // stato attivo
-    const activeIcon = activeButton.querySelector("img");
-    const activeText = activeButton.querySelector("span");
-
-    activeIcon.classList.remove(ICON_INACTIVE_CLASS);
-    activeIcon.classList.add(ICON_ACTIVE_CLASS);
-    activeText.classList.remove(TEXT_INACTIVE_CLASS);
-    activeText.classList.add(TEXT_ACTIVE_CLASS);
+    const activeIcon = activeButton.querySelector('.mission-type-btn-icon');
+    const activeText = activeButton.querySelector('.mission-type-btn-title');
+    activeIcon.classList.add('active');
+    activeText.classList.add('active');
 }
 
 function updateIndicatorPosition(container, indicator, button) {
@@ -67,6 +54,7 @@ export async function initializeMissionsBar() {
             activeIndex = index;
             activeButton(buttons, buttons[index]);
             updateIndicatorPosition(container, indicator, buttons[activeIndex]);
+
             // Gestione classe active
             buttons.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
