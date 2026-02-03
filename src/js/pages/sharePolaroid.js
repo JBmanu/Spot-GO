@@ -1,8 +1,9 @@
-import { getAllUsers, shareCardboard } from "../database.js";
+import {getAllUsers, getSpotById, shareCardboard} from "../database.js";
 import { closeModal, openModal } from "../common/modalView.js";
 import { showsItemsInContainer, searchUsersByName } from "./community/communityUtility.js";
 import { makeSelectableCard } from "./community/cardsFactory.js";
 import {createSearchBarWithKeyboard} from '../createComponent.js';
+import {triggerSharePolaroid} from "../goals/missionsTrigger.js";
 
 export async function sharePolaroidModal(polaroidData) {
     await openModal("../html/common-pages/share-polaroid-modal.html", ".phone-screen", (modalElement) => {
@@ -63,6 +64,10 @@ async function initializeSharePolaroid(modalElement, polaroidData) {
             sendButton.disabled = true;
             const selectedEmails = selected().map(checkbox => checkbox.dataset.friendIdMail);
             try {
+                // Trigger share polaroid mission
+                const spotData = await getSpotById(polaroidData.idLuogo)
+                spotData.category = spotData.idCategoria;
+                await triggerSharePolaroid(spotData)
                 //Show loading circle
                 const res = await shareCardboard(polaroidData.id, selectedEmails);
                 if (res.success) {
@@ -75,6 +80,7 @@ async function initializeSharePolaroid(modalElement, polaroidData) {
                     console.log("Errore:", res.descr);
                     alert(res.descr);
                 }
+
             } catch (error) {
                 console.error("Errore durante la condivisione:", error);
                 alert("Errore durante la condivisione");
