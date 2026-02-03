@@ -1,12 +1,12 @@
 ﻿import {
+    activateAllSpotMissionsOfCurrentUserOf,
     createAllSpotMissionsForCurrentUser,
     currentUserHasSpotMissions,
-    deactivateAllSpotMissionsOfCurrentUser,
     hydrateCurrentUserMissionsOf,
     updateValueOfMission,
     updateValueOfSpotMission
 } from "./db/userMissionProgressConnector.js";
-import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
+import {ACTION_TYPE, MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
 import {checkEqualsDay, identityFun} from "./utils.js";
 import {updateCurrentUserLevel} from "./db/userGoalsConnector.js";
 import {updateViewMission, updateViewSpotDetails} from "./missionsViewUpdater.js";
@@ -18,21 +18,38 @@ export async function testActiveTriggers() {
     // await triggerReview({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     // await triggerCreatePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     // await triggerSharePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
-
     console.log("Active triggers tested");
 }
 
 // CRATE MISSION FOR SPOT
-export async function activateTriggerToCreateSpotMission(spotData, overlayEl) {
-    const btnCreateMissions = overlayEl.querySelector('#spot-detail-share-button');
-    btnCreateMissions.addEventListener("click", async (_) => {
-        if (await currentUserHasSpotMissions(spotData.id)) return;
-        await deactivateAllSpotMissionsOfCurrentUser()
+async function activateTriggerToCreateSpotMission(btnTrigger, spotData, overlayEl, triggerAction) {
+    btnTrigger.disabled = true;
+    spotData.category = spotData.idCategoria;
+    if (await currentUserHasSpotMissions(spotData.id)) {
+        await activateAllSpotMissionsOfCurrentUserOf(spotData.id)
+    } else {
         await createAllSpotMissionsForCurrentUser(spotData.id, true)
-        await updateViewSpotDetails(spotData, overlayEl)
-        await loadSpotMissions()
-        console.log("Spot missions created for current user");
-    })
+    }
+    await triggerAction(spotData)
+    await loadSpotMissions()
+    if (overlayEl) await updateViewSpotDetails(spotData, overlayEl)
+    btnTrigger.disabled = false;
+    console.log("Spot missions created for current user");
+}
+
+export async function activateTriggerToCreateSpotMissionsWithFoto(btnTrigger, spotData, overlayEl) {
+    await activateTriggerToCreateSpotMission(
+        btnTrigger, spotData, overlayEl, triggerFoto)
+}
+
+export async function activateTriggerToCreateSpotMissionsWithCreatePolaroid(btnTrigger, spotData, overlayEl) {
+    await activateTriggerToCreateSpotMission(
+        btnTrigger, spotData, overlayEl, triggerCreatePolaroid)
+}
+
+export async function activateTriggerToCreateSpotMissionsWithCreateReview(btnTrigger, spotData, overlayEl) {
+    await activateTriggerToCreateSpotMission(
+        btnTrigger, spotData, overlayEl, triggerReview)
 }
 
 
@@ -57,6 +74,7 @@ async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, fil
             await triggerCompleteMission(updatedMissionData, missionType);
             const levelData = await updateCurrentUserLevel(level => level + mission.template.Reward.Experience)
             await triggerReachLevel(levelData)
+            console.log("User level updated after completing mission");
         }
 
         // Update View

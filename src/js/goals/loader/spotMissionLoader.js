@@ -11,6 +11,7 @@ import {markMissionAsCompleted} from "../interaction/missionCompletable.js";
 
 export async function loadSpotMissions() {
     const mainCtn = document.querySelector('.main-goals-page')
+    if (!mainCtn) return;
     const activeSpotMissiosn = mainCtn.querySelector('.spot-card');
     activeSpotMissiosn.replaceChildren()
     const deactiveSpotsMissionsCtn = document.querySelector('.all-spots-missions-ctn');
@@ -51,29 +52,20 @@ async function generateSpotCard(loadSpotMissionsFun, generateHTMLFun) {
     const spotMissions = await loadSpotMissionsFun()
     spotMissions.forEach(spotMission => {
         const countCompletedMissions = spotMission.missions.filter(mission => mission.progress.IsCompleted)
-
-        generateHTMLFun(
-            spotMission.place,
-            countCompletedMissions.length,
-            spotMission.missions
-        )
+        generateHTMLFun(spotMission.place, countCompletedMissions.length, spotMission.missions)
     })
 }
 
 function generateSpotMissions(missionCtn, missions) {
-    // sort missions by IsCompleted ascending
-    missions.sort((a, b) => {
-        return a.progress.IsCompleted - b.progress.IsCompleted;
-    })
+    missions.sort((a, b) => a.progress.IsCompleted - b.progress.IsCompleted)
     missions.forEach(mission => generateHTMLSpotMissions(missionCtn, mission))
 }
 
 function generateHTMLSpotMissions(missionContainer, mission) {
     const missionTemplate = mission.template
-    missionContainer.innerHTML +=
-        `
-        <div class="spot-mission-isolated">
-            <button class="glass-medium interactive completable mission spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
+    missionContainer.insertAdjacentHTML("beforeend",
+        `<div class="spot-mission-isolated">
+        <div class="glass-medium interactive completable mission spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
             <img src="${CHECKBOX_ICON_PATH.EMPTY}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
             <!-- Contenuto -->
@@ -84,14 +76,28 @@ function generateHTMLSpotMissions(missionContainer, mission) {
                 </div>
                 <p class="mission-title-description">${missionTemplate.Description}</p>
             </div>
-            </button>
         </div>
-`;
+    </div>`);
 
     if (mission.progress.IsCompleted) {
         const missionEl = missionContainer.querySelector(`[${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}"]`);
         markMissionAsCompleted(missionEl)
     }
+}
+
+export function sortSpotMissionsByCompletionOf(place) {
+    const spotCard = document.querySelector(`.spot-card[${SPOT_ATTRIBUTE.ID}="${place.id}"]`);
+    const missionContainer = spotCard.querySelector('.missions-spot');
+    const missions = Array.from(missionContainer.querySelectorAll(".spot-mission-isolated"));
+
+    // ordino: quelle SENZA completed prima, quelle CON completed dopo
+    missions.sort((a, b) => {
+        const aCompleted = a.querySelector(".spot-mission").classList.contains("completed");
+        const bCompleted = b.querySelector(".spot-mission").classList.contains("completed");
+        return aCompleted - bCompleted;
+    });
+    missionContainer.replaceChildren(...missions);
+    // missions.forEach(mission => missionContainer.appendChild(mission));
 }
 
 
@@ -103,7 +109,7 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
     const iconPath = CATEGORY_ICON_PATH[place.idCategoria]
 
     loadEmptyBannerForNoSpotMissions(missions.length > 0)
-    spotCtn.innerHTML +=
+    spotCtn.insertAdjacentHTML("beforeend",
         `<!-- Spot info -->
         <div class="spot-header cursor-none open" style="pointer-events: none;" data-spot-category="${place.idCategoria}">
             <!-- Header -->
@@ -135,7 +141,7 @@ function generateHTMLActiveSpotCard(place, progress, missions) {
         </div>
         <!-- Missions -->
         <div class="vertical-ctn-g2 missions-spot open" data-carousel-type="vertical" data-size="mm">
-        </div>`;
+        </div>`);
 
     const spotCard = document.querySelector(`.spot-card[${SPOT_ATTRIBUTE.ID}="${place.id}"]`);
     const missionCtn = spotCard.querySelector('.missions-spot');

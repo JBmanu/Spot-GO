@@ -8,9 +8,11 @@ export function updateViewMission(missions, mission, updatedData) {
     const missionSelectors = `[${MISSION_ATTRIBUTE.ID}="${mission.id}"]`;
     const missionHTML = document.querySelector(missionSelectors);
 
+    if (!missionHTML) return;
     if (mission.template.Type === MISSION_TYPE.SPOT) {
         const placeSelectors = `[${SPOT_ATTRIBUTE.ID}="${mission.place.id}"]`;
         const placeHTML = document.querySelector(placeSelectors);
+        if (!placeHTML) return;
         const progress = placeHTML.querySelector(`[${SPOT_ATTRIBUTE.PROGRESS}]`)
         const progressBar = placeHTML.querySelector(`[${SPOT_ATTRIBUTE.PROGRESS_BAR}]`)
         const checkbox = missionHTML.querySelector(`[${MISSION_ATTRIBUTE.CHECKBOX}]`)

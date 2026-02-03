@@ -5,8 +5,8 @@ import {loadSpotMissions} from "./loader/spotMissionLoader.js";
 import {initializedAllSpotsMissions} from "./interaction/allSpotsMissions.js";
 import {seedBadges} from "./db/seed/badgeSeed.js";
 import {seedDiscounts} from "./db/seed/discountSeed.js";
-import {seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
-import {loadMissions} from "./loader/missionLoader.js";
+import {MISSION_TYPE, seedMissionTemplates} from "./db/seed/missionTemplateSeed.js";
+import {loadMissions, sortMissionsByProgressOf} from "./loader/missionLoader.js";
 import {seedUserMissionProgress} from "./db/seed/userMissionProgressSeed.js";
 import {runAllAsyncSafe} from "./utils.js";
 import {testActiveTriggers} from "./missionsTrigger.js";
@@ -17,10 +17,11 @@ let isInitialized = false;
 export async function initializeGoals() {
 
     console.log("INITIALIZING Goals module...");
+    Object.values(MISSION_TYPE).forEach(sortMissionsByProgressOf)
     if (isInitialized) return;
     isInitialized = true;
 
-    // // User level
+    // // Reset user datas
     // await resetCurrentUserLevel()
     //
     // // Seed DB
@@ -39,7 +40,7 @@ export async function initializeGoals() {
 
     // Test triggers
     await testActiveTriggers()
-
+    Object.values(MISSION_TYPE).forEach(sortMissionsByProgressOf)
     console.log("Goals module initialized");
 }
 

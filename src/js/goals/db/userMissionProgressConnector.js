@@ -72,6 +72,7 @@ export async function createAllSpotMissions(userId, placeId, isActive = true) {
 export async function createAllSpotMissionsForCurrentUser(placeId, isActive = true) {
     const user = await isAuthenticatedUser();
     if (!user) return null;
+    await deactivateAllSpotMissionsOfCurrentUser()
     await createAllSpotMissions(user.id, placeId, isActive)
 }
 
@@ -208,7 +209,7 @@ export async function updateValueOfMission(type, missionTemplateId, updateFun) {
     return await updateValueMission(missions, mission, pathUpdate, updateFun);
 }
 
-export async function deactivateAllSpotMissionsOfCurrentUser() {
+async function deactivateAllSpotMissionsOfCurrentUser() {
     const user = await isAuthenticatedUser();
     const spotsMissions = await hydrateActiveSpotMissionsOfCurrentUser()
     const userMissions = await userMissionsOf(user.id)
@@ -218,6 +219,19 @@ export async function deactivateAllSpotMissionsOfCurrentUser() {
             const pathUpdate = `${MISSION_TYPE.SPOT}.${spotMissions.place.id}.${mission.id}`;
             await updateDocument(userMissions, {[`${pathUpdate}.IsActive`]: false});
         }
+    }
+}
+
+export async function activateAllSpotMissionsOfCurrentUserOf(placeId) {
+    await deactivateAllSpotMissionsOfCurrentUser()
+    const user = await isAuthenticatedUser();
+    const userMissions = await userMissionsOf(user.id)
+    const spotsMissions = userMissions[MISSION_TYPE.SPOT]?.[placeId]
+    const missionTemplatesIds = spotsMissions && Object.keys(spotsMissions)
+
+    for (let id of missionTemplatesIds) {
+        const pathUpdate = `${MISSION_TYPE.SPOT}.${placeId}.${id}`;
+        await updateDocument(userMissions, {[`${pathUpdate}.IsActive`]: true});
     }
 }
 

@@ -1,8 +1,10 @@
-import { addReviewToDatabase, updateReview } from "../database.js";
-import { closeModal, openModal } from "../common/modalView.js";
+import {addReviewToDatabase, getSpotById, updateReview} from "../database.js";
+import {closeModal, openModal} from "../common/modalView.js";
+import {activateTriggerToCreateSpotMissionsWithCreateReview} from "../goals/missionsTrigger.js";
 
 
 let currentSpotId = null;
+let spotCategory = null;
 let currentReviewId = null;
 let isEditMode = false;
 let onReviewComplete = null;
@@ -127,6 +129,11 @@ export function initializeAddReview(wrapperEl) {
                     description: text
                 });
             }
+
+            const spotDetailsEl = document.querySelector(".spot-detail-wrapper");
+            const spotData = await getSpotById(currentSpotId);
+            spotData.category = spotData?.idCategoria || null;
+            await activateTriggerToCreateSpotMissionsWithCreateReview(submitBtn, spotData, spotDetailsEl)
 
             form.reset();
             selectedRating = 0;

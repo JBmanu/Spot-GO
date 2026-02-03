@@ -35,7 +35,7 @@ export function markMissionAsCompleted(missionEl) {
     imageCheckbox.src = '../assets/icons/goals/check/check-complete.svg';
 }
 
-export function markMissionAsUncompleted(missionEl) {
+function markMissionAsUncompleted(missionEl) {
     const titleSpan = missionEl.querySelector('.mission-title');
     const descriptionP = missionEl.querySelector('.mission-title-description');
     const imageCheckbox = missionEl.querySelector('.mission-checkbox');
