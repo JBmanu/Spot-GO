@@ -11,6 +11,7 @@ import {seedUserMissionProgress} from "./db/seed/userMissionProgressSeed.js";
 import {runAllAsyncSafe} from "./utils.js";
 import {testActiveTriggers} from "./missionsTrigger.js";
 import {resetCurrentUserLevel} from "./db/userGoalsConnector.js";
+import {updateDailyMissionsIfNextDay} from "./db/userMissionProgressConnector.js";
 
 let isInitialized = false;
 
@@ -20,7 +21,6 @@ export async function initializeGoals() {
     Object.values(MISSION_TYPE).forEach(sortMissionsByProgressOf)
     if (isInitialized) return;
     isInitialized = true;
-
     // // Reset user datas
     // await resetCurrentUserLevel()
     //
@@ -28,6 +28,9 @@ export async function initializeGoals() {
     // await runAllAsyncSafe(seedBadges, seedDiscounts)
     // await seedMissionTemplates();
     // await seedUserMissionProgress();
+
+    // Update daily missions if new day
+    await updateDailyMissionsIfNextDay()
 
     // Loader
     await runAllAsyncSafe(loadSpotMissions, loadMissions)

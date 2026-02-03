@@ -35,7 +35,7 @@ async function seedSpotMissionsForUser(users) {
     }
 }
 
-async function seedMissionsForUser(users, missionType, toCreateMission) {
+export async function seedMissionsForUser(users, missionType, toCreateMission) {
     const missions = await missionTemplatesByType(missionType)
     for (let usersKey of users) {
         for (let mission of missions) {
@@ -46,6 +46,5 @@ async function seedMissionsForUser(users, missionType, toCreateMission) {
         }
     }
 }
-
 
 

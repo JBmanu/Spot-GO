@@ -13,6 +13,8 @@ import {db} from "../../firebase.js";
 import {MISSION_TYPE} from "./seed/missionTemplateSeed.js";
 import {COLLECTIONS} from "../Datas.js";
 import {missionTemplatesByType} from "./missionTemplateConnector.js";
+import {checkEqualsDay} from "../utils.js";
+import {seedMissionsForUser} from "./seed/userMissionProgressSeed.js";
 
 
 async function createMissionProgress(data, create, update) {
@@ -92,6 +94,11 @@ export async function createLevelMission(data) {
     return await createMissionProgress(data,
         (newMission) => ({[MISSION_TYPE.LEVEL]: {[data.MissionTemplateId]: newMission}}),
         (newMission) => ({[`${MISSION_TYPE.LEVEL}.${data.MissionTemplateId}`]: newMission}))
+}
+
+async function clearAllDailyMissionsOfCurrentUser() {
+    const userMissions = await currentUserMissions()
+    await updateDocument(userMissions, {[`${MISSION_TYPE.DAILY}`]: {}});
 }
 
 export async function clearUserMissionProgress() {
@@ -233,6 +240,20 @@ export async function activateAllSpotMissionsOfCurrentUserOf(placeId) {
         const pathUpdate = `${MISSION_TYPE.SPOT}.${placeId}.${id}`;
         await updateDocument(userMissions, {[`${pathUpdate}.IsActive`]: true});
     }
+}
+
+export async function updateDailyMissionsIfNextDay() {
+    const user = await isAuthenticatedUser();
+    const userMissions = await userMissionsOf(user.id)
+    const dailyMissions = userMissions[MISSION_TYPE.DAILY]
+    const anyMission = dailyMissions && Object.values(dailyMissions)[0]
+    const today = new Date();
+    const missionData = anyMission.CreatedAt.toDate();
+
+    if (checkEqualsDay(today, missionData)) return;
+    await clearAllDailyMissionsOfCurrentUser()
+    await seedMissionsForUser([user], MISSION_TYPE.DAILY, createDailyMission)
+
 }
 
 
