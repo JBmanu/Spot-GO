@@ -63,7 +63,7 @@ function generateSpotMissions(missionCtn, missions) {
 function generateHTMLSpotMissions(missionContainer, mission) {
     const missionTemplate = mission.template
     missionContainer.insertAdjacentHTML("beforeend",
-`<div class="spot-mission-isolated">
+        `<div class="spot-mission-isolated">
         <div class="glass-medium interactive completable mission spot-mission" ${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}">
             <!-- Stato -->
             <img src="${CHECKBOX_ICON_PATH.EMPTY}" class="mission-checkbox" alt="" ${MISSION_ATTRIBUTE.CHECKBOX}/>
@@ -82,6 +82,21 @@ function generateHTMLSpotMissions(missionContainer, mission) {
         const missionEl = missionContainer.querySelector(`[${MISSION_ATTRIBUTE.ID}="${missionTemplate.id}"]`);
         markMissionAsCompleted(missionEl)
     }
+}
+
+export function sortSpotMissionsByCompletionOf(place) {
+    const spotCard = document.querySelector(`.spot-card[${SPOT_ATTRIBUTE.ID}="${place.id}"]`);
+    const missionContainer = spotCard.querySelector('.missions-spot');
+    const missions = Array.from(missionContainer.querySelectorAll(".spot-mission-isolated"));
+
+    // ordino: quelle SENZA completed prima, quelle CON completed dopo
+    missions.sort((a, b) => {
+        const aCompleted = a.querySelector(".spot-mission").classList.contains("completed");
+        const bCompleted = b.querySelector(".spot-mission").classList.contains("completed");
+        return aCompleted - bCompleted;
+    });
+    missionContainer.replaceChildren(...missions);
+    // missions.forEach(mission => missionContainer.appendChild(mission));
 }
 
 

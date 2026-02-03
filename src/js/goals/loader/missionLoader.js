@@ -4,6 +4,12 @@ import {hydrateCurrentUserMissionsOf} from "../db/userMissionProgressConnector.j
 import {CHECKBOX_ICON_PATH, MISSION_ATTRIBUTE} from "../Datas.js";
 import {markMissionAsCompleted} from "../interaction/missionCompletable.js";
 
+const MISSION_TYPE_CONTAINER = {
+    [MISSION_TYPE.DAILY]: 0,
+    [MISSION_TYPE.THEME]: 1,
+    [MISSION_TYPE.LEVEL]: 2
+}
+
 export async function loadMissions() {
     await runAllAsyncSafe(
         () => generateMissionType(MISSION_TYPE.DAILY, 0),
@@ -27,6 +33,31 @@ async function generateMissionType(missionType, containerIndex) {
     })
     missions.forEach(mission => generateHTMLMissionTemplate(containerIndex, mission));
 }
+
+export function sortMissionsByProgressOf(missionType) {
+    if (missionType === MISSION_TYPE.SPOT) return;
+    const container = document.querySelectorAll('.missions-card-ctn');
+    const missionContainer = container[MISSION_TYPE_CONTAINER[missionType]]
+    const missions = Array.from(missionContainer.querySelectorAll(".mission"));
+
+    missions.sort((a, b) => {
+        const getPriority = (mission) => {
+            const progressEl = mission.querySelector(`[${MISSION_ATTRIBUTE.PROGRESS}]`);
+            if (!progressEl) return 1;
+            const [progress, target] = progressEl.textContent
+                .split("/")
+                .map(v => parseInt(v.trim(), 10));
+            if (progress === target) return 2;      // completata
+            if (progress === 0) return 1;            // zero progress
+            return 0;                                // in corso / quasi finita
+        };
+
+        return getPriority(a) - getPriority(b);
+    });
+
+    missionContainer.replaceChildren(...missions);
+}
+
 
 function generateHTMLMissionTemplate(indexCtn, mission) {
     const missionTemplate = mission.template
