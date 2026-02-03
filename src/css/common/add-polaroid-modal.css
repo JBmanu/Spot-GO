@@ -173,6 +173,12 @@
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    .error-button {
+        background: rgb(252, 47, 47) !important;
+        color: white;
+        cursor: not-allowed;
+    }
+
     .submit-polaroid-btn:disabled {
         @apply opacity-50 cursor-not-allowed;
     }

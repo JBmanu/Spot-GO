@@ -176,10 +176,17 @@ function initializeAddPolaroid(wrapperEl) {
             document.dispatchEvent(new CustomEvent("polaroid:added"));
 
         } catch (err) {
-            alert("Errore durante il salvataggio. Riprova.");
             console.error(err);
-            submitBtn.disabled = false;
-            submitBtn.textContent = "Aggiungi Polaroid";
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Foto troppo grande!";
+            submitBtn.classList.add('error-button');
+
+            setTimeout(() => { 
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Aggiungi Polaroid";
+                submitBtn.classList.remove('error-button');
+            }, 3000);
         }
     });
 }
