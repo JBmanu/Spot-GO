@@ -1,4 +1,4 @@
-import { serverTimestamp, collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId, orderBy } from "firebase/firestore";
+import { serverTimestamp, collection, getDocs, query, where, doc, getDoc, setDoc, deleteDoc, addDoc, arrayUnion, arrayRemove, updateDoc, documentId, orderBy, or } from "firebase/firestore";
 import { db, auth } from "./firebase.js";
 import { distanceFromUserToSpot } from "./common.js";
 
@@ -561,6 +561,7 @@ export async function getFilteredSpots(
     // -------------------------
     const user = await getCurrentUser();
     const userId = user.email;
+    const username = user.username;
 
     if (userId && filters?.status) {
         const { saved, badge, mine } = filters.status;
@@ -585,7 +586,13 @@ export async function getFilteredSpots(
         // Filtro "Salvato"
         if (saved) {
             const savedSnap = await getDocs(
-                query(collection(db, "LuogoSalvato"), where("idUtente", "==", userId))
+                query(
+                    collection(db, "LuogoSalvato"),
+                    or(
+                        where("idUtente", "==", userId),
+                        where("idUtente", "==", username)
+                    )
+                )
             );
             const savedIds = savedSnap.docs.map(doc => doc.data().idLuogo);
             spots = spots.filter(spot => savedIds.includes(spot.id));
