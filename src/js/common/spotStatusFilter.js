@@ -56,7 +56,7 @@ export function setupStatusFilter(containerEl, { onChange } = {}) {
 export function resetStatusFilter(containerEl) {
     if (!containerEl) return;
     const state = getStatusState(containerEl);
-    state.visited = false;
+    state.badge = false;
     state.saved = false;
     state.mine = false;
 
