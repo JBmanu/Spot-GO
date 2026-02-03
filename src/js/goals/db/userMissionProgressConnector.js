@@ -251,9 +251,9 @@ export async function updateDailyMissionsIfNextDay() {
     const missionData = anyMission.CreatedAt.toDate();
 
     if (checkEqualsDay(today, missionData)) return;
+    console.log("New day detected, resetting daily missions for current user");
     await clearAllDailyMissionsOfCurrentUser()
     await seedMissionsForUser([user], MISSION_TYPE.DAILY, createDailyMission)
-
 }
 
 
