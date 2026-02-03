@@ -32,7 +32,7 @@ async function activateTriggerToCreateSpotMission(btnTrigger, spotData, overlayE
     }
     await triggerAction(spotData)
     await loadSpotMissions()
-    await updateViewSpotDetails(spotData, overlayEl)
+    if (overlayEl) await updateViewSpotDetails(spotData, overlayEl)
     btnTrigger.disabled = false;
     console.log("Spot missions created for current user");
 }

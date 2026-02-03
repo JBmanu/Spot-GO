@@ -1,5 +1,6 @@
-import { getSpots, addPolaroidToDatabase } from "../database.js";
+import {getSpots, addPolaroidToDatabase, getSpotById} from "../database.js";
 import { closeModal, openModal } from "../common/modalView.js";
+import {activateTriggerToCreateSpotMissionsWithCreatePolaroid} from "../goals/missionsTrigger.js";
 
 let selectedImage = null;
 let updateSubmitButtonFn = null;
@@ -109,6 +110,7 @@ function initializeAddPolaroid(wrapperEl) {
 
     if (closeBtn) {
         closeBtn.addEventListener("click", (e) => {
+            console.log("CIAO")
             e.preventDefault();
             e.stopPropagation();
             closeAddPolaroidModal();
@@ -158,6 +160,10 @@ function initializeAddPolaroid(wrapperEl) {
                 imageUrl: imageDataUrl,
                 diary
             });
+
+            const spotData = await getSpotById(location);
+            spotData.category = spotData?.idCategoria || null;
+            await activateTriggerToCreateSpotMissionsWithCreatePolaroid(submitBtn, spotData, null)
 
             form.reset();
             selectedImage = null;
