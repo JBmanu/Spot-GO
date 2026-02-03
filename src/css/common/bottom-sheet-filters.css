@@ -347,4 +347,9 @@
         transition: transform 180ms ease, box-shadow 180ms ease;
     }
 
+    .filters-chip.active, .filters-chip[aria-pressed="true"] {
+        background: rgb(143 197 255) !important;
+        border-color: rgb(3, 123, 252) !important;
+    }
+
 }
