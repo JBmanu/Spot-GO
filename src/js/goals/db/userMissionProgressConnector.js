@@ -222,5 +222,18 @@ async function deactivateAllSpotMissionsOfCurrentUser() {
     }
 }
 
+export async function activateAllSpotMissionsOfCurrentUserOf(placeId) {
+    await deactivateAllSpotMissionsOfCurrentUser()
+    const user = await isAuthenticatedUser();
+    const userMissions = await userMissionsOf(user.id)
+    const spotsMissions = userMissions[MISSION_TYPE.SPOT]?.[placeId]
+    const missionTemplatesIds = spotsMissions && Object.keys(spotsMissions)
+
+    for (let id of missionTemplatesIds) {
+        const pathUpdate = `${MISSION_TYPE.SPOT}.${placeId}.${id}`;
+        await updateDocument(userMissions, {[`${pathUpdate}.IsActive`]: true});
+    }
+}
+
 
 

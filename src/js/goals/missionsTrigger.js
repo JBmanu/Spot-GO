@@ -1,4 +1,5 @@
 ﻿import {
+    activateAllSpotMissionsOfCurrentUserOf,
     createAllSpotMissionsForCurrentUser,
     currentUserHasSpotMissions,
     hydrateCurrentUserMissionsOf,
@@ -23,18 +24,17 @@ export async function testActiveTriggers() {
 // CRATE MISSION FOR SPOT
 async function activateTriggerToCreateSpotMission(btnTrigger, spotData, overlayEl, triggerAction) {
     btnTrigger.disabled = true;
-    if (await currentUserHasSpotMissions(spotData.id)) {
-        await triggerAction(spotData)
-        btnTrigger.disabled = false;
-        return;
-    }
     spotData.category = spotData.idCategoria;
-    await createAllSpotMissionsForCurrentUser(spotData.id, true)
+    if (await currentUserHasSpotMissions(spotData.id)) {
+        await activateAllSpotMissionsOfCurrentUserOf(spotData.id)
+    } else {
+        await createAllSpotMissionsForCurrentUser(spotData.id, true)
+    }
     await triggerAction(spotData)
     await loadSpotMissions()
     await updateViewSpotDetails(spotData, overlayEl)
-    console.log("Spot missions created for current user");
     btnTrigger.disabled = false;
+    console.log("Spot missions created for current user");
 }
 
 export async function activateTriggerToCreateSpotMissionsWithFoto(btnTrigger, spotData, overlayEl) {

@@ -316,7 +316,6 @@ async function initializeDetailHandlers(spotData, overlayEl) {
     initializeBookmarks(scope);
 
     // Initialize spot detail missions view: count how many missions are completed and missions
-
     const btnCreateMissions = overlayEl.querySelector('#spot-detail-share-button');
     btnCreateMissions.addEventListener("click", async (_) =>
         await activateTriggerToCreateSpotMissionsWithFoto(btnCreateMissions, spotData, overlayEl))
