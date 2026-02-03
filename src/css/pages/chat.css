@@ -81,6 +81,12 @@
         @apply flex-1 border-t border-gray-300;
     }
 
+    .chat-corrupted-polaroid {
+        pointer-events: none;
+        filter: grayscale(1);
+        opacity: 70%;
+    }
+
     .chat-polaroid-card {
         @apply relative p-3 space-y-0 h-full isolate overflow-visible z-20 shrink-0 cursor-pointer;
         width: 280px;

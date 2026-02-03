@@ -190,19 +190,25 @@ function renderMessages(messages) {
                 const article = clone.querySelector('.chat-polaroid-card');
 
                 const img = clone.querySelector('[data-field="image"]');
-                if (img && msg.cartolina.immagini && msg.cartolina.immagini.length > 0) {
-                    img.src = msg.cartolina.immagini[0];
-                }
-
                 const title = clone.querySelector('[data-field="title"]');
-                if (title) title.textContent = msg.cartolina.title;
 
-                if (article) {
-                    article.addEventListener('click', (e) => {
-                        openPolaroidDetail(msg.cartolina, {returnViewKey: "community-chat-view"});
-                    });
+                console.log(msg);
+                if (msg.cartolina !== null) {
+                    if (img && msg.cartolina.immagini && msg.cartolina.immagini.length > 0) {
+                        img.src = msg.cartolina.immagini[0];
+                    }
+                    if (title) title.textContent = msg.cartolina.title;
+
+                    if (article) {
+                        article.addEventListener('click', (e) => {
+                            openPolaroidDetail(msg.cartolina, {returnViewKey: "community-chat-view"});
+                        });
+                    }
+                } else {
+                    article.classList.add('chat-corrupted-polaroid');
+                    if (title) title.textContent = "Non disponibile";
                 }
-
+            
                 bubble.appendChild(clone);
 
             } else {
