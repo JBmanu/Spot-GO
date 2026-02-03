@@ -25,10 +25,10 @@
         </div>
 
         <section class="px-3 mt-2">
-            <header class="flex flex-row items-center justify-between relative z-1">
+            <header class="flex flex-row items-center justify-between relative z-1" style="padding-left: 6px; padding-right: 6px;">
                 <h2 class="home-section-title">Spot vicini</h2>
                 <button type="button" id="open-nearby-spots-btn" class="vedi-tutti-button"
-                    aria-label="Apri lista degli spot vicini">
+                    aria-label="Apri lista degli spot vicini" style="margin-right: 0;">
                     Visualizza lista
                 </button>
             </header>
@@ -36,12 +36,15 @@
     </section>
 
     <!-- Mappa -->
-    <div id="map-container" class="mt-2 px-3">
+    <div id="map-container" class="mt-2" style="border-top: 1px solid lightgray; border-bottom: 1px solid lightgray;">
         <div id="map" class="map">
             <button id="map-recenter-btn" class="recenter-button">
                 <img src="../assets/icons/map/Target.svg" alt="Centra posizione" class="recenter-button-image" />
             </button>
         </div>
+    </div>
+    
+    <div class="px-3">
         <button type="button" class="new-spot-button glass-light" id="new-spot-button">
             <img src="../assets/icons/profile/Place%20Marker.svg" alt="Created spots icon" class="map-add-spot-icon">
             Aggiungi Spot
