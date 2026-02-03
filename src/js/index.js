@@ -6,6 +6,7 @@ import {
 import { closeOverlayAndReveal } from "./common/back.js";
 import "./common/carousels.js";
 import { auth } from "./firebase.js";
+import { loadSpotsDependentObjects } from "./map.js";
 
 const SECTION_CONFIG = {
     homepage: { title: "Spot & Go", content: PATHS.html.homepage },
@@ -110,6 +111,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // Assicuriamo che lo scroll sia sempre attivo di default (vedi mappa)
             main.classList.remove('scroll-y-hidden');
+
+            // Nel caso della mappa, forziamo l'aggiornamento dei dati
+            if (section === "map") {
+                loadSpotsDependentObjects();
+            }
         } finally {
             isNavigating = false;
         }

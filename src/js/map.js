@@ -135,6 +135,7 @@ async function initializeMap() {
 }
 
 export async function loadSpotsDependentObjects() {
+    if (map == null) return; 
     await loadSpots();
     await loadMarkers();
     await loadNearbySpotsList();
