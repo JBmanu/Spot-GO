@@ -319,9 +319,6 @@ async function initializeDetailHandlers(spotData, overlayEl) {
     const btnCreateMissions = overlayEl.querySelector('#spot-detail-share-button');
     btnCreateMissions.addEventListener("click", async (_) =>
         await activateTriggerToCreateSpotMissionsWithFoto(btnCreateMissions, spotData, overlayEl))
-    const btnCreateReviewMissions = overlayEl.querySelector('.submit-review-btn');
-    btnCreateReviewMissions.addEventListener("click", async (_) =>
-        await activateTriggerToCreateSpotMissionsWithCreateReview(btnCreateReviewMissions, spotData, overlayEl))
 
     await updateViewSpotDetails(spotData, overlayEl)
 

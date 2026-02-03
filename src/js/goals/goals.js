@@ -21,13 +21,13 @@ export async function initializeGoals() {
     if (isInitialized) return;
     isInitialized = true;
 
-    // // User level
-    // await resetCurrentUserLevel()
-    //
-    // // Seed DB
-    // await runAllAsyncSafe(seedBadges, seedDiscounts)
-    // await seedMissionTemplates();
-    // await seedUserMissionProgress();
+    // User level
+    await resetCurrentUserLevel()
+
+    // Seed DB
+    await runAllAsyncSafe(seedBadges, seedDiscounts)
+    await seedMissionTemplates();
+    await seedUserMissionProgress();
 
     // Loader
     await runAllAsyncSafe(loadSpotMissions, loadMissions)

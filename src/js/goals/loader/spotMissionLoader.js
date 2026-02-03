@@ -11,6 +11,7 @@ import {markMissionAsCompleted} from "../interaction/missionCompletable.js";
 
 export async function loadSpotMissions() {
     const mainCtn = document.querySelector('.main-goals-page')
+    if (!mainCtn) return;
     const activeSpotMissiosn = mainCtn.querySelector('.spot-card');
     activeSpotMissiosn.replaceChildren()
     const deactiveSpotsMissionsCtn = document.querySelector('.all-spots-missions-ctn');
