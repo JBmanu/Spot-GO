@@ -133,7 +133,6 @@ export function initializeAddReview(wrapperEl) {
             const spotDetailsEl = document.querySelector(".spot-detail-wrapper");
             const spotData = await getSpotById(currentSpotId);
             spotData.category = spotData?.idCategoria || null;
-            console.log("Wrapper EL:", spotDetailsEl);
             await activateTriggerToCreateSpotMissionsWithCreateReview(submitBtn, spotData, spotDetailsEl)
 
             form.reset();

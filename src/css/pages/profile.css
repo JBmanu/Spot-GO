@@ -155,16 +155,16 @@
     }
 
     .profile-overview-progress-bar-container {
-        @apply h-3 rounded-full overflow-hidden mt-3 w-full;
+        @apply relative h-3 rounded-full overflow-hidden mt-3 w-full bg-black/10
     }
 
     .profile-overview-progress-bar {
-        @apply h-full rounded-full;
+        @apply h-full rounded-full absolute inset-y-0 left-0 transition-all duration-300
         background: linear-gradient(90deg,
                 rgba(102, 217, 178, 0.9) 0%,
                 rgba(28, 124, 84, 0.85) 100%);
-        position: relative;
-        overflow: hidden;
+        /*position: relative;*/
+        /*overflow: hidden;*/
     }
 
     .profile-overview-text-large-badge {

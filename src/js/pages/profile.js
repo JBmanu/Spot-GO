@@ -1,9 +1,16 @@
-import { getSavedSpots, getReviews, getVisitedSpots, getCreatedSpots, getCurrentUser, deletePolaroid } from "../database.js";
-import { openAddPolaroidModal } from "./addPolaroid.js";
-import { openPolaroidDetail } from "./polaroidDetail.js";
-import { fetchFormattedUserPolaroids, getPolaroidTemplate, fillPolaroidContent } from "../common/polaroidCommon.js";
-import { sharePolaroidModal } from "./sharePolaroid.js";
-import { showConfirmModal } from "../ui/confirmModal.js";
+import {
+    deletePolaroid,
+    getCreatedSpots,
+    getCurrentUser,
+    getReviews,
+    getSavedSpots,
+    getVisitedSpots
+} from "../database.js";
+import {openAddPolaroidModal} from "./addPolaroid.js";
+import {openPolaroidDetail} from "./polaroidDetail.js";
+import {fetchFormattedUserPolaroids, fillPolaroidContent, getPolaroidTemplate} from "../common/polaroidCommon.js";
+import {sharePolaroidModal} from "./sharePolaroid.js";
+import {showConfirmModal} from "../ui/confirmModal.js";
 import {currentUserLevel} from "../goals/db/userGoalsConnector.js";
 
 const AVATAR_MAP = {
@@ -125,8 +132,8 @@ async function updateUserCounters(username, container) {
 
         // Usa container.querySelector se è un container specifico, altrimenti document
         const querySelector = (selector) => {
-            return container && container.querySelector 
-                ? container.querySelector(selector) 
+            return container && container.querySelector
+                ? container.querySelector(selector)
                 : document.querySelector(selector);
         };
 
@@ -138,16 +145,32 @@ async function updateUserCounters(username, container) {
             level: querySelector("#explorer-level")
         };
 
+        const cap = 200;
+        const computeLevel = Math.trunc(userLevel / cap);
+        updateProgressBar(container, cap, computeLevel, userLevel)
+
         if (elements.saved) elements.saved.textContent = saved.length;
         if (elements.reviews) elements.reviews.textContent = reviews.length;
         if (elements.visited) elements.visited.textContent = visited.length;
         if (elements.created) elements.created.textContent = created.length;
-        if (elements.level) elements.level.textContent = userLevel;
+        if (elements.level) elements.level.textContent = computeLevel;
 
     } catch (error) {
         console.error("Error updating profile counters:", error);
     }
 }
+
+function updateProgressBar(container, cap, level, progress) {
+    const experienceCard = container.querySelector(".profile-reward-card-large");
+    const progressBarEl = experienceCard.querySelector("#profile-progress-bar");
+    const percentEl = experienceCard.querySelector("#progress-bar-label");
+
+    const remainingExp = progress - (level * cap)
+    const percent = Math.trunc(Math.min(100, (remainingExp / cap) * 100));
+    percentEl.textContent = `${percent}% al prossimo livello!`;
+    progressBarEl.style.width = `${percent}%`;
+}
+
 
 function setupProfileEventListeners(container, userData) {
     const savedSpotsButton = container.querySelector("#profile-saved-spots-button");
@@ -204,20 +227,28 @@ function setupProfileEventListeners(container, userData) {
 
         document.addEventListener("polaroid:added", () => {
             initializePolaroidCarousel(document);
-            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+            getCurrentUser().then(user => {
+                if (user) updateUserCounters(user.username);
+            });
         });
 
         document.addEventListener("polaroid:deleted", () => {
             initializePolaroidCarousel(document);
-            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+            getCurrentUser().then(user => {
+                if (user) updateUserCounters(user.username);
+            });
         });
 
         document.addEventListener("bookmark:changed", () => {
-            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+            getCurrentUser().then(user => {
+                if (user) updateUserCounters(user.username);
+            });
         });
 
         document.addEventListener("review:changed", () => {
-            getCurrentUser().then(user => { if (user) updateUserCounters(user.username); });
+            getCurrentUser().then(user => {
+                if (user) updateUserCounters(user.username);
+            });
         });
     }
 }
@@ -285,10 +316,10 @@ async function handleCreatedSpotsClick(e) {
 
 async function initializePolaroidCarousel(container, userData) {
     // Se container è il document, usa getElementById globale
-    const carouselContainer = container.nodeType === 9 
+    const carouselContainer = container.nodeType === 9
         ? container.getElementById("polaroid-carousel-container")
         : container.querySelector("#polaroid-carousel-container");
-    
+
     if (!carouselContainer) return;
 
     // Determina se siamo dentro un overlay (per il back button)
@@ -387,7 +418,7 @@ function renderCarouselItems(container, items, template) {
                         menuDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
                         if (polaroidEl) polaroidEl.style.zIndex = "";
 
-                        openPolaroidDetail(itemData, { startInEditMode: true });
+                        openPolaroidDetail(itemData, {startInEditMode: true});
                     });
                 }
 
@@ -493,7 +524,7 @@ function setupCarouselControls(track, totalItems) {
         }
     };
 
-    track.addEventListener('scroll', () => window.requestAnimationFrame(updateCounterOnScroll), { passive: true });
+    track.addEventListener('scroll', () => window.requestAnimationFrame(updateCounterOnScroll), {passive: true});
 
     setTimeout(updateCounterOnScroll, 100);
 }
