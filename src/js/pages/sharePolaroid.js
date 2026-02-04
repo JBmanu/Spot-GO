@@ -1,10 +1,10 @@
-import {getAllUsers, getCurrentUser, getSpotById, getUserPolaroids, shareCardboard} from "../database.js";
+import {getAllUsers, getCurrentUser, getSpotById, shareCardboard} from "../database.js";
 import { closeModal, openModal } from "../common/modalView.js";
 import { showsItemsInContainer, searchUsersByName } from "./community/communityUtility.js";
 import { makeSelectableCard } from "./community/cardsFactory.js";
 import { createSearchBarWithKeyboard } from '../createComponent.js';
 import { triggerSharePolaroid } from "../goals/missionsTrigger.js";
-import { getPolaroidTemplate, fillPolaroidContent} from "../common/polaroidCommon.js";
+import { getPolaroidTemplate, fillPolaroidContent, fetchFormattedUserPolaroids} from "../common/polaroidCommon.js";
 
 export async function sharePolaroidModal(polaroidData) {
     await openModal("../html/common-pages/share-polaroid-modal.html", ".phone-screen", (modalElement) => {
@@ -124,7 +124,7 @@ async function initializeSharePolaroidChat(modalElement, toUserMail, onSuccess) 
         var selectedData = null;
         var selectedPolaroid = null;
         const user = await getCurrentUser();
-        const polaroidsData = await getUserPolaroids(user.email);
+        const polaroidsData = await fetchFormattedUserPolaroids(user);
 
         const polaroidCards = await Promise.all(polaroidsData.map(async pd => {
             const template = await getPolaroidTemplate();
