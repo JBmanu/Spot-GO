@@ -1,0 +1,22 @@
+@layer components {
+    .badge-ctn {
+        @apply w-36 aspect-square rounded-2xl p-2
+    }
+
+    .icon-number-badge-ctn {
+        @apply relative flex-1 aspect-square rounded-2xl overflow-hidden
+    }
+
+    .icon-badge {
+        @apply absolute inset-0 w-full h-full object-contain
+    }
+
+    .number-badge {
+        @apply absolute inset-0 text-gray-600 font-semibold text-5xl -translate-y-2;
+        color: rgb(125, 3, 133);
+    }
+
+    .description-badge {
+        @apply  mt-1 text-black/80 text-sm
+    }
+}
