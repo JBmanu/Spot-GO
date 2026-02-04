@@ -12,6 +12,7 @@ import {fetchFormattedUserPolaroids, fillPolaroidContent, getPolaroidTemplate} f
 import {sharePolaroidModal} from "./sharePolaroid.js";
 import {showConfirmModal} from "../ui/confirmModal.js";
 import {currentUserLevel} from "../goals/db/userGoalsConnector.js";
+import {CAP_LEVEL} from "../goals/Datas.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",
@@ -122,7 +123,7 @@ function updateProfileHeader(user, container) {
 
 async function updateUserCounters(username, container) {
     try {
-        const [saved, reviews, visited, created, userLevel] = await Promise.all([
+        const [saved, reviews, visited, created, userProgress] = await Promise.all([
             getSavedSpots(username),
             getReviews(username),
             getVisitedSpots(username),
@@ -145,28 +146,27 @@ async function updateUserCounters(username, container) {
             level: querySelector("#explorer-level")
         };
 
-        const cap = 200;
-        const computeLevel = Math.trunc(userLevel / cap);
-        updateProgressBar(container, cap, computeLevel, userLevel)
+        console.log("USERRRR: ", userProgress)
+
+        updateProgressBar(container,userProgress)
 
         if (elements.saved) elements.saved.textContent = saved.length;
         if (elements.reviews) elements.reviews.textContent = reviews.length;
         if (elements.visited) elements.visited.textContent = visited.length;
         if (elements.created) elements.created.textContent = created.length;
-        if (elements.level) elements.level.textContent = computeLevel;
+        if (elements.level) elements.level.textContent = "" + userProgress.level;
 
     } catch (error) {
         console.error("Error updating profile counters:", error);
     }
 }
 
-function updateProgressBar(container, cap, level, progress) {
+function updateProgressBar(container, userProgress) {
     const experienceCard = container.querySelector(".profile-reward-card-large");
     const progressBarEl = experienceCard.querySelector("#profile-progress-bar");
     const percentEl = experienceCard.querySelector("#progress-bar-label");
 
-    const remainingExp = progress - (level * cap)
-    const percent = Math.trunc(Math.min(100, (remainingExp / cap) * 100));
+    const percent = Math.trunc(Math.min(100, (userProgress.remainingExp / CAP_LEVEL) * 100));
     percentEl.textContent = `${percent}% al prossimo livello!`;
     progressBarEl.style.width = `${percent}%`;
 }
