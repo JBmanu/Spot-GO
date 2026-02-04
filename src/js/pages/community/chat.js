@@ -221,8 +221,7 @@ function renderMessages(messages, toUserData) {
                         </button>`;
     messagesContainer.appendChild(bubble);
     bubble.addEventListener('click', async () => {
-        //TODO: reload chat 
-        await sharePolaroidChatModal(toUserData.email).then(() => openChat(toUserData));
+        await sharePolaroidChatModal(toUserData.email, () => openChat(toUserData));
     });
 
     messagesContainer.scrollTop = messagesContainer.scrollHeight;

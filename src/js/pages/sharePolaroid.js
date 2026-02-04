@@ -14,11 +14,11 @@ export async function sharePolaroidModal(polaroidData) {
     });
 }
 
-export async function sharePolaroidChatModal(toUserMail) {
+export async function sharePolaroidChatModal(toUserMail, onSuccess) {
     await openModal("../html/common-pages/share-polaroid-modal.html", ".phone-screen", (modalElement) => {
         initModalCloseAlternative();
         // insertSearchBar(modalElement, "Cerca polaroid", (v) => console.log(v));
-        initializeSharePolaroidChat(modalElement, toUserMail);
+        initializeSharePolaroidChat(modalElement, toUserMail, onSuccess);
     });
 }
 
@@ -102,7 +102,7 @@ async function initializeSharePolaroid(modalElement, polaroidData) {
     }
 }
 
-async function initializeSharePolaroidChat(modalElement, toUserMail) {    
+async function initializeSharePolaroidChat(modalElement, toUserMail, onSuccess) {    
     const sendButton = modalElement.querySelector("#share-send-btn");
     const closeButton = modalElement.querySelector("#share-close-btn");
 
@@ -155,6 +155,7 @@ async function initializeSharePolaroidChat(modalElement, toUserMail) {
                     sendButton.innerHTML = "Inviata!";
                     setTimeout(() => {
                         closeModal();
+                        onSuccess();
                     }, 2000);
                 } else {
                     console.log("Errore:", res.descr);
