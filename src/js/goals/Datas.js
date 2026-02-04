@@ -1,5 +1,7 @@
-// DB COLLECTIONS
+// CAP LEVEL
+export const CAP_LEVEL = 200;
 
+// DB COLLECTIONS
 export const COLLECTIONS = {
     USER: 'Utente',
     MISSION_TEMPLATE: 'MissionTemplate',
