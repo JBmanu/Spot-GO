@@ -50,10 +50,17 @@ const profileDepsReady = Promise.all([
 
 export async function loadProfileOverview(wrapper) {
     await profileDepsReady;
-
     if (!wrapper) return;
-
     const user = await getCurrentUser();
+
+    // get button from wrapper with custom attribute: data-section="profile"
+    const buttonOpenProfile = document.querySelector('[data-section="profile"]');
+    if (buttonOpenProfile) {
+        buttonOpenProfile.addEventListener("click", async (e) => {
+            console.log("CIAO")
+            await updateUserCounters(user.username, wrapper)
+        })
+    }
     await initializeProfileData(wrapper, user, "profile");
 }
 
@@ -74,7 +81,6 @@ window.reloadProfileHeader = reloadProfileHeader;
 
 async function initializeProfileData(container, userData) {
     await profileDepsReady;
-
     if (!userData) return;
 
     updateProfileHeader(userData, container);
@@ -228,26 +234,26 @@ function setupProfileEventListeners(container, userData) {
         document.addEventListener("polaroid:added", () => {
             initializePolaroidCarousel(document);
             getCurrentUser().then(user => {
-                if (user) updateUserCounters(user.username);
+                if (user) updateUserCounters(user.username, container);
             });
         });
 
         document.addEventListener("polaroid:deleted", () => {
             initializePolaroidCarousel(document);
             getCurrentUser().then(user => {
-                if (user) updateUserCounters(user.username);
+                if (user) updateUserCounters(user.username, container);
             });
         });
 
         document.addEventListener("bookmark:changed", () => {
             getCurrentUser().then(user => {
-                if (user) updateUserCounters(user.username);
+                if (user) updateUserCounters(user.username, container);
             });
         });
 
         document.addEventListener("review:changed", () => {
             getCurrentUser().then(user => {
-                if (user) updateUserCounters(user.username);
+                if (user) updateUserCounters(user.username, container);
             });
         });
     }

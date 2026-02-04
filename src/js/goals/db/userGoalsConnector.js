@@ -20,5 +20,9 @@ export async function updateCurrentUserLevel(updateFun) {
     const userDocument = await documentFromId(COLLECTIONS.USER, user.id)
     const updatedLevel = updateFun(userDocument.livello)
     await updateDocument(userDocument, {[`livello`]: updatedLevel});
-    return {oldLevel: userDocument.livello, newLevel: updatedLevel};
+    return {
+        newLevel: Math.trunc(updatedLevel / CAP_LEVEL),
+        newProgress: updatedLevel,
+        oldProgress: userDocument.livello,
+    };
 }
