@@ -105,6 +105,13 @@ async function initializeSharePolaroid(modalElement, polaroidData) {
 async function initializeSharePolaroidChat(modalElement, toUserMail, onSuccess) {    
     const sendButton = modalElement.querySelector("#share-send-btn");
     const closeButton = modalElement.querySelector("#share-close-btn");
+    const scrollList = modalElement.querySelector("#sendto-list");
+    if (scrollList) {
+        scrollList.style.display = 'flex';
+        scrollList.style.justifyContent = 'center';
+        scrollList.style.alignItems = 'center';
+        scrollList.style.flexDirection = 'column';
+    }
 
     closeButton.addEventListener('click', async () => {
         await closeModal(console.log("onclose modal"));
@@ -115,6 +122,7 @@ async function initializeSharePolaroidChat(modalElement, toUserMail, onSuccess) 
     try {
         // await searchUsers();
         var selectedData = null;
+        var selectedPolaroid = null;
         const user = await getCurrentUser();
         const polaroidsData = await getUserPolaroids(user.email);
 
@@ -127,10 +135,13 @@ async function initializeSharePolaroidChat(modalElement, toUserMail, onSuccess) 
             if (card) {
                 card.classList.remove('carousel-horizontal_item');
                 card.style.width = "60%";
-                // card.style.margin = "";
-
+                card.style.margin = "15px";
+                card.querySelector(".polaroid-menu-wrapper").remove();
                 card.addEventListener('click', () => {
                     selectedData = pd;
+                    if (selectedPolaroid !== null) selectedPolaroid.style.background = "";
+                    selectedPolaroid = card;
+                    card.style.background = "#1c7c549c";
                     sendButton.disabled = false;
                 })
             }
