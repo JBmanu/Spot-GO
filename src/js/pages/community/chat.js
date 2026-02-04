@@ -3,6 +3,7 @@ import { openPolaroidDetail } from "../polaroidDetail.js"
 import { AVATAR_MAP } from "../../common/avatarImagePaths.js";
 import { resetHeaderBaseForSection } from "../../common/navigation.js";
 import { PATHS } from "../../paths.js";
+import {sharePolaroidChatModal} from "../sharePolaroid.js";
 
 let chatTemplateCache = null;
 
@@ -114,7 +115,7 @@ export async function openChat(userData) {
 
         if (loader) loader.classList.add('hidden');
 
-        renderMessages(messages);
+        renderMessages(messages, userData);
     } catch (error) {
         console.error("Errore caricamento chat:", error);
 
@@ -147,15 +148,7 @@ function updateChatHeader() {
     }
 }
 
-function hideCommunityMainSections() {
-    document.getElementById("community-main-body").classList.add('hidden');
-}
-
-function showCommunityMainSections() {
-    document.getElementById("community-main-body").classList.remove('hidden');
-}
-
-function renderMessages(messages) {
+function renderMessages(messages, toUserData) {
     const chatContainer = document.getElementById('chat-container');
     chatContainer.classList.remove('hidden-chat');
 
@@ -192,7 +185,6 @@ function renderMessages(messages) {
                 const img = clone.querySelector('[data-field="image"]');
                 const title = clone.querySelector('[data-field="title"]');
 
-                console.log(msg);
                 if (msg.cartolina !== null) {
                     if (img && msg.cartolina.immagini && msg.cartolina.immagini.length > 0) {
                         img.src = msg.cartolina.immagini[0];
@@ -221,6 +213,18 @@ function renderMessages(messages) {
     } else {
         messagesContainer.innerHTML = '<p class="text-lg text-gray-500 text-center">Non hai ancora condiviso nessuna cartolina 🖼️</p>';;
     }
+    const bubble = document.createElement('div');
+    bubble.className = `message-bubble sent`;
+
+    bubble.innerHTML = `<button id="chat-send-polaroid-btn" type="button" class="profile-diary-add-btn" aria-label="Aggiungi nuova polaroid" data-bound="true">
+                            <img src="../assets/icons/profile/Add Image.svg" alt="Aggiungi polaroid icon">
+                        </button>`;
+    messagesContainer.appendChild(bubble);
+    bubble.addEventListener('click', async () => {
+        //TODO: reload chat 
+        await sharePolaroidChatModal(toUserData.email).then(() => openChat(toUserData));
+    });
+
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 

@@ -23,10 +23,10 @@ export async function showsItemsInContainer(items, emptyMsgfor, containerId, ite
     }
 }
 
-function appendHtmlChild(datas, container, cardMaker) {
+function appendHtmlChild(datas, container, itemNodeMaker) {
     datas.forEach(itemData => {
-        const followCard = cardMaker(itemData);
-        container.appendChild(followCard);
+        const itemNode = itemNodeMaker(itemData);
+        container.append(itemNode);
     });
 }
 
