@@ -4,6 +4,7 @@ export const CAP_LEVEL = 200;
 // DB COLLECTIONS
 export const COLLECTIONS = {
     USER: 'Utente',
+    SPOT: 'Luogo',
     MISSION_TEMPLATE: 'MissionTemplate',
     USER_MISSION_PROGRESS: 'UserMissionProgress'
 }

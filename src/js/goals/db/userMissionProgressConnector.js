@@ -21,8 +21,8 @@ async function createMissionProgress(data, create, update) {
     const user = await isAuthenticatedUser();
     if (!user) return null;
 
-    const userRef = createDocumentRef("Utente", data.UserId);
-    const placeRef = createDocumentRef("Luogo", data.PlaceId);
+    const userRef = createDocumentRef(COLLECTIONS.USER, data.UserId);
+    const placeRef = createDocumentRef(COLLECTIONS.SPOT, data.PlaceId);
     const missionTemplateRef = createDocumentRef(COLLECTIONS.MISSION_TEMPLATE, data.MissionTemplateId);
 
     const newMission = {

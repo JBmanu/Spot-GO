@@ -1,4 +1,8 @@
 import {clearBadges, createBadge} from "../badgeConnector.js";
+import {createDocumentRef} from "../goalsConnector.js";
+import {COLLECTIONS} from "../../Datas.js";
+import {MISSION_TYPE} from "./missionTemplateSeed.js";
+import {getAllUsers} from "../../../database.js";
 
 // 🎯 Badge catalogo in ITALIANO
 const BADGES_TO_CREATE = [
@@ -132,13 +136,13 @@ const BADGES_TO_CREATE = [
     }
 ];
 
-export let createdBadgeIds = [];
 
 export async function seedBadges() {
     await clearBadges();
-    for (const badge of BADGES_TO_CREATE) {
-        const id = await createBadge(badge);
-        createdBadgeIds.push(id);
+    const users = (await getAllUsers())
+
+    for (let user of users) {
+        await createBadge(user.id)
     }
 
     console.log("🎉 " + BADGES_TO_CREATE.length + "Badge seeding done!");

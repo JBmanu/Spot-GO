@@ -1,14 +1,27 @@
-import {clearDocuments, createDocument, documentFromId, documentsOf} from "./goalsConnector.js";
+import {clearDocuments, createDocument, createDocumentRef, documentFromId, documentsOf} from "./goalsConnector.js";
+import {ACTION_TYPE, MISSION_TYPE} from "./seed/missionTemplateSeed.js";
+import {COLLECTIONS} from "../Datas.js";
 
 const BADGES_COLLECTION = "Badge";
 
-export async function createBadge(data) {
+export const TEMPLATE_BADGE = {Counter: 0, Badge: []}
+
+export async function createBadge(userId) {
+    const missionsBadge = Object.keys(MISSION_TYPE).reduce((acc, key) => {
+        acc[key] = TEMPLATE_BADGE
+        return acc;
+    }, {});
+    const actionsBadge = Object.keys(ACTION_TYPE).reduce((acc, key) => {
+        acc[key] = TEMPLATE_BADGE
+        return acc;
+    }, {})
+
+    const userRef = createDocumentRef(COLLECTIONS.USER, userId);
     return await createDocument(BADGES_COLLECTION, {
-        Name: data.Name,
-        Description: data.Description,
-        Icon: data.Icon ?? "",
-        UnlockConditionType: data.UnlockConditionType,
-        UnlockValue: data.UnlockValue
+        UserId: userId,
+        UserRef: userRef,
+        MissionsCompleted: missionsBadge,
+        Actions: actionsBadge
     })
 }
 
