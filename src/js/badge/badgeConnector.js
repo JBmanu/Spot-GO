@@ -37,7 +37,7 @@ export async function createBadge(userId) {
         acc[key] = TEMPLATE_BADGE
         return acc;
     }, {});
-    const actionsBadge = Object.keys(ACTION_TYPE).reduce((acc, key) => {
+    const actionsBadge = Object.values(ACTION_TYPE).reduce((acc, key) => {
         acc[key] = TEMPLATE_BADGE
         return acc;
     }, {})

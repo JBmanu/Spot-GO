@@ -24,14 +24,14 @@ export const CATEGORY_ICON_PATH = {
 
 
 export const ACTION_TYPE = {
-    LOGIN: "login",
-    FOTO: "fai_foto",
-    REVIEW: "scrivi_recensione",
-    CREATE_POLAROID: "crea_polaroid",
-    SHARE_POLAROID: "condividi_polaroid",
-    COMPLETE_MISSIONS: "completa_missioni",
-    REACH_LEVEL: "raggiungi_livello",
-    OBTAIN_BADGE: "ottieni_badge"
+    LOGIN: "Login",
+    FOTO: "Foto",
+    REVIEW: "Scrivi recensione",
+    CREATE_POLAROID: "Crea polaroid",
+    SHARE_POLAROID: "Condividi polaroid",
+    COMPLETE_MISSIONS: "Missioni completate",
+    REACH_LEVEL: "Livello raggiunto",
+    OBTAIN_BADGE: "Badge ottenuti"
 }
 
 const MISSION_TEMPLATES = [

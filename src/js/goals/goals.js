@@ -26,7 +26,7 @@ export async function initializeGoals() {
     // await resetCurrentUserLevel()
 
     // Seed DB
-    await runAllAsyncSafe(seedBadges, seedDiscounts)
+    // await runAllAsyncSafe(seedBadges, seedDiscounts)
     // await seedMissionTemplates();
     // await seedUserMissionProgress();
 
