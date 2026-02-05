@@ -94,7 +94,7 @@ export async function triggerLogin() {
 
 async function baseTriggerSpotAction(spotData, actionType) {
     await chooseMissionTypeAndFilterForUpdate(MISSION_TYPE.SPOT,
-        spotsMissions => spotsMissions.find(spot => spot.place.id === spotData.id).missions,
+        spotsMissions => (spotsMissions.find(spot => spot.place.id === spotData.id) ?? {}).missions || [],
         mission => mission.template.Action === actionType)
 
     await chooseMissionTypeAndFilterForUpdate(MISSION_TYPE.DAILY, identityFun,
