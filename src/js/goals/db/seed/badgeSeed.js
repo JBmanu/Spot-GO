@@ -1,4 +1,10 @@
-import {clearBadges, createBadge} from "../badgeConnector.js";
+import {
+    addSpotCompletedOfCurrentUser, BADGE_COLLECTION_STRUCTURE,
+    badgeValuesOfCurrentUser,
+    clearBadges,
+    createBadge, incrementBadgeCounterOfCurrentUser,
+    spotCompletedOfCurrentUser
+} from "../badgeConnector.js";
 import {createDocumentRef} from "../goalsConnector.js";
 import {COLLECTIONS} from "../../Datas.js";
 import {MISSION_TYPE} from "./missionTemplateSeed.js";
@@ -144,6 +150,18 @@ export async function seedBadges() {
     for (let user of users) {
         await createBadge(user.id)
     }
+
+    await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.MISSIONS_COMPLETED, MISSION_TYPE.SPOT, (count) => count + 20)
+    const readBadges = await badgeValuesOfCurrentUser(BADGE_COLLECTION_STRUCTURE.MISSIONS_COMPLETED, MISSION_TYPE.SPOT)
+    console.log(readBadges)
+
+
+    await addSpotCompletedOfCurrentUser("05WOu7RbWAAnofbMZuAO")
+
+    const spotCompleted = await spotCompletedOfCurrentUser();
+    console.log(spotCompleted)
+
+
 
     console.log("🎉 " + BADGES_TO_CREATE.length + "Badge seeding done!");
 }

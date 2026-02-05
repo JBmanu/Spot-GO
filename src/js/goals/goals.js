@@ -22,10 +22,10 @@ export async function initializeGoals() {
     if (isInitialized) return;
     isInitialized = true;
 
-    // // Reset user datas
+    // Reset user datas
     // await resetCurrentUserLevel()
-    //
-    // // Seed DB
+
+    // Seed DB
     await runAllAsyncSafe(seedBadges, seedDiscounts)
     // await seedMissionTemplates();
     // await seedUserMissionProgress();
