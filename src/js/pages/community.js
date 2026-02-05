@@ -1,5 +1,5 @@
 
-import {getCurrentUser, getFollowingUser, getFollowersUser, getSuggestedFollows} from "../database.js";
+import {getCurrentUser, getFollowingUser, getFollowersUser, getSuggestedFollows, getAllUsers} from "../database.js";
 import {makeFriendCard, makeSuggestedCard} from '../pages/community/cardsFactory.js'
 import {createSearchBarWithKeyboard} from '../createComponent.js';
 import {showsItemsInContainer, searchUsersByName} from './community/communityUtility.js'
@@ -80,12 +80,15 @@ function hideSearchRes() {
     resultsSection.classList.add('hidden');
 }
 
-function onValueChangeSearch(value) {
-    getCurrentUser().then(u => {
-        loadSuggested(u.id, value);
-        loadFollowing(u.id, value);
-        loadFollowers(u.id, value);
-    });
+function onValueChangeSearch(searchTerm) {
+    getAllUsers().then(users =>
+        showsItemsInContainer(
+            searchUsersByName(users, searchTerm), 
+            'results',
+            'community-results-container', 
+            data => makeFriendCard(data)
+        )
+    );
 }
 
 async function loadFollowing(userId, searchTerm = null) {

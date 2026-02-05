@@ -259,15 +259,12 @@ export async function searchUser(searchId) {
  * Recupera tutti gli utenti registrati.
  */
 export async function getAllUsers() {
-    return getItems("Utente", null,
-        (id, data) => (
-            {
-                id: id,
-                livello: data.livello || "-",
-                email: data.email || "-",
-                username: data.username || "-"
-            }
-        ));
+    const user = await getCurrentUser()
+    const [following, suggested] = await Promise.all([
+        getFollowingUser(user.id), 
+        getSuggestedFollows(user.id)
+    ]);
+    return [...following, ...suggested];
 }
 
 /**
@@ -374,7 +371,7 @@ export async function addFollows(userId, friendEmail) {
 }
 
 export async function getSuggestedFollows(userId) {
-    if (!userId) return;
+    if (!userId) return [];
     try {
         //1. ottieni tutti gli id degli utenti che userId segue già
         // 2. Ottieni TUTTI i documenti dalla collezione Amico
