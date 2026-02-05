@@ -5,9 +5,9 @@ import {
     countBadgesObtainedOfCurrentUser,
     createBadge,
     incrementBadgeCounterOfCurrentUser, spotCompletedOfCurrentUser
-} from "../badgeConnector.js";
-import {getAllUsers} from "../../../database.js";
-import {MISSION_TYPE} from "./missionTemplateSeed.js";
+} from "./badgeConnector.js";
+import {getAllUsers} from "../database.js";
+import {MISSION_TYPE} from "../goals/db/seed/missionTemplateSeed.js";
 
 
 export async function seedBadges() {

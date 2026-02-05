@@ -13,7 +13,7 @@ import {sharePolaroidModal} from "./sharePolaroid.js";
 import {showConfirmModal} from "../ui/confirmModal.js";
 import {currentUserLevel} from "../goals/db/userGoalsConnector.js";
 import {CAP_LEVEL} from "../goals/Datas.js";
-import {countBadgesObtainedOfCurrentUser} from "../goals/db/badgeConnector.js";
+import {countBadgesObtainedOfCurrentUser} from "../badge/badgeConnector.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",

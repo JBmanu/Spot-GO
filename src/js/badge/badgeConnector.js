@@ -8,11 +8,11 @@ import {
     isAuthenticatedUser,
     loadDocumentRef,
     updateDocument
-} from "./goalsConnector.js";
-import {ACTION_TYPE, MISSION_TYPE} from "./seed/missionTemplateSeed.js";
-import {COLLECTIONS} from "../Datas.js";
+} from "../goals/db/goalsConnector.js";
+import {ACTION_TYPE, MISSION_TYPE} from "../goals/db/seed/missionTemplateSeed.js";
+import {COLLECTIONS} from "../goals/Datas.js";
 import {arrayUnion, collection, query, where} from "firebase/firestore";
-import {db} from "../../firebase.js";
+import {db} from "../firebase.js";
 
 export const BADGE_COLLECTION_STRUCTURE = {
     SPOT_COMPLETED: "SpotCompleted",
@@ -68,7 +68,7 @@ async function userBadgeOf(userId) {
     return documents[0]
 }
 
-async function currentUserBadge() {
+export async function currentUserBadge() {
     const user = await isAuthenticatedUser();
     if (!user) return EMPTY_VALUE;
     return (await userBadgeOf(user.id))
@@ -125,7 +125,6 @@ export async function incrementBadgeCounterOfCurrentUser(category, key, updateFu
 
 // Leggere tutti gli spot completati
 export async function spotCompletedOfCurrentUser() {
-
     const spotsCompleted = (await currentUserBadge())[BADGE_COLLECTION_STRUCTURE.SPOT_COMPLETED]
     const hydrateSpotsCompleted = spotsCompleted?.map(async spotRef => await loadDocumentRef(spotRef))
     return await Promise.all(hydrateSpotsCompleted);

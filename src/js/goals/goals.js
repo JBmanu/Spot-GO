@@ -11,7 +11,7 @@ import {updateDailyMissionsIfNextDay} from "./db/userMissionProgressConnector.js
 import {resetCurrentUserLevel} from "./db/userGoalsConnector.js";
 import {seedUserMissionProgress} from "./db/seed/userMissionProgressSeed.js";
 import {seedDiscounts} from "./db/seed/discountSeed.js";
-import {seedBadges} from "./db/seed/badgeSeed.js";
+import {seedBadges} from "../badge/badgeSeed.js";
 
 let isInitialized = false;
 
