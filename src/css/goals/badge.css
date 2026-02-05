@@ -24,7 +24,7 @@
     }
 
     .number-badge {
-        @apply absolute inset-0 text-gray-600 font-semibold text-5xl -translate-y-2;
+        @apply absolute inset-0 text-gray-600 font-semibold text-4xl -translate-y-2 text-center;
         color: rgb(125, 3, 133);
     }
 

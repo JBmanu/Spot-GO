@@ -1,4 +1,10 @@
-import {BADGE_COLLECTION_STRUCTURE, currentUserBadge, spotCompletedOfCurrentUser} from "./badgeConnector.js";
+import {
+    BADGE_COLLECTION_STRUCTURE,
+    BADGE_STRUCTURE,
+    currentUserBadge,
+    spotCompletedOfCurrentUser
+} from "./badgeConnector.js";
+import {MISSION_TYPE} from "../goals/db/seed/missionTemplateSeed.js";
 
 const SECTION_BADGE_SELECTORS = {
     SPOT_COMPLETED: "spot-completed",
@@ -9,10 +15,24 @@ const SECTION_BADGE_SELECTORS = {
 export async function loadBadges() {
     const badges = await currentUserBadge();
 
-    const missionsCompleted = badges[BADGE_COLLECTION_STRUCTURE.MISSIONS_COMPLETED]
     const actions = badges[BADGE_COLLECTION_STRUCTURE.ACTIONS]
 
+    await loadMissionsCompleted(badges)
     await loadSpotsCompleted()
+}
+
+async function loadMissionsCompleted(badges) {
+    const missionsCompleted = badges[BADGE_COLLECTION_STRUCTURE.MISSIONS_COMPLETED]
+    Object.values(MISSION_TYPE).forEach(missionType => {
+        const obtainsBadges = missionsCompleted[missionType]?.[BADGE_STRUCTURE.OBTAIN_BADGE]
+        const id = BADGE_COLLECTION_STRUCTURE.MISSIONS_COMPLETED + "." + missionType
+        if (obtainsBadges.length > 0) {
+            const badgeData = {id: id, obtain: obtainsBadges.at(-1), title: missionType}
+            addBadgeEl(SECTION_BADGE_SELECTORS.MISSIONS_COMPLETED, badgeData)
+        } else {
+            addBadgeInactiveEl(SECTION_BADGE_SELECTORS.MISSIONS_COMPLETED, missionType)
+        }
+    })
 }
 
 async function loadSpotsCompleted() {
