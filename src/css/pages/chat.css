@@ -166,4 +166,26 @@
     .chat-loader-text {
         @apply text-sm font-medium text-gray-500;
     }
+
+    #chat-send-polaroid-btn {
+        position: sticky;
+        height: 110px;
+        width: 110px;
+        bottom: 26px;
+        left: 80%;
+        background: white;
+        padding: 10px;
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transform: scale(0.5);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chat-send-polaroid-button-image {
+    }
 }

@@ -115,6 +115,10 @@ export async function openChat(userData) {
 
         if (loader) loader.classList.add('hidden');
 
+        const sendBtn = chatContainer.querySelector('#chat-send-polaroid-btn');
+        sendBtn.addEventListener('click', async () => {
+            await sharePolaroidChatModal(userData.email, () => openChat(userData));
+        });
         renderMessages(messages, userData);
     } catch (error) {
         console.error("Errore caricamento chat:", error);
@@ -148,7 +152,7 @@ function updateChatHeader() {
     }
 }
 
-function renderMessages(messages, toUserData) {
+function renderMessages(messages) {
     const chatContainer = document.getElementById('chat-container');
     chatContainer.classList.remove('hidden-chat');
 
@@ -213,17 +217,6 @@ function renderMessages(messages, toUserData) {
     } else {
         messagesContainer.innerHTML = '<p class="text-lg text-gray-500 text-center">Non hai ancora condiviso nessuna cartolina 🖼️</p>';;
     }
-    const bubble = document.createElement('div');
-    bubble.className = `message-bubble sent`;
-
-    bubble.innerHTML = `<button id="chat-send-polaroid-btn" type="button" class="profile-diary-add-btn" aria-label="Aggiungi nuova polaroid" data-bound="true">
-                            <img src="../assets/icons/profile/Add Image.svg" alt="Aggiungi polaroid icon">
-                        </button>`;
-    messagesContainer.appendChild(bubble);
-    bubble.addEventListener('click', async () => {
-        await sharePolaroidChatModal(toUserData.email, () => openChat(toUserData));
-    });
-
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
