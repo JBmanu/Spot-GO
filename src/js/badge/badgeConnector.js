@@ -14,6 +14,7 @@ import {COLLECTIONS} from "../goals/Datas.js";
 import {arrayUnion, collection, query, where} from "firebase/firestore";
 import {db} from "../firebase.js";
 import {allSpotMissionsAreCompletedOfCurrentUser} from "../goals/db/userMissionProgressConnector.js";
+import {triggerObtainBadge} from "../goals/missionsTrigger.js";
 
 export const BADGE_COLLECTION_STRUCTURE = {
     SPOT_COMPLETED: "SpotCompleted",
@@ -121,6 +122,8 @@ async function incrementBadgeCounterOfCurrentUser(category, key, updateFun = (co
             newObtainBadges.push(i)
         }
     }
+
+    for (const _ of newObtainBadges) await triggerObtainBadge();
     if (newObtainBadges.length > 0) {
         const path = `${category}.${key}.${BADGE_STRUCTURE.OBTAIN_BADGE}`
         await updateDocument(badge, {[path]: arrayUnion(...newObtainBadges)});

@@ -136,5 +136,6 @@ export async function triggerReachLevel(levelData) {
 }
 
 export async function triggerObtainBadge() {
-
+    await chooseMissionTypeAndFilterForUpdate(MISSION_TYPE.LEVEL, identityFun,
+        mission => mission.template.Action === ACTION_TYPE.OBTAIN_BADGE);
 }
