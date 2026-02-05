@@ -54,7 +54,7 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged, o
         e.preventDefault();
         e.stopPropagation();
         if (searchInput.value.trim() == "") {
-            onClear();
+            if (onClear) onClear();
             clearBtn.hidden = true;
         } else {
             searchInput.value = "";

@@ -66,7 +66,7 @@ function showViewAllPolaroidsHeader() {
     }
     if (logoText) logoText.style.display = "none";
     if (title) {
-        title.textContent = "Il tuo Album";
+        title.textContent = "Le tue polaroid";
         title.classList.remove("hidden");
     }
 }
@@ -292,7 +292,7 @@ export async function loadViewAllPolaroids(userData) {
     const placeholder = overlay.querySelector("#search-bar-placeholder");
     if (placeholder) {
         const searchSystem = new SearchSystem({
-            placeholder: "Cerca nel tuo album...",
+            placeholder: "Cerca fra le polaroid...",
             onSearch: (value) => {
                 renderViewAllPolaroidsGrid(container, allPolaroids, value);
             }
