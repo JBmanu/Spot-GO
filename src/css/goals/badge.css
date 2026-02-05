@@ -11,12 +11,20 @@
         @apply absolute inset-0 w-full h-full object-contain
     }
 
+    .icon-badge.inactive {
+        @apply opacity-30 grayscale;
+    }
+
     .number-badge {
-        @apply absolute inset-0 text-gray-600 font-semibold text-5xl -translate-y-2;
+        @apply absolute inset-0 text-gray-600 font-semibold text-5xl -translate-y-2
         color: rgb(125, 3, 133);
     }
 
+    .number-badge.inactive {
+        @apply hidden;
+    }
+
     .description-badge {
-        @apply  mt-1 text-black/80 text-sm
+        @apply mt-1 text-black/80 text-sm
     }
 }

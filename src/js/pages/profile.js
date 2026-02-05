@@ -153,11 +153,7 @@ async function updateUserCounters(username, container) {
             created: querySelector("#created-spots"),
             level: querySelector("#explorer-level")
         };
-
-        console.log("USERRRR: ", userProgress)
-
         updateProgressBar(container, userProgress)
-
         if (elements.saved) elements.saved.textContent = saved.length;
         if (elements.reviews) elements.reviews.textContent = reviews.length;
         if (elements.badges) elements.badges.textContent = "" + countedBadges;
