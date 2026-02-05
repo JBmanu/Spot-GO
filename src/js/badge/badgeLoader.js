@@ -44,7 +44,16 @@ async function loadSpotsCompleted() {
 
 async function loadBadgesCompleted(badges, selector, badgeStructure, typeBadges) {
     const missionsCompleted = badges[badgeStructure]
-    Object.values(typeBadges).forEach(missionType => {
+
+    const sortedMissionTypes = Object.values(typeBadges).sort(
+        (a, b) => {
+            const aBadges = missionsCompleted[a]?.[BADGE_STRUCTURE.OBTAIN_BADGE] || []
+            const bBadges = missionsCompleted[b]?.[BADGE_STRUCTURE.OBTAIN_BADGE] || []
+            return bBadges.length - aBadges.length
+        }
+    )
+
+    sortedMissionTypes.forEach(missionType => {
         const obtainsBadges = missionsCompleted[missionType]?.[BADGE_STRUCTURE.OBTAIN_BADGE]
         const id = badgeStructure + "." + missionType
         if (obtainsBadges.length > 0) {

@@ -101,7 +101,7 @@ export async function countBadgesObtainedOfCurrentUser() {
 }
 
 // Incrementare il counter di un badge
-export async function incrementBadgeCounterOfCurrentUser(category, key, updateFun = (count) => count + 1) {
+async function incrementBadgeCounterOfCurrentUser(category, key, updateFun = (count) => count + 1) {
     const badge = await currentUserBadge()
     const obtainBadge = badge[category]?.[key]?.[BADGE_STRUCTURE.OBTAIN_BADGE]
 
