@@ -11,6 +11,7 @@ import {checkEqualsDay, identityFun} from "./utils.js";
 import {updateCurrentUserLevel} from "./db/userGoalsConnector.js";
 import {updateViewMission, updateViewSpotDetails} from "./missionsViewUpdater.js";
 import {loadSpotMissions} from "./loader/spotMissionLoader.js";
+import {logicToIncrementBadgesWhenCompletingMission} from "../badge/badgeConnector.js";
 
 export async function testActiveTriggers() {
     await triggerLogin();
@@ -74,6 +75,9 @@ async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, fil
             await triggerCompleteMission(updatedMissionData, missionType);
             const levelData = await updateCurrentUserLevel(level => level + mission.template.Reward.Experience)
             await triggerReachLevel(levelData)
+            // Update Badges
+            await logicToIncrementBadgesWhenCompletingMission(mission)
+
             console.log("User level updated after completing mission");
         }
 

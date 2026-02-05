@@ -103,6 +103,10 @@ export async function countBadgesObtainedOfCurrentUser() {
 export async function incrementBadgeCounterOfCurrentUser(category, key, updateFun = (count) => count + 1) {
     const badge = await currentUserBadge()
     const obtainBadge = badge[category]?.[key]?.[BADGE_STRUCTURE.OBTAIN_BADGE]
+
+    if (!obtainBadge) return 0;
+    console.log("CATEGORY: ", category, "KEY: ", key, "OBTAIN BADGE: ", obtainBadge)
+
     const cap = badge[category]?.[key]?.[BADGE_STRUCTURE.CAP]
     const counter = badge[category]?.[key]?.[BADGE_STRUCTURE.COUNTER]
     const updateCounter = updateFun(counter)
@@ -120,6 +124,27 @@ export async function incrementBadgeCounterOfCurrentUser(category, key, updateFu
     if (newObtainBadges.length > 0) {
         const path = `${category}.${key}.${BADGE_STRUCTURE.OBTAIN_BADGE}`
         await updateDocument(badge, {[path]: arrayUnion(...newObtainBadges)});
+    }
+    return newObtainBadges.length
+}
+
+export async function logicToIncrementBadgesWhenCompletingMission(mission) {
+    let obtainBadgeAdded = 0;
+    const action = mission.template.Action
+    const missionType = mission.template.Type
+    obtainBadgeAdded += await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.MISSIONS_COMPLETED, missionType)
+    obtainBadgeAdded += await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.ACTIONS, ACTION_TYPE.COMPLETE_MISSIONS)
+
+    // Badge conto prima quanti badge ho poi
+    // await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.ACTIONS, ACTION_TYPE.OBTAIN_BADGE)
+    if (action !== ACTION_TYPE.COMPLETE_MISSIONS)
+        obtainBadgeAdded += await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.ACTIONS, mission.template.Action)
+
+    console.log("BADGE OBTAINED: ", obtainBadgeAdded)
+    if (obtainBadgeAdded > 0) {
+        const obtainBadge = await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.ACTIONS, ACTION_TYPE.OBTAIN_BADGE, count => count + obtainBadgeAdded)
+        if (obtainBadge > 0)
+            await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.ACTIONS, ACTION_TYPE.OBTAIN_BADGE, count => count + obtainBadgeAdded)
     }
 }
 
