@@ -5,6 +5,7 @@ export const CAP_LEVEL = 200;
 export const COLLECTIONS = {
     USER: 'Utente',
     SPOT: 'Luogo',
+    BADGE: 'Badge',
     MISSION_TEMPLATE: 'MissionTemplate',
     USER_MISSION_PROGRESS: 'UserMissionProgress'
 }
