@@ -46,4 +46,23 @@
     opacity: 50%;
   }
 
+  #sendto-list.community-chat {
+    justify-content: space-evenly;
+    align-items: stretch;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-items: center;
+    gap: 10px;
+  }
+
+  .vertical-list-wrapper.community-chat {
+    height: 500px;
+    padding: 10px;
+    margin-top: 15px;
+  }
+
+  .profile-polaroid.community-chat {
+    width : 100%;
+  }
+
 }
