@@ -26,7 +26,7 @@ export async function loadComponentAsDocument(path) {
  */
 let keyboardId = 0;
 
-export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
+export async function createSearchBarWithKeyboard(placeholder, onValueChanged, onClear) {
     if (!keyboardId) keyboardId = 0;
     const searchDoc = await loadComponentAsDocument("../html/common-components/search-bar/search-bar.html");
     const keyboardDoc = await loadComponentAsDocument("../html/common-components/search-bar/keyboard.html");
@@ -46,16 +46,26 @@ export async function createSearchBarWithKeyboard(placeholder, onValueChanged) {
     clearBtn.id = `reset-search-btn-${keyboardId}`;
     clearBtn.hidden = true;
 
-    clearBtn.addEventListener("click", () => {
-        searchInput.value = "";
-        onValueChanged("");
-        clearBtn.hidden = true;
-    });
+    const showClearBtn = () => {
+        clearBtn.hidden = false;
+    };
 
-    searchInput.addEventListener('input', () => {
-        clearBtn.hidden = searchInput.value.trim() == '';
+    clearBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (searchInput.value.trim() == "") {
+            onClear();
+            clearBtn.hidden = true;
+        } else {
+            searchInput.value = "";
+            onValueChanged("");
+            showClearBtn();
+        }
+        
     });
-
+    
+    searchInput.addEventListener('input', showClearBtn);
+    searchInput.addEventListener('focus', showClearBtn);
 
     const keyboard = keyboardEl; // id="view-all-saved-keyboard"
     const overlay = overlayEl;   // id="view-all-saved-keyboard-overlay"

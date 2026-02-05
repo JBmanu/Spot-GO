@@ -213,5 +213,8 @@
         font-weight: 500;
     }
 
+    #community-results-section {
+        height: 470px;
+    }
 
 }

@@ -5,35 +5,44 @@
       <div id="search-bar-placeholder"></div>
     </div>
   </div>
-  <!-- Selettore tab -->
-  <div id="community-section-selector" class="mx-4 my-0 mb-3">
-    <div id="community-tab-bar" class="community-switch glass-strong">
-      <!-- BOTTONI -->
-        <button id="community-tab-follows" data-tab-section="follows" class="community-switch-btn is-active active-community-tab">
-          <span>Seguiti</span>
-        </button>
-        <!-- Seguaci -->
-        <button id="community-tab-followers" data-tab-section="followers" class="community-switch-btn">
-          <span>Seguaci</span>
-        </button>
-        <div class="community-slider" style="left: 1%;"></div>
-   </div> 
-  </div>
-  <!-- Contenitore corpo tab -->
-  <div class="">
-    <!-- Tab Seguiti -->
-    <section id="community-follows-section" class="community-section">
-      <div id="community-follows-container" class="vertical-carousel-track" role="list">
-        <!-- Follows cards list -->
+  <section id="community-results-section" class="community-section hidden" >
+      <div id="community-results-container" class="vertical-carousel-track" role="list">
+        <!-- serach results cards list -->
+         <p>Risultati ricerca</p>
       </div>
-    </section>
-    <!-- Tab Seguaci -->
-    <section id="community-followers-section" class="community-section hidden">
-      <div id="community-followers-container" class="vertical-carousel-track" role="list">
-        <!-- Followers cards list -->
-      </div>
-    </section>
+  </section>
+  <div id="community-main-sections">
+    <!-- Selettore tab -->
+    <div id="community-section-selector" class="mx-4 my-0 mb-3">
+      <div id="community-tab-bar" class="community-switch glass-strong">
+        <!-- BOTTONI -->
+          <button id="community-tab-follows" data-tab-section="follows" class="community-switch-btn is-active active-community-tab">
+            <span>Seguiti</span>
+          </button>
+          <!-- Seguaci -->
+          <button id="community-tab-followers" data-tab-section="followers" class="community-switch-btn">
+            <span>Seguaci</span>
+          </button>
+          <div class="community-slider" style="left: 1%;"></div>
+    </div> 
+    </div>
+    <!-- Contenitore corpo tab -->
+    <div class="">
+      <!-- Tab Seguiti -->
+      <section id="community-follows-section" class="community-section">
+        <div id="community-follows-container" class="vertical-carousel-track" role="list">
+          <!-- Follows cards list -->
+        </div>
+      </section>
+      <!-- Tab Seguaci -->
+      <section id="community-followers-section" class="community-section hidden">
+        <div id="community-followers-container" class="vertical-carousel-track" role="list">
+          <!-- Followers cards list -->
+        </div>
+      </section>
+    </div>
   </div>
+  
   <!-- Suggeriti -->
   <section id="community-suggested-wrapper">
     <h2>Suggeriti</h2>

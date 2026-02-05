@@ -25,12 +25,17 @@ export async function loadCommunityData(arg) {
 
 async function configureKeyboard() {
     // Bind search bar and keyboard to search section.
-    const {searchBarEl, keyboardEl, overlayEl, newId} = await createSearchBarWithKeyboard("Cerca utente", onValueChangeSearch);
+    const {searchBarEl, keyboardEl, overlayEl, newId} = await createSearchBarWithKeyboard("Cerca utente", onValueChangeSearch, hideSearchRes);
     const communityPage = document.querySelector(".app-toolbar");
     communityPage.appendChild(keyboardEl);
     const searchBar = document.querySelector("#search-bar-placeholder");
     searchBar.replaceWith(searchBarEl);
     searchBarEl.querySelector("#view-all-saved-filter-btn").remove();
+
+    searchBarEl.addEventListener('click', () => {
+        document.getElementById('community-main-sections').classList.add("hidden");
+        document.getElementById('community-results-section').classList.remove("hidden");
+    });
     keyboardSetted = true;
 }
 
@@ -66,6 +71,13 @@ function initTabSelector() {
     Object.entries(tabs).forEach(([tabName, tab]) => {
         tab.button.addEventListener('click', () => switchToTab(tabName));
     });
+}
+
+function hideSearchRes() {
+    const mainSections = document.getElementById('community-main-sections');
+    const resultsSection = document.getElementById('community-results-section');
+    mainSections.classList.remove('hidden');
+    resultsSection.classList.add('hidden');
 }
 
 function onValueChangeSearch(value) {
