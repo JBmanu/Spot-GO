@@ -6,7 +6,7 @@
     updateValueOfMission,
     updateValueOfSpotMission
 } from "./db/userMissionProgressConnector.js";
-import {ACTION_TYPE, MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
+import {ACTION_TYPE, CATEGORY, MISSION_TYPE} from "./db/seed/missionTemplateSeed.js";
 import {checkEqualsDay, identityFun} from "./utils.js";
 import {updateCurrentUserLevel} from "./db/userGoalsConnector.js";
 import {updateViewMission, updateViewSpotDetails} from "./missionsViewUpdater.js";
@@ -15,7 +15,6 @@ import {logicToIncrementBadgesWhenCompletingMission} from "../badge/badgeConnect
 
 export async function testActiveTriggers() {
     await triggerLogin();
-    // await triggerFoto({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     // await triggerReview({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     // await triggerCreatePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
     // await triggerSharePolaroid({id: "8ncqBKHfbPWlQsFc7pvT", category: CATEGORY.NATURE});
@@ -77,7 +76,6 @@ async function chooseMissionTypeAndFilterForUpdate(missionType, mapMissions, fil
             await triggerReachLevel(levelData)
             // Update Badges
             await logicToIncrementBadgesWhenCompletingMission(mission)
-
             console.log("User level updated after completing mission");
         }
 

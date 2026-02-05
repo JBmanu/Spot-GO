@@ -13,6 +13,7 @@ import {ACTION_TYPE, MISSION_TYPE} from "../goals/db/seed/missionTemplateSeed.js
 import {COLLECTIONS} from "../goals/Datas.js";
 import {arrayUnion, collection, query, where} from "firebase/firestore";
 import {db} from "../firebase.js";
+import {allSpotMissionsAreCompletedOfCurrentUser} from "../goals/db/userMissionProgressConnector.js";
 
 export const BADGE_COLLECTION_STRUCTURE = {
     SPOT_COMPLETED: "SpotCompleted",
@@ -105,7 +106,6 @@ export async function incrementBadgeCounterOfCurrentUser(category, key, updateFu
     const obtainBadge = badge[category]?.[key]?.[BADGE_STRUCTURE.OBTAIN_BADGE]
 
     if (!obtainBadge) return 0;
-    console.log("CATEGORY: ", category, "KEY: ", key, "OBTAIN BADGE: ", obtainBadge)
 
     const cap = badge[category]?.[key]?.[BADGE_STRUCTURE.CAP]
     const counter = badge[category]?.[key]?.[BADGE_STRUCTURE.COUNTER]
@@ -130,17 +130,22 @@ export async function incrementBadgeCounterOfCurrentUser(category, key, updateFu
 
 export async function logicToIncrementBadgesWhenCompletingMission(mission) {
     let obtainBadgeAdded = 0;
+
     const action = mission.template.Action
     const missionType = mission.template.Type
+
+    if (missionType === MISSION_TYPE.SPOT) {
+        if (await allSpotMissionsAreCompletedOfCurrentUser(mission.place.id)) {
+            await addSpotCompletedOfCurrentUser(mission.place.id)
+            obtainBadgeAdded += 1
+        }
+    }
+
     obtainBadgeAdded += await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.MISSIONS_COMPLETED, missionType)
     obtainBadgeAdded += await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.ACTIONS, ACTION_TYPE.COMPLETE_MISSIONS)
-
-    // Badge conto prima quanti badge ho poi
-    // await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.ACTIONS, ACTION_TYPE.OBTAIN_BADGE)
     if (action !== ACTION_TYPE.COMPLETE_MISSIONS)
         obtainBadgeAdded += await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.ACTIONS, mission.template.Action)
 
-    console.log("BADGE OBTAINED: ", obtainBadgeAdded)
     if (obtainBadgeAdded > 0) {
         const obtainBadge = await incrementBadgeCounterOfCurrentUser(BADGE_COLLECTION_STRUCTURE.ACTIONS, ACTION_TYPE.OBTAIN_BADGE, count => count + obtainBadgeAdded)
         if (obtainBadge > 0)

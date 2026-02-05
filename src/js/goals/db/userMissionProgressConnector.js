@@ -176,6 +176,12 @@ export async function currentUserHasSpotMissions(placeId) {
     return (await currentUserMissions())?.[MISSION_TYPE.SPOT][placeId]
 }
 
+export async function allSpotMissionsAreCompletedOfCurrentUser(placeId) {
+    const spotMissions = (await currentUserMissions())?.[MISSION_TYPE.SPOT][placeId]
+    if (!spotMissions) return false;
+    return Object.values(spotMissions).every(mission => mission.IsCompleted)
+}
+
 async function updateValueMission(missions, mission, pathUpdate, updateFun) {
     const current = mission.progress.Current
     const target = mission.template.Target
