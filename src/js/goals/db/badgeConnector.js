@@ -80,6 +80,25 @@ export async function badgeValuesOfCurrentUser(category, key) {
     return badge[category]?.[key] || EMPTY_VALUE;
 }
 
+export async function countBadgesObtainedOfCurrentUser() {
+    const badge = await currentUserBadge()
+    const spotCompleted = badge[BADGE_COLLECTION_STRUCTURE.SPOT_COMPLETED] || []
+    const missionsCompleted = badge[BADGE_COLLECTION_STRUCTURE.MISSIONS_COMPLETED] || []
+    const actions = badge[BADGE_COLLECTION_STRUCTURE.ACTIONS] || []
+
+    const countedMissions = Object.values(missionsCompleted).reduce((acc, missionBadge) => {
+        acc += missionBadge[BADGE_STRUCTURE.OBTAIN_BADGE].length
+        return acc;
+    }, 0)
+
+    const countedActions = Object.values(actions).reduce((acc, actionBadge) => {
+        acc += actionBadge[BADGE_STRUCTURE.OBTAIN_BADGE].length
+        return acc;
+    }, 0)
+
+    return spotCompleted.length + countedMissions + countedActions
+}
+
 // Incrementare il counter di un badge
 export async function incrementBadgeCounterOfCurrentUser(category, key, updateFun = (count) => count + 1) {
     const badge = await currentUserBadge()
