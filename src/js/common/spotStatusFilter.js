@@ -11,7 +11,7 @@ export const mapping = {
  * Utilizziamo un oggetto per mappare i 3 stati boolean.
  */
 export function getStatusState(containerEl) {
-    if (!containerEl) return { visited: false, saved: false, mine: false };
+    if (!containerEl) return { badges: false, saved: false, mine: false };
     if (!statusStates.has(containerEl)) {
         statusStates.set(containerEl, {
             saved: false,

@@ -21,8 +21,8 @@ async function createMissionProgress(data, create, update) {
     const user = await isAuthenticatedUser();
     if (!user) return null;
 
-    const userRef = createDocumentRef("Utente", data.UserId);
-    const placeRef = createDocumentRef("Luogo", data.PlaceId);
+    const userRef = createDocumentRef(COLLECTIONS.USER, data.UserId);
+    const placeRef = createDocumentRef(COLLECTIONS.SPOT, data.PlaceId);
     const missionTemplateRef = createDocumentRef(COLLECTIONS.MISSION_TEMPLATE, data.MissionTemplateId);
 
     const newMission = {
@@ -174,6 +174,12 @@ export async function hydrateInactiveSpotMissionsOfCurrentUser() {
 
 export async function currentUserHasSpotMissions(placeId) {
     return (await currentUserMissions())?.[MISSION_TYPE.SPOT][placeId]
+}
+
+export async function allSpotMissionsAreCompletedOfCurrentUser(placeId) {
+    const spotMissions = (await currentUserMissions())?.[MISSION_TYPE.SPOT][placeId]
+    if (!spotMissions) return false;
+    return Object.values(spotMissions).every(mission => mission.IsCompleted)
 }
 
 async function updateValueMission(missions, mission, pathUpdate, updateFun) {

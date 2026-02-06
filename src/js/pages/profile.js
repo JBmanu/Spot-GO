@@ -13,6 +13,7 @@ import {sharePolaroidModal} from "./sharePolaroid.js";
 import {showConfirmModal} from "../ui/confirmModal.js";
 import {currentUserLevel} from "../goals/db/userGoalsConnector.js";
 import {CAP_LEVEL} from "../goals/Datas.js";
+import {countBadgesObtainedOfCurrentUser} from "../badge/badgeConnector.js";
 
 const AVATAR_MAP = {
     "Luana": "Luana.svg",
@@ -129,12 +130,13 @@ function updateProfileHeader(user, container) {
 
 async function updateUserCounters(username, container) {
     try {
-        const [saved, reviews, visited, created, userProgress] = await Promise.all([
+        const [saved, reviews, visited, created, userProgress, countedBadges] = await Promise.all([
             getSavedSpots(username),
             getReviews(username),
             getVisitedSpots(username),
             getCreatedSpots(username),
-            currentUserLevel()
+            currentUserLevel(),
+            countBadgesObtainedOfCurrentUser()
         ]);
 
         // Usa container.querySelector se è un container specifico, altrimenti document
@@ -147,18 +149,14 @@ async function updateUserCounters(username, container) {
         const elements = {
             saved: querySelector("#saved-spots"),
             reviews: querySelector("#written-reviews"),
-            visited: querySelector("#visited-spots"),
+            badges: querySelector("#visited-spots"),
             created: querySelector("#created-spots"),
             level: querySelector("#explorer-level")
         };
-
-        console.log("USERRRR: ", userProgress)
-
-        updateProgressBar(container,userProgress)
-
+        updateProgressBar(container, userProgress)
         if (elements.saved) elements.saved.textContent = saved.length;
         if (elements.reviews) elements.reviews.textContent = reviews.length;
-        if (elements.visited) elements.visited.textContent = visited.length;
+        if (elements.badges) elements.badges.textContent = "" + countedBadges;
         if (elements.created) elements.created.textContent = created.length;
         if (elements.level) elements.level.textContent = "" + userProgress.level;
 

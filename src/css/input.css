@@ -48,6 +48,9 @@
 
 @import "./goals/goals.css";
 
+@import "./goals/badge.css";
+
 @import "./pages/login.css";
 
 @import "./common-components/search-bar/keyboard.css";
+

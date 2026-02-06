@@ -1,4 +1,5 @@
 import { getCurrentUser, getVisitedSpots, getSpotById } from "../database.js";
+import {loadBadges} from "../badge/badgeLoader.js";
 
 const OVERLAY_ID = "view-all-badges";
 const OVERLAY_SELECTOR = `[data-overlay-view="${OVERLAY_ID}"]`;
@@ -164,13 +165,13 @@ async function populateBadges() {
     const listContainer = document.getElementById("view-all-badges-list");
     if (!listContainer) return;
 
-    listContainer.innerHTML = '<div class="col-span-3 flex justify-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div></div>'; // Loading
+    await loadBadges()
 
-    const visited = await getVisitedSpots(currentUser.username);
+    // listContainer.innerHTML = '<div class="col-span-3 flex justify-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div></div>'; // Loading
+    // const visited = await getVisitedSpots(currentUser.username);
+    // listContainer.innerHTML = "";
 
-    listContainer.innerHTML = "";
-
-    if (visited.length === 0) {
+    if (1 === 0) {
         listContainer.classList.remove("grid");
         listContainer.innerHTML = `
             <div class="glass-panel p-8 rounded-2xl flex flex-col items-center justify-center text-center w-full">
@@ -182,14 +183,14 @@ async function populateBadges() {
         return;
     }
 
-    if (!listContainer.classList.contains("grid")) {
-        listContainer.classList.add("grid");
-    }
+    // if (!listContainer.classList.contains("grid")) {
+    //     listContainer.classList.add("grid");
+    // }
 
-    for (const v of visited) {
-        const card = await createBadgeCard(v);
-        listContainer.appendChild(card);
-    }
+    // for (const v of visited) {
+    //     const card = await createBadgeCard(v);
+    //     listContainer.appendChild(card);
+    // }
 }
 
 export async function loadViewAllBadges(returnViewKey = null) {
