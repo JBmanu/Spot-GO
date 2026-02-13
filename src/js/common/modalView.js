@@ -59,24 +59,28 @@ function reset() {
  */
 export async function closeModal(onCloseAction) {
     if (!modalOpenCount || !modalElement) return;
-
-    modalElement[modalOpenCount].classList.remove("active");
-    modalElement[modalOpenCount].classList.add("page-fade-out");
-
+    const modal = modalElement[modalOpenCount];
+    if (modal) {
+        modal.classList.remove("active");
+        modal.classList.add("page-fade-out");
+    }
+    
     setTimeout(async () => {
-        modalElement[modalOpenCount].style.display = "none";
-        modalElement[modalOpenCount].classList.remove("page-fade-out");
+        if (modal) {
+            modalElement[modalOpenCount].style.display = "none";
+            modalElement[modalOpenCount].classList.remove("page-fade-out");
 
-        if (onCloseAction) {
-            await onCloseAction(modalElement[modalOpenCount]);
+            if (onCloseAction) {
+                await onCloseAction(modalElement[modalOpenCount]);
+            }
+            const mainContainer = document.getElementById("main");
+            if (mainContainer) {
+                mainContainer.style.overflow = "";
+            }
+            modalElement[modalOpenCount].remove();
+            modalElement[modalOpenCount] = null;
+            modalOpenCount = modalOpenCount - 1 >= 0 ? modalOpenCount - 1 : 0;
+            console.log("MOdal counter:", modalOpenCount);
         }
-        const mainContainer = document.getElementById("main");
-        if (mainContainer) {
-            mainContainer.style.overflow = "";
-        }
-        modalElement[modalOpenCount].remove();
-        modalElement[modalOpenCount] = null;
-        modalOpenCount = modalOpenCount - 1 >= 0 ? modalOpenCount - 1 : 0;
-        console.log("MOdal counter:", modalOpenCount);
     }, 200);
 }

@@ -3,6 +3,7 @@ import { formatDate } from "../common/datetime.js";
 import { openSpotDetailById } from "./spotDetail.js";
 import { sharePolaroidModal } from "./sharePolaroid.js";
 import { showConfirmModal } from "../ui/confirmModal.js";
+import { closeModal } from "../common/modalView.js";
 
 const state = {
     templateCache: null,
